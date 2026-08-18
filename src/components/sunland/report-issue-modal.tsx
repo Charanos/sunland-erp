@@ -5,7 +5,12 @@ import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { IconBuildingCommunity, IconChevronDown, IconInfoCircle, IconTool } from "@tabler/icons-react";
+import {
+  IconBuildingCommunity,
+  IconChevronDown,
+  IconInfoCircle,
+  IconTool,
+} from "@tabler/icons-react";
 import { cn } from "@/lib/utils/cn";
 import {
   CATEGORY_META,
@@ -45,7 +50,15 @@ function pillClass(active: boolean) {
   );
 }
 
-export function ReportIssueModal({ open, entityId, propertyId, propertyName, title, onClose, onCreated }: ReportIssueModalProps) {
+export function ReportIssueModal({
+  open,
+  entityId,
+  propertyId,
+  propertyName,
+  title,
+  onClose,
+  onCreated,
+}: ReportIssueModalProps) {
   const { pushToast } = useToast();
   const [selectedPropertyId, setSelectedPropertyId] = useState(propertyId ?? "");
   const [issueTitle, setIssueTitle] = useState("");
@@ -57,7 +70,9 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
   const [titleErr, setTitleErr] = useState(false);
 
   const [propertyOptions, setPropertyOptions] = useState<PropertyOption[]>([]);
-  const [authorityByPropertyId, setAuthorityByPropertyId] = useState<Map<string, number | null>>(new Map());
+  const [authorityByPropertyId, setAuthorityByPropertyId] = useState<Map<string, number | null>>(
+    new Map()
+  );
   const [gmThreshold, setGmThreshold] = useState(25000);
   const [ceoThreshold, setCeoThreshold] = useState(100000);
 
@@ -84,14 +99,24 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
     fetch(`/api/mandates?entityId=${entityId}`)
       .then((res) => res.json())
       .then((data) => {
-        const rows: Array<{ propertyId: string; maintenanceAuthorityKes: string | null }> = Array.isArray(data.mandates) ? data.mandates : [];
-        setAuthorityByPropertyId(new Map(rows.map((m) => [m.propertyId, m.maintenanceAuthorityKes ? parseFloat(m.maintenanceAuthorityKes) : null])));
+        const rows: Array<{ propertyId: string; maintenanceAuthorityKes: string | null }> =
+          Array.isArray(data.mandates) ? data.mandates : [];
+        setAuthorityByPropertyId(
+          new Map(
+            rows.map((m) => [
+              m.propertyId,
+              m.maintenanceAuthorityKes ? parseFloat(m.maintenanceAuthorityKes) : null,
+            ])
+          )
+        );
       })
       .catch(() => setAuthorityByPropertyId(new Map()));
     fetch(`/api/settings?entityId=${entityId}`)
       .then((res) => res.json())
       .then((data) => {
-        const rows: Array<{ key: string; value: unknown }> = Array.isArray(data.settings) ? data.settings : [];
+        const rows: Array<{ key: string; value: unknown }> = Array.isArray(data.settings)
+          ? data.settings
+          : [];
         const gm = rows.find((r) => r.key === "maintenance_cost_gm_threshold_kes");
         const ceo = rows.find((r) => r.key === "maintenance_cost_ceo_threshold_kes");
         if (gm && typeof gm.value === "number") setGmThreshold(gm.value);
@@ -105,23 +130,41 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
     return authority ?? gmThreshold;
   }, [authorityByPropertyId, selectedPropertyId, gmThreshold]);
 
-  const estimate = useMemo(() => parseInt(estimateInput.replace(/[^0-9]/g, ""), 10) || 0, [estimateInput]);
+  const estimate = useMemo(
+    () => parseInt(estimateInput.replace(/[^0-9]/g, ""), 10) || 0,
+    [estimateInput]
+  );
 
   const routeNote = useMemo(() => {
     if (estimate === 0) {
       return `Enter an estimate — up to KES ${autoApproveCeiling.toLocaleString()} auto-approves under PM authority; up to KES ${ceoThreshold.toLocaleString()} routes to GM approval; above that routes to CEO.`;
     }
-    const tier = costApprovalTierFor({ costKes: estimate, maintenanceAuthorityKes: authorityByPropertyId.get(selectedPropertyId) ?? null, gmThresholdKes: gmThreshold, ceoThresholdKes: ceoThreshold });
-    if (tier === "auto") return `Routing: auto-approved (≤ KES ${autoApproveCeiling.toLocaleString()} PM authority). Crew can be scheduled immediately; cost posts to the mandate ledger.`;
-    if (tier === "gm") return `Routing: GM approval required (KES ${autoApproveCeiling.toLocaleString()}–${ceoThreshold.toLocaleString()}). Crew mobilization waits on decision.`;
+    const tier = costApprovalTierFor({
+      costKes: estimate,
+      maintenanceAuthorityKes: authorityByPropertyId.get(selectedPropertyId) ?? null,
+      gmThresholdKes: gmThreshold,
+      ceoThresholdKes: ceoThreshold,
+    });
+    if (tier === "auto")
+      return `Routing: auto-approved (≤ KES ${autoApproveCeiling.toLocaleString()} PM authority). Crew can be scheduled immediately; cost posts to the mandate ledger.`;
+    if (tier === "gm")
+      return `Routing: GM approval required (KES ${autoApproveCeiling.toLocaleString()}–${ceoThreshold.toLocaleString()}). Crew mobilization waits on decision.`;
     return `Routing: CEO approval queue (above KES ${ceoThreshold.toLocaleString()}) via the approval engine, dual sign-off. Flagged in Needs Attention.`;
-  }, [estimate, autoApproveCeiling, authorityByPropertyId, selectedPropertyId, gmThreshold, ceoThreshold]);
+  }, [
+    estimate,
+    autoApproveCeiling,
+    authorityByPropertyId,
+    selectedPropertyId,
+    gmThreshold,
+    ceoThreshold,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPropertyId || !issueTitle.trim()) {
       setTitleErr(!issueTitle.trim());
-      if (!selectedPropertyId) pushToast({ tone: "warning", title: "Missing fields", body: "Please select a property." });
+      if (!selectedPropertyId)
+        pushToast({ tone: "warning", title: "Missing fields", body: "Please select a property." });
       return;
     }
 
@@ -160,7 +203,11 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
       onClose();
     } catch (err) {
       console.error(err);
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not save the maintenance request." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not save the maintenance request.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -169,9 +216,11 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title={title ?? "New Work Order"}
-      description={propertyName ?? "Log a work order for field operations, repairs, or scheduled compliance."}
+      description={
+        propertyName ?? "Log a work order for field operations, repairs, or scheduled compliance."
+      }
       size="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -185,10 +234,17 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
             type="text"
             placeholder="e.g. Water heater failure, Apt 3C"
             value={issueTitle}
-            onChange={(e) => { setIssueTitle(e.target.value); setTitleErr(false); }}
+            onChange={(e) => {
+              setIssueTitle(e.target.value);
+              setTitleErr(false);
+            }}
             className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-xs text-slate-900 font-medium outline-none placeholder:text-slate-400 focus:bg-white focus:border-[#151936]/40 transition-all shadow-2xs"
           />
-          {titleErr && <p className="text-xs font-mono text-rose-600 mt-1">Please enter an issue title to continue.</p>}
+          {titleErr && (
+            <p className="text-xs font-mono text-rose-600 mt-1">
+              Please enter an issue title to continue.
+            </p>
+          )}
         </div>
 
         {/* Executive Property Selector Container */}
@@ -211,14 +267,19 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
                 onChange={(e) => setSelectedPropertyId(e.target.value)}
                 className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 text-xs font-medium text-slate-900 outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs appearance-none cursor-pointer"
               >
-                <option value="" disabled>Select target property from portfolio...</option>
+                <option value="" disabled>
+                  Select target property from portfolio...
+                </option>
                 {propertyOptions.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name} {p.propertyCode ? `(${p.propertyCode})` : ""}
                   </option>
                 ))}
               </select>
-              <IconChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <IconChevronDown
+                size={16}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              />
             </div>
           </div>
         )}
@@ -230,7 +291,12 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
           </label>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Category">
             {CATEGORY_OPTIONS.map((c) => (
-              <button key={c} type="button" onClick={() => setCategory(c)} className={pillClass(category === c)}>
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCategory(c)}
+                className={pillClass(category === c)}
+              >
                 <IconTool size={14} className={category === c ? "text-white" : "text-slate-500"} />
                 {CATEGORY_META[c].label}
               </button>
@@ -245,7 +311,12 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
           </label>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Severity">
             {SEVERITY_OPTIONS.map((s) => (
-              <button key={s} type="button" onClick={() => setSeverity(s)} className={pillClass(severity === s)}>
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSeverity(s)}
+                className={pillClass(severity === s)}
+              >
                 {PRIORITY_META[s].label}
               </button>
             ))}
@@ -273,7 +344,9 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
             <IconInfoCircle size={16} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-mono font-medium text-slate-800 leading-relaxed">{routeNote}</p>
+            <p className="text-xs font-mono font-medium text-slate-800 leading-relaxed">
+              {routeNote}
+            </p>
           </div>
         </div>
 
@@ -293,10 +366,20 @@ export function ReportIssueModal({ open, entityId, propertyId, propertyName, tit
 
         {/* Modal Action Buttons */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/80">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={submitting} className="rounded-xl">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onClose}
+            disabled={submitting}
+            className="rounded-xl"
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={submitting} className="rounded-xl bg-[#151936] text-white hover:bg-[#1f254e]">
+          <Button
+            type="submit"
+            disabled={submitting}
+            className="rounded-xl bg-[#151936] text-white hover:bg-[#1f254e]"
+          >
             {submitting ? "Creating..." : "Create Work Order"}
           </Button>
         </div>

@@ -21,7 +21,7 @@ export interface MandateLetterDoc {
 
 export function findMandateLetterDocument<T extends MandateLetterDoc>(
   documents: T[] | null | undefined,
-  propertyId: string,
+  propertyId: string
 ): T | undefined {
   return (documents ?? []).find((d) => d.type === "mandate_letter" && d.propertyId === propertyId);
 }
@@ -30,12 +30,15 @@ export type MandateLetterStatus = "verified" | "pending_upload";
 
 export function mandateLetterStatus(
   documents: MandateLetterDoc[] | null | undefined,
-  propertyId: string,
+  propertyId: string
 ): MandateLetterStatus {
   return findMandateLetterDocument(documents, propertyId) ? "verified" : "pending_upload";
 }
 
-export const MANDATE_LETTER_STATUS_META: Record<MandateLetterStatus, { label: string; tone: BadgeTone }> = {
+export const MANDATE_LETTER_STATUS_META: Record<
+  MandateLetterStatus,
+  { label: string; tone: BadgeTone }
+> = {
   verified: { label: "Verified", tone: "success" },
   pending_upload: { label: "Pending Upload", tone: "warning" },
 };
@@ -48,10 +51,16 @@ export const MANDATE_LETTER_STATUS_META: Record<MandateLetterStatus, { label: st
  * invented for legacy mandates, we just say plainly which bucket a mandate
  * is in.
  */
-export function mandateOriginLabel(
-  originValuation: { id: string; valuationCode: string } | null,
-): { label: string; tone: BadgeTone; href?: string } {
+export function mandateOriginLabel(originValuation: { id: string; valuationCode: string } | null): {
+  label: string;
+  tone: BadgeTone;
+  href?: string;
+} {
   return originValuation
-    ? { label: `Acquisition Pipeline · ${originValuation.valuationCode}`, tone: "primary", href: `/admin/valuations/${originValuation.id}` }
+    ? {
+        label: `Acquisition Pipeline · ${originValuation.valuationCode}`,
+        tone: "primary",
+        href: `/admin/valuations/${originValuation.id}`,
+      }
     : { label: "Legacy / Direct Onboarding", tone: "neutral" };
 }

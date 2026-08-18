@@ -39,7 +39,11 @@ export async function getAblyToken(userId: string) {
       .select({ conversationId: conversationParticipants.conversationId })
       .from(conversationParticipants)
       .where(eq(conversationParticipants.userId, userId)),
-    db.select({ primaryEntityId: users.primaryEntityId }).from(users).where(eq(users.id, userId)).limit(1),
+    db
+      .select({ primaryEntityId: users.primaryEntityId })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1),
   ]);
 
   const capability: Record<string, Ably.capabilityOp[]> = {

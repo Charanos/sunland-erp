@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/authz/errors";
-import { deleteMaintenanceRequest, getMaintenanceRequestWithDetails, updateMaintenanceRequest } from "@/lib/services/maintenance";
+import {
+  deleteMaintenanceRequest,
+  getMaintenanceRequestWithDetails,
+  updateMaintenanceRequest,
+} from "@/lib/services/maintenance";
 import { requireCallerContext } from "@/lib/services/types";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {

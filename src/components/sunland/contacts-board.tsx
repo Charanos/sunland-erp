@@ -19,13 +19,27 @@ import {
   IconUser,
   IconUsers,
 } from "@tabler/icons-react";
-import { Avatar, Badge, BoardHeader, Button, ConfirmDialog, DropdownItem, DropdownMenu, SkeletonBlock } from "@/components/ui/erp-primitives";
+import {
+  Avatar,
+  Badge,
+  BoardHeader,
+  Button,
+  ConfirmDialog,
+  DropdownItem,
+  DropdownMenu,
+  SkeletonBlock,
+} from "@/components/ui/erp-primitives";
 import { PageTransition } from "@/components/shared/page-transition";
 import { useToast } from "@/components/ui/toast-provider";
 import { cn } from "@/lib/utils/cn";
 import { ContactFormModal } from "./contact-form-modal";
 import { ContactProfilePeek, type ProfilePeekData } from "./contact-profile-peek";
-import { STATUS_META, TYPE_META, type ContactCrmStatus, type ContactType } from "./contact-constants";
+import {
+  STATUS_META,
+  TYPE_META,
+  type ContactCrmStatus,
+  type ContactType,
+} from "./contact-constants";
 
 // ── Types (mirror the real /api/contacts + /api/crm/contacts-overview shape) ──
 
@@ -180,11 +194,17 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
     Promise.resolve().then(() => {
       setLoading(true);
       Promise.all([loadContacts(), loadOverview()]).finally(() => setLoading(false));
-      fetch("/api/auth/me").then((r) => r.json()).then((d) => setCurrentUserName(d.user?.name ?? null)).catch(() => { });
+      fetch("/api/auth/me")
+        .then((r) => r.json())
+        .then((d) => setCurrentUserName(d.user?.name ?? null))
+        .catch(() => {});
     });
   }, [entityId, loadContacts, loadOverview]);
 
-  const spotlight = useMemo(() => contacts.find((c) => c.id === spotlightId) ?? null, [contacts, spotlightId]);
+  const spotlight = useMemo(
+    () => contacts.find((c) => c.id === spotlightId) ?? null,
+    [contacts, spotlightId]
+  );
 
   const spotlightLastTouch = useMemo(() => {
     if (!spotlight || !overview) return null;
@@ -193,15 +213,24 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
 
   const spotlightNextAction = useMemo(() => {
     if (!spotlight || !overview) return null;
-    const candidates = [...overview.hotLeads, ...overview.followUpsDue].filter((l) => l.contactId === spotlight.id && l.nextActionAt);
+    const candidates = [...overview.hotLeads, ...overview.followUpsDue].filter(
+      (l) => l.contactId === spotlight.id && l.nextActionAt
+    );
     if (candidates.length === 0) return null;
-    return [...candidates].sort((a, b) => new Date(a.nextActionAt!).getTime() - new Date(b.nextActionAt!).getTime())[0];
+    return [...candidates].sort(
+      (a, b) => new Date(a.nextActionAt!).getTime() - new Date(b.nextActionAt!).getTime()
+    )[0];
   }, [spotlight, overview]);
 
   const directory = useMemo(() => {
     const q = directoryQuery.trim().toLowerCase();
     if (!q) return contacts;
-    return contacts.filter((c) => c.displayName.toLowerCase().includes(q) || (c.email ?? "").toLowerCase().includes(q) || (c.phone ?? "").includes(q));
+    return contacts.filter(
+      (c) =>
+        c.displayName.toLowerCase().includes(q) ||
+        (c.email ?? "").toLowerCase().includes(q) ||
+        (c.phone ?? "").includes(q)
+    );
   }, [contacts, directoryQuery]);
 
   const heroGreeting = useMemo(() => {
@@ -215,14 +244,24 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
   const heroSub = useMemo(() => {
     if (!overview) return "";
     const bits: string[] = [];
-    if (overview.hotLeads.length > 0) bits.push(`${overview.hotLeads.length} hot prospect${overview.hotLeads.length === 1 ? "" : "s"} awaiting a follow-up`);
-    if (overview.viewingsToday > 0) bits.push(`${overview.viewingsToday} viewing${overview.viewingsToday === 1 ? "" : "s"} scheduled today`);
+    if (overview.hotLeads.length > 0)
+      bits.push(
+        `${overview.hotLeads.length} hot prospect${overview.hotLeads.length === 1 ? "" : "s"} awaiting a follow-up`
+      );
+    if (overview.viewingsToday > 0)
+      bits.push(
+        `${overview.viewingsToday} viewing${overview.viewingsToday === 1 ? "" : "s"} scheduled today`
+      );
     return bits.length > 0 ? `${bits.join("; ")}.` : "No urgent follow-ups right now.";
   }, [overview]);
 
   // ── Mutations ──────────────────────────────────────────────────────────
 
-  const logTouch = async (contactId: string, channel: "call" | "email" | "whatsapp", contactName: string) => {
+  const logTouch = async (
+    contactId: string,
+    channel: "call" | "email" | "whatsapp",
+    contactName: string
+  ) => {
     try {
       const res = await fetch(`/api/contacts/${contactId}/touch`, {
         method: "POST",
@@ -230,10 +269,18 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
         body: JSON.stringify({ entityId, channel }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to log");
-      pushToast({ tone: "success", title: `Logged: ${channel}`, body: `${contactName}'s timeline updated.` });
+      pushToast({
+        tone: "success",
+        title: `Logged: ${channel}`,
+        body: `${contactName}'s timeline updated.`,
+      });
       loadOverview();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -255,11 +302,20 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
           contactId: contact.id,
         }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to schedule");
-      pushToast({ tone: "success", title: "Viewing scheduled", body: `Tomorrow 10:00 AM with ${contact.displayName}.` });
+      if (!res.ok)
+        throw new Error((await res.json().catch(() => null))?.error ?? "Failed to schedule");
+      pushToast({
+        tone: "success",
+        title: "Viewing scheduled",
+        body: `Tomorrow 10:00 AM with ${contact.displayName}.`,
+      });
       loadOverview();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -279,8 +335,15 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ entityId, ...payload }),
         });
-        if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to update contact");
-        pushToast({ tone: "success", title: "Contact updated", body: `Changes saved for "${payload.displayName}".` });
+        if (!res.ok)
+          throw new Error(
+            (await res.json().catch(() => null))?.error ?? "Failed to update contact"
+          );
+        pushToast({
+          tone: "success",
+          title: "Contact updated",
+          body: `Changes saved for "${payload.displayName}".`,
+        });
         setEditingContact(undefined);
       } else {
         const res = await fetch("/api/contacts", {
@@ -288,13 +351,24 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ entityId, ...payload }),
         });
-        if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to create contact");
-        pushToast({ tone: "success", title: "Contact created", body: `"${payload.displayName}" added to the directory.` });
+        if (!res.ok)
+          throw new Error(
+            (await res.json().catch(() => null))?.error ?? "Failed to create contact"
+          );
+        pushToast({
+          tone: "success",
+          title: "Contact created",
+          body: `"${payload.displayName}" added to the directory.`,
+        });
       }
       setFormOpen(false);
       loadContacts();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Could not save contact", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Could not save contact",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -302,13 +376,24 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
     if (!deleteConfirmId) return;
     const contact = contacts.find((c) => c.id === deleteConfirmId);
     try {
-      const res = await fetch(`/api/contacts/${deleteConfirmId}?entityId=${entityId}`, { method: "DELETE" });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to delete contact");
+      const res = await fetch(`/api/contacts/${deleteConfirmId}?entityId=${entityId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok)
+        throw new Error((await res.json().catch(() => null))?.error ?? "Failed to delete contact");
       setContacts((prev) => prev.filter((c) => c.id !== deleteConfirmId));
       if (spotlightId === deleteConfirmId) setSpotlightId(null);
-      pushToast({ tone: "success", title: "Contact removed", body: `"${contact?.displayName ?? "Record"}" removed from the directory.` });
+      pushToast({
+        tone: "success",
+        title: "Contact removed",
+        body: `"${contact?.displayName ?? "Record"}" removed from the directory.`,
+      });
     } catch (err) {
-      pushToast({ tone: "warning", title: "Could not delete", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Could not delete",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setDeleteConfirmId(null);
     }
@@ -323,7 +408,16 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
       phone: lead.phone || undefined,
       info: [
         { icon: IconUser, label: "Stage", value: STAGE_LABELS[lead.stage] ?? lead.stage },
-        { icon: IconClock, label: "Next action", value: lead.nextActionAt ? new Date(lead.nextActionAt).toLocaleDateString("en-KE", { day: "numeric", month: "short" }) : "—" },
+        {
+          icon: IconClock,
+          label: "Next action",
+          value: lead.nextActionAt
+            ? new Date(lead.nextActionAt).toLocaleDateString("en-KE", {
+                day: "numeric",
+                month: "short",
+              })
+            : "—",
+        },
         { icon: IconMail, label: "Email", value: lead.email || "—" },
       ],
     });
@@ -351,8 +445,14 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
     setPeekData(null);
   };
 
-  const newClientsPct = overview && contacts.length > 0 ? Math.min(100, Math.round((overview.newThisMonth / contacts.length) * 100)) : 0;
-  const followUpsPct = overview && overview.openLeadsCount > 0 ? Math.min(100, Math.round((overview.followUpsDueCount / overview.openLeadsCount) * 100)) : 0;
+  const newClientsPct =
+    overview && contacts.length > 0
+      ? Math.min(100, Math.round((overview.newThisMonth / contacts.length) * 100))
+      : 0;
+  const followUpsPct =
+    overview && overview.openLeadsCount > 0
+      ? Math.min(100, Math.round((overview.followUpsDueCount / overview.openLeadsCount) * 100))
+      : 0;
 
   return (
     <PageTransition className="mx-auto flex max-w-[98rem] flex-col gap-5">
@@ -369,11 +469,20 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
               <span className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-[#151936] text-white">
                 <IconUsers size={14} /> Contacts
               </span>
-              <Link href="/admin/pipeline" className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+              <Link
+                href="/admin/pipeline"
+                className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+              >
                 <IconLayoutKanban size={14} /> Pipeline
               </Link>
             </div>
-            <Button size="sm" onClick={() => { setEditingContact(undefined); setFormOpen(true); }}>
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditingContact(undefined);
+                setFormOpen(true);
+              }}
+            >
               <IconPlus size={14} /> New Contact
             </Button>
           </div>
@@ -399,9 +508,14 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
                     { label: "Follow-ups due", value: overview?.followUpsDueCount ?? 0 },
                     { label: "New leads today", value: overview?.newLeadsToday ?? 0 },
                   ].map((s) => (
-                    <div key={s.label} className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-3.5 py-2 min-w-[90px]">
+                    <div
+                      key={s.label}
+                      className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-3.5 py-2 min-w-[90px]"
+                    >
                       <p className="font-mono text-lg text-white leading-none">{s.value}</p>
-                      <p className="text-xxs uppercase tracking-wide text-white/65 mt-1">{s.label}</p>
+                      <p className="text-xxs uppercase tracking-wide text-white/65 mt-1">
+                        {s.label}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -412,36 +526,96 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
             {spotlight ? (
               <div className="bg-white border border-slate-100 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5">
                 <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr] gap-4">
-                  <Avatar src={spotlight.avatarUrl ?? undefined} fallback={initialsOf(spotlight.displayName)} className="size-[100px] rounded-2xl text-2xl mx-auto sm:mx-0" />
+                  <Avatar
+                    src={spotlight.avatarUrl ?? undefined}
+                    fallback={initialsOf(spotlight.displayName)}
+                    className="size-[100px] rounded-2xl text-2xl mx-auto sm:mx-0"
+                  />
                   <div className="min-w-0 flex flex-col gap-2.5">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="font-serif text-lg text-slate-900 truncate">{spotlight.displayName}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{spotlight.companyName ?? TYPE_META[spotlight.type].label}</p>
+                        <p className="font-serif text-lg text-slate-900 truncate">
+                          {spotlight.displayName}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {spotlight.companyName ?? TYPE_META[spotlight.type].label}
+                        </p>
                       </div>
                       <div className="flex gap-1.5 shrink-0">
-                        <button onClick={() => { setEditingContact(spotlight); setFormOpen(true); }} aria-label="Edit contact" className="size-8 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center transition-colors">
+                        <button
+                          onClick={() => {
+                            setEditingContact(spotlight);
+                            setFormOpen(true);
+                          }}
+                          aria-label="Edit contact"
+                          className="size-8 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center transition-colors"
+                        >
                           <IconEdit size={14} />
                         </button>
-                        <DropdownMenu label="Contact actions" align="right" trigger={<div className="size-8 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center transition-colors"><IconDotsVertical size={14} /></div>}>
-                          <DropdownItem icon={IconTrash} variant="danger" onClick={() => setDeleteConfirmId(spotlight.id)}>Delete Contact</DropdownItem>
+                        <DropdownMenu
+                          label="Contact actions"
+                          align="right"
+                          trigger={
+                            <div className="size-8 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center transition-colors">
+                              <IconDotsVertical size={14} />
+                            </div>
+                          }
+                        >
+                          <DropdownItem
+                            icon={IconTrash}
+                            variant="danger"
+                            onClick={() => setDeleteConfirmId(spotlight.id)}
+                          >
+                            Delete Contact
+                          </DropdownItem>
                         </DropdownMenu>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                      {spotlight.phone && <a href={`tel:${spotlight.phone}`} className="flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-[#151936] transition-colors w-fit"><IconPhone size={13} className="text-slate-400" />{spotlight.phone}</a>}
-                      {spotlight.email && <a href={`mailto:${spotlight.email}`} className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#151936] transition-colors w-fit"><IconMail size={13} className="text-slate-400" />{spotlight.email}</a>}
+                      {spotlight.phone && (
+                        <a
+                          href={`tel:${spotlight.phone}`}
+                          className="flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-[#151936] transition-colors w-fit"
+                        >
+                          <IconPhone size={13} className="text-slate-400" />
+                          {spotlight.phone}
+                        </a>
+                      )}
+                      {spotlight.email && (
+                        <a
+                          href={`mailto:${spotlight.email}`}
+                          className="flex items-center gap-2 text-xs text-slate-500 hover:text-[#151936] transition-colors w-fit"
+                        >
+                          <IconMail size={13} className="text-slate-400" />
+                          {spotlight.email}
+                        </a>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-1">
                       {[
-                        { label: "Status", value: <span className="flex items-center gap-1.5"><span className={cn("size-1.5 rounded-full inline-block", STATUS_META[spotlight.status].dot)} />{spotlight.status}</span> },
+                        {
+                          label: "Status",
+                          value: (
+                            <span className="flex items-center gap-1.5">
+                              <span
+                                className={cn(
+                                  "size-1.5 rounded-full inline-block",
+                                  STATUS_META[spotlight.status].dot
+                                )}
+                              />
+                              {spotlight.status}
+                            </span>
+                          ),
+                        },
                         { label: "Type", value: TYPE_META[spotlight.type].label },
                         { label: "Source", value: spotlight.source ?? "—" },
                         { label: "Assigned to", value: spotlight.assignedToName ?? "Unassigned" },
                       ].map((f) => (
                         <div key={f.label}>
                           <p className="text-xxs text-slate-400">{f.label}</p>
-                          <p className="text-xs font-medium text-slate-900 mt-0.5 truncate">{f.value}</p>
+                          <p className="text-xs font-medium text-slate-900 mt-0.5 truncate">
+                            {f.value}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -450,9 +624,29 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
                 <div className="flex items-end justify-between gap-3 flex-wrap border-t border-slate-100 mt-4 pt-3.5">
                   <div className="flex gap-5 flex-wrap">
                     {[
-                      { label: "First contacted", value: new Date(spotlight.createdAt).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" }) },
-                      { label: "Last touch", value: spotlightLastTouch ? relativeTime(spotlightLastTouch.createdAt) : "No activity yet" },
-                      { label: "Next follow-up", value: spotlightNextAction?.nextActionAt ? new Date(spotlightNextAction.nextActionAt).toLocaleDateString("en-KE", { day: "numeric", month: "short" }) : "—" },
+                      {
+                        label: "First contacted",
+                        value: new Date(spotlight.createdAt).toLocaleDateString("en-KE", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        }),
+                      },
+                      {
+                        label: "Last touch",
+                        value: spotlightLastTouch
+                          ? relativeTime(spotlightLastTouch.createdAt)
+                          : "No activity yet",
+                      },
+                      {
+                        label: "Next follow-up",
+                        value: spotlightNextAction?.nextActionAt
+                          ? new Date(spotlightNextAction.nextActionAt).toLocaleDateString("en-KE", {
+                              day: "numeric",
+                              month: "short",
+                            })
+                          : "—",
+                      },
                     ].map((d) => (
                       <div key={d.label}>
                         <p className="text-xxs text-slate-400">{d.label}</p>
@@ -461,19 +655,54 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <DropdownMenu label="Quick task" align="right" trigger={<div className="inline-flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">Quick Task</div>}>
-                      <DropdownItem icon={IconPhone} onClick={() => logTouch(spotlight.id, "call", spotlight.displayName)}>Log Call</DropdownItem>
-                      <DropdownItem icon={IconMail} onClick={() => logTouch(spotlight.id, "email", spotlight.displayName)}>Log Email</DropdownItem>
-                      <DropdownItem icon={IconMessageCircle} onClick={() => logTouch(spotlight.id, "whatsapp", spotlight.displayName)}>Log WhatsApp</DropdownItem>
+                    <DropdownMenu
+                      label="Quick task"
+                      align="right"
+                      trigger={
+                        <div className="inline-flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                          Quick Task
+                        </div>
+                      }
+                    >
+                      <DropdownItem
+                        icon={IconPhone}
+                        onClick={() => logTouch(spotlight.id, "call", spotlight.displayName)}
+                      >
+                        Log Call
+                      </DropdownItem>
+                      <DropdownItem
+                        icon={IconMail}
+                        onClick={() => logTouch(spotlight.id, "email", spotlight.displayName)}
+                      >
+                        Log Email
+                      </DropdownItem>
+                      <DropdownItem
+                        icon={IconMessageCircle}
+                        onClick={() => logTouch(spotlight.id, "whatsapp", spotlight.displayName)}
+                      >
+                        Log WhatsApp
+                      </DropdownItem>
                       <div className="my-1 h-px bg-slate-100" />
-                      <DropdownItem icon={IconCalendarEvent} onClick={() => handleScheduleViewing(spotlight)}>Schedule Viewing (tomorrow 10am)</DropdownItem>
+                      <DropdownItem
+                        icon={IconCalendarEvent}
+                        onClick={() => handleScheduleViewing(spotlight)}
+                      >
+                        Schedule Viewing (tomorrow 10am)
+                      </DropdownItem>
                     </DropdownMenu>
-                    <Button size="sm" onClick={() => logTouch(spotlight.id, "call", spotlight.displayName)}>Prospecting Update</Button>
+                    <Button
+                      size="sm"
+                      onClick={() => logTouch(spotlight.id, "call", spotlight.displayName)}
+                    >
+                      Prospecting Update
+                    </Button>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="rounded-3xl border border-dashed border-slate-200 bg-white/50 p-8 text-center text-sm text-slate-400">Add a contact to see it spotlighted here.</div>
+              <div className="rounded-3xl border border-dashed border-slate-200 bg-white/50 p-8 text-center text-sm text-slate-400">
+                Add a contact to see it spotlighted here.
+              </div>
             )}
 
             {/* Lead Status Overview */}
@@ -485,20 +714,38 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
               {overview && overview.hotLeads.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {overview.hotLeads.map((lead) => (
-                    <button key={lead.id} onClick={() => openPeekForLead(lead)} className="text-left rounded-2xl p-3.5 bg-[#fafbf8] border border-slate-100 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] transition-shadow">
+                    <button
+                      key={lead.id}
+                      onClick={() => openPeekForLead(lead)}
+                      className="text-left rounded-2xl p-3.5 bg-[#fafbf8] border border-slate-100 hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] transition-shadow"
+                    >
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <span className="flex items-center gap-1.5 min-w-0">
-                          <Avatar fallback={initialsOf(lead.clientName)} className="size-6 text-xxs" />
-                          <span className="text-xs font-medium text-slate-900 truncate">{lead.clientName}</span>
+                          <Avatar
+                            fallback={initialsOf(lead.clientName)}
+                            className="size-6 text-xxs"
+                          />
+                          <span className="text-xs font-medium text-slate-900 truncate">
+                            {lead.clientName}
+                          </span>
                         </span>
                         <IconArrowUpRight size={13} className="text-slate-300 shrink-0" />
                       </div>
-                      <span className={cn("inline-flex rounded-md px-2 py-0.5 text-xxs font-medium uppercase", PRIORITY_PILL[lead.priority])}>{STAGE_LABELS[lead.stage] ?? lead.stage}</span>
+                      <span
+                        className={cn(
+                          "inline-flex rounded-md px-2 py-0.5 text-xxs font-medium uppercase",
+                          PRIORITY_PILL[lead.priority]
+                        )}
+                      >
+                        {STAGE_LABELS[lead.stage] ?? lead.stage}
+                      </span>
                     </button>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-400 text-center py-6">No hot prospects right now.</p>
+                <p className="text-xs text-slate-400 text-center py-6">
+                  No hot prospects right now.
+                </p>
               )}
             </div>
 
@@ -511,21 +758,49 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
                 </div>
                 <div className="flex flex-col gap-2.5 mb-3.5">
                   {[
-                    { label: "New Contacts (mo.)", value: `${overview?.newThisMonth ?? 0}/${contacts.length}`, pct: newClientsPct, color: "#151936" },
-                    { label: "Follow-Ups Due", value: `${overview?.followUpsDueCount ?? 0}/${overview?.openLeadsCount ?? 0}`, pct: followUpsPct, color: "#f3df27" },
+                    {
+                      label: "New Contacts (mo.)",
+                      value: `${overview?.newThisMonth ?? 0}/${contacts.length}`,
+                      pct: newClientsPct,
+                      color: "#151936",
+                    },
+                    {
+                      label: "Follow-Ups Due",
+                      value: `${overview?.followUpsDueCount ?? 0}/${overview?.openLeadsCount ?? 0}`,
+                      pct: followUpsPct,
+                      color: "#f3df27",
+                    },
                   ].map((bar) => (
                     <div key={bar.label}>
-                      <div className="flex justify-between mb-1"><span className="text-caption text-slate-500">{bar.label}</span><span className="text-caption font-mono text-slate-700">{bar.value}</span></div>
-                      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden"><div className="h-full rounded-full" style={{ width: `${bar.pct}%`, background: bar.color }} /></div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-caption text-slate-500">{bar.label}</span>
+                        <span className="text-caption font-mono text-slate-700">{bar.value}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${bar.pct}%`, background: bar.color }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs font-medium text-slate-700 mb-2">Today&apos;s Viewings <span className="font-mono text-caption text-slate-400">{overview?.viewingsToday ?? 0}</span></p>
+                <p className="text-xs font-medium text-slate-700 mb-2">
+                  Today&apos;s Viewings{" "}
+                  <span className="font-mono text-caption text-slate-400">
+                    {overview?.viewingsToday ?? 0}
+                  </span>
+                </p>
                 {overview && overview.todaysViewings.length > 0 ? (
                   <div className="flex flex-col gap-1.5">
                     {overview.todaysViewings.slice(0, 4).map((v) => (
                       <div key={v.id} className="flex items-center gap-2.5 text-xs">
-                        <span className="font-mono text-caption text-slate-400 w-12 shrink-0">{new Date(v.startsAt).toLocaleTimeString("en-KE", { hour: "2-digit", minute: "2-digit" })}</span>
+                        <span className="font-mono text-caption text-slate-400 w-12 shrink-0">
+                          {new Date(v.startsAt).toLocaleTimeString("en-KE", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
                         <span className="text-slate-700 truncate">{v.title}</span>
                       </div>
                     ))}
@@ -540,19 +815,56 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
                 {overview && overview.followUpsDue.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     {overview.followUpsDue.map((lead) => (
-                      <div key={lead.id} className="bg-[#fafbf8] border border-slate-100 rounded-2xl p-3">
+                      <div
+                        key={lead.id}
+                        className="bg-[#fafbf8] border border-slate-100 rounded-2xl p-3"
+                      >
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <span className="flex items-center gap-2 min-w-0">
-                            <Avatar fallback={initialsOf(lead.clientName)} className="size-6 text-xxs" />
-                            <span className="text-xs font-medium text-slate-900 truncate">{lead.clientName}</span>
+                            <Avatar
+                              fallback={initialsOf(lead.clientName)}
+                              className="size-6 text-xxs"
+                            />
+                            <span className="text-xs font-medium text-slate-900 truncate">
+                              {lead.clientName}
+                            </span>
                           </span>
                           <span className="flex gap-1 shrink-0">
-                            {lead.phone && <a href={`tel:${lead.phone}`} onClick={(e) => { e.stopPropagation(); if (lead.contactId) logTouch(lead.contactId, "call", lead.clientName); }} aria-label={`Call ${lead.clientName}`} className="size-6 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center"><IconPhone size={11} /></a>}
-                            <button onClick={() => openPeekForLead(lead)} aria-label="Open" className="size-6 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center"><IconArrowUpRight size={11} /></button>
+                            {lead.phone && (
+                              <a
+                                href={`tel:${lead.phone}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (lead.contactId)
+                                    logTouch(lead.contactId, "call", lead.clientName);
+                                }}
+                                aria-label={`Call ${lead.clientName}`}
+                                className="size-6 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center"
+                              >
+                                <IconPhone size={11} />
+                              </a>
+                            )}
+                            <button
+                              onClick={() => openPeekForLead(lead)}
+                              aria-label="Open"
+                              className="size-6 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center"
+                            >
+                              <IconArrowUpRight size={11} />
+                            </button>
                           </span>
                         </div>
-                        <p className="text-caption text-slate-500 truncate">{lead.propertyInterest}</p>
-                        <p className="text-xxs font-mono text-slate-400 mt-1 flex items-center gap-1"><IconClock size={11} /> {lead.nextActionAt ? new Date(lead.nextActionAt).toLocaleDateString("en-KE", { day: "numeric", month: "short" }) : "—"}</p>
+                        <p className="text-caption text-slate-500 truncate">
+                          {lead.propertyInterest}
+                        </p>
+                        <p className="text-xxs font-mono text-slate-400 mt-1 flex items-center gap-1">
+                          <IconClock size={11} />{" "}
+                          {lead.nextActionAt
+                            ? new Date(lead.nextActionAt).toLocaleDateString("en-KE", {
+                                day: "numeric",
+                                month: "short",
+                              })
+                            : "—"}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -572,12 +884,27 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
               {overview?.upcomingViewing ? (
                 <div className="border border-slate-100 rounded-2xl overflow-hidden bg-[#fafbf8]">
                   <div className="flex items-center justify-between px-3.5 py-2.5">
-                    <span className="inline-flex items-center gap-1.5 text-xxs font-medium uppercase tracking-wide text-[#151936]"><IconCalendarEvent size={13} /> Viewing</span>
-                    <span className="font-mono text-xxs text-slate-400">{new Date(overview.upcomingViewing.startsAt).toLocaleDateString("en-KE", { weekday: "short", day: "numeric", month: "short" })}</span>
+                    <span className="inline-flex items-center gap-1.5 text-xxs font-medium uppercase tracking-wide text-[#151936]">
+                      <IconCalendarEvent size={13} /> Viewing
+                    </span>
+                    <span className="font-mono text-xxs text-slate-400">
+                      {new Date(overview.upcomingViewing.startsAt).toLocaleDateString("en-KE", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </span>
                   </div>
                   <div className="px-3.5 pb-3.5">
-                    <p className="text-xs font-medium text-slate-900 truncate">{overview.upcomingViewing.title}</p>
-                    <p className="text-xxs text-slate-400 mt-0.5">{new Date(overview.upcomingViewing.startsAt).toLocaleTimeString("en-KE", { hour: "2-digit", minute: "2-digit" })}</p>
+                    <p className="text-xs font-medium text-slate-900 truncate">
+                      {overview.upcomingViewing.title}
+                    </p>
+                    <p className="text-xxs text-slate-400 mt-0.5">
+                      {new Date(overview.upcomingViewing.startsAt).toLocaleTimeString("en-KE", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -590,16 +917,24 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
               <div className="flex flex-col gap-1.5">
                 {overview && overview.recentTouches.length > 0 ? (
                   overview.recentTouches.map((t) => (
-                    <button key={t.id} onClick={() => openPeekForTouch(t)} className="text-left border border-slate-50 bg-[#fafbf8] rounded-2xl px-3 py-2 hover:bg-slate-100/60 transition-colors">
+                    <button
+                      key={t.id}
+                      onClick={() => openPeekForTouch(t)}
+                      className="text-left border border-slate-50 bg-[#fafbf8] rounded-2xl px-3 py-2 hover:bg-slate-100/60 transition-colors"
+                    >
                       <p className="text-xs text-slate-700 truncate">{t.summary}</p>
                       <div className="flex items-center justify-between mt-1">
                         <span className="text-xxs text-slate-400">{t.actorName ?? "System"}</span>
-                        <span className="text-xxs font-mono text-slate-400">{relativeTime(t.createdAt)}</span>
+                        <span className="text-xxs font-mono text-slate-400">
+                          {relativeTime(t.createdAt)}
+                        </span>
                       </div>
                     </button>
                   ))
                 ) : (
-                  <p className="text-caption text-slate-400 text-center py-4">No recent touchpoints logged yet.</p>
+                  <p className="text-caption text-slate-400 text-center py-4">
+                    No recent touchpoints logged yet.
+                  </p>
                 )}
               </div>
             </div>
@@ -608,21 +943,50 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
             <div className="bg-white border border-slate-100 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-4.5">
               <p className="text-sm font-medium text-slate-800 mb-2.5">Directory</p>
               <div className="relative mb-2.5">
-                <IconSearch size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input value={directoryQuery} onChange={(e) => setDirectoryQuery(e.target.value)} placeholder="Search contacts…" className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-900 outline-none focus:border-[#151936]/30 focus:ring-2 focus:ring-[#151936]/10 transition-all" />
+                <IconSearch
+                  size={13}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+                <input
+                  value={directoryQuery}
+                  onChange={(e) => setDirectoryQuery(e.target.value)}
+                  placeholder="Search contacts…"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-900 outline-none focus:border-[#151936]/30 focus:ring-2 focus:ring-[#151936]/10 transition-all"
+                />
               </div>
               <div className="flex flex-col gap-0.5 max-h-[420px] overflow-y-auto custom-scrollbar">
-                {directory.length > 0 ? directory.map((c) => (
-                  <button key={c.id} onClick={() => setSpotlightId(c.id)} className={cn("flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left transition-colors", c.id === spotlightId ? "bg-[#f4f6f0]" : "hover:bg-slate-50")}>
-                    <Avatar src={c.avatarUrl ?? undefined} fallback={initialsOf(c.displayName)} className="size-7 text-xxs" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-xs font-medium text-slate-900 truncate">{c.displayName}</span>
-                      <span className="block text-xxs text-slate-400 truncate">{TYPE_META[c.type].label} · {c.status}</span>
-                    </span>
-                    <span className={cn("size-2 rounded-full shrink-0", STATUS_META[c.status].dot)} />
-                  </button>
-                )) : (
-                  <p className="text-xs text-slate-400 text-center py-6">No contacts match your search.</p>
+                {directory.length > 0 ? (
+                  directory.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => setSpotlightId(c.id)}
+                      className={cn(
+                        "flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left transition-colors",
+                        c.id === spotlightId ? "bg-[#f4f6f0]" : "hover:bg-slate-50"
+                      )}
+                    >
+                      <Avatar
+                        src={c.avatarUrl ?? undefined}
+                        fallback={initialsOf(c.displayName)}
+                        className="size-7 text-xxs"
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-xs font-medium text-slate-900 truncate">
+                          {c.displayName}
+                        </span>
+                        <span className="block text-xxs text-slate-400 truncate">
+                          {TYPE_META[c.type].label} · {c.status}
+                        </span>
+                      </span>
+                      <span
+                        className={cn("size-2 rounded-full shrink-0", STATUS_META[c.status].dot)}
+                      />
+                    </button>
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-400 text-center py-6">
+                    No contacts match your search.
+                  </p>
                 )}
               </div>
             </div>
@@ -630,7 +994,11 @@ export function ContactsBoard({ entityId }: { entityId: string }) {
         </div>
       )}
 
-      <ContactProfilePeek data={peekData} onClose={() => setPeekData(null)} onOpenSpotlight={() => openInSpotlight(peekData?.contactId ?? null)} />
+      <ContactProfilePeek
+        data={peekData}
+        onClose={() => setPeekData(null)}
+        onOpenSpotlight={() => openInSpotlight(peekData?.contactId ?? null)}
+      />
 
       <ContactFormModal
         open={formOpen}

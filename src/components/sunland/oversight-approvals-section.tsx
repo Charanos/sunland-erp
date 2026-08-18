@@ -75,7 +75,9 @@ export function ApprovalsSection({
     fetch(`/api/finance/approvals?entityId=${entityId}`)
       .then((r) => r.json())
       .then((d) => setRows(Array.isArray(d.approvals) ? d.approvals : Array.isArray(d) ? d : []))
-      .catch(() => pushToast({ tone: "error", title: "Couldn't load approvals", body: "Try again." }))
+      .catch(() =>
+        pushToast({ tone: "error", title: "Couldn't load approvals", body: "Try again." })
+      )
       .finally(() => setLoading(false));
   }, [entityId, pushToast]);
 
@@ -87,21 +89,29 @@ export function ApprovalsSection({
 
   const filtered = useMemo(() => {
     switch (filter) {
-      case "pending": return rows.filter((r) => r.status === "pending");
-      case "gm": return rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "gm");
-      case "ceo": return rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "ceo");
-      case "decided": return rows.filter((r) => r.status === "approved" || r.status === "rejected");
-      default: return rows;
+      case "pending":
+        return rows.filter((r) => r.status === "pending");
+      case "gm":
+        return rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "gm");
+      case "ceo":
+        return rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "ceo");
+      case "decided":
+        return rows.filter((r) => r.status === "approved" || r.status === "rejected");
+      default:
+        return rows;
     }
   }, [rows, filter]);
 
-  const counts = useMemo(() => ({
-    pending: rows.filter((r) => r.status === "pending").length,
-    gm: rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "gm").length,
-    ceo: rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "ceo").length,
-    decided: rows.filter((r) => r.status === "approved" || r.status === "rejected").length,
-    all: rows.length,
-  }), [rows]);
+  const counts = useMemo(
+    () => ({
+      pending: rows.filter((r) => r.status === "pending").length,
+      gm: rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "gm").length,
+      ceo: rows.filter((r) => r.status === "pending" && r.requiredApproverRole === "ceo").length,
+      decided: rows.filter((r) => r.status === "approved" || r.status === "rejected").length,
+      all: rows.length,
+    }),
+    [rows]
+  );
 
   const selectable = filtered.filter((r) => r.status === "pending");
   const allSelected = selectable.length > 0 && selectable.every((r) => selected.has(r.id));
@@ -128,7 +138,11 @@ export function ApprovalsSection({
       load();
       onChanged();
     } catch (err) {
-      pushToast({ tone: "error", title: "Couldn't record decision", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Couldn't record decision",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setBusy(false);
     }
@@ -151,13 +165,20 @@ export function ApprovalsSection({
       pushToast({
         tone: bad > 0 ? "warning" : "success",
         title: bad > 0 ? `${ok} approved, ${bad} could not be` : `${ok} approved`,
-        body: bad > 0 ? (data.failed[0]?.reason ?? "Some items were already decided.") : "The queue has been updated.",
+        body:
+          bad > 0
+            ? (data.failed[0]?.reason ?? "Some items were already decided.")
+            : "The queue has been updated.",
       });
       setSelected(new Set());
       load();
       onChanged();
     } catch (err) {
-      pushToast({ tone: "error", title: "Bulk approval failed", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Bulk approval failed",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setBusy(false);
       setConfirmBulk(false);
@@ -173,7 +194,8 @@ export function ApprovalsSection({
         </span>
         <div className="flex-1 min-w-[200px]">
           <p className="text-sm font-medium text-slate-900">
-            CEO approval threshold · <span className="font-mono font-medium">{formatCompactKES(threshold)}</span>
+            CEO approval threshold ·{" "}
+            <span className="font-mono font-medium">{formatCompactKES(threshold)}</span>
           </p>
           <p className="text-xs text-slate-400 mt-0.5">
             Anything above this needs your personal sign-off.{" "}
@@ -193,27 +215,38 @@ export function ApprovalsSection({
       {/* Toolbar */}
       <div className="flex items-center gap-2.5 flex-wrap">
         <div className="flex gap-1.5 flex-wrap">
-          {([
-            ["pending", "Pending", counts.pending],
-            ["gm", "GM tier", counts.gm],
-            ["ceo", "CEO tier", counts.ceo],
-            ["decided", "Decided", counts.decided],
-            ["all", "All", counts.all],
-          ] as Array<[Filter, string, number]>).map(([key, label, count]) => (
+          {(
+            [
+              ["pending", "Pending", counts.pending],
+              ["gm", "GM tier", counts.gm],
+              ["ceo", "CEO tier", counts.ceo],
+              ["decided", "Decided", counts.decided],
+              ["all", "All", counts.all],
+            ] as Array<[Filter, string, number]>
+          ).map(([key, label, count]) => (
             <button
               key={key}
-              onClick={() => { setFilter(key); setSelected(new Set()); }}
+              onClick={() => {
+                setFilter(key);
+                setSelected(new Set());
+              }}
               aria-pressed={filter === key}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                filter === key ? "bg-[#151936] text-white border-[#151936]" : "bg-white text-slate-500 border-slate-200 hover:border-slate-300",
+                filter === key
+                  ? "bg-[#151936] text-white border-[#151936]"
+                  : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
               )}
             >
               {label}
-              <span className={cn(
-                "font-mono text-xxs rounded-full px-1.5",
-                filter === key ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-500",
-              )}>{count}</span>
+              <span
+                className={cn(
+                  "font-mono text-xxs rounded-full px-1.5",
+                  filter === key ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-500"
+                )}
+              >
+                {count}
+              </span>
             </button>
           ))}
         </div>
@@ -221,13 +254,24 @@ export function ApprovalsSection({
         {selectable.length > 0 && (
           <div className="ml-auto flex items-center gap-2.5">
             <label className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 cursor-pointer">
-              <input type="checkbox" checked={allSelected} onChange={toggleAll} className="size-4 rounded accent-[#151936]" />
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={toggleAll}
+                className="size-4 rounded accent-[#151936]"
+              />
               Select all
             </label>
-            <Button size="sm" onClick={() => setConfirmBulk(true)} disabled={selected.size === 0 || busy}>
+            <Button
+              size="sm"
+              onClick={() => setConfirmBulk(true)}
+              disabled={selected.size === 0 || busy}
+            >
               <IconChecks size={14} /> Approve
               {selected.size > 0 && (
-                <span className="ml-1 font-mono text-xxs bg-white/20 rounded-full px-1.5">{selected.size}</span>
+                <span className="ml-1 font-mono text-xxs bg-white/20 rounded-full px-1.5">
+                  {selected.size}
+                </span>
               )}
             </Button>
           </div>
@@ -237,7 +281,9 @@ export function ApprovalsSection({
       {/* Queue */}
       {loading ? (
         <div className="flex flex-col gap-2">
-          {Array.from({ length: 4 }).map((_, i) => <SkeletonBlock key={i} className="h-24 w-full rounded-2xl" />)}
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonBlock key={i} className="h-24 w-full rounded-2xl" />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center gap-2.5 py-14 text-center bg-white border border-slate-100 rounded-3xl">
@@ -256,17 +302,23 @@ export function ApprovalsSection({
             const isPending = row.status === "pending";
 
             return (
-              <div key={row.id} className="bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden">
+              <div
+                key={row.id}
+                className="bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden"
+              >
                 <div className="flex items-start gap-3 p-4">
                   {isPending && (
                     <input
                       type="checkbox"
                       checked={selected.has(row.id)}
-                      onChange={() => setSelected((prev) => {
-                        const next = new Set(prev);
-                        if (next.has(row.id)) next.delete(row.id); else next.add(row.id);
-                        return next;
-                      })}
+                      onChange={() =>
+                        setSelected((prev) => {
+                          const next = new Set(prev);
+                          if (next.has(row.id)) next.delete(row.id);
+                          else next.add(row.id);
+                          return next;
+                        })
+                      }
                       aria-label={`Select ${row.requestType}`}
                       className="size-4 rounded accent-[#151936] mt-1 shrink-0"
                     />
@@ -274,9 +326,18 @@ export function ApprovalsSection({
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-xxs text-slate-400">{row.id.slice(0, 8).toUpperCase()}</span>
-                      <span className="text-xs text-slate-500 capitalize">{row.requestType.replace(/_/g, " ")}</span>
-                      <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xxs font-medium", meta.pill)}>
+                      <span className="font-mono text-xxs text-slate-400">
+                        {row.id.slice(0, 8).toUpperCase()}
+                      </span>
+                      <span className="text-xs text-slate-500 capitalize">
+                        {row.requestType.replace(/_/g, " ")}
+                      </span>
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xxs font-medium",
+                          meta.pill
+                        )}
+                      >
                         <span className={cn("size-1.5 rounded-full", meta.dot)} />
                         {meta.label}
                       </span>
@@ -288,14 +349,22 @@ export function ApprovalsSection({
                     </div>
 
                     <p className="text-sm font-medium text-slate-900 mt-1.5 capitalize">
-                      {row.requestType.replace(/_/g, " ")} · {APPROVER_ROLE_LABEL[row.requiredApproverRole] ?? row.requiredApproverRole}
+                      {row.requestType.replace(/_/g, " ")} ·{" "}
+                      {APPROVER_ROLE_LABEL[row.requiredApproverRole] ?? row.requiredApproverRole}
                     </p>
 
                     <div className="flex items-center gap-3 mt-1.5 flex-wrap text-xs text-slate-400">
-                      <span>Requested by <span className="text-slate-600">{row.requestedByName}</span></span>
-                      <span className="inline-flex items-center gap-1"><IconClock size={12} /> {ageLabel(row.requestedAt)}</span>
+                      <span>
+                        Requested by <span className="text-slate-600">{row.requestedByName}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <IconClock size={12} /> {ageLabel(row.requestedAt)}
+                      </span>
                       {href && (
-                        <Link href={href} className="inline-flex items-center gap-1 text-[#122a20] hover:underline">
+                        <Link
+                          href={href}
+                          className="inline-flex items-center gap-1 text-[#122a20] hover:underline"
+                        >
                           <IconLink size={12} /> Open record
                         </Link>
                       )}
@@ -320,9 +389,20 @@ export function ApprovalsSection({
                 {isOpen && (
                   <div className="px-4 pb-3 -mt-1">
                     <div className="rounded-xl bg-[#fafbf8] border border-slate-100 px-3.5 py-3 text-xs text-slate-600 flex flex-col gap-1">
-                      <p><span className="text-slate-400">Related record:</span> {row.relatedTable.replace(/_/g, " ")} · <span className="font-mono">{row.relatedId.slice(0, 8)}</span></p>
-                      <p><span className="text-slate-400">Requested:</span> {new Date(row.requestedAt).toLocaleString("en-KE")}</p>
-                      {row.decisionNotes && <p><span className="text-slate-400">Notes:</span> {row.decisionNotes}</p>}
+                      <p>
+                        <span className="text-slate-400">Related record:</span>{" "}
+                        {row.relatedTable.replace(/_/g, " ")} ·{" "}
+                        <span className="font-mono">{row.relatedId.slice(0, 8)}</span>
+                      </p>
+                      <p>
+                        <span className="text-slate-400">Requested:</span>{" "}
+                        {new Date(row.requestedAt).toLocaleString("en-KE")}
+                      </p>
+                      {row.decisionNotes && (
+                        <p>
+                          <span className="text-slate-400">Notes:</span> {row.decisionNotes}
+                        </p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -373,7 +453,10 @@ export function ApprovalsSection({
           row={rejectTarget}
           busy={busy}
           onClose={() => setRejectTarget(null)}
-          onSubmit={(notes) => { decide(rejectTarget, "rejected", notes); setRejectTarget(null); }}
+          onSubmit={(notes) => {
+            decide(rejectTarget, "rejected", notes);
+            setRejectTarget(null);
+          }}
         />
       )}
 
@@ -382,7 +465,11 @@ export function ApprovalsSection({
           row={delegateTarget}
           entityId={entityId}
           onClose={() => setDelegateTarget(null)}
-          onDone={() => { setDelegateTarget(null); load(); onChanged(); }}
+          onDone={() => {
+            setDelegateTarget(null);
+            load();
+            onChanged();
+          }}
         />
       )}
     </div>
@@ -390,7 +477,10 @@ export function ApprovalsSection({
 }
 
 function RejectModal({
-  row, busy, onClose, onSubmit,
+  row,
+  busy,
+  onClose,
+  onSubmit,
 }: {
   row: ApprovalRow;
   busy: boolean;
@@ -399,7 +489,13 @@ function RejectModal({
 }) {
   const [notes, setNotes] = useState("");
   return (
-    <Modal open onClose={onClose} size="sm" title="Reject this request" description="A reason is recorded on the audit trail and shown to the requester.">
+    <Modal
+      open
+      onClose={onClose}
+      size="sm"
+      title="Reject this request"
+      description="A reason is recorded on the audit trail and shown to the requester."
+    >
       <div className="flex flex-col gap-3">
         <div>
           <label className="label-caps text-slate-400 mb-1.5 block">Reason</label>
@@ -412,8 +508,16 @@ function RejectModal({
           />
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
-          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>Cancel</Button>
-          <Button size="sm" className="text-rose-600" variant="secondary" onClick={() => onSubmit(notes.trim())} disabled={busy || !notes.trim()}>
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>
+            Cancel
+          </Button>
+          <Button
+            size="sm"
+            className="text-rose-600"
+            variant="secondary"
+            onClick={() => onSubmit(notes.trim())}
+            disabled={busy || !notes.trim()}
+          >
             {busy ? "Rejecting…" : "Reject request"}
           </Button>
         </div>
@@ -423,7 +527,10 @@ function RejectModal({
 }
 
 function DelegateModal({
-  row, entityId, onClose, onDone,
+  row,
+  entityId,
+  onClose,
+  onDone,
 }: {
   row: ApprovalRow;
   entityId: string;
@@ -452,7 +559,11 @@ function DelegateModal({
       });
       onDone();
     } catch (err) {
-      pushToast({ tone: "error", title: "Couldn't delegate", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Couldn't delegate",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setBusy(false);
     }
@@ -479,9 +590,13 @@ function DelegateModal({
                   aria-pressed={toRole === r}
                   className={cn(
                     "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                    toRole === r ? "bg-[#151936] text-white border-[#151936]" : "bg-white text-slate-600 border-slate-200 hover:border-slate-300",
+                    toRole === r
+                      ? "bg-[#151936] text-white border-[#151936]"
+                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
                   )}
-                >{APPROVER_ROLE_LABEL[r]}</button>
+                >
+                  {APPROVER_ROLE_LABEL[r]}
+                </button>
               ))}
           </div>
         </div>
@@ -495,8 +610,12 @@ function DelegateModal({
           />
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
-          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>Cancel</Button>
-          <Button size="sm" onClick={submit} disabled={busy || !note.trim()}>{busy ? "Delegating…" : "Delegate"}</Button>
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>
+            Cancel
+          </Button>
+          <Button size="sm" onClick={submit} disabled={busy || !note.trim()}>
+            {busy ? "Delegating…" : "Delegate"}
+          </Button>
         </div>
       </div>
     </Modal>

@@ -12,7 +12,13 @@ import {
   IconShieldLock,
   IconUser,
 } from "@tabler/icons-react";
-import { Button, DropdownItem, DropdownMenu, Modal, SkeletonBlock } from "@/components/ui/erp-primitives";
+import {
+  Button,
+  DropdownItem,
+  DropdownMenu,
+  Modal,
+  SkeletonBlock,
+} from "@/components/ui/erp-primitives";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/components/ui/toast-provider";
 import { cn } from "@/lib/utils/cn";
@@ -56,10 +62,20 @@ function ageLabel(iso: string): string {
   return days === 1 ? "1 day" : `${days} days`;
 }
 
-export function ComplaintsSection({ entityId, onChanged }: { entityId: string; onChanged: () => void }) {
+export function ComplaintsSection({
+  entityId,
+  onChanged,
+}: {
+  entityId: string;
+  onChanged: () => void;
+}) {
   const { pushToast } = useToast();
   const [tab, setTab] = useState<Tab>("my-queue");
-  const [rows, setRows] = useState<Record<Tab, ComplaintRow[]>>({ "my-queue": [], escalated: [], resolved: [] });
+  const [rows, setRows] = useState<Record<Tab, ComplaintRow[]>>({
+    "my-queue": [],
+    escalated: [],
+    resolved: [],
+  });
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [escalateTarget, setEscalateTarget] = useState<ComplaintRow | null>(null);
@@ -77,8 +93,8 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
         fetch(`/api/hr/complaints?entityId=${entityId}&tab=${t.key}`)
           .then((r) => r.json())
           .then((d) => [t.key, Array.isArray(d.complaints) ? d.complaints : []] as const)
-          .catch(() => [t.key, []] as const),
-      ),
+          .catch(() => [t.key, []] as const)
+      )
     )
       .then((pairs) => setRows(Object.fromEntries(pairs) as Record<Tab, ComplaintRow[]>))
       .finally(() => setLoading(false));
@@ -92,20 +108,47 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
     const q = query.trim().toLowerCase();
     const list = rows[tab] ?? [];
     if (!q) return list;
-    return list.filter((c) => [c.subject, c.category, c.id].some((v) => (v ?? "").toLowerCase().includes(q)));
+    return list.filter((c) =>
+      [c.subject, c.category, c.id].some((v) => (v ?? "").toLowerCase().includes(q))
+    );
   }, [rows, tab, query]);
 
   const stats = useMemo(() => {
     const all = [...rows["my-queue"], ...rows.escalated, ...rows.resolved];
     return [
-      { label: "Open", value: rows["my-queue"].length, icon: IconAlertTriangle, tone: "text-amber-600 bg-amber-50" },
-      { label: "Escalated", value: rows.escalated.length, icon: IconFlame, tone: "text-rose-600 bg-rose-50" },
-      { label: "Resolved", value: rows.resolved.length, icon: IconCircleCheck, tone: "text-emerald-600 bg-emerald-50" },
-      { label: "Total cases", value: all.length, icon: IconShieldLock, tone: "text-slate-600 bg-slate-100" },
+      {
+        label: "Open",
+        value: rows["my-queue"].length,
+        icon: IconAlertTriangle,
+        tone: "text-amber-600 bg-amber-50",
+      },
+      {
+        label: "Escalated",
+        value: rows.escalated.length,
+        icon: IconFlame,
+        tone: "text-rose-600 bg-rose-50",
+      },
+      {
+        label: "Resolved",
+        value: rows.resolved.length,
+        icon: IconCircleCheck,
+        tone: "text-emerald-600 bg-emerald-50",
+      },
+      {
+        label: "Total cases",
+        value: all.length,
+        icon: IconShieldLock,
+        tone: "text-slate-600 bg-slate-100",
+      },
     ];
   }, [rows]);
 
-  const act = async (row: ComplaintRow, path: string, body: Record<string, unknown>, successTitle: string) => {
+  const act = async (
+    row: ComplaintRow,
+    path: string,
+    body: Record<string, unknown>,
+    successTitle: string
+  ) => {
     try {
       const res = await fetch(`/api/hr/complaints/${row.id}/${path}`, {
         method: "POST",
@@ -118,7 +161,11 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
       load();
       onChanged();
     } catch (err) {
-      pushToast({ tone: "error", title: "Couldn't complete", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Couldn't complete",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -130,16 +177,21 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
           <IconShieldLock size={18} />
         </span>
         <p className="text-xs text-slate-500 leading-relaxed">
-          Confidential. You only see cases currently routed to your tier, and anonymous filers stay masked —
-          enforced in the service, not in this view.
+          Confidential. You only see cases currently routed to your tier, and anonymous filers stay
+          masked — enforced in the service, not in this view.
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
         {stats.map((s) => (
-          <div key={s.label} className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-            <span className={cn("size-9 rounded-xl flex items-center justify-center shrink-0", s.tone)}>
+          <div
+            key={s.label}
+            className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
+          >
+            <span
+              className={cn("size-9 rounded-xl flex items-center justify-center shrink-0", s.tone)}
+            >
               <s.icon size={18} />
             </span>
             <div>
@@ -160,19 +212,28 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
               aria-pressed={tab === t.key}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                tab === t.key ? "bg-[#151936] text-white border-[#151936]" : "bg-white text-slate-500 border-slate-200 hover:border-slate-300",
+                tab === t.key
+                  ? "bg-[#151936] text-white border-[#151936]"
+                  : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
               )}
             >
               {t.label}
-              <span className={cn(
-                "font-mono text-xxs rounded-full px-1.5",
-                tab === t.key ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-500",
-              )}>{rows[t.key].length}</span>
+              <span
+                className={cn(
+                  "font-mono text-xxs rounded-full px-1.5",
+                  tab === t.key ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-500"
+                )}
+              >
+                {rows[t.key].length}
+              </span>
             </button>
           ))}
         </div>
         <div className="relative ml-auto w-full sm:w-64">
-          <IconSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <IconSearch
+            size={15}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -186,14 +247,18 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
       {/* List */}
       {loading ? (
         <div className="flex flex-col gap-2">
-          {Array.from({ length: 4 }).map((_, i) => <SkeletonBlock key={i} className="h-20 w-full rounded-2xl" />)}
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonBlock key={i} className="h-20 w-full rounded-2xl" />
+          ))}
         </div>
       ) : visible.length === 0 ? (
         <div className="bg-white border border-slate-100 rounded-3xl p-8">
           <EmptyState
             icon={IconCircleCheck}
             title={query ? "No complaints match" : "Nothing in this queue"}
-            description={query ? "Try a different search term." : "Cases routed to your tier will appear here."}
+            description={
+              query ? "Try a different search term." : "Cases routed to your tier will appear here."
+            }
             action={query ? "Clear search" : "Refresh"}
             onClick={() => (query ? setQuery("") : load())}
           />
@@ -204,13 +269,23 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
             const cat = COMPLAINT_CATEGORY_META[c.category] ?? COMPLAINT_CATEGORY_META.other;
             const st = COMPLAINT_STATUS_META[c.status] ?? COMPLAINT_STATUS_META.open;
             return (
-              <div key={c.id} className="flex items-start gap-3 bg-white border border-slate-100 rounded-2xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div
+                key={c.id}
+                className="flex items-start gap-3 bg-white border border-slate-100 rounded-2xl p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
+              >
                 <span className={cn("w-1 self-stretch rounded-full shrink-0", st.dot)} />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xxs text-slate-400">CMP-{c.id.slice(0, 6).toUpperCase()}</span>
-                    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-xxs font-medium uppercase tracking-wide", cat.pill)}>
+                    <span className="font-mono text-xxs text-slate-400">
+                      CMP-{c.id.slice(0, 6).toUpperCase()}
+                    </span>
+                    <span
+                      className={cn(
+                        "inline-flex rounded-full px-2 py-0.5 text-xxs font-medium uppercase tracking-wide",
+                        cat.pill
+                      )}
+                    >
                       {cat.label}
                     </span>
                     {c.status === "escalated" && (
@@ -224,17 +299,26 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
 
                   <div className="flex items-center gap-3 mt-1.5 flex-wrap text-xs text-slate-400">
                     <span className="inline-flex items-center gap-1">
-                      <IconUser size={12} /> {c.isAnonymous || !c.filedById ? "Anonymous filer" : "Named filer"}
+                      <IconUser size={12} />{" "}
+                      {c.isAnonymous || !c.filedById ? "Anonymous filer" : "Named filer"}
                     </span>
                     <span className="inline-flex items-center gap-1">
-                      <IconBuildingEstate size={12} /> {COMPLAINT_OWNER_LABEL[c.currentOwnerRole] ?? c.currentOwnerRole}
+                      <IconBuildingEstate size={12} />{" "}
+                      {COMPLAINT_OWNER_LABEL[c.currentOwnerRole] ?? c.currentOwnerRole}
                     </span>
-                    <span className="inline-flex items-center gap-1"><IconClock size={12} /> {ageLabel(c.createdAt)}</span>
+                    <span className="inline-flex items-center gap-1">
+                      <IconClock size={12} /> {ageLabel(c.createdAt)}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
-                  <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xxs font-medium", st.pill)}>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xxs font-medium",
+                      st.pill
+                    )}
+                  >
                     <span className={cn("size-1.5 rounded-full", st.dot)} />
                     {st.label}
                   </span>
@@ -249,7 +333,9 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
                       }
                     >
                       {c.status === "open" && (
-                        <DropdownItem onClick={() => setEscalateTarget(c)}>Escalate case</DropdownItem>
+                        <DropdownItem onClick={() => setEscalateTarget(c)}>
+                          Escalate case
+                        </DropdownItem>
                       )}
                       <DropdownItem onClick={() => setResolveTarget(c)}>Resolve case</DropdownItem>
                     </DropdownMenu>
@@ -293,7 +379,12 @@ export function ComplaintsSection({ entityId, onChanged }: { entityId: string; o
 }
 
 function ReasonModal({
-  title, description, label, confirmLabel, onClose, onSubmit,
+  title,
+  description,
+  label,
+  confirmLabel,
+  onClose,
+  onSubmit,
 }: {
   title: string;
   description: string;
@@ -316,8 +407,12 @@ function ReasonModal({
           />
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
-          <Button variant="secondary" size="sm" onClick={onClose}>Cancel</Button>
-          <Button size="sm" onClick={() => onSubmit(value.trim())} disabled={!value.trim()}>{confirmLabel}</Button>
+          <Button variant="secondary" size="sm" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button size="sm" onClick={() => onSubmit(value.trim())} disabled={!value.trim()}>
+            {confirmLabel}
+          </Button>
         </div>
       </div>
     </Modal>

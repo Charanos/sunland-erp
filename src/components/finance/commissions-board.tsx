@@ -21,7 +21,12 @@ import { useToast } from "@/components/ui/toast-provider";
 import { Modal } from "@/components/ui/modal";
 import { Drawer } from "@/components/ui/drawer";
 import { FinanceModuleNav } from "@/components/finance/finance-module-nav";
-import { BoardHeader, BoardPanel, Button, PaginationControls } from "@/components/ui/erp-primitives";
+import {
+  BoardHeader,
+  BoardPanel,
+  Button,
+  PaginationControls,
+} from "@/components/ui/erp-primitives";
 import { cn } from "@/lib/utils/cn";
 import { formatCompactKES } from "@/lib/utils/format";
 
@@ -33,7 +38,12 @@ interface AgentDeal {
   propertyName: string;
   agentName: string;
   agentPin: string;
-  serviceCategory: "Property Management" | "Property Sales & Letting" | "Project Management" | "Feasibility Studies" | "Property Valuation";
+  serviceCategory:
+    | "Property Management"
+    | "Property Sales & Letting"
+    | "Project Management"
+    | "Feasibility Studies"
+    | "Property Valuation";
   dealValue: number;
   commissionRate: number; // e.g. 3 for 3%
   grossPayout: number;
@@ -100,8 +110,8 @@ const INITIAL_DEALS: AgentDeal[] = [
     activityLog: [
       "Deal registered on pipeline close by Sarah Wambui · 2026-06-20",
       "Commission rate verified at standard 3.0% Sales rate",
-      "Approved and verified for payroll disbursement by Finance Head Dennis Munge · 2026-06-21"
-    ]
+      "Approved and verified for payroll disbursement by Finance Head Dennis Munge · 2026-06-21",
+    ],
   },
   {
     id: "deal-02",
@@ -120,8 +130,8 @@ const INITIAL_DEALS: AgentDeal[] = [
     activityLog: [
       "Lease finalized and checked by James Mwangi · 2026-06-18",
       "Standard 10.0% Lettings commission mapped",
-      "Approved by Finance Head Dennis Munge · 2026-06-19"
-    ]
+      "Approved by Finance Head Dennis Munge · 2026-06-19",
+    ],
   },
   {
     id: "deal-03",
@@ -137,12 +147,13 @@ const INITIAL_DEALS: AgentDeal[] = [
     netPayout: 1012500,
     status: "Pending",
     date: "2026-06-15",
-    justificationNotes: "Appraisal rate elevated to 2.5% due to premium field survey costs and Nakuru municipal access challenges approved in core mandate.",
+    justificationNotes:
+      "Appraisal rate elevated to 2.5% due to premium field survey costs and Nakuru municipal access challenges approved in core mandate.",
     activityLog: [
       "Valuation report completed by Grace Nyambura · 2026-06-15",
       "Rate deviation detected: 2.5% vs standard 2.0% for Valuations. Justification noted.",
-      "Awaiting CEO Paul Amos override/sign-off due to policy threshold deviation."
-    ]
+      "Awaiting CEO Paul Amos override/sign-off due to policy threshold deviation.",
+    ],
   },
   {
     id: "deal-04",
@@ -160,9 +171,9 @@ const INITIAL_DEALS: AgentDeal[] = [
     date: "2026-06-11",
     activityLog: [
       "Feasibility survey draft completed by Albert Omondi · 2026-06-11",
-      "Auto-saved as draft payout request"
-    ]
-  }
+      "Auto-saved as draft payout request",
+    ],
+  },
 ];
 
 const INITIAL_WHT: WhtFiling[] = [
@@ -172,7 +183,7 @@ const INITIAL_WHT: WhtFiling[] = [
     period: "June 2026",
     accruedWht: 379500,
     status: "Draft",
-    activityLog: ["Aggrued from approved agent deals in June period · 2026-06-20"]
+    activityLog: ["Aggrued from approved agent deals in June period · 2026-06-20"],
   },
   {
     id: "wht-02",
@@ -184,9 +195,9 @@ const INITIAL_WHT: WhtFiling[] = [
     status: "Submitted",
     activityLog: [
       "Accrued from approved agent deals in May period · 2026-05-28",
-      "Filing submitted to KRA portal and NCBA bank remittance cleared · 2026-06-10"
-    ]
-  }
+      "Filing submitted to KRA portal and NCBA bank remittance cleared · 2026-06-10",
+    ],
+  },
 ];
 
 const INITIAL_LEVIES: LevyRecord[] = [
@@ -200,13 +211,48 @@ const INITIAL_LEVIES: LevyRecord[] = [
     totalLevy: 84000,
     status: "Draft",
     employees: [
-      { employeeName: "Paul Amos", kraPin: "A001029384C", grossPay: 500000, employeeShare: 7500, employerShare: 7500, totalContribution: 15000 },
-      { employeeName: "Dennis Munge", kraPin: "A008273645N", grossPay: 300000, employeeShare: 4500, employerShare: 4500, totalContribution: 9000 },
-      { employeeName: "Cody Fisher", kraPin: "A002938475L", grossPay: 280000, employeeShare: 4200, employerShare: 4200, totalContribution: 8400 },
-      { employeeName: "Sarah Wambui", kraPin: "A018273645N", grossPay: 255000, employeeShare: 3825, employerShare: 3825, totalContribution: 7650 },
-      { employeeName: "James Mwangi", kraPin: "A039485761K", grossPay: 120000, employeeShare: 1800, employerShare: 1800, totalContribution: 3600 }
+      {
+        employeeName: "Paul Amos",
+        kraPin: "A001029384C",
+        grossPay: 500000,
+        employeeShare: 7500,
+        employerShare: 7500,
+        totalContribution: 15000,
+      },
+      {
+        employeeName: "Dennis Munge",
+        kraPin: "A008273645N",
+        grossPay: 300000,
+        employeeShare: 4500,
+        employerShare: 4500,
+        totalContribution: 9000,
+      },
+      {
+        employeeName: "Cody Fisher",
+        kraPin: "A002938475L",
+        grossPay: 280000,
+        employeeShare: 4200,
+        employerShare: 4200,
+        totalContribution: 8400,
+      },
+      {
+        employeeName: "Sarah Wambui",
+        kraPin: "A018273645N",
+        grossPay: 255000,
+        employeeShare: 3825,
+        employerShare: 3825,
+        totalContribution: 7650,
+      },
+      {
+        employeeName: "James Mwangi",
+        kraPin: "A039485761K",
+        grossPay: 120000,
+        employeeShare: 1800,
+        employerShare: 1800,
+        totalContribution: 3600,
+      },
     ],
-    activityLog: ["Imported from payroll run PAY-2026-06 · 2026-06-20"]
+    activityLog: ["Imported from payroll run PAY-2026-06 · 2026-06-20"],
   },
   {
     id: "levy-02",
@@ -220,13 +266,44 @@ const INITIAL_LEVIES: LevyRecord[] = [
     paymentRef: "TX-AHL-55928-KRA",
     paymentDate: "2026-06-15",
     employees: [
-      { employeeName: "Paul Amos", kraPin: "A001029384C", grossPay: 500000, employeeShare: 7500, employerShare: 7500, totalContribution: 15000 },
-      { employeeName: "Dennis Munge", kraPin: "A008273645N", grossPay: 280000, employeeShare: 4200, employerShare: 4200, totalContribution: 8400 },
-      { employeeName: "Cody Fisher", kraPin: "A002938475L", grossPay: 280000, employeeShare: 4200, employerShare: 4200, totalContribution: 8400 },
-      { employeeName: "Sarah Wambui", kraPin: "A018273645N", grossPay: 230000, employeeShare: 3450, employerShare: 3450, totalContribution: 6900 }
+      {
+        employeeName: "Paul Amos",
+        kraPin: "A001029384C",
+        grossPay: 500000,
+        employeeShare: 7500,
+        employerShare: 7500,
+        totalContribution: 15000,
+      },
+      {
+        employeeName: "Dennis Munge",
+        kraPin: "A008273645N",
+        grossPay: 280000,
+        employeeShare: 4200,
+        employerShare: 4200,
+        totalContribution: 8400,
+      },
+      {
+        employeeName: "Cody Fisher",
+        kraPin: "A002938475L",
+        grossPay: 280000,
+        employeeShare: 4200,
+        employerShare: 4200,
+        totalContribution: 8400,
+      },
+      {
+        employeeName: "Sarah Wambui",
+        kraPin: "A018273645N",
+        grossPay: 230000,
+        employeeShare: 3450,
+        employerShare: 3450,
+        totalContribution: 6900,
+      },
     ],
-    activityLog: ["Imported from payroll run PAY-2026-05 · 2026-05-28", "Remitted to KRA Affordable Housing Fund · 2026-06-15"]
-  }
+    activityLog: [
+      "Imported from payroll run PAY-2026-05 · 2026-05-28",
+      "Remitted to KRA Affordable Housing Fund · 2026-06-15",
+    ],
+  },
 ];
 
 const ROWS_PER_PAGE = 5;
@@ -237,14 +314,14 @@ const SERVICE_STANDARD_RATES: Record<AgentDeal["serviceCategory"], number> = {
   "Property Sales & Letting": 3.0,
   "Project Management": 5.0,
   "Feasibility Studies": 5.0,
-  "Property Valuation": 2.0
+  "Property Valuation": 2.0,
 };
 
 const AGENT_PINS: Record<string, string> = {
   "Sarah Wambui": "A018273645N",
   "James Mwangi": "A039485761K",
   "Grace Nyambura": "A072819304P",
-  "Albert Omondi": "A058192038Q"
+  "Albert Omondi": "A058192038Q",
 };
 
 const downloadCsv = (filename: string, csvContent: string) => {
@@ -262,9 +339,9 @@ const downloadCsv = (filename: string, csvContent: string) => {
 export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
   const { pushToast } = useToast();
   const mounted = useSyncExternalStore(
-    () => () => { },
+    () => () => {},
     () => true,
-    () => false,
+    () => false
   );
   const [currentRole, setCurrentRole] = useState<string>("ceo");
 
@@ -280,11 +357,26 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
   const getDealsForPeriod = (period: string) => {
     const parts = period.split(" ");
     if (parts.length < 2) return [];
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
     const monthNum = String(monthNames.indexOf(parts[0]) + 1).padStart(2, "0");
     const year = parts[1];
     const prefix = `${year}-${monthNum}`;
-    return deals.filter((d) => d.date.startsWith(prefix) && (d.status === "Approved" || d.status === "Disbursed"));
+    return deals.filter(
+      (d) => d.date.startsWith(prefix) && (d.status === "Approved" || d.status === "Disbursed")
+    );
   };
 
   // Modals & drawers state
@@ -299,7 +391,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
   // Form State - Register Deal
   const [newPropName, setNewPropName] = useState("");
   const [newAgentName, setNewAgentName] = useState("Sarah Wambui");
-  const [newCategory, setNewCategory] = useState<AgentDeal["serviceCategory"]>("Property Sales & Letting");
+  const [newCategory, setNewCategory] = useState<AgentDeal["serviceCategory"]>(
+    "Property Sales & Letting"
+  );
   const [newDealValue, setNewDealValue] = useState(5000000);
   const [newCommRate, setNewCommRate] = useState(3.0);
   const [newJustification, setNewJustification] = useState("");
@@ -315,7 +409,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           setCurrentRole(data.user.role);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   const formatMoney = (val: number) => formatCompactKES(val);
@@ -339,7 +433,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
       pushToast({
         tone: "error",
         title: "Justification Required",
-        body: `A rate of ${newCommRate}% deviates from the standard ${SERVICE_STANDARD_RATES[newCategory]}% rate for ${newCategory}. You must supply a justification note.`
+        body: `A rate of ${newCommRate}% deviates from the standard ${SERVICE_STANDARD_RATES[newCategory]}% rate for ${newCategory}. You must supply a justification note.`,
       });
       return;
     }
@@ -348,7 +442,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     const gross = (newDealValue * newCommRate) / 100;
-    const wht = gross * 0.10; // 10% Withholding Tax
+    const wht = gross * 0.1; // 10% Withholding Tax
     const net = gross - wht;
 
     const newDeal: AgentDeal = {
@@ -370,8 +464,8 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
         `Deal registered by Finance Officer · ${new Date().toISOString().split("T")[0]}`,
         isRateDeviating
           ? `Rate deviation detected: ${newCommRate}% vs standard ${SERVICE_STANDARD_RATES[newCategory]}%. Routed to CEO validation.`
-          : `Standard commission of ${newCommRate}% approved automatically.`
-      ]
+          : `Standard commission of ${newCommRate}% approved automatically.`,
+      ],
     };
 
     setDeals([newDeal, ...deals]);
@@ -390,7 +484,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
       title: isRateDeviating ? "CEO Validation Gated" : "Deal Commission Accrued",
       body: isRateDeviating
         ? `Deal ${newDeal.dealCode} registered. Payout rates deviation requires CEO override.`
-        : `Deal ${newDeal.dealCode} registered. Commission payout of ${formatMoney(gross)} accrued.`
+        : `Deal ${newDeal.dealCode} registered. Commission payout of ${formatMoney(gross)} accrued.`,
     });
   };
 
@@ -401,7 +495,10 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           return {
             ...d,
             status: "Approved",
-            activityLog: [`Commission rate verified and approved by CEO Paul Amos · ${new Date().toISOString().split("T")[0]}`, ...d.activityLog]
+            activityLog: [
+              `Commission rate verified and approved by CEO Paul Amos · ${new Date().toISOString().split("T")[0]}`,
+              ...d.activityLog,
+            ],
           };
         }
         return d;
@@ -411,7 +508,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Deal Approved",
-      body: `Commission payout authorized for deal ${deal.dealCode}.`
+      body: `Commission payout authorized for deal ${deal.dealCode}.`,
     });
   };
 
@@ -432,7 +529,10 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
             status: "Submitted",
             remittanceRef: payRef,
             paymentDate: todayStr,
-            activityLog: [`WHT Filing remitted to KRA portal. Ref: ${payRef} · ${todayStr}`, ...w.activityLog]
+            activityLog: [
+              `WHT Filing remitted to KRA portal. Ref: ${payRef} · ${todayStr}`,
+              ...w.activityLog,
+            ],
           };
         }
         return w;
@@ -447,7 +547,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "WHT Remitted",
-      body: `Withholding Tax return successfully filed with KRA.`
+      body: `Withholding Tax return successfully filed with KRA.`,
     });
   };
 
@@ -468,7 +568,10 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
             status: "Remitted",
             paymentRef: payRef,
             paymentDate: todayStr,
-            activityLog: [`AHL Statutory remittance sent. Ref: ${payRef} · ${todayStr}`, ...l.activityLog]
+            activityLog: [
+              `AHL Statutory remittance sent. Ref: ${payRef} · ${todayStr}`,
+              ...l.activityLog,
+            ],
           };
         }
         return l;
@@ -483,7 +586,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Housing Levy Remitted",
-      body: `3.0% AHL statutory payout verified and posted.`
+      body: `3.0% AHL statutory payout verified and posted.`,
     });
   };
 
@@ -491,14 +594,18 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
   const aggregates = useMemo(() => {
     const totalCount = deals.length;
     const pendingCount = deals.filter((d) => d.status === "Pending").length;
-    const totalWht = whtFilings.filter((w) => w.status === "Draft").reduce((sum, w) => sum + w.accruedWht, 0);
-    const totalComm = deals.filter((d) => d.status === "Approved" || d.status === "Disbursed").reduce((sum, d) => sum + d.grossPayout, 0);
+    const totalWht = whtFilings
+      .filter((w) => w.status === "Draft")
+      .reduce((sum, w) => sum + w.accruedWht, 0);
+    const totalComm = deals
+      .filter((d) => d.status === "Approved" || d.status === "Disbursed")
+      .reduce((sum, d) => sum + d.grossPayout, 0);
 
     return {
       totalCount,
       pendingCount,
       totalWht,
-      totalComm
+      totalComm,
     };
   }, [deals, whtFilings]);
 
@@ -555,23 +662,32 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           {/* Subtle background image */}
           <div
             className="absolute inset-0 opacity-[0.05] mix-blend-overlay bg-cover bg-center"
-            style={{ backgroundImage: `url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2564&auto=format&fit=crop)` }}
+            style={{
+              backgroundImage: `url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2564&auto=format&fit=crop)`,
+            }}
           />
           <div className="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-teal-500/10 blur-2xl" />
 
           <div className="relative z-10 space-y-4">
             <div className="flex items-center gap-3">
-              <Badge tone="primary" className="bg-teal-500/20 text-teal-200 border-teal-500/30 px-3 py-1 shadow-sm backdrop-blur-md">
+              <Badge
+                tone="primary"
+                className="bg-teal-500/20 text-teal-200 border-teal-500/30 px-3 py-1 shadow-sm backdrop-blur-md"
+              >
                 Sunland Operations
               </Badge>
-              <span className="text-sm font-normal tracking-widest uppercase text-slate-400/80">Commissions & WHT</span>
+              <span className="text-sm font-normal tracking-widest uppercase text-slate-400/80">
+                Commissions & WHT
+              </span>
             </div>
             <div>
               <h2 className="title-serif text-4xl font-normal leading-tight tracking-tight text-white mb-2">
                 Agent Commissions Ledger
               </h2>
               <p className="text-base leading-relaxed text-slate-300/85 font-normal max-w-lg">
-                Track agent commission payouts from closed sales and letting agreements, log KRA withholding tax (10% WHT) filings, and audit statutory Affordable Housing Levy compliance.
+                Track agent commission payouts from closed sales and letting agreements, log KRA
+                withholding tax (10% WHT) filings, and audit statutory Affordable Housing Levy
+                compliance.
               </p>
             </div>
           </div>
@@ -579,7 +695,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           <div className="relative z-10 pt-4 flex items-center justify-between border-t border-white/10 mt-4">
             <div className="flex items-center gap-2">
               <span className="body-sm font-normal text-slate-400">Ledger Status:</span>
-              <Badge tone="success" className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Active & Audited</Badge>
+              <Badge
+                tone="success"
+                className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+              >
+                Active & Audited
+              </Badge>
             </div>
             <span className="font-mono text-sm text-slate-400">Updated: Today</span>
           </div>
@@ -619,9 +740,7 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
               <span className="body-sm font-medium uppercase tracking-wider">AHL Compliance</span>
             </div>
             <div className="mt-auto">
-              <span className="text-2xl leading-none text-value-mono">
-                98.5%
-              </span>
+              <span className="text-2xl leading-none text-value-mono">98.5%</span>
               <p className="body-sm text-slate-400 mt-1">100% Remitted</p>
             </div>
           </BoardPanel>
@@ -629,7 +748,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           <BoardPanel className="p-4 flex flex-col justify-between h-[120px] relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:border-teal-250 bg-gradient-to-b from-white to-teal-50/10">
             <div className="flex items-center gap-2 text-slate-400">
               <IconCoins size={15} className="text-teal-600" />
-              <span className="body-sm font-medium uppercase tracking-wider">Total Commissions</span>
+              <span className="body-sm font-medium uppercase tracking-wider">
+                Total Commissions
+              </span>
             </div>
             <div className="mt-auto">
               <span className="text-2xl font-mono font-medium tracking-tight text-[#151936] leading-none">
@@ -646,7 +767,11 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
           <div>
             <h3 className="title-serif text-xl font-normal text-slate-900">
-              {tabId === "deals" ? "Closed Deal Register" : tabId === "wht-filings" ? "Withholding Tax Returns (KRA)" : "Affordable Housing Levy Ledger"}
+              {tabId === "deals"
+                ? "Closed Deal Register"
+                : tabId === "wht-filings"
+                  ? "Withholding Tax Returns (KRA)"
+                  : "Affordable Housing Levy Ledger"}
             </h3>
             <p className="text-sm text-slate-450 mt-1 font-medium">
               {tabId === "deals"
@@ -696,7 +821,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       onClick={() => setSelectedDeal(deal)}
                       className={cn(
                         "relative flex flex-col justify-between overflow-hidden rounded-xl border p-5 shadow-sm transition-all duration-300 cursor-pointer hover:shadow-md bg-white hover:border-[#151936]/30",
-                        deal.status === "Pending" ? "border-amber-200 bg-amber-50/5" : "border-slate-200"
+                        deal.status === "Pending"
+                          ? "border-amber-200 bg-amber-50/5"
+                          : "border-slate-200"
                       )}
                     >
                       {/* Top Bar */}
@@ -734,11 +861,15 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       <div className="flex justify-between items-center bg-slate-50 rounded-lg p-2.5 mb-4 text-xs font-mono">
                         <div>
                           <p className="body-sm text-slate-400 uppercase">Deal Value</p>
-                          <p className="text-slate-800 font-medium">{formatMoney(deal.dealValue)}</p>
+                          <p className="text-slate-800 font-medium">
+                            {formatMoney(deal.dealValue)}
+                          </p>
                         </div>
                         <div className="text-right">
                           <p className="body-sm text-slate-400 uppercase">Rate</p>
-                          <p className="text-teal-700 font-medium">{deal.commissionRate.toFixed(1)}%</p>
+                          <p className="text-teal-700 font-medium">
+                            {deal.commissionRate.toFixed(1)}%
+                          </p>
                         </div>
                       </div>
 
@@ -752,7 +883,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                         </div>
                         <div className="text-right">
                           <span className="body-sm text-slate-400 uppercase">WHT (10%): </span>
-                          <span className="font-mono text-xs text-rose-600 font-medium">-{formatMoney(deal.whtAmount)}</span>
+                          <span className="font-mono text-xs text-rose-600 font-medium">
+                            -{formatMoney(deal.whtAmount)}
+                          </span>
                         </div>
                       </div>
 
@@ -760,7 +893,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       {deal.status === "Pending" && (
                         <div className="mt-3 rounded bg-amber-50 p-2 text-sm text-amber-800 flex items-center gap-1.5 font-sans">
                           <IconAlertCircle size={14} className="shrink-0 text-amber-600" />
-                          <span className="truncate">Rate deviates from standard. Gated for CEO.</span>
+                          <span className="truncate">
+                            Rate deviates from standard. Gated for CEO.
+                          </span>
                         </div>
                       )}
                     </div>
@@ -780,7 +915,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       onClick={() => setSelectedWht(wht)}
                       className={cn(
                         "relative flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200 p-5 shadow-sm transition-all duration-300 cursor-pointer hover:shadow-md bg-white hover:border-[#151936]/30",
-                        wht.status === "Submitted" ? "bg-gradient-to-b from-white to-emerald-50/5" : ""
+                        wht.status === "Submitted"
+                          ? "bg-gradient-to-b from-white to-emerald-50/5"
+                          : ""
                       )}
                     >
                       <div className="flex justify-between items-start mb-3">
@@ -791,12 +928,16 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       </div>
 
                       <div className="my-3 font-sans">
-                        <span className="body-sm text-slate-400 uppercase tracking-widest block mb-0.5">Tax Period</span>
+                        <span className="body-sm text-slate-400 uppercase tracking-widest block mb-0.5">
+                          Tax Period
+                        </span>
                         <h4 className="text-heading-primary">{wht.period}</h4>
                       </div>
 
                       <div className="border-t border-b border-slate-100 py-3 my-3">
-                        <span className="body-sm text-slate-400 uppercase tracking-wider font-mono">10% WHT Return Accrued</span>
+                        <span className="body-sm text-slate-400 uppercase tracking-wider font-mono">
+                          10% WHT Return Accrued
+                        </span>
                         <p className="font-mono text-3xl font-normal text-slate-900 leading-none mt-1">
                           {formatMoney(wht.accruedWht)}
                         </p>
@@ -807,14 +948,24 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                           <>
                             <div className="space-y-0.5">
                               <p className="body-sm text-slate-400 uppercase">KRA Ack Ref</p>
-                              <p className="font-mono text-slate-700 truncate max-w-[130px]">{wht.remittanceRef}</p>
+                              <p className="font-mono text-slate-700 truncate max-w-[130px]">
+                                {wht.remittanceRef}
+                              </p>
                             </div>
                             <span className="text-sm text-emerald-600 font-medium">Cleared</span>
                           </>
                         ) : (
                           <>
                             <span className="text-slate-400 italic">Remittance Pending</span>
-                            <Button size="sm" onClick={(e) => { e.stopPropagation(); setSelectedWht(wht); setShowPayWhtModal(true); }} className="bg-[#151936] text-white">
+                            <Button
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedWht(wht);
+                                setShowPayWhtModal(true);
+                              }}
+                              className="bg-[#151936] text-white"
+                            >
                               File Return
                             </Button>
                           </>
@@ -843,7 +994,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       <div className="flex-1 space-y-4">
                         <div className="flex justify-between items-start">
                           <div className="space-y-0.5">
-                            <span className="font-mono text-sm text-slate-400">{levy.levyCode}</span>
+                            <span className="font-mono text-sm text-slate-400">
+                              {levy.levyCode}
+                            </span>
                             <h4 className="text-heading-primary">{levy.period}</h4>
                           </div>
                           <Badge tone={isRemitted ? "success" : "neutral"}>{levy.status}</Badge>
@@ -852,37 +1005,63 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                         <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50 rounded-lg p-3">
                           <div>
                             <p className="body-sm text-slate-400 uppercase mb-0.5">Gross Payroll</p>
-                            <p className="font-mono font-medium text-slate-750">{formatMoney(levy.grossPayroll)}</p>
+                            <p className="font-mono font-medium text-slate-750">
+                              {formatMoney(levy.grossPayroll)}
+                            </p>
                           </div>
                           <div>
                             <p className="body-sm text-slate-400 uppercase mb-0.5">remitted 3.0%</p>
-                            <p className="font-mono font-medium text-slate-800">{formatMoney(levy.totalLevy)}</p>
+                            <p className="font-mono font-medium text-slate-800">
+                              {formatMoney(levy.totalLevy)}
+                            </p>
                           </div>
                           <div>
-                            <p className="body-sm text-slate-400 uppercase mb-0.5">Employee (1.5%)</p>
-                            <p className="font-mono text-slate-600">{formatMoney(levy.employeeShare)}</p>
+                            <p className="body-sm text-slate-400 uppercase mb-0.5">
+                              Employee (1.5%)
+                            </p>
+                            <p className="font-mono text-slate-600">
+                              {formatMoney(levy.employeeShare)}
+                            </p>
                           </div>
                           <div>
-                            <p className="body-sm text-slate-400 uppercase mb-0.5">Employer (1.5%)</p>
-                            <p className="font-mono text-slate-600">{formatMoney(levy.employerShare)}</p>
+                            <p className="body-sm text-slate-400 uppercase mb-0.5">
+                              Employer (1.5%)
+                            </p>
+                            <p className="font-mono text-slate-600">
+                              {formatMoney(levy.employerShare)}
+                            </p>
                           </div>
                         </div>
 
                         {levy.status === "Draft" ? (
-                          <Button size="sm" onClick={(e) => { e.stopPropagation(); setSelectedLevy(levy); setShowPayLevyModal(true); }} className="w-full bg-[#151936] text-white">
+                          <Button
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedLevy(levy);
+                              setShowPayLevyModal(true);
+                            }}
+                            className="w-full bg-[#151936] text-white"
+                          >
                             Settle Levy Return
                           </Button>
                         ) : (
                           <div className="text-xs text-slate-450 font-mono">
-                            <span className="body-sm text-slate-400 uppercase block mb-0.5">Bank Ref</span>
-                            <span className="text-slate-700">{levy.paymentRef} · {levy.paymentDate}</span>
+                            <span className="body-sm text-slate-400 uppercase block mb-0.5">
+                              Bank Ref
+                            </span>
+                            <span className="text-slate-700">
+                              {levy.paymentRef} · {levy.paymentDate}
+                            </span>
                           </div>
                         )}
                       </div>
 
                       {/* Thermometer Area */}
                       <div className="w-[80px] shrink-0 flex flex-col items-center justify-between border-l border-slate-100 pl-4">
-                        <p className="body-sm text-slate-400 uppercase text-center font-medium tracking-wide">Filing State</p>
+                        <p className="body-sm text-slate-400 uppercase text-center font-medium tracking-wide">
+                          Filing State
+                        </p>
 
                         {/* Thermometer Visual representation */}
                         <div className="relative w-7 h-28 bg-slate-100 rounded-full border border-slate-200/50 flex flex-col justify-end p-0.5 overflow-hidden my-2">
@@ -890,7 +1069,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                             style={{ height: `${fillPercentage}%` }}
                             className={cn(
                               "w-full rounded-full transition-all duration-1000",
-                              isRemitted ? "bg-gradient-to-t from-emerald-500 to-teal-400" : "bg-transparent"
+                              isRemitted
+                                ? "bg-gradient-to-t from-emerald-500 to-teal-400"
+                                : "bg-transparent"
                             )}
                           />
                           {/* Pulsing indicator if filled */}
@@ -944,7 +1125,10 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 Close Panel
               </Button>
               {selectedDeal.status === "Pending" && isCEO && (
-                <Button onClick={() => handleApproveDeal(selectedDeal)} className="flex-1 bg-[#151936] text-white">
+                <Button
+                  onClick={() => handleApproveDeal(selectedDeal)}
+                  className="flex-1 bg-[#151936] text-white"
+                >
                   Approve Commission Payout
                 </Button>
               )}
@@ -959,8 +1143,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <IconCoins size={20} />
               </div>
               <div>
-                <h4 className="body-md font-medium text-slate-900 leading-snug">{selectedDeal.propertyName}</h4>
-                <p className="body-sm text-slate-400 mt-0.5">{selectedDeal.dealCode} · Status: {selectedDeal.status}</p>
+                <h4 className="body-md font-medium text-slate-900 leading-snug">
+                  {selectedDeal.propertyName}
+                </h4>
+                <p className="body-sm text-slate-400 mt-0.5">
+                  {selectedDeal.dealCode} · Status: {selectedDeal.status}
+                </p>
               </div>
             </div>
 
@@ -972,38 +1160,54 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 </div>
 
                 <div className="flex justify-between items-start body-sm text-slate-450 border-b border-slate-200/50 pb-2">
-                  <span className="font-sans font-medium text-slate-600">SUNLAND AGENT COMMISSION PAYOUT VOUCHER</span>
+                  <span className="font-sans font-medium text-slate-600">
+                    SUNLAND AGENT COMMISSION PAYOUT VOUCHER
+                  </span>
                   <span>REF: {selectedDeal.dealCode}</span>
                 </div>
 
                 <div className="my-4">
-                  <p className="body-sm text-slate-400 uppercase tracking-wider font-mono font-medium">Net Agent Payout</p>
+                  <p className="body-sm text-slate-400 uppercase tracking-wider font-mono font-medium">
+                    Net Agent Payout
+                  </p>
                   <p className="font-mono text-4xl font-normal text-slate-900 leading-none mt-1">
                     {formatMoney(selectedDeal.netPayout)}
                   </p>
-                  <p className="body-sm text-slate-400 font-mono mt-1">Accrued from Gross: {formatMoney(selectedDeal.grossPayout)}</p>
+                  <p className="body-sm text-slate-400 font-mono mt-1">
+                    Accrued from Gross: {formatMoney(selectedDeal.grossPayout)}
+                  </p>
                 </div>
 
                 <div className="space-y-2 border-t border-slate-200/50 pt-3 body-sm text-slate-550 font-sans">
                   <div className="flex justify-between">
                     <span>Agent Name</span>
-                    <span className="font-mono font-medium text-slate-800">{selectedDeal.agentName}</span>
+                    <span className="font-mono font-medium text-slate-800">
+                      {selectedDeal.agentName}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Core Service Category</span>
-                    <span className="font-mono font-medium text-slate-700">{selectedDeal.serviceCategory}</span>
+                    <span className="font-mono font-medium text-slate-700">
+                      {selectedDeal.serviceCategory}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Deal Value Base</span>
-                    <span className="font-mono font-medium text-slate-750">{formatMoney(selectedDeal.dealValue)}</span>
+                    <span className="font-mono font-medium text-slate-750">
+                      {formatMoney(selectedDeal.dealValue)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Commission Rate</span>
-                    <span className="font-mono font-medium text-slate-700">{selectedDeal.commissionRate.toFixed(1)}%</span>
+                    <span className="font-mono font-medium text-slate-700">
+                      {selectedDeal.commissionRate.toFixed(1)}%
+                    </span>
                   </div>
                   <div className="flex justify-between border-t border-slate-100 pt-2 text-[#b91c1c]">
                     <span>Withholding Tax (10% WHT)</span>
-                    <span className="font-mono font-medium">-{formatMoney(selectedDeal.whtAmount)}</span>
+                    <span className="font-mono font-medium">
+                      -{formatMoney(selectedDeal.whtAmount)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1013,7 +1217,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <div className="rounded-xl border border-amber-250 bg-amber-50/40 p-4 body-sm leading-relaxed text-amber-800 space-y-1 bg-amber-50/20">
                   <div className="flex items-center gap-1.5">
                     <IconShieldCheck size={16} className="text-amber-600" />
-                    <span className="font-medium text-amber-900">Commission Rate Deviation Justification</span>
+                    <span className="font-medium text-amber-900">
+                      Commission Rate Deviation Justification
+                    </span>
                   </div>
                   <p className="text-amber-700 font-mono body-sm leading-relaxed bg-white/70 p-2.5 rounded border border-amber-200/50">
                     &quot;{selectedDeal.justificationNotes}&quot;
@@ -1023,7 +1229,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
 
               {/* Action checklist status */}
               <div className="space-y-2">
-                <span className="body-sm text-slate-450 uppercase tracking-wider font-medium">Clearance Milestones</span>
+                <span className="body-sm text-slate-450 uppercase tracking-wider font-medium">
+                  Clearance Milestones
+                </span>
                 <div className="rounded-xl border border-slate-100 p-4 space-y-2.5 bg-slate-50/20 text-slate-600">
                   <div className="flex items-center gap-2 body-sm">
                     <IconCheck size={16} className="text-emerald-500 shrink-0" />
@@ -1031,7 +1239,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                   </div>
                   <div className="flex items-center gap-2 body-sm">
                     <IconCheck size={16} className="text-emerald-500 shrink-0" />
-                    <span>Agent commission accrued at {selectedDeal.commissionRate.toFixed(1)}%</span>
+                    <span>
+                      Agent commission accrued at {selectedDeal.commissionRate.toFixed(1)}%
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 body-sm">
                     <IconCheck size={16} className="text-emerald-500 shrink-0" />
@@ -1043,14 +1253,19 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                     ) : (
                       <IconClock size={16} className="text-amber-500 shrink-0" />
                     )}
-                    <span>Manager payout authorization status: <strong className="font-medium">{selectedDeal.status}</strong></span>
+                    <span>
+                      Manager payout authorization status:{" "}
+                      <strong className="font-medium">{selectedDeal.status}</strong>
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Process timeline log */}
               <div className="pt-2 border-t border-slate-100">
-                <span className="body-sm text-slate-400 uppercase tracking-wider font-medium font-sans">Deal Filing Logs</span>
+                <span className="body-sm text-slate-400 uppercase tracking-wider font-medium font-sans">
+                  Deal Filing Logs
+                </span>
                 <div className="mt-2 space-y-2 font-mono body-sm">
                   {selectedDeal.activityLog.map((log, idx) => (
                     <div key={idx} className="flex gap-2 text-slate-400 leading-normal">
@@ -1079,8 +1294,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <IconReceipt2 size={20} />
               </div>
               <div>
-                <h4 className="body-md font-medium text-slate-900 leading-snug">KRA WHT Return Summary</h4>
-                <p className="body-sm text-slate-400 mt-0.5">{selectedWht.filingCode} · Period: {selectedWht.period}</p>
+                <h4 className="body-md font-medium text-slate-900 leading-snug">
+                  KRA WHT Return Summary
+                </h4>
+                <p className="body-sm text-slate-400 mt-0.5">
+                  {selectedWht.filingCode} · Period: {selectedWht.period}
+                </p>
               </div>
             </div>
 
@@ -1091,12 +1310,16 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 </div>
 
                 <div className="flex justify-between items-start body-sm text-slate-450 border-b border-slate-200/50 pb-2">
-                  <span className="font-sans font-medium text-slate-650">SUNLAND WITHHOLDING TAX RETURN (FORM KRA-WHT)</span>
+                  <span className="font-sans font-medium text-slate-650">
+                    SUNLAND WITHHOLDING TAX RETURN (FORM KRA-WHT)
+                  </span>
                   <span>REF: {selectedWht.filingCode}</span>
                 </div>
 
                 <div className="my-3">
-                  <p className="body-sm text-slate-450 uppercase tracking-wider font-mono">Total WHT Liability</p>
+                  <p className="body-sm text-slate-450 uppercase tracking-wider font-mono">
+                    Total WHT Liability
+                  </p>
                   <p className="font-mono text-4xl font-normal text-slate-900 leading-none mt-1">
                     {formatMoney(selectedWht.accruedWht)}
                   </p>
@@ -1105,21 +1328,29 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <div className="space-y-2 border-t border-slate-200/50 pt-3 body-sm text-slate-550 font-sans">
                   <div className="flex justify-between">
                     <span>Tax Period</span>
-                    <span className="font-mono font-medium text-slate-700">{selectedWht.period}</span>
+                    <span className="font-mono font-medium text-slate-700">
+                      {selectedWht.period}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Rate Applied</span>
-                    <span className="font-mono font-medium text-slate-800">10.0% standard agent WHT</span>
+                    <span className="font-mono font-medium text-slate-800">
+                      10.0% standard agent WHT
+                    </span>
                   </div>
                   {selectedWht.status === "Submitted" && (
                     <>
                       <div className="flex justify-between border-t border-slate-100 pt-2 mt-1">
                         <span>KRA Portal Receipt Ref</span>
-                        <span className="font-mono font-medium text-slate-800">{selectedWht.remittanceRef}</span>
+                        <span className="font-mono font-medium text-slate-800">
+                          {selectedWht.remittanceRef}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Filing Confirmation Date</span>
-                        <span className="font-mono font-medium text-slate-700">{selectedWht.paymentDate}</span>
+                        <span className="font-mono font-medium text-slate-700">
+                          {selectedWht.paymentDate}
+                        </span>
                       </div>
                     </>
                   )}
@@ -1128,7 +1359,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
 
               {/* Detailed WHT Schedule of Agents included */}
               <div className="space-y-2">
-                <span className="body-sm text-slate-450 uppercase tracking-wider font-medium font-sans">Filing Schedule Details</span>
+                <span className="body-sm text-slate-450 uppercase tracking-wider font-medium font-sans">
+                  Filing Schedule Details
+                </span>
                 <div className="rounded-xl border border-slate-200/60 overflow-hidden bg-slate-50/20">
                   <table className="w-full border-collapse text-left text-sm text-slate-700">
                     <thead className="bg-slate-50 border-b border-slate-100 text-desc-secondary">
@@ -1142,16 +1375,26 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       {getDealsForPeriod(selectedWht.period).map((deal) => (
                         <tr key={deal.id}>
                           <td className="px-4 py-2">
-                            <p className="font-medium text-slate-900 leading-none">{deal.agentName}</p>
-                            <span className="text-xs text-slate-400 font-mono tracking-tight">{deal.agentPin}</span>
+                            <p className="font-medium text-slate-900 leading-none">
+                              {deal.agentName}
+                            </p>
+                            <span className="text-xs text-slate-400 font-mono tracking-tight">
+                              {deal.agentPin}
+                            </span>
                           </td>
-                          <td className="px-4 py-2 text-right font-mono text-slate-700">{formatMoney(deal.grossPayout)}</td>
-                          <td className="px-4 py-2 text-right font-mono text-rose-600 font-medium">-{formatMoney(deal.whtAmount)}</td>
+                          <td className="px-4 py-2 text-right font-mono text-slate-700">
+                            {formatMoney(deal.grossPayout)}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono text-rose-600 font-medium">
+                            -{formatMoney(deal.whtAmount)}
+                          </td>
                         </tr>
                       ))}
                       {getDealsForPeriod(selectedWht.period).length === 0 && (
                         <tr>
-                          <td colSpan={3} className="px-4 py-6 text-center text-slate-400 italic">No approved deals in this period.</td>
+                          <td colSpan={3} className="px-4 py-6 text-center text-slate-400 italic">
+                            No approved deals in this period.
+                          </td>
                         </tr>
                       )}
                     </tbody>
@@ -1165,15 +1408,22 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                   variant="secondary"
                   onClick={() => {
                     const dealsForPeriod = getDealsForPeriod(selectedWht.period);
-                    const csvHeader = "Payer PIN,Agent PIN,Agent Name,Core Service Category,Gross Payout,Withholding Tax (10%),Net Payout,Filing Period\n";
+                    const csvHeader =
+                      "Payer PIN,Agent PIN,Agent Name,Core Service Category,Gross Payout,Withholding Tax (10%),Net Payout,Filing Period\n";
                     const csvRows = dealsForPeriod
-                      .map((d) => `A010293847C,${d.agentPin},${d.agentName},${d.serviceCategory},${d.grossPayout.toFixed(2)},${d.whtAmount.toFixed(2)},${d.netPayout.toFixed(2)},${selectedWht.period}`)
+                      .map(
+                        (d) =>
+                          `A010293847C,${d.agentPin},${d.agentName},${d.serviceCategory},${d.grossPayout.toFixed(2)},${d.whtAmount.toFixed(2)},${d.netPayout.toFixed(2)},${selectedWht.period}`
+                      )
                       .join("\n");
-                    downloadCsv(`KRA-WHT-Return-${selectedWht.filingCode}.csv`, csvHeader + csvRows);
+                    downloadCsv(
+                      `KRA-WHT-Return-${selectedWht.filingCode}.csv`,
+                      csvHeader + csvRows
+                    );
                     pushToast({
                       tone: "success",
                       title: "iTax CSV Template Exported",
-                      body: `WHT Return template file exported with ${dealsForPeriod.length} records. Ready for upload.`
+                      body: `WHT Return template file exported with ${dealsForPeriod.length} records. Ready for upload.`,
                     });
                   }}
                   className="w-full justify-center flex items-center gap-1.5"
@@ -1186,7 +1436,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
 
               {/* Logs */}
               <div className="pt-2 border-t border-slate-100 font-sans">
-                <span className="body-sm text-slate-400 uppercase tracking-wider font-medium">Activity Logs</span>
+                <span className="body-sm text-slate-400 uppercase tracking-wider font-medium">
+                  Activity Logs
+                </span>
                 <div className="mt-2 space-y-2 font-mono body-sm">
                   {selectedWht.activityLog.map((log, idx) => (
                     <div key={idx} className="flex gap-2 text-slate-400 leading-normal">
@@ -1215,8 +1467,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <IconReceipt2 size={20} />
               </div>
               <div>
-                <h4 className="body-md font-medium text-slate-900 leading-snug">Housing Levy Statement</h4>
-                <p className="body-sm text-slate-400 mt-0.5">{selectedLevy.levyCode} · Filing Period: {selectedLevy.period}</p>
+                <h4 className="body-md font-medium text-slate-900 leading-snug">
+                  Housing Levy Statement
+                </h4>
+                <p className="body-sm text-slate-400 mt-0.5">
+                  {selectedLevy.levyCode} · Filing Period: {selectedLevy.period}
+                </p>
               </div>
             </div>
 
@@ -1227,12 +1483,16 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 </div>
 
                 <div className="flex justify-between items-start body-sm text-slate-450 border-b border-slate-200/50 pb-2">
-                  <span className="font-sans font-medium text-slate-650">SUNLAND HOUSING LEVY RETURN (FORM KRA-AHL)</span>
+                  <span className="font-sans font-medium text-slate-650">
+                    SUNLAND HOUSING LEVY RETURN (FORM KRA-AHL)
+                  </span>
                   <span>REF: {selectedLevy.levyCode}</span>
                 </div>
 
                 <div className="my-3">
-                  <p className="body-sm text-slate-450 uppercase tracking-wider font-mono">Accrued 3.0% Contribution</p>
+                  <p className="body-sm text-slate-450 uppercase tracking-wider font-mono">
+                    Accrued 3.0% Contribution
+                  </p>
                   <p className="font-mono text-4xl font-normal text-slate-900 leading-none mt-1">
                     {formatMoney(selectedLevy.totalLevy)}
                   </p>
@@ -1241,29 +1501,41 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <div className="space-y-2 border-t border-slate-200/50 pt-3 body-sm text-slate-550 font-sans">
                   <div className="flex justify-between">
                     <span>Filing Month Period</span>
-                    <span className="font-mono font-medium text-slate-700">{selectedLevy.period}</span>
+                    <span className="font-mono font-medium text-slate-700">
+                      {selectedLevy.period}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Gross Payroll Sourced</span>
-                    <span className="font-mono font-medium text-slate-800">{formatMoney(selectedLevy.grossPayroll)}</span>
+                    <span className="font-mono font-medium text-slate-800">
+                      {formatMoney(selectedLevy.grossPayroll)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Employer Share (1.5%)</span>
-                    <span className="font-mono text-slate-700">{formatMoney(selectedLevy.employerShare)}</span>
+                    <span className="font-mono text-slate-700">
+                      {formatMoney(selectedLevy.employerShare)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Employee Deductions (1.5%)</span>
-                    <span className="font-mono text-slate-700">{formatMoney(selectedLevy.employeeShare)}</span>
+                    <span className="font-mono text-slate-700">
+                      {formatMoney(selectedLevy.employeeShare)}
+                    </span>
                   </div>
                   {selectedLevy.status === "Remitted" && (
                     <>
                       <div className="flex justify-between border-t border-slate-100 pt-2 mt-1">
                         <span>Cleared Payment Ref</span>
-                        <span className="font-mono font-medium text-slate-850">{selectedLevy.paymentRef}</span>
+                        <span className="font-mono font-medium text-slate-850">
+                          {selectedLevy.paymentRef}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Payment Confirmation Date</span>
-                        <span className="font-mono font-medium text-slate-700">{selectedLevy.paymentDate}</span>
+                        <span className="font-mono font-medium text-slate-700">
+                          {selectedLevy.paymentDate}
+                        </span>
                       </div>
                     </>
                   )}
@@ -1272,7 +1544,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
 
               {/* Detailed AHL Contribution Schedule */}
               <div className="space-y-2">
-                <span className="body-sm text-slate-450 uppercase tracking-wider font-medium font-sans">Employee AHL Schedule</span>
+                <span className="body-sm text-slate-450 uppercase tracking-wider font-medium font-sans">
+                  Employee AHL Schedule
+                </span>
                 <div className="rounded-xl border border-slate-200/60 overflow-hidden bg-slate-50/20">
                   <table className="w-full border-collapse text-left text-sm text-slate-700">
                     <thead className="bg-slate-50 border-b border-slate-100 text-desc-secondary">
@@ -1287,17 +1561,29 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                       {selectedLevy.employees?.map((emp, idx) => (
                         <tr key={idx}>
                           <td className="px-4 py-2">
-                            <p className="font-medium text-slate-900 leading-none">{emp.employeeName}</p>
-                            <span className="text-xs text-slate-400 font-mono tracking-tight">{emp.kraPin}</span>
+                            <p className="font-medium text-slate-900 leading-none">
+                              {emp.employeeName}
+                            </p>
+                            <span className="text-xs text-slate-400 font-mono tracking-tight">
+                              {emp.kraPin}
+                            </span>
                           </td>
-                          <td className="px-4 py-2 text-right font-mono text-slate-700">{formatMoney(emp.grossPay)}</td>
-                          <td className="px-4 py-2 text-right font-mono text-slate-600">{formatMoney(emp.employeeShare)}</td>
-                          <td className="px-4 py-2 text-right font-mono text-slate-600">{formatMoney(emp.employerShare)}</td>
+                          <td className="px-4 py-2 text-right font-mono text-slate-700">
+                            {formatMoney(emp.grossPay)}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono text-slate-600">
+                            {formatMoney(emp.employeeShare)}
+                          </td>
+                          <td className="px-4 py-2 text-right font-mono text-slate-600">
+                            {formatMoney(emp.employerShare)}
+                          </td>
                         </tr>
                       ))}
                       {(!selectedLevy.employees || selectedLevy.employees.length === 0) && (
                         <tr>
-                          <td colSpan={4} className="px-4 py-6 text-center text-slate-400 italic">No employee data imported for this period.</td>
+                          <td colSpan={4} className="px-4 py-6 text-center text-slate-400 italic">
+                            No employee data imported for this period.
+                          </td>
                         </tr>
                       )}
                     </tbody>
@@ -1310,15 +1596,19 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
                 <Button
                   variant="secondary"
                   onClick={() => {
-                    const csvHeader = "Employee PIN,Employee Name,Gross Pay,Employee AHL Share (1.5%),Employer AHL Share (1.5%),Total AHL Contribution (3.0%),Filing Month\n";
+                    const csvHeader =
+                      "Employee PIN,Employee Name,Gross Pay,Employee AHL Share (1.5%),Employer AHL Share (1.5%),Total AHL Contribution (3.0%),Filing Month\n";
                     const csvRows = (selectedLevy.employees || [])
-                      .map((emp) => `${emp.kraPin},${emp.employeeName},${emp.grossPay.toFixed(2)},${emp.employeeShare.toFixed(2)},${emp.employerShare.toFixed(2)},${emp.totalContribution.toFixed(2)},${selectedLevy.period}`)
+                      .map(
+                        (emp) =>
+                          `${emp.kraPin},${emp.employeeName},${emp.grossPay.toFixed(2)},${emp.employeeShare.toFixed(2)},${emp.employerShare.toFixed(2)},${emp.totalContribution.toFixed(2)},${selectedLevy.period}`
+                      )
                       .join("\n");
                     downloadCsv(`KRA-AHL-Return-${selectedLevy.levyCode}.csv`, csvHeader + csvRows);
                     pushToast({
                       tone: "success",
                       title: "AHL Upload CSV Exported",
-                      body: `AHL Return template file exported with ${(selectedLevy.employees || []).length} records.`
+                      body: `AHL Return template file exported with ${(selectedLevy.employees || []).length} records.`,
                     });
                   }}
                   className="w-full justify-center flex items-center gap-1.5"
@@ -1331,7 +1621,9 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
 
               {/* Logs */}
               <div className="pt-2 border-t border-slate-100 font-sans">
-                <span className="body-sm text-slate-400 uppercase tracking-wider font-medium">Activity Logs</span>
+                <span className="body-sm text-slate-400 uppercase tracking-wider font-medium">
+                  Activity Logs
+                </span>
                 <div className="mt-2 space-y-2 font-mono body-sm">
                   {selectedLevy.activityLog.map((log, idx) => (
                     <div key={idx} className="flex gap-2 text-slate-400 leading-normal">
@@ -1347,7 +1639,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
       </Drawer>
 
       {/* ── Modal: Register Deal ──────────────────────────────────────────── */}
-      <Modal open={showNewDealModal} onClose={() => setShowNewDealModal(false)} title="Register Deal Commission Payout" size="md">
+      <Modal
+        open={showNewDealModal}
+        onClose={() => setShowNewDealModal(false)}
+        title="Register Deal Commission Payout"
+        size="md"
+      >
         <form onSubmit={handleRegisterDeal} className="space-y-4 text-sm text-slate-750">
           <div className="rounded-xl bg-[#0c1f24]/5 border border-slate-200/50 p-4 font-sans text-slate-800">
             <h4 className="body-md font-medium text-slate-900 mb-1 flex items-center gap-1.5">
@@ -1355,13 +1652,19 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
               Agent Commission Registration
             </h4>
             <p className="body-sm leading-relaxed opacity-95">
-              Log sales and letting agency closures. Commissions are subjected to a statutory 10% Withholding Tax (WHT) deduction before disbursement checks.
+              Log sales and letting agency closures. Commissions are subjected to a statutory 10%
+              Withholding Tax (WHT) deduction before disbursement checks.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="agentName" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">Agent Name</label>
+              <label
+                htmlFor="agentName"
+                className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+              >
+                Agent Name
+              </label>
               <select
                 id="agentName"
                 value={newAgentName}
@@ -1376,24 +1679,40 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
             </div>
 
             <div>
-              <label htmlFor="serviceCategory" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">Core Service Category</label>
+              <label
+                htmlFor="serviceCategory"
+                className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+              >
+                Core Service Category
+              </label>
               <select
                 id="serviceCategory"
                 value={newCategory}
-                onChange={(e) => handleCategoryChange(e.target.value as AgentDeal["serviceCategory"])}
+                onChange={(e) =>
+                  handleCategoryChange(e.target.value as AgentDeal["serviceCategory"])
+                }
                 className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-850 outline-none focus:border-indigo-400 font-sans"
               >
                 <option value="Property Sales & Letting">Property Sales & Letting (Agency)</option>
-                <option value="Property Management">Property Management (Rentals/Service fees)</option>
+                <option value="Property Management">
+                  Property Management (Rentals/Service fees)
+                </option>
                 <option value="Property Valuation">Property Valuation (Appraisals)</option>
                 <option value="Feasibility Studies">Feasibility Studies (Market analysis)</option>
-                <option value="Project Management">Project Management (Construction supervising)</option>
+                <option value="Project Management">
+                  Project Management (Construction supervising)
+                </option>
               </select>
             </div>
           </div>
 
           <div>
-            <label htmlFor="propertyName" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">Deal / Property Subject</label>
+            <label
+              htmlFor="propertyName"
+              className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+            >
+              Deal / Property Subject
+            </label>
             <input
               id="propertyName"
               required
@@ -1406,7 +1725,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="dealValue" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">Deal Value Base (KES)</label>
+              <label
+                htmlFor="dealValue"
+                className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+              >
+                Deal Value Base (KES)
+              </label>
               <input
                 id="dealValue"
                 required
@@ -1419,7 +1743,12 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
             </div>
 
             <div>
-              <label htmlFor="commissionRate" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">Commission Rate (%)</label>
+              <label
+                htmlFor="commissionRate"
+                className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+              >
+                Commission Rate (%)
+              </label>
               <div className="relative">
                 <input
                   id="commissionRate"
@@ -1440,7 +1769,10 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           {/* Justification note field if rate deviates */}
           {isRateDeviating && (
             <div className="space-y-2 animate-fade-in">
-              <label htmlFor="justification" className="block body-sm font-medium text-rose-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <label
+                htmlFor="justification"
+                className="block body-sm font-medium text-rose-500 uppercase tracking-wider mb-1 flex items-center gap-1"
+              >
                 <IconAlertCircle size={14} />
                 Deviation Justification Note Required
               </label>
@@ -1457,7 +1789,11 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           )}
 
           <div className="flex gap-2.5 justify-end pt-3 border-t border-slate-100">
-            <Button onClick={() => setShowNewDealModal(false)} variant="secondary" disabled={isSubmitting}>
+            <Button
+              onClick={() => setShowNewDealModal(false)}
+              variant="secondary"
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting} className="bg-[#151936] text-white">
@@ -1468,16 +1804,27 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
       </Modal>
 
       {/* ── Modal: Settle WHT ────────────────────────────────────────────── */}
-      <Modal open={showPayWhtModal} onClose={() => setShowPayWhtModal(false)} title="File KRA Withholding Tax Return" size="sm">
+      <Modal
+        open={showPayWhtModal}
+        onClose={() => setShowPayWhtModal(false)}
+        title="File KRA Withholding Tax Return"
+        size="sm"
+      >
         <form onSubmit={handlePayWhtSubmit} className="space-y-4 text-sm text-slate-700">
           <div className="rounded-xl bg-[#151936]/5 border border-slate-200/50 p-4 font-sans text-slate-800">
             <p className="body-sm leading-relaxed opacity-95">
-              Confirm submission of WHT filings to KRA portal. Requires payment reference from KRA receipt acknowledgment.
+              Confirm submission of WHT filings to KRA portal. Requires payment reference from KRA
+              receipt acknowledgment.
             </p>
           </div>
 
           <div>
-            <label htmlFor="payRef" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">KRA Payment Reference</label>
+            <label
+              htmlFor="payRef"
+              className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+            >
+              KRA Payment Reference
+            </label>
             <input
               id="payRef"
               required
@@ -1489,10 +1836,18 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           </div>
 
           <div className="flex gap-2.5 justify-end pt-3 border-t border-slate-100">
-            <Button onClick={() => setShowPayWhtModal(false)} variant="secondary" disabled={isSubmitting}>
+            <Button
+              onClick={() => setShowPayWhtModal(false)}
+              variant="secondary"
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || !payRef.trim()} className="bg-[#151936] text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting || !payRef.trim()}
+              className="bg-[#151936] text-white"
+            >
               {isSubmitting ? "Submitting Filing..." : "Confirm Return Filed"}
             </Button>
           </div>
@@ -1500,16 +1855,27 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
       </Modal>
 
       {/* ── Modal: Settle Housing Levy ────────────────────────────────────── */}
-      <Modal open={showPayLevyModal} onClose={() => setShowPayLevyModal(false)} title="Remit Statutory Housing Levy" size="sm">
+      <Modal
+        open={showPayLevyModal}
+        onClose={() => setShowPayLevyModal(false)}
+        title="Remit Statutory Housing Levy"
+        size="sm"
+      >
         <form onSubmit={handlePayLevySubmit} className="space-y-4 text-sm text-slate-700">
           <div className="rounded-xl bg-[#151936]/5 border border-slate-200/50 p-4 font-sans text-slate-800">
             <p className="body-sm leading-relaxed opacity-95">
-              Confirm 3.0% Affordable Housing Levy statutory remittance dispatch. Sourced directly from monthly payroll aggregates.
+              Confirm 3.0% Affordable Housing Levy statutory remittance dispatch. Sourced directly
+              from monthly payroll aggregates.
             </p>
           </div>
 
           <div>
-            <label htmlFor="levyRef" className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2">Bank Remittance Ref / receipt</label>
+            <label
+              htmlFor="levyRef"
+              className="block body-sm font-medium text-slate-450 uppercase tracking-wider mb-2"
+            >
+              Bank Remittance Ref / receipt
+            </label>
             <input
               id="levyRef"
               required
@@ -1521,10 +1887,18 @@ export function CommissionsBoard({ tabId = "deals" }: { tabId: string }) {
           </div>
 
           <div className="flex gap-2.5 justify-end pt-3 border-t border-slate-100">
-            <Button onClick={() => setShowPayLevyModal(false)} variant="secondary" disabled={isSubmitting}>
+            <Button
+              onClick={() => setShowPayLevyModal(false)}
+              variant="secondary"
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || !payRef.trim()} className="bg-[#151936] text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting || !payRef.trim()}
+              className="bg-[#151936] text-white"
+            >
               {isSubmitting ? "Settle Remittance..." : "Settle Remittance"}
             </Button>
           </div>

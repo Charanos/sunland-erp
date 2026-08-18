@@ -22,6 +22,3 @@ const dbInstance = drizzle(pool, { schema: { ...schema, ...relations } });
 
 export type DbClient = typeof dbInstance;
 export const db = dbInstance;
-
-
-

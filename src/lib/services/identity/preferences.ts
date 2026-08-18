@@ -11,7 +11,10 @@ import { upsertUserPreferencesSchema } from "@/lib/validation/identity";
 // OWN preferences (same pattern as session self-management). Known keys:
 // language, dateFmt, accent, density, navMode, topBar, quietHours, digest.
 
-export async function getUserPreferences(ctx: CallerContext, userId: string): Promise<Record<string, unknown>> {
+export async function getUserPreferences(
+  ctx: CallerContext,
+  userId: string
+): Promise<Record<string, unknown>> {
   if (userId !== ctx.user.id) {
     throw new ForbiddenError("You may only read your own preferences");
   }
@@ -45,7 +48,9 @@ export async function upsertUserPreferences(ctx: CallerContext, userId: string, 
           .set({ value: pref.value ?? null, updatedAt: new Date() })
           .where(eq(userPreferences.id, existing.id));
       } else {
-        await tx.insert(userPreferences).values({ userId, key: pref.key, value: pref.value ?? null });
+        await tx
+          .insert(userPreferences)
+          .values({ userId, key: pref.key, value: pref.value ?? null });
       }
     }
     return { success: true };

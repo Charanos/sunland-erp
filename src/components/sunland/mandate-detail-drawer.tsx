@@ -113,13 +113,32 @@ export function MandateDetailDrawer({
   const rate = parseFloat(mandate.mandateRate) || 0.08;
   const collected = mandate.currentPeriodCollected ?? 0;
   const remittanceDue = collected * (1 - rate);
-  const remittanceDisplay = mandate.status === "active" && collected > 0 ? formatCompactKES(remittanceDue) : "—";
+  const remittanceDisplay =
+    mandate.status === "active" && collected > 0 ? formatCompactKES(remittanceDue) : "—";
 
   // MTD collection percentage approximation based on target/collected
   const estimatedTarget = 500000;
   const pct = Math.min(100, Math.round((collected / estimatedTarget) * 100));
-  const pctColor = pct >= 100 ? "bg-emerald-500" : pct >= 80 ? "bg-emerald-400" : pct >= 50 ? "bg-amber-400" : pct > 0 ? "bg-red-400" : "bg-[#151936]";
-  const pctTextColor = pct >= 100 ? "text-emerald-600" : pct >= 80 ? "text-emerald-500" : pct >= 50 ? "text-amber-500" : pct > 0 ? "text-red-500" : "text-slate-600";
+  const pctColor =
+    pct >= 100
+      ? "bg-emerald-500"
+      : pct >= 80
+        ? "bg-emerald-400"
+        : pct >= 50
+          ? "bg-amber-400"
+          : pct > 0
+            ? "bg-red-400"
+            : "bg-[#151936]";
+  const pctTextColor =
+    pct >= 100
+      ? "text-emerald-600"
+      : pct >= 80
+        ? "text-emerald-500"
+        : pct >= 50
+          ? "text-amber-500"
+          : pct > 0
+            ? "text-red-500"
+            : "text-slate-600";
 
   const displayCode = mandate.propertyCode
     ? `MND-${mandate.propertyCode.slice(-4).toUpperCase()}`
@@ -168,7 +187,15 @@ export function MandateDetailDrawer({
                   {mandate.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
                 </button>
               )}
-              <Badge tone={mandate.status === "active" ? "success" : mandate.status === "pending_approval" ? "warning" : "neutral"}>
+              <Badge
+                tone={
+                  mandate.status === "active"
+                    ? "success"
+                    : mandate.status === "pending_approval"
+                      ? "warning"
+                      : "neutral"
+                }
+              >
                 {mandate.status.replace("_", " ").toUpperCase()}
               </Badge>
             </div>
@@ -215,16 +242,31 @@ export function MandateDetailDrawer({
         {/* Executive KPI Overview */}
         <div className="grid grid-cols-3 gap-3 bg-slate-50/80 p-4 rounded-[22px] border border-slate-200/80">
           <div className="flex flex-col gap-0.5">
-            <span className="text-xxs font-medium text-slate-400 uppercase tracking-wider">Management Fee</span>
-            <span className="font-mono text-lg font-medium text-slate-900">{(rate * 100).toFixed(1)}%</span>
+            <span className="text-xxs font-medium text-slate-400 uppercase tracking-wider">
+              Management Fee
+            </span>
+            <span className="font-mono text-lg font-medium text-slate-900">
+              {(rate * 100).toFixed(1)}%
+            </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xxs font-medium text-slate-400 uppercase tracking-wider">Collection MTD</span>
-            <span className="font-mono text-lg font-medium text-slate-900">{formatCompactKES(collected)}</span>
+            <span className="text-xxs font-medium text-slate-400 uppercase tracking-wider">
+              Collection MTD
+            </span>
+            <span className="font-mono text-lg font-medium text-slate-900">
+              {formatCompactKES(collected)}
+            </span>
           </div>
           <div className="flex flex-col gap-0.5 text-right">
-            <span className="text-xxs font-medium text-slate-400 uppercase tracking-wider">Remittance Due</span>
-            <span className={cn("font-mono text-lg font-medium", mandate.status === "active" && collected > 0 ? "text-emerald-600" : "text-slate-400")}>
+            <span className="text-xxs font-medium text-slate-400 uppercase tracking-wider">
+              Remittance Due
+            </span>
+            <span
+              className={cn(
+                "font-mono text-lg font-medium",
+                mandate.status === "active" && collected > 0 ? "text-emerald-600" : "text-slate-400"
+              )}
+            >
               {remittanceDisplay}
             </span>
           </div>
@@ -233,21 +275,34 @@ export function MandateDetailDrawer({
         {/* Collection MTD Progress Bar */}
         <div className="flex flex-col gap-2 bg-white p-4 rounded-[22px] border border-slate-200/80 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xxs font-medium text-slate-500 font-mono tracking-wider uppercase">Collection MTD Target</span>
-            <span className={cn("text-xs font-mono font-medium", pctTextColor)}>{pct}% Collected</span>
+            <span className="text-xxs font-medium text-slate-500 font-mono tracking-wider uppercase">
+              Collection MTD Target
+            </span>
+            <span className={cn("text-xs font-mono font-medium", pctTextColor)}>
+              {pct}% Collected
+            </span>
           </div>
           <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-            <div style={{ width: `${pct}%` }} className={cn("h-full rounded-full transition-all duration-500", pctColor)} />
+            <div
+              style={{ width: `${pct}%` }}
+              className={cn("h-full rounded-full transition-all duration-500", pctColor)}
+            />
           </div>
           <div className="flex items-center justify-between mt-0.5 text-xxs text-slate-400 font-mono">
-            <span>01 {new Date().toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })}</span>
-            <span>31 {new Date().toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })}</span>
+            <span>
+              01 {new Date().toLocaleDateString("en-GB", { month: "short", year: "2-digit" })}
+            </span>
+            <span>
+              31 {new Date().toLocaleDateString("en-GB", { month: "short", year: "2-digit" })}
+            </span>
           </div>
         </div>
 
         {/* Actors Card (Landlord & Property Manager) */}
         <div className="flex flex-col gap-3 bg-white p-4 rounded-[22px] border border-slate-200/80 shadow-2xs">
-          <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">Stakeholders & Management</h4>
+          <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+            Stakeholders & Management
+          </h4>
 
           {/* Landlord Row */}
           <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50/80 border border-slate-100">
@@ -258,7 +313,9 @@ export function MandateDetailDrawer({
                 className="size-9 bg-white text-slate-800 text-xs border border-slate-200 shrink-0 shadow-2xs"
               />
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-medium text-slate-900 truncate">{mandate.landlordName}</span>
+                <span className="text-xs font-medium text-slate-900 truncate">
+                  {mandate.landlordName}
+                </span>
                 <span className="text-xxs text-slate-400 font-mono tracking-wider uppercase">
                   {(mandate.landlordCompanyName || "Individual Landlord").toUpperCase()}
                 </span>
@@ -285,12 +342,19 @@ export function MandateDetailDrawer({
                 className="size-9 bg-[#151936] text-white text-xs shrink-0 shadow-2xs"
               />
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-medium text-slate-900 truncate">{mandate.managerName ?? "Unassigned"}</span>
-                <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider">{mandate.managerTitle ?? "Property Manager"}</span>
+                <span className="text-xs font-medium text-slate-900 truncate">
+                  {mandate.managerName ?? "Unassigned"}
+                </span>
+                <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider">
+                  {mandate.managerTitle ?? "Property Manager"}
+                </span>
               </div>
             </div>
 
-            <Link href="/admin/messages" className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs transition-colors shrink-0">
+            <Link
+              href="/admin/messages"
+              className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs transition-colors shrink-0"
+            >
               <IconMessageCircle size={14} /> Message
             </Link>
           </div>
@@ -299,7 +363,9 @@ export function MandateDetailDrawer({
         {/* Paperwork & Compliance Section */}
         <div className="flex flex-col gap-3 bg-white p-4 rounded-[22px] border border-slate-200/80 shadow-2xs">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">Compliance & Paperwork</h4>
+            <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+              Compliance & Paperwork
+            </h4>
             <Badge tone={MANDATE_LETTER_STATUS_META[mandate.paperworkStatus].tone}>
               {MANDATE_LETTER_STATUS_META[mandate.paperworkStatus].label}
             </Badge>
@@ -326,15 +392,24 @@ export function MandateDetailDrawer({
 
         {/* Recent Audit Trail Feed */}
         <div className="flex flex-col gap-3 bg-white p-4 rounded-[22px] border border-slate-200/80 shadow-2xs">
-          <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">Recent Activity & Audit Trail</h4>
+          <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+            Recent Activity & Audit Trail
+          </h4>
           {activity.length === 0 ? (
-            <p className="text-xs text-slate-400 italic py-2">No recent audit log entries recorded for this mandate.</p>
+            <p className="text-xs text-slate-400 italic py-2">
+              No recent audit log entries recorded for this mandate.
+            </p>
           ) : (
             <div className="divide-y divide-slate-100">
               {activity.map((entry) => (
-                <div key={entry.id} className="py-2.5 flex items-start justify-between gap-3 text-xs">
+                <div
+                  key={entry.id}
+                  className="py-2.5 flex items-start justify-between gap-3 text-xs"
+                >
                   <span className="text-slate-700 font-medium leading-snug">{entry.summary}</span>
-                  <span className="text-xxs font-mono text-slate-400 shrink-0">{relativeTime(entry.createdAt)}</span>
+                  <span className="text-xxs font-mono text-slate-400 shrink-0">
+                    {relativeTime(entry.createdAt)}
+                  </span>
                 </div>
               ))}
             </div>

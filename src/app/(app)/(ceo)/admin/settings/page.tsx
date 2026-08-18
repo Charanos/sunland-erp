@@ -10,7 +10,11 @@ export default function SettingsPage() {
   const { activeEntityId } = useUIStore();
   return (
     <Suspense fallback={null}>
-      <AccountSystemBoard entityId={activeEntityId} startScope="personal" startSection="preferences" />
+      <AccountSystemBoard
+        entityId={activeEntityId}
+        startScope="personal"
+        startSection="preferences"
+      />
     </Suspense>
   );
 }

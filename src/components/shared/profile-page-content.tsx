@@ -78,7 +78,15 @@ interface Session {
 // raw IP rather than a fabricated city/location string.
 function parseUserAgent(ua: string | null): { device: string; browser: string } {
   const raw = ua ?? "";
-  const browser = raw.includes("Edg") ? "Edge" : raw.includes("Chrome") ? "Chrome" : raw.includes("Safari") ? "Safari" : raw.includes("Firefox") ? "Firefox" : "Unknown browser";
+  const browser = raw.includes("Edg")
+    ? "Edge"
+    : raw.includes("Chrome")
+      ? "Chrome"
+      : raw.includes("Safari")
+        ? "Safari"
+        : raw.includes("Firefox")
+          ? "Firefox"
+          : "Unknown browser";
   const device = raw.includes("iPhone")
     ? "iPhone"
     : raw.includes("Android")
@@ -127,7 +135,6 @@ const INITIAL_PROFILE: UserProfile = {
     "Security & Admin",
   ],
 };
-
 
 const PROFILE_TABS = [
   { id: "Overview" as const, label: "Overview", icon: IconUser },
@@ -204,11 +211,7 @@ function getBrowserIcon(browser: string) {
 }
 
 function getDeviceIcon(device: string) {
-  if (
-    device.includes("iPhone") ||
-    device.includes("Android") ||
-    device.includes("Mobile")
-  )
+  if (device.includes("iPhone") || device.includes("Android") || device.includes("Mobile"))
     return IconDeviceMobile;
   return IconDeviceLaptop;
 }
@@ -218,8 +221,7 @@ function groupActivityByDay(log: ActivityItem[]) {
   const yesterday: ActivityItem[] = [];
   const earlier: ActivityItem[] = [];
   log.forEach((item) => {
-    if (item.time.includes("min") || item.time.includes("hour"))
-      today.push(item);
+    if (item.time.includes("min") || item.time.includes("hour")) today.push(item);
     else if (item.time === "Yesterday") yesterday.push(item);
     else earlier.push(item);
   });
@@ -232,13 +234,7 @@ function groupActivityByDay(log: ActivityItem[]) {
 
 // ── Password Toggle ────────────────────────────────────────────────────────────
 
-function PasswordToggleBtn({
-  show,
-  toggle,
-}: {
-  show: boolean;
-  toggle: () => void;
-}) {
+function PasswordToggleBtn({ show, toggle }: { show: boolean; toggle: () => void }) {
   return (
     <button
       type="button"
@@ -339,9 +335,7 @@ function EditableField({
           </div>
         ) : (
           <p className="text-sm text-slate-800 leading-snug mt-0.5">
-            {value || (
-              <span className="text-slate-300 italic text-sm">Not set</span>
-            )}
+            {value || <span className="text-slate-300 italic text-sm">Not set</span>}
           </p>
         )}
       </div>
@@ -424,11 +418,7 @@ function AvatarUploader({
       >
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={preview}
-            alt="Avatar"
-            className="size-full object-cover"
-          />
+          <img src={preview} alt="Avatar" className="size-full object-cover" />
         ) : (
           <div className="size-full bg-[#151936] flex items-center justify-center title-serif text-xl text-[#f3df27]">
             {initials}
@@ -462,10 +452,7 @@ function AvatarUploader({
 // ── Profile Completion Bar ─────────────────────────────────────────────────────
 
 function ProfileCompletionBar({ profile }: { profile: UserProfile }) {
-  const { checks, done, total, pct } = useMemo(
-    () => getProfileCompletion(profile),
-    [profile]
-  );
+  const { checks, done, total, pct } = useMemo(() => getProfileCompletion(profile), [profile]);
   if (pct === 100) return null;
 
   return (
@@ -476,8 +463,7 @@ function ProfileCompletionBar({ profile }: { profile: UserProfile }) {
             <IconCircleDashed size={13} className="text-amber-600" />
           </div>
           <p className="text-sm text-amber-800">
-            Profile{" "}
-            <span className="font-mono">{pct}%</span> complete
+            Profile <span className="font-mono">{pct}%</span> complete
           </p>
         </div>
         <span className="font-mono text-sm text-amber-500">
@@ -508,11 +494,7 @@ function ProfileCompletionBar({ profile }: { profile: UserProfile }) {
 
 // ── Security Health Card ───────────────────────────────────────────────────────
 
-function SecurityHealthCard({
-  onChangeTab,
-}: {
-  onChangeTab: (tab: ProfileTab) => void;
-}) {
+function SecurityHealthCard({ onChangeTab }: { onChangeTab: (tab: ProfileTab) => void }) {
   const score = 55;
 
   const items = [
@@ -550,12 +532,7 @@ function SecurityHealthCard({
     },
   ];
 
-  const scoreTone =
-    score >= 80
-      ? "bg-emerald-400"
-      : score >= 50
-        ? "bg-amber-400"
-        : "bg-rose-400";
+  const scoreTone = score >= 80 ? "bg-emerald-400" : score >= 50 ? "bg-amber-400" : "bg-rose-400";
 
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
@@ -592,9 +569,7 @@ function SecurityHealthCard({
               <item.icon size={13} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-slate-400 leading-none mb-0.5">
-                {item.label}
-              </p>
+              <p className="text-sm text-slate-400 leading-none mb-0.5">{item.label}</p>
               <p
                 className={cn(
                   "text-sm",
@@ -680,9 +655,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
         <form onSubmit={submit} className="p-6 space-y-4">
           {/* Current */}
           <div>
-            <label className="label-caps text-slate-400 mb-2 block">
-              Current Password
-            </label>
+            <label className="label-caps text-slate-400 mb-2 block">Current Password</label>
             <div className="relative">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300">
                 <IconLock size={14} />
@@ -695,10 +668,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
                 className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-10 py-2.5 text-sm text-slate-800 focus:border-[#151936] focus:outline-none focus:ring-2 focus:ring-[#151936]/10 transition-all"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <PasswordToggleBtn
-                  show={showCurrent}
-                  toggle={() => setShowCurrent((p) => !p)}
-                />
+                <PasswordToggleBtn show={showCurrent} toggle={() => setShowCurrent((p) => !p)} />
               </div>
             </div>
           </div>
@@ -707,9 +677,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
 
           {/* New */}
           <div>
-            <label className="label-caps text-slate-400 mb-2 block">
-              New Password
-            </label>
+            <label className="label-caps text-slate-400 mb-2 block">New Password</label>
             <div className="relative">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300">
                 <IconKey size={14} />
@@ -722,10 +690,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
                 className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-10 py-2.5 text-sm text-slate-800 focus:border-[#151936] focus:outline-none focus:ring-2 focus:ring-[#151936]/10 transition-all"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <PasswordToggleBtn
-                  show={showNext}
-                  toggle={() => setShowNext((p) => !p)}
-                />
+                <PasswordToggleBtn show={showNext} toggle={() => setShowNext((p) => !p)} />
               </div>
             </div>
             {next.length > 0 && (
@@ -754,9 +719,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
                   >
                     {strength.label}
                   </p>
-                  <span className="font-mono text-sm text-slate-400">
-                    {strength.score}/5
-                  </span>
+                  <span className="font-mono text-sm text-slate-400">{strength.score}/5</span>
                 </div>
               </div>
             )}
@@ -764,9 +727,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
 
           {/* Confirm */}
           <div>
-            <label className="label-caps text-slate-400 mb-2 block">
-              Confirm New Password
-            </label>
+            <label className="label-caps text-slate-400 mb-2 block">Confirm New Password</label>
             <div className="relative">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300">
                 <IconKey size={14} />
@@ -784,10 +745,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
                 )}
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <PasswordToggleBtn
-                  show={showConfirm}
-                  toggle={() => setShowConfirm((p) => !p)}
-                />
+                <PasswordToggleBtn show={showConfirm} toggle={() => setShowConfirm((p) => !p)} />
               </div>
             </div>
             {mismatch && (
@@ -838,9 +796,7 @@ function PasswordTab({ onSave }: { onSave: (msg: string) => void }) {
               <div
                 className={cn(
                   "size-5 rounded-md flex items-center justify-center transition-all",
-                  item.ok
-                    ? "bg-emerald-100 text-emerald-600"
-                    : "bg-slate-100 text-slate-300"
+                  item.ok ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-300"
                 )}
               >
                 <IconCheck size={11} />
@@ -871,9 +827,7 @@ function ActivityTimeline({ activityLog }: { activityLog: ActivityItem[] }) {
       <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
         <div>
           <h2 className="title-serif text-slate-900">Activity Log</h2>
-          <p className="text-sm text-slate-400 mt-0.5">
-            All actions performed in the last 30 days
-          </p>
+          <p className="text-sm text-slate-400 mt-0.5">All actions performed in the last 30 days</p>
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200">
           <IconCalendar size={12} className="text-slate-400" />
@@ -883,16 +837,11 @@ function ActivityTimeline({ activityLog }: { activityLog: ActivityItem[] }) {
 
       <div className="px-6 py-4">
         {groups.map((group, gi) => (
-          <div
-            key={group.label}
-            className={cn("pb-4", gi < groups.length - 1 && "mb-2")}
-          >
+          <div key={group.label} className={cn("pb-4", gi < groups.length - 1 && "mb-2")}>
             {/* Day divider */}
             <div className="flex items-center gap-3 mb-5">
               <div className="h-px flex-1 bg-slate-100" />
-              <span className="label-caps text-sm text-slate-400 px-2">
-                {group.label}
-              </span>
+              <span className="label-caps text-sm text-slate-400 px-2">{group.label}</span>
               <div className="h-px flex-1 bg-slate-100" />
             </div>
 
@@ -920,9 +869,7 @@ function ActivityTimeline({ activityLog }: { activityLog: ActivityItem[] }) {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm text-slate-800 leading-snug">
-                        {item.action}
-                      </p>
+                      <p className="text-sm text-slate-800 leading-snug">{item.action}</p>
                       <span className="font-mono text-sm text-slate-400 whitespace-nowrap mt-0.5 shrink-0">
                         {item.time}
                       </span>
@@ -932,15 +879,13 @@ function ActivityTimeline({ activityLog }: { activityLog: ActivityItem[] }) {
                         className={cn(
                           "px-2 py-0.5 rounded-md text-sm label-caps border",
                           MODULE_TONES[item.module] ||
-                          "bg-slate-100 text-slate-600 border-slate-200"
+                            "bg-slate-100 text-slate-600 border-slate-200"
                         )}
                       >
                         {item.module}
                       </span>
                       {item.ref && (
-                        <span className="font-mono text-sm text-slate-400">
-                          {item.ref}
-                        </span>
+                        <span className="font-mono text-sm text-slate-400">{item.ref}</span>
                       )}
                     </div>
                   </div>
@@ -956,11 +901,7 @@ function ActivityTimeline({ activityLog }: { activityLog: ActivityItem[] }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 
-export function ProfilePageContent({
-  portalPrefix = "/admin",
-}: {
-  portalPrefix?: string;
-}) {
+export function ProfilePageContent({ portalPrefix = "/admin" }: { portalPrefix?: string }) {
   const [activeTab, setActiveTab] = useState<ProfileTab>("Overview");
   const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -972,19 +913,46 @@ export function ProfilePageContent({
   // that genuinely round-trip to the database (name/title/avatarUrl).
   function deriveRoleDisplay(role: string) {
     if (role === "ceo" || role === "general_manager") {
-      return { department: "Executive Management", accessLevel: "Full Access - All modules", modules: ["Finance Command", "Operations", "HR Portal", "Properties & Portfolio", "Reports & Audit", "Security & Admin"] };
+      return {
+        department: "Executive Management",
+        accessLevel: "Full Access - All modules",
+        modules: [
+          "Finance Command",
+          "Operations",
+          "HR Portal",
+          "Properties & Portfolio",
+          "Reports & Audit",
+          "Security & Admin",
+        ],
+      };
     }
     if (role.startsWith("finance") || role.startsWith("accounts") || role.startsWith("payroll")) {
-      return { department: "Finance & Accounts", accessLevel: "Ledgers, Approvals & Cash flows", modules: ["Finance Command", "Reports & Audit"] };
+      return {
+        department: "Finance & Accounts",
+        accessLevel: "Ledgers, Approvals & Cash flows",
+        modules: ["Finance Command", "Reports & Audit"],
+      };
     }
     if (role.startsWith("hr")) {
-      return { department: "Human Resources", accessLevel: "Employee Profiles & Payroll Head", modules: ["HR Portal", "Reports & Audit"] };
+      return {
+        department: "Human Resources",
+        accessLevel: "Employee Profiles & Payroll Head",
+        modules: ["HR Portal", "Reports & Audit"],
+      };
     }
     if (role.startsWith("rentals")) {
-      return { department: "Rentals & Portfolios", accessLevel: "Properties, Leases & Mandates", modules: ["Properties & Portfolio", "Operations"] };
+      return {
+        department: "Rentals & Portfolios",
+        accessLevel: "Properties, Leases & Mandates",
+        modules: ["Properties & Portfolio", "Operations"],
+      };
     }
     if (role.startsWith("operations") || role.startsWith("property")) {
-      return { department: "Operations & Maintenance", accessLevel: "Properties & Maintenance Tickets", modules: ["Operations", "Properties & Portfolio"] };
+      return {
+        department: "Operations & Maintenance",
+        accessLevel: "Properties & Maintenance Tickets",
+        modules: ["Operations", "Properties & Portfolio"],
+      };
     }
     return { department: "General", accessLevel: "Standard Access", modules: [] };
   }
@@ -1026,7 +994,13 @@ export function ProfilePageContent({
       const auditData = await auditRes.json();
 
       if (sessionsRes.ok) {
-        const rows = (sessionsData.sessions ?? []) as Array<{ id: string; ip: string | null; userAgent: string | null; revokedAt: string | null; createdAt: string }>;
+        const rows = (sessionsData.sessions ?? []) as Array<{
+          id: string;
+          ip: string | null;
+          userAgent: string | null;
+          revokedAt: string | null;
+          createdAt: string;
+        }>;
         const active = rows.filter((s) => !s.revokedAt);
         // The frontend has no way to know which listed session is *this*
         // request's own session (that would require exposing the session id
@@ -1034,7 +1008,9 @@ export function ProfilePageContent({
         // - the most-recently-created active session is used as a reasonable
         // "current device" approximation rather than guessing further.
         const mostRecentId = active.length
-          ? [...active].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0].id
+          ? [...active].sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            )[0].id
           : null;
         setSessions(
           active.map((s) => {
@@ -1047,12 +1023,19 @@ export function ProfilePageContent({
               lastActive: formatActivityTime(s.createdAt),
               current: s.id === mostRecentId,
             };
-          }),
+          })
         );
       }
 
       if (auditRes.ok) {
-        const entries = (auditData.entries ?? []) as Array<{ id: string; associatedType: string; associatedId: string | null; action: string; summary: string; createdAt: string }>;
+        const entries = (auditData.entries ?? []) as Array<{
+          id: string;
+          associatedType: string;
+          associatedId: string | null;
+          action: string;
+          summary: string;
+          createdAt: string;
+        }>;
         setActivityLog(
           entries.map((e) => ({
             id: e.id,
@@ -1061,7 +1044,7 @@ export function ProfilePageContent({
             time: formatActivityTime(e.createdAt),
             tone: "neutral" as const,
             ref: e.associatedId,
-          })),
+          }))
         );
       }
     } catch (err) {
@@ -1076,7 +1059,11 @@ export function ProfilePageContent({
 
   const handleSaveField = async (field: keyof UserProfile, value: string) => {
     if (field !== "name" && field !== "title") {
-      pushToast({ tone: "warning", title: "Not editable yet", body: `${field.charAt(0).toUpperCase() + field.slice(1)} isn't backed by a saved field yet.` });
+      pushToast({
+        tone: "warning",
+        title: "Not editable yet",
+        body: `${field.charAt(0).toUpperCase() + field.slice(1)} isn't backed by a saved field yet.`,
+      });
       return;
     }
     const previous = profile[field];
@@ -1119,7 +1106,11 @@ export function ProfilePageContent({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to revoke session");
       setSessions((prev) => prev.filter((s) => s.id !== id));
-      pushToast({ tone: "warning", title: "Session revoked", body: "That device has been signed out." });
+      pushToast({
+        tone: "warning",
+        title: "Session revoked",
+        body: "That device has been signed out.",
+      });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not revoke that session.";
       pushToast({ tone: "error", title: "Error", body: message });
@@ -1129,14 +1120,22 @@ export function ProfilePageContent({
   const revokeAllOthers = async () => {
     const others = sessions.filter((s) => !s.current);
     const results = await Promise.allSettled(
-      others.map((s) => fetch(`/api/identity/sessions/${s.id}/revoke`, { method: "POST" })),
+      others.map((s) => fetch(`/api/identity/sessions/${s.id}/revoke`, { method: "POST" }))
     );
     const failures = results.filter((r) => r.status === "rejected").length;
     setSessions((prev) => prev.filter((s) => s.current));
     if (failures > 0) {
-      pushToast({ tone: "warning", title: "Partially revoked", body: `${others.length - failures} of ${others.length} sessions signed out.` });
+      pushToast({
+        tone: "warning",
+        title: "Partially revoked",
+        body: `${others.length - failures} of ${others.length} sessions signed out.`,
+      });
     } else {
-      pushToast({ tone: "warning", title: "All sessions revoked", body: "All other devices have been signed out." });
+      pushToast({
+        tone: "warning",
+        title: "All sessions revoked",
+        body: "All other devices have been signed out.",
+      });
     }
   };
 
@@ -1144,7 +1143,6 @@ export function ProfilePageContent({
 
   return (
     <PageTransition className="mx-auto max-w-[98rem] flex flex-col gap-5 pb-12 px-4 md:px-6">
-
       {/* ── Profile Hero ─────────────────────────────────────── */}
       <div className="gsap-stagger relative overflow-hidden rounded-2xl border border-white/[0.06] shadow-xl">
         {/* Satin gradient background */}
@@ -1154,8 +1152,7 @@ export function ProfilePageContent({
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(243,223,39,0.7) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(243,223,39,0.7) 1px, transparent 1px)",
             backgroundSize: "30px 30px",
           }}
         />
@@ -1175,9 +1172,7 @@ export function ProfilePageContent({
           {/* Identity block */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-              <h1 className="title-serif text-white leading-tight">
-                {profile.name}
-              </h1>
+              <h1 className="title-serif text-white leading-tight">{profile.name}</h1>
               <span className="px-2.5 py-0.5 rounded-full text-sm label-caps bg-[#f3df27]/12 text-[#f3df27] border border-[#f3df27]/20">
                 {formatRole(profile.role)}
               </span>
@@ -1192,9 +1187,7 @@ export function ProfilePageContent({
                 <div className="size-6 rounded-md bg-white/5 border border-white/8 flex items-center justify-center">
                   <IconChartPie size={11} className="text-slate-400" />
                 </div>
-                <span className="font-mono text-white text-sm">
-                  {profile.modules.length}
-                </span>
+                <span className="font-mono text-white text-sm">{profile.modules.length}</span>
                 <span className="text-slate-400 text-sm">modules</span>
               </div>
 
@@ -1204,9 +1197,7 @@ export function ProfilePageContent({
                 <div className="size-6 rounded-md bg-white/5 border border-white/8 flex items-center justify-center">
                   <IconDeviceLaptop size={11} className="text-slate-400" />
                 </div>
-                <span className="font-mono text-white text-sm">
-                  {sessions.length}
-                </span>
+                <span className="font-mono text-white text-sm">{sessions.length}</span>
                 <span className="text-slate-400 text-sm">sessions</span>
               </div>
 
@@ -1255,9 +1246,7 @@ export function ProfilePageContent({
             {completion.pct < 100 && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/15">
                 <IconCircleDashed size={12} className="text-amber-400" />
-                <span className="text-sm text-amber-400 font-mono">
-                  {completion.pct}%
-                </span>
+                <span className="text-sm text-amber-400 font-mono">{completion.pct}%</span>
                 <span className="text-sm text-amber-500">complete</span>
               </div>
             )}
@@ -1290,9 +1279,7 @@ export function ProfilePageContent({
                   <span
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-sm font-medium font-mono",
-                      isActive
-                        ? "bg-[#151936] text-white"
-                        : "bg-white/10 text-white/55"
+                      isActive ? "bg-[#151936] text-white" : "bg-white/10 text-white/55"
                     )}
                   >
                     {count}
@@ -1316,12 +1303,8 @@ export function ProfilePageContent({
             <div className="gsap-stagger rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                  <h2 className="title-serif text-slate-900">
-                    Account Information
-                  </h2>
-                  <p className="text-sm text-slate-400 mt-0.5">
-                    Hover any field to edit
-                  </p>
+                  <h2 className="title-serif text-slate-900">Account Information</h2>
+                  <p className="text-sm text-slate-400 mt-0.5">Hover any field to edit</p>
                 </div>
                 <div className="size-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center">
                   <IconUser size={14} className="text-slate-400" />
@@ -1368,9 +1351,7 @@ export function ProfilePageContent({
                     <IconClock size={14} className="text-slate-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="label-caps text-slate-400 mb-2">
-                      Presence Status
-                    </p>
+                    <p className="label-caps text-slate-400 mb-2">Presence Status</p>
                     <div className="flex items-center gap-2">
                       {(["online", "busy", "away"] as const).map((s) => (
                         <button
@@ -1418,12 +1399,8 @@ export function ProfilePageContent({
                     <IconCalendar size={14} className="text-slate-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="label-caps text-slate-400 mb-1">
-                      Member Since
-                    </p>
-                    <p className="font-mono text-sm text-slate-700">
-                      {profile.joinDate}
-                    </p>
+                    <p className="label-caps text-slate-400 mb-1">Member Since</p>
+                    <p className="font-mono text-sm text-slate-700">{profile.joinDate}</p>
                   </div>
                   <span className="px-2 py-0.5 rounded-md text-sm label-caps bg-slate-100 text-slate-400">
                     Read-only
@@ -1437,9 +1414,7 @@ export function ProfilePageContent({
           <div className="lg:col-span-5 flex flex-col gap-4">
             {/* Role & Permissions */}
             <div className="gsap-stagger rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-              <h2 className="title-serif text-slate-900 mb-4">
-                Role & Permissions
-              </h2>
+              <h2 className="title-serif text-slate-900 mb-4">Role & Permissions</h2>
 
               {/* Role badge */}
               <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#151936] mb-4">
@@ -1447,18 +1422,12 @@ export function ProfilePageContent({
                   <IconShieldLock size={16} className="text-[#f3df27]" />
                 </div>
                 <div>
-                  <p className="text-sm text-white">
-                    {formatRole(profile.role)}
-                  </p>
-                  <p className="text-sm text-slate-400 mt-0.5">
-                    {profile.accessLevel}
-                  </p>
+                  <p className="text-sm text-white">{formatRole(profile.role)}</p>
+                  <p className="text-sm text-slate-400 mt-0.5">{profile.accessLevel}</p>
                 </div>
               </div>
 
-              <p className="label-caps text-slate-400 mb-2.5">
-                Authorized Modules
-              </p>
+              <p className="label-caps text-slate-400 mb-2.5">Authorized Modules</p>
               <div className="flex flex-wrap gap-1.5">
                 {profile.modules.map((mod) => (
                   <span
@@ -1476,9 +1445,7 @@ export function ProfilePageContent({
 
             {/* Quick Actions */}
             <div className="gsap-stagger rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-              <h2 className="title-serif text-slate-900 mb-3">
-                Quick Actions
-              </h2>
+              <h2 className="title-serif text-slate-900 mb-3">Quick Actions</h2>
               <div className="space-y-0.5">
                 {[
                   {
@@ -1554,9 +1521,7 @@ export function ProfilePageContent({
       {/* ── Password Tab ─────────────────────────────────────── */}
       {activeTab === "Password" && (
         <PasswordTab
-          onSave={(msg) =>
-            pushToast({ tone: "success", title: "Password updated", body: msg })
-          }
+          onSave={(msg) => pushToast({ tone: "success", title: "Password updated", body: msg })}
         />
       )}
 
@@ -1570,8 +1535,7 @@ export function ProfilePageContent({
             <div>
               <h2 className="title-serif text-slate-900">Active Sessions</h2>
               <p className="text-sm text-slate-400 mt-0.5">
-                {sessions.length} device{sessions.length !== 1 ? "s" : ""}{" "}
-                currently signed in
+                {sessions.length} device{sessions.length !== 1 ? "s" : ""} currently signed in
               </p>
             </div>
             <button
@@ -1657,14 +1621,9 @@ export function ProfilePageContent({
             {sessions.filter((s) => !s.current).length === 0 && (
               <div className="text-center py-10">
                 <div className="size-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-                  <IconCircleCheckFilled
-                    size={26}
-                    className="text-emerald-500"
-                  />
+                  <IconCircleCheckFilled size={26} className="text-emerald-500" />
                 </div>
-                <p className="text-sm text-slate-600">
-                  No other active sessions
-                </p>
+                <p className="text-sm text-slate-600">No other active sessions</p>
                 <p className="text-sm text-slate-400 mt-1">
                   Only this device is currently signed in
                 </p>

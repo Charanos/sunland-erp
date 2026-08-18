@@ -47,7 +47,7 @@ export async function getMaintenanceMode(entityIdOrSlug: string) {
 export async function setMaintenanceMode(
   ctx: CallerContext,
   entityIdOrSlug: string,
-  input: { enabled: boolean; message?: string },
+  input: { enabled: boolean; message?: string }
 ) {
   const entityId = await resolveEntityId(entityIdOrSlug);
   await authorize(ctx, "settings.entity.write", entityId);
@@ -96,7 +96,12 @@ const hasEnv = (v: string | undefined) => !!v && v.trim().length > 0;
  * never silently "healthy".
  */
 export async function probeServiceHealth() {
-  const results: Array<{ service: string; status: ServiceHealthStatus; latencyMs: number | null; detail: string }> = [];
+  const results: Array<{
+    service: string;
+    status: ServiceHealthStatus;
+    latencyMs: number | null;
+    detail: string;
+  }> = [];
 
   // Database - a real round-trip, timed.
   const dbStart = Date.now();
@@ -128,7 +133,8 @@ export async function probeServiceHealth() {
       : "ABLY_API_KEY not set - UI falls back to fetch-on-load",
   });
 
-  const cacheReady = hasEnv(process.env.UPSTASH_REDIS_REST_URL) && hasEnv(process.env.UPSTASH_REDIS_REST_TOKEN);
+  const cacheReady =
+    hasEnv(process.env.UPSTASH_REDIS_REST_URL) && hasEnv(process.env.UPSTASH_REDIS_REST_TOKEN);
   results.push({
     service: "cache",
     status: cacheReady ? "healthy" : "not_configured",
@@ -136,12 +142,15 @@ export async function probeServiceHealth() {
     detail: cacheReady ? "Rate limiting enforced" : "Not configured - limiter fails open",
   });
 
-  const mpesaReady = hasEnv(process.env.MPESA_CONSUMER_KEY) && hasEnv(process.env.MPESA_CONSUMER_SECRET);
+  const mpesaReady =
+    hasEnv(process.env.MPESA_CONSUMER_KEY) && hasEnv(process.env.MPESA_CONSUMER_SECRET);
   results.push({
     service: "mpesa",
     status: mpesaReady ? "healthy" : "not_configured",
     latencyMs: null,
-    detail: mpesaReady ? "Daraja credentials present" : "No live credentials - paybill is a scaffold (ADR H4)",
+    detail: mpesaReady
+      ? "Daraja credentials present"
+      : "No live credentials - paybill is a scaffold (ADR H4)",
   });
 
   await db.insert(serviceHealthChecks).values(
@@ -150,7 +159,7 @@ export async function probeServiceHealth() {
       status: r.status,
       latencyMs: r.latencyMs,
       detail: r.detail,
-    })),
+    }))
   );
 
   return results;
@@ -173,7 +182,12 @@ export async function getServiceHealthHistory(days = 30) {
     .orderBy(desc(serviceHealthChecks.checkedAt));
 
   const dayKey = (d: Date) => d.toISOString().slice(0, 10);
-  const severity: Record<ServiceHealthStatus, number> = { healthy: 0, not_configured: 1, degraded: 2, down: 3 };
+  const severity: Record<ServiceHealthStatus, number> = {
+    healthy: 0,
+    not_configured: 1,
+    degraded: 2,
+    down: 3,
+  };
 
   return MONITORED_SERVICES.map((svc) => {
     const mine = rows.filter((r) => r.service === svc.key);
@@ -237,9 +251,10 @@ export async function listJobs(ctx: CallerContext, entityIdOrSlug: string) {
       lastRunAt: last?.startedAt?.toISOString() ?? null,
       lastSummary: last?.summary ?? null,
       lastError: last?.error ?? null,
-      durationMs: last?.finishedAt && last?.startedAt
-        ? last.finishedAt.getTime() - last.startedAt.getTime()
-        : null,
+      durationMs:
+        last?.finishedAt && last?.startedAt
+          ? last.finishedAt.getTime() - last.startedAt.getTime()
+          : null,
       runCount: runs.filter((r) => r.jobKey === job.key).length,
     };
   });
@@ -334,7 +349,11 @@ async function executeJob(ctx: CallerContext, entityId: string, key: JobKey): Pr
 
       let drafted = 0;
       let skipped = 0;
-      for (const m of mandates as Array<{ id: string; status: string; currentPeriodCollected?: number }>) {
+      for (const m of mandates as Array<{
+        id: string;
+        status: string;
+        currentPeriodCollected?: number;
+      }>) {
         if (m.status !== "active" || !m.currentPeriodCollected || m.currentPeriodCollected <= 0) {
           skipped += 1;
           continue;

@@ -14,23 +14,20 @@ import {
   IconCheck,
   IconInfoCircle,
   IconBookUpload,
-  IconBuilding
+  IconBuilding,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast-provider";
 import { Modal } from "@/components/ui/modal";
 import { Drawer } from "@/components/ui/drawer";
 import { FinanceModuleNav } from "@/components/finance/finance-module-nav";
-import { BoardHeader, BoardPanel, Button, PaginationControls } from "@/components/ui/erp-primitives";
 import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip
-} from "recharts";
+  BoardHeader,
+  BoardPanel,
+  Button,
+  PaginationControls,
+} from "@/components/ui/erp-primitives";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -61,20 +58,128 @@ interface FeeCharge {
 // ─── Initial Mock Data ────────────────────────────────────────────────────────
 
 const INITIAL_RULES: FeeRule[] = [
-  { id: "ru1", ruleCode: "FEE-R-01", name: "Letting Commission Fee", scope: "Landlords", type: "Percentage", value: 10, frequency: "Per Occurrence", status: "Active" },
-  { id: "ru2", ruleCode: "FEE-R-02", name: "Late Rent Fine", scope: "Tenants", type: "Flat Rate", value: 12000, frequency: "Per Occurrence", status: "Active" },
-  { id: "ru3", ruleCode: "FEE-R-03", name: "Lease Execution Charge", scope: "Tenants", type: "Flat Rate", value: 15000, frequency: "Per Occurrence", status: "Active" },
-  { id: "ru4", ruleCode: "FEE-R-04", name: "Commercial Sale Commission", scope: "Sales clients", type: "Percentage", value: 5, frequency: "Per Occurrence", status: "Active" },
-  { id: "ru5", ruleCode: "FEE-R-05", name: "Annual Valuation Retainer", scope: "Valuers clients", type: "Flat Rate", value: 85000, frequency: "Annual", status: "Draft" }
+  {
+    id: "ru1",
+    ruleCode: "FEE-R-01",
+    name: "Letting Commission Fee",
+    scope: "Landlords",
+    type: "Percentage",
+    value: 10,
+    frequency: "Per Occurrence",
+    status: "Active",
+  },
+  {
+    id: "ru2",
+    ruleCode: "FEE-R-02",
+    name: "Late Rent Fine",
+    scope: "Tenants",
+    type: "Flat Rate",
+    value: 12000,
+    frequency: "Per Occurrence",
+    status: "Active",
+  },
+  {
+    id: "ru3",
+    ruleCode: "FEE-R-03",
+    name: "Lease Execution Charge",
+    scope: "Tenants",
+    type: "Flat Rate",
+    value: 15000,
+    frequency: "Per Occurrence",
+    status: "Active",
+  },
+  {
+    id: "ru4",
+    ruleCode: "FEE-R-04",
+    name: "Commercial Sale Commission",
+    scope: "Sales clients",
+    type: "Percentage",
+    value: 5,
+    frequency: "Per Occurrence",
+    status: "Active",
+  },
+  {
+    id: "ru5",
+    ruleCode: "FEE-R-05",
+    name: "Annual Valuation Retainer",
+    scope: "Valuers clients",
+    type: "Flat Rate",
+    value: 85000,
+    frequency: "Annual",
+    status: "Draft",
+  },
 ];
 
 const INITIAL_CHARGES: FeeCharge[] = [
-  { id: "ch1", chargeCode: "FEE-C-88", description: "Late Rent Fine - Apt 4B Westpoint", targetName: "Mary Wanjiku", propertyName: "Westpoint Apartments", amount: 12000, status: "Pending", date: "2026-06-20", ruleLinked: "Late Rent Fine" },
-  { id: "ch2", chargeCode: "FEE-C-87", description: "Commercial Valuation - Kilimani Plaza", targetName: "Quick Logistics Ltd", propertyName: "Kilimani Business Center", amount: 185000, status: "Posted", date: "2026-06-18", ruleLinked: "Annual Valuation Retainer", ledgerJournal: "JE-1039" },
-  { id: "ch3", chargeCode: "FEE-C-86", description: "Letting Commission - Runda Grove Villa", targetName: "Jacob Jones", propertyName: "Runda Grove Villa", amount: 213000, status: "Posted", date: "2026-06-10", ruleLinked: "Letting Commission Fee", ledgerJournal: "JE-1035" },
-  { id: "ch4", chargeCode: "FEE-C-85", description: "Late Rent Fine - Unit C7 Riverside", targetName: "Global Trade Inc", propertyName: "Riverside Residences", amount: 12000, status: "Pending", date: "2026-06-05", ruleLinked: "Late Rent Fine" },
-  { id: "ch5", chargeCode: "FEE-C-84", description: "Lease Preparation Fee - Gigiri Heights", targetName: "Dr. Arthur Morgan", propertyName: "Gigiri Heights", amount: 15000, status: "Pending", date: "2026-06-02", ruleLinked: "Lease Execution Charge" },
-  { id: "ch6", chargeCode: "FEE-C-80", description: "Asset Valuation - Mombasa Depot", targetName: "Philip Omondi", propertyName: "Mombasa Gateway Complex", amount: 95000, status: "Posted", date: "2026-05-15", ruleLinked: "Annual Valuation Retainer", ledgerJournal: "JE-0982" }
+  {
+    id: "ch1",
+    chargeCode: "FEE-C-88",
+    description: "Late Rent Fine - Apt 4B Westpoint",
+    targetName: "Mary Wanjiku",
+    propertyName: "Westpoint Apartments",
+    amount: 12000,
+    status: "Pending",
+    date: "2026-06-20",
+    ruleLinked: "Late Rent Fine",
+  },
+  {
+    id: "ch2",
+    chargeCode: "FEE-C-87",
+    description: "Commercial Valuation - Kilimani Plaza",
+    targetName: "Quick Logistics Ltd",
+    propertyName: "Kilimani Business Center",
+    amount: 185000,
+    status: "Posted",
+    date: "2026-06-18",
+    ruleLinked: "Annual Valuation Retainer",
+    ledgerJournal: "JE-1039",
+  },
+  {
+    id: "ch3",
+    chargeCode: "FEE-C-86",
+    description: "Letting Commission - Runda Grove Villa",
+    targetName: "Jacob Jones",
+    propertyName: "Runda Grove Villa",
+    amount: 213000,
+    status: "Posted",
+    date: "2026-06-10",
+    ruleLinked: "Letting Commission Fee",
+    ledgerJournal: "JE-1035",
+  },
+  {
+    id: "ch4",
+    chargeCode: "FEE-C-85",
+    description: "Late Rent Fine - Unit C7 Riverside",
+    targetName: "Global Trade Inc",
+    propertyName: "Riverside Residences",
+    amount: 12000,
+    status: "Pending",
+    date: "2026-06-05",
+    ruleLinked: "Late Rent Fine",
+  },
+  {
+    id: "ch5",
+    chargeCode: "FEE-C-84",
+    description: "Lease Preparation Fee - Gigiri Heights",
+    targetName: "Dr. Arthur Morgan",
+    propertyName: "Gigiri Heights",
+    amount: 15000,
+    status: "Pending",
+    date: "2026-06-02",
+    ruleLinked: "Lease Execution Charge",
+  },
+  {
+    id: "ch6",
+    chargeCode: "FEE-C-80",
+    description: "Asset Valuation - Mombasa Depot",
+    targetName: "Philip Omondi",
+    propertyName: "Mombasa Gateway Complex",
+    amount: 95000,
+    status: "Posted",
+    date: "2026-05-15",
+    ruleLinked: "Annual Valuation Retainer",
+    ledgerJournal: "JE-0982",
+  },
 ];
 
 const INITIAL_CHART_DATA = [
@@ -83,7 +188,7 @@ const INITIAL_CHART_DATA = [
   { month: "Mar", Letting: 380000, Valuation: 280000, LateFee: 24000 },
   { month: "Apr", Letting: 290000, Valuation: 185000, LateFee: 60000 },
   { month: "May", Letting: 410000, Valuation: 95000, LateFee: 12000 },
-  { month: "Jun", Letting: 213000, Valuation: 185000, LateFee: 39000 }
+  { month: "Jun", Letting: 213000, Valuation: 185000, LateFee: 39000 },
 ];
 
 const ROWS_PER_PAGE = 5;
@@ -127,12 +232,16 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
   const handleCreateRule = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ruleName || !ruleValue || parseFloat(ruleValue) <= 0) {
-      pushToast({ tone: "error", title: "Validation Error", body: "Please fill in all rule specifications." });
+      pushToast({
+        tone: "error",
+        title: "Validation Error",
+        body: "Please fill in all rule specifications.",
+      });
       return;
     }
 
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const nextCode = `FEE-R-${10 + rules.length + 1}`;
     const newRule: FeeRule = {
@@ -143,10 +252,10 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
       type: ruleType,
       value: parseFloat(ruleValue),
       frequency: ruleFrequency,
-      status: "Active"
+      status: "Active",
     };
 
-    setRules(prev => [newRule, ...prev]);
+    setRules((prev) => [newRule, ...prev]);
     setIsRuleModalOpen(false);
     setRuleName("");
     setRuleValue("");
@@ -155,7 +264,7 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Fee Rule Configured",
-      body: `Rule ${nextCode} - ${ruleName} is now active.`
+      body: `Rule ${nextCode} - ${ruleName} is now active.`,
     });
   };
 
@@ -163,17 +272,17 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
     if (!postCharge) return;
     setIsSubmitting(true);
     // Simulate double-entry posting calculations
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
     const mockJournal = `JE-${1000 + Math.floor(Math.random() * 50)}`;
 
-    setCharges(prev =>
-      prev.map(c => {
+    setCharges((prev) =>
+      prev.map((c) => {
         if (c.id === postCharge.id) {
           return {
             ...c,
             status: "Posted",
-            ledgerJournal: mockJournal
+            ledgerJournal: mockJournal,
           };
         }
         return c;
@@ -182,8 +291,10 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
 
     // Update June chart category details reactively
     const category = postCharge.description.includes("Late") ? "LateFee" : "Letting";
-    setChartData(prev =>
-      prev.map(c => (c.month === "Jun" ? { ...c, [category]: c[category] + postCharge.amount } : c))
+    setChartData((prev) =>
+      prev.map((c) =>
+        c.month === "Jun" ? { ...c, [category]: c[category] + postCharge.amount } : c
+      )
     );
 
     setPostCharge(null);
@@ -192,41 +303,47 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Posted to General Ledger",
-      body: `Journal ${mockJournal} committed. DR Accounts Receivable / CR Service Fee Income of KES ${postCharge.amount.toLocaleString()}.`
+      body: `Journal ${mockJournal} committed. DR Accounts Receivable / CR Service Fee Income of KES ${postCharge.amount.toLocaleString()}.`,
     });
   };
 
   // --- Calculations ---
 
   const metrics = useMemo(() => {
-    const activeRulesCount = rules.filter(r => r.status === "Active").length;
+    const activeRulesCount = rules.filter((r) => r.status === "Active").length;
     const totalFeesGenerated = charges.reduce((sum, c) => sum + c.amount, 0);
-    const postedFees = charges.filter(c => c.status === "Posted").reduce((sum, c) => sum + c.amount, 0);
-    const pendingPosting = charges.filter(c => c.status === "Pending").reduce((sum, c) => sum + c.amount, 0);
-    const pendingCount = charges.filter(c => c.status === "Pending").length;
+    const postedFees = charges
+      .filter((c) => c.status === "Posted")
+      .reduce((sum, c) => sum + c.amount, 0);
+    const pendingPosting = charges
+      .filter((c) => c.status === "Pending")
+      .reduce((sum, c) => sum + c.amount, 0);
+    const pendingCount = charges.filter((c) => c.status === "Pending").length;
 
     return {
       activeRules: activeRulesCount,
       generated: totalFeesGenerated,
       posted: postedFees,
       pending: pendingPosting,
-      pendingCount
+      pendingCount,
     };
   }, [rules, charges]);
 
   // Scoped lists based on current tab segment
   const filteredRows = useMemo(() => {
     if (activeTab === "rules") {
-      return rules.filter(r =>
-        r.ruleCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.scope.toLowerCase().includes(searchQuery.toLowerCase())
+      return rules.filter(
+        (r) =>
+          r.ruleCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.scope.toLowerCase().includes(searchQuery.toLowerCase())
       );
     } else {
-      return charges.filter(c =>
-        c.chargeCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.targetName.toLowerCase().includes(searchQuery.toLowerCase())
+      return charges.filter(
+        (c) =>
+          c.chargeCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.targetName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
   }, [rules, charges, activeTab, searchQuery]);
@@ -241,7 +358,6 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
 
   return (
     <div className="mx-auto flex max-w-[98rem] flex-col gap-4 animate-fade-in pb-12">
-
       {/* ── 1. Header & Actions ──────────────────────────────────────────────── */}
       <BoardHeader
         eyebrow={<Badge tone="primary">Property Revenue</Badge>}
@@ -249,7 +365,8 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
         description="Configure automated letting commission rules, audit late rent penalty logs, and post statutory valuation bills to the double-entry general ledger."
         meta={
           <span className="hidden text-base text-slate-400 md:inline">
-            Active Concern: <span className="font-mono text-slate-600">Company Revenue streams</span>
+            Active Concern:{" "}
+            <span className="font-mono text-slate-600">Company Revenue streams</span>
           </span>
         }
         actions={
@@ -258,8 +375,13 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
               <IconSearch size={14} className="text-slate-400" />
               <input
                 value={searchQuery}
-                onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-                placeholder={activeTab === "rules" ? "Search fee rules..." : "Search charge logs..."}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
+                placeholder={
+                  activeTab === "rules" ? "Search fee rules..." : "Search charge logs..."
+                }
                 className="w-full bg-transparent text-slate-700 outline-none placeholder:text-slate-400 text-base"
               />
             </div>
@@ -277,7 +399,7 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
             ) : (
               <Button
                 size="sm"
-                onClick={() => setPostCharge(charges.find(c => c.status === "Pending") || null)}
+                onClick={() => setPostCharge(charges.find((c) => c.status === "Pending") || null)}
                 className="bg-[#151936] text-white hover:bg-slate-800 shadow-sm"
               >
                 <IconBookUpload size={14} /> Quick Ledger Post
@@ -291,7 +413,10 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
       <FinanceModuleNav />
 
       {/* ── 3. KPI Segment Cards ─────────────────────────────────────────────── */}
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Fees key metrics">
+      <section
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+        aria-label="Fees key metrics"
+      >
         <BoardPanel className="p-5 flex flex-col justify-between h-[135px] relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-indigo-200 bg-gradient-to-b from-white to-indigo-50/10">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity translate-x-4 -translate-y-4">
             <IconSettings size={100} stroke={1} />
@@ -360,7 +485,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
             <span className="font-mono font-normal tracking-tight text-amber-700 text-3xl">
               KES {metrics.pending.toLocaleString()}
             </span>
-            <span className="font-medium text-amber-700 mt-1 text-sm">{metrics.pendingCount} charges queue</span>
+            <span className="font-medium text-amber-700 mt-1 text-sm">
+              {metrics.pendingCount} charges queue
+            </span>
           </div>
         </BoardPanel>
       </section>
@@ -370,7 +497,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="font-sans text-heading-primary">Monthly Fee Earnings Categories</h3>
-            <p className="text-base text-slate-400 font-sans">Revenue generated grouped by letting fee, valuation, and late penalties.</p>
+            <p className="text-base text-slate-400 font-sans">
+              Revenue generated grouped by letting fee, valuation, and late penalties.
+            </p>
           </div>
           <div className="flex items-center gap-4 font-medium text-sm">
             <span className="flex items-center gap-1.5 text-emerald-600">
@@ -388,7 +517,13 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
           <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0}>
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="month"
+                stroke="#94a3b8"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis
                 stroke="#94a3b8"
                 fontSize={10}
@@ -397,12 +532,26 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
                 tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
               />
               <Tooltip
-                contentStyle={{ background: "#151936", border: "none", borderRadius: "12px", color: "#fff" }}
-                formatter={(value: unknown) => [`KES ${parseInt(value as string).toLocaleString()}`, ""]}
+                contentStyle={{
+                  background: "#151936",
+                  border: "none",
+                  borderRadius: "12px",
+                  color: "#fff",
+                }}
+                formatter={(value: unknown) => [
+                  `KES ${parseInt(value as string).toLocaleString()}`,
+                  "",
+                ]}
               />
               <Bar dataKey="Letting" stackId="a" fill="#10b981" maxBarSize={28} />
               <Bar dataKey="Valuation" stackId="a" fill="#6366f1" maxBarSize={28} />
-              <Bar dataKey="LateFee" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={28} />
+              <Bar
+                dataKey="LateFee"
+                stackId="a"
+                fill="#f59e0b"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={28}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -414,8 +563,10 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
           {activeTab.replace(/-/g, " ")} Panel
         </h2>
         <p className="text-desc-secondary mt-1">
-          {activeTab === "rules" && "Registry of configurable service fee logic determining letting commission, late penalties, and sales commission parameters."}
-          {activeTab === "charges" && "Audit registry of generated billing charges. Click Post on any line to audit ledger entry impacts."}
+          {activeTab === "rules" &&
+            "Registry of configurable service fee logic determining letting commission, late penalties, and sales commission parameters."}
+          {activeTab === "charges" &&
+            "Audit registry of generated billing charges. Click Post on any line to audit ledger entry impacts."}
         </p>
       </div>
 
@@ -456,23 +607,21 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
                   <tbody className="divide-y divide-slate-100">
                     {(paginatedRows as FeeRule[]).map((r) => (
                       <tr key={r.id} className="transition-colors hover:bg-slate-50/50">
-                        <td className="px-5 py-3.5 text-slate-900 mono-data">
-                          {r.ruleCode}
-                        </td>
+                        <td className="px-5 py-3.5 text-slate-900 mono-data">{r.ruleCode}</td>
                         <td className="px-5 py-3.5">
                           <p className="text-title-primary">{r.name}</p>
                         </td>
-                        <td className="px-5 py-3.5 text-slate-600 text-base">
-                          {r.scope}
-                        </td>
-                        <td className="px-5 py-3.5 text-slate-600 text-base">
-                          {r.frequency}
-                        </td>
+                        <td className="px-5 py-3.5 text-slate-600 text-base">{r.scope}</td>
+                        <td className="px-5 py-3.5 text-slate-600 text-base">{r.frequency}</td>
                         <td className="px-5 py-3.5 text-right text-slate-800 mono-data">
-                          {r.type === "Percentage" ? `${r.value}% commission` : `KES ${r.value.toLocaleString()} flat`}
+                          {r.type === "Percentage"
+                            ? `${r.value}% commission`
+                            : `KES ${r.value.toLocaleString()} flat`}
                         </td>
                         <td className="px-5 py-3.5">
-                          <Badge tone={r.status === "Active" ? "success" : "data"}>{r.status}</Badge>
+                          <Badge tone={r.status === "Active" ? "success" : "data"}>
+                            {r.status}
+                          </Badge>
                         </td>
                         <td className="px-5 py-3.5 text-right">
                           <button
@@ -508,26 +657,22 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
                         onClick={() => setSelectedCharge(c)}
                         className="transition-colors hover:bg-slate-50/80 cursor-pointer"
                       >
-                        <td className="px-5 py-3.5 text-slate-900 mono-data">
-                          {c.chargeCode}
-                        </td>
+                        <td className="px-5 py-3.5 text-slate-900 mono-data">{c.chargeCode}</td>
                         <td className="px-5 py-3.5">
                           <p className="text-title-primary leading-snug">{c.description}</p>
                           <p className="text-sm text-slate-400 mt-0.5 flex items-center gap-1">
                             <IconBuilding size={12} /> {c.propertyName}
                           </p>
                         </td>
-                        <td className="px-5 py-3.5 text-slate-850 text-base">
-                          {c.targetName}
-                        </td>
+                        <td className="px-5 py-3.5 text-slate-850 text-base">{c.targetName}</td>
                         <td className="px-5 py-3.5 text-right text-slate-900 mono-data">
                           KES {c.amount.toLocaleString()}
                         </td>
-                        <td className="px-5 py-3.5 font-mono text-sm text-slate-400">
-                          {c.date}
-                        </td>
+                        <td className="px-5 py-3.5 font-mono text-sm text-slate-400">{c.date}</td>
                         <td className="px-5 py-3.5">
-                          <Badge tone={c.status === "Posted" ? "success" : "warning"}>{c.status}</Badge>
+                          <Badge tone={c.status === "Posted" ? "success" : "warning"}>
+                            {c.status}
+                          </Badge>
                         </td>
                         <td className="px-5 py-3.5 font-mono text-sm ">
                           {c.ledgerJournal ? (
@@ -575,7 +720,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
           </>
         ) : (
           <div className="p-12 text-center bg-white">
-            <p className="text-sm  text-slate-450 font-medium">No fee records found in this view.</p>
+            <p className="text-sm  text-slate-450 font-medium">
+              No fee records found in this view.
+            </p>
           </div>
         )}
       </BoardPanel>
@@ -591,7 +738,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
       >
         <form onSubmit={handleCreateRule} className="space-y-4">
           <div>
-            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Rule/Commission Name</label>
+            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+              Rule/Commission Name
+            </label>
             <input
               type="text"
               required
@@ -604,7 +753,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Target Scope</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Target Scope
+              </label>
               <select
                 value={ruleScope}
                 onChange={(e) => setRuleScope(e.target.value)}
@@ -617,7 +768,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
               </select>
             </div>
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Billing Frequency</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Billing Frequency
+              </label>
               <select
                 value={ruleFrequency}
                 onChange={(e) => setRuleFrequency(e.target.value as FeeRule["frequency"])}
@@ -632,7 +785,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Billing Method</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Billing Method
+              </label>
               <select
                 value={ruleType}
                 onChange={(e) => setRuleType(e.target.value as FeeRule["type"])}
@@ -661,7 +816,11 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
             <Button type="button" variant="secondary" onClick={() => setIsRuleModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="bg-[#f3df27] text-[#151936] hover:bg-[#e6d220]">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#f3df27] text-[#151936] hover:bg-[#e6d220]"
+            >
               {isSubmitting ? "Activating..." : "Deploy Billing Rule"}
             </Button>
           </div>
@@ -694,7 +853,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
 
             {/* Simulated journal lines preview */}
             <div>
-              <p className="text-slate-400 font-normal mb-2 label-caps">Double-Entry Journal Accrual lines</p>
+              <p className="text-slate-400 font-normal mb-2 label-caps">
+                Double-Entry Journal Accrual lines
+              </p>
               <div className="border border-slate-200 rounded-lg overflow-hidden font-mono bg-white text-sm">
                 <div className="grid grid-cols-[180px_1fr_80px_80px] bg-slate-50 p-2 font-sans border-b border-slate-200 text-desc-secondary">
                   <span>Account</span>
@@ -705,14 +866,18 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
                 <div className="grid grid-cols-[180px_1fr_80px_80px] p-2 border-b border-slate-100">
                   <span className="text-slate-800">1200 - Accounts Receivable</span>
                   <span className="text-slate-550">Fee accrual: {postCharge.chargeCode}</span>
-                  <span className="text-right text-slate-900">{postCharge.amount.toLocaleString()}</span>
+                  <span className="text-right text-slate-900">
+                    {postCharge.amount.toLocaleString()}
+                  </span>
                   <span className="text-right text-slate-350">-</span>
                 </div>
                 <div className="grid grid-cols-[180px_1fr_80px_80px] p-2">
                   <span className="text-slate-800">4001 - Management Fee Income</span>
                   <span className="text-slate-550">Accrued fee earnings</span>
                   <span className="text-right text-slate-350">-</span>
-                  <span className="text-right text-emerald-700">{postCharge.amount.toLocaleString()}</span>
+                  <span className="text-right text-emerald-700">
+                    {postCharge.amount.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>
@@ -768,10 +933,11 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
       >
         {selectedCharge && (
           <div className="space-y-6">
-
             {/* Charge Profile */}
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h4 className="font-medium text-slate-800 leading-snug text-label">{selectedCharge.description}</h4>
+              <h4 className="font-medium text-slate-800 leading-snug text-label">
+                {selectedCharge.description}
+              </h4>
               <p className="text-sm  text-slate-400 mt-1 flex items-center gap-1">
                 <IconBuilding size={12} /> {selectedCharge.propertyName}
               </p>
@@ -779,7 +945,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
               <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-3 text-sm">
                 <div className="flex justify-between py-1 border-b border-slate-100/60">
                   <span className="text-slate-400">Accrued Amount:</span>
-                  <span className="text-value-mono">KES {selectedCharge.amount.toLocaleString()}</span>
+                  <span className="text-value-mono">
+                    KES {selectedCharge.amount.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-100/60">
                   <span className="text-slate-400">Charge Date:</span>
@@ -787,7 +955,9 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-100/60">
                   <span className="text-slate-400">Originating Rule:</span>
-                  <span className="font-medium text-slate-900">{selectedCharge.ruleLinked || "Manual custom fee"}</span>
+                  <span className="font-medium text-slate-900">
+                    {selectedCharge.ruleLinked || "Manual custom fee"}
+                  </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-100/60">
                   <span className="text-slate-400">Client / Target Name:</span>
@@ -810,21 +980,27 @@ export function ServiceFeesBoard({ tabId = "rules" }: { tabId: string }) {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-400 font-medium">Mapped Accounts:</span>
-                  <span className="font-medium text-slate-800">DR 1200 Receivables / CR 4001 Revenues</span>
+                  <span className="font-medium text-slate-800">
+                    DR 1200 Receivables / CR 4001 Revenues
+                  </span>
                 </div>
               </div>
             ) : (
               <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/40 p-4 text-center text-slate-400 font-medium text-sm">
-                This charge has not been committed to the general ledger yet. Accounts receivable balances remain un-adjusted.
+                This charge has not been committed to the general ledger yet. Accounts receivable
+                balances remain un-adjusted.
               </div>
             )}
 
             {/* Auditing Context info */}
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-250/60 text-slate-650 flex items-start gap-2 text-sm">
               <IconInfoCircle size={15} className="shrink-0 text-slate-400 mt-0.5" />
-              <span>Service fee charges are generated based on system events (e.g. lease execution, rent overdue triggers) and must be posted to the double-entry books during the monthly close process.</span>
+              <span>
+                Service fee charges are generated based on system events (e.g. lease execution, rent
+                overdue triggers) and must be posted to the double-entry books during the monthly
+                close process.
+              </span>
             </div>
-
           </div>
         )}
       </Drawer>

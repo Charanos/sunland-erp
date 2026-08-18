@@ -49,7 +49,9 @@ export async function getAgentPerformance(ctx: CallerContext): Promise<AgentPerf
     if (!user) continue; // assignedToId is FK-guaranteed to exist; skip defensively rather than crash a leaderboard
 
     const closedWon = agentLeads.filter((l) => l.stage === "closed_won");
-    const activePipeline = agentLeads.filter((l) => l.stage !== "closed_won" && l.stage !== "closed_lost");
+    const activePipeline = agentLeads.filter(
+      (l) => l.stage !== "closed_won" && l.stage !== "closed_lost"
+    );
     const totalValueKes = closedWon.reduce((sum, l) => sum + toNumber(l.expectedValueKes), 0);
 
     rows.push({
@@ -62,7 +64,8 @@ export async function getAgentPerformance(ctx: CallerContext): Promise<AgentPerf
       totalValueKes: Math.round(totalValueKes),
       activePipelineCount: activePipeline.length,
       totalLeadsCount: agentLeads.length,
-      conversionRate: agentLeads.length > 0 ? Math.round((closedWon.length / agentLeads.length) * 1000) / 10 : 0,
+      conversionRate:
+        agentLeads.length > 0 ? Math.round((closedWon.length / agentLeads.length) * 1000) / 10 : 0,
     });
   }
 

@@ -17,7 +17,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     const ctx = await requireCallerContext(entityId, request);
 
-    const [mandate] = await db.select().from(propertyMandates).where(eq(propertyMandates.id, id)).limit(1);
+    const [mandate] = await db
+      .select()
+      .from(propertyMandates)
+      .where(eq(propertyMandates.id, id))
+      .limit(1);
     if (!mandate) throw new NotFoundError("Mandate not found");
 
     // Lease activity is deliberately NOT stacked in here anymore - a lease

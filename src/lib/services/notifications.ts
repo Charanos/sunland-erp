@@ -14,7 +14,14 @@ type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 // The routing-matrix categories (Account console → Notifications → Routing).
 // A notification's dotted `type` prefix maps to one of these; anything
 // unrecognized falls through to "system".
-export const NOTIFICATION_CATEGORIES = ["viewing", "remittance", "maintenance", "approval", "renewal", "system"] as const;
+export const NOTIFICATION_CATEGORIES = [
+  "viewing",
+  "remittance",
+  "maintenance",
+  "approval",
+  "renewal",
+  "system",
+] as const;
 export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
 
 // Maintenance in-app alerts are non-negotiable (critical repairs) - the UI
@@ -71,7 +78,9 @@ export async function createNotification(tx: Tx, input: CreateNotificationInput)
     const [pref] = await tx
       .select({ inApp: notificationPrefs.inApp })
       .from(notificationPrefs)
-      .where(and(eq(notificationPrefs.userId, input.userId), eq(notificationPrefs.category, category)))
+      .where(
+        and(eq(notificationPrefs.userId, input.userId), eq(notificationPrefs.category, category))
+      )
       .limit(1);
     if (pref && pref.inApp === false) {
       // The recipient has muted in-app alerts for this category - honour it.
@@ -128,7 +137,7 @@ export async function sendManualNotification(
     associatedType?: string;
     associatedId?: string;
     href?: string;
-  },
+  }
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -149,13 +158,16 @@ export async function sendManualNotification(
       associatedId: input.associatedId,
       href: input.href,
       bypassPrefs: true,
-    }),
+    })
   );
 }
 
 // ─── Notification routing preferences (Account console → Notifications) ──────
 
-const DEFAULT_PREF_MATRIX: Record<NotificationCategory, { inApp: boolean; email: boolean; sms: boolean }> = {
+const DEFAULT_PREF_MATRIX: Record<
+  NotificationCategory,
+  { inApp: boolean; email: boolean; sms: boolean }
+> = {
   viewing: { inApp: true, email: false, sms: false },
   remittance: { inApp: true, email: true, sms: false },
   maintenance: { inApp: true, email: true, sms: true },
@@ -167,7 +179,12 @@ const DEFAULT_PREF_MATRIX: Record<NotificationCategory, { inApp: boolean; email:
 /** The caller's own routing matrix, defaults filled in for any unset category. */
 export async function getNotificationPrefs(ctx: CallerContext) {
   const rows = await db
-    .select({ category: notificationPrefs.category, inApp: notificationPrefs.inApp, email: notificationPrefs.email, sms: notificationPrefs.sms })
+    .select({
+      category: notificationPrefs.category,
+      inApp: notificationPrefs.inApp,
+      email: notificationPrefs.email,
+      sms: notificationPrefs.sms,
+    })
     .from(notificationPrefs)
     .where(eq(notificationPrefs.userId, ctx.user.id));
   const byCat = new Map(rows.map((r) => [r.category, r]));
@@ -194,7 +211,9 @@ export async function updateNotificationPrefs(ctx: CallerContext, rawInput: unkn
       const [existing] = await tx
         .select({ id: notificationPrefs.id })
         .from(notificationPrefs)
-        .where(and(eq(notificationPrefs.userId, userId), eq(notificationPrefs.category, row.category)))
+        .where(
+          and(eq(notificationPrefs.userId, userId), eq(notificationPrefs.category, row.category))
+        )
         .limit(1);
       if (existing) {
         await tx
@@ -202,7 +221,9 @@ export async function updateNotificationPrefs(ctx: CallerContext, rawInput: unkn
           .set({ inApp, email: row.email, sms: row.sms, updatedAt: new Date() })
           .where(eq(notificationPrefs.id, existing.id));
       } else {
-        await tx.insert(notificationPrefs).values({ userId, category: row.category, inApp, email: row.email, sms: row.sms });
+        await tx
+          .insert(notificationPrefs)
+          .values({ userId, category: row.category, inApp, email: row.email, sms: row.sms });
       }
     }
   });
@@ -210,7 +231,10 @@ export async function updateNotificationPrefs(ctx: CallerContext, rawInput: unkn
   return getNotificationPrefs(ctx);
 }
 
-export async function listNotifications(ctx: CallerContext, filters: { unreadOnly?: boolean } = {}) {
+export async function listNotifications(
+  ctx: CallerContext,
+  filters: { unreadOnly?: boolean } = {}
+) {
   const conditions = [eq(notifications.userId, ctx.user.id)];
   if (filters.unreadOnly) conditions.push(isNull(notifications.readAt));
 
@@ -227,7 +251,8 @@ export async function markNotificationRead(ctx: CallerContext, notificationId: s
     .from(notifications)
     .where(eq(notifications.id, notificationId))
     .limit(1);
-  if (!existing || existing.userId !== ctx.user.id) throw new NotFoundError("Notification not found");
+  if (!existing || existing.userId !== ctx.user.id)
+    throw new NotFoundError("Notification not found");
 
   const [updated] = await db
     .update(notifications)

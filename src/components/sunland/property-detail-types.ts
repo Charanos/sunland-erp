@@ -95,7 +95,14 @@ export interface PropertyDocumentSummary {
   name: string;
   status: "draft" | "awaiting_signature" | "signed";
   url?: string;
-  type?: "mandate_letter" | "lease_agreement" | "rent_receipt" | "statement" | "title_deed" | "identification" | "offer_letter";
+  type?:
+    | "mandate_letter"
+    | "lease_agreement"
+    | "rent_receipt"
+    | "statement"
+    | "title_deed"
+    | "identification"
+    | "offer_letter";
   propertyId?: string | null;
   createdAt?: string | null;
   fileSizeBytes?: number | null;

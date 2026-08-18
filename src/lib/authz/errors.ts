@@ -4,7 +4,7 @@ export class DomainError extends Error {
   constructor(
     message: string,
     public readonly status: number,
-    public readonly code: string,
+    public readonly code: string
   ) {
     super(message);
     this.name = new.target.name;
@@ -50,15 +50,12 @@ export class RateLimitedError extends DomainError {
 /** Single error → HTTP mapper every route handler funnels through. */
 export function handleRouteError(error: unknown) {
   if (error instanceof DomainError) {
-    return NextResponse.json(
-      { error: error.message, code: error.code },
-      { status: error.status },
-    );
+    return NextResponse.json({ error: error.message, code: error.code }, { status: error.status });
   }
 
   console.error("Unhandled route error:", error);
   return NextResponse.json(
     { error: "Internal server error", code: "internal_error" },
-    { status: 500 },
+    { status: 500 }
   );
 }

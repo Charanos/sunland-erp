@@ -20,42 +20,48 @@ const EMULATION_PROFILES = [
     name: "Paul Amos",
     title: "Chief Executive Officer",
     initials: "PA",
-    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
   },
   {
     role: "general_manager",
     name: "Grace Mutua",
     title: "General Manager",
     initials: "GM",
-    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
   },
   {
     role: "finance_head",
     name: "Dennis Munge",
     title: "Head of Finance",
     initials: "DM",
-    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
   },
   {
     role: "hr_head",
     name: "Cody Fisher",
     title: "Head of Human Resources",
     initials: "CF",
-    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
   },
   {
     role: "property_manager",
     name: "Jared Omondi",
     title: "Property Manager",
     initials: "JO",
-    avatarUrl: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&h=100&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&h=100&fit=crop&crop=face",
   },
   {
     role: "front_office_head",
     name: "Sharon Koech",
     title: "Front Office Lead",
     initials: "SK",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
   },
 ];
 
@@ -161,9 +167,12 @@ export default function LoginPage() {
 
         {/* Refined copy with Cormorant Garamond title-serif */}
         <div className="absolute bottom-16 left-12 max-w-md text-white animate-fade-in-up">
-          <h2 className="title-serif font-normal text-white leading-tight">Where Life Meets Style.</h2>
+          <h2 className="title-serif font-normal text-white leading-tight">
+            Where Life Meets Style.
+          </h2>
           <p className="body-md mt-4 text-slate-200/80 leading-relaxed font-sans">
-            Proprietary estate intelligence system managing listings, contracts, tenants, human resources, and the core general ledger.
+            Proprietary estate intelligence system managing listings, contracts, tenants, human
+            resources, and the core general ledger.
           </p>
         </div>
       </section>
@@ -189,12 +198,8 @@ export default function LoginPage() {
               <IconShieldLock size={12} />
               <span>Secure Gateway</span>
             </Badge>
-            <h1 className="title-serif font-normal text-[#151936] mt-4">
-              Welcome back to Sunland
-            </h1>
-            <p className="body-sm text-slate-400">
-              Sign in to your internal operations workspace.
-            </p>
+            <h1 className="title-serif font-normal text-[#151936] mt-4">Welcome back to Sunland</h1>
+            <p className="body-sm text-slate-400">Sign in to your internal operations workspace.</p>
           </div>
 
           {/* Form */}
@@ -248,7 +253,11 @@ export default function LoginPage() {
                   disabled={loadingRole !== null}
                   type="button"
                 >
-                  {showPassword ? <IconEyeOff aria-hidden size={18} /> : <IconEye aria-hidden size={18} />}
+                  {showPassword ? (
+                    <IconEyeOff aria-hidden size={18} />
+                  ) : (
+                    <IconEye aria-hidden size={18} />
+                  )}
                 </button>
               </span>
             </label>
@@ -289,12 +298,11 @@ export default function LoginPage() {
           <div className="mt-10 border-t border-slate-100 pt-8">
             <div className="flex items-center gap-2">
               <span className="flex size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <h2 className="font-mono text-slate-400 label-caps">
-                Authorized Workspace Portals
-              </h2>
+              <h2 className="font-mono text-slate-400 label-caps">Authorized Workspace Portals</h2>
             </div>
             <p className="mt-1.5 text-sm text-slate-400 leading-relaxed">
-              Select an approved operational profile below to verify direct portal routing and role-based permissions.
+              Select an approved operational profile below to verify direct portal routing and
+              role-based permissions.
             </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {EMULATION_PROFILES.map((profile) => (
@@ -314,8 +322,12 @@ export default function LoginPage() {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-slate-800 transition group-hover:text-[#151936] text-sm">{profile.name}</p>
-                    <p className="truncate text-slate-400 font-mono uppercase tracking-wide mt-0.5 text-sm">{profile.title}</p>
+                    <p className="truncate font-medium text-slate-800 transition group-hover:text-[#151936] text-sm">
+                      {profile.name}
+                    </p>
+                    <p className="truncate text-slate-400 font-mono uppercase tracking-wide mt-0.5 text-sm">
+                      {profile.title}
+                    </p>
                   </div>
                   <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:bg-[#151936]/5 group-hover:text-[#151936] transition duration-200">
                     <IconArrowRight size={11} stroke={2.5} />
@@ -352,14 +364,14 @@ export default function LoginPage() {
 
             <h3 className="title-serif font-normal text-white">Delegating Authority</h3>
             <p className="body-sm mt-2 text-slate-300 leading-relaxed">
-              Establishing a secure workspace session for the {EMULATION_PROFILES.find(p => p.role === loadingRole)?.title || "Administrator"} portal.
+              Establishing a secure workspace session for the{" "}
+              {EMULATION_PROFILES.find((p) => p.role === loadingRole)?.title || "Administrator"}{" "}
+              portal.
             </p>
 
             <div className="mt-8 flex items-center gap-2 text-slate-900 bg-white rounded-full border border-white/10 px-4 py-1.5">
               <IconLoader2 className="animate-spin" size={12} />
-              <Badge className="font-mono font-medium">
-                Routing Secure Session...
-              </Badge>
+              <Badge className="font-mono font-medium">Routing Secure Session...</Badge>
             </div>
           </div>
         </div>

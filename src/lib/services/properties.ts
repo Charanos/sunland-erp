@@ -1,7 +1,19 @@
 import { randomBytes } from "crypto";
 import { eq, and, ne, or, desc, gte, inArray, isNull, getTableColumns, SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { properties, leases, documents, transactions, contacts, maintenanceRequests, leads, propertyMandates, approvalRequests, users, propertyUnits } from "@/db/schema";
+import {
+  properties,
+  leases,
+  documents,
+  transactions,
+  contacts,
+  maintenanceRequests,
+  leads,
+  propertyMandates,
+  approvalRequests,
+  users,
+  propertyUnits,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { ConflictError, DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -19,16 +31,15 @@ export function toISOStringSafe(val: unknown): string | null {
     try {
       const d = new Date(val);
       if (!isNaN(d.getTime())) return d.toISOString();
-    } catch { }
+    } catch {}
     return val;
   }
   try {
     const d = new Date(val as string | number | Date);
     if (!isNaN(d.getTime())) return d.toISOString();
-  } catch { }
+  } catch {}
   return null;
 }
-
 
 export async function listProperties(
   ctx: CallerContext,
@@ -81,43 +92,59 @@ export async function listProperties(
 
   const mandateJoinCondition = and(
     eq(propertyMandates.propertyId, properties.id),
-    inArray(propertyMandates.status, ["pending_approval", "active"]),
+    inArray(propertyMandates.status, ["pending_approval", "active"])
   );
 
-  const rows = await (
-    view === "managed"
-      ? baseQuery.innerJoin(propertyMandates, mandateJoinCondition)
-      : baseQuery.leftJoin(propertyMandates, mandateJoinCondition)
+  const rows = await (view === "managed"
+    ? baseQuery.innerJoin(propertyMandates, mandateJoinCondition)
+    : baseQuery.leftJoin(propertyMandates, mandateJoinCondition)
   )
     .leftJoin(contacts, eq(contacts.id, properties.ownerContactId))
     .leftJoin(users, eq(users.id, propertyMandates.assignedPmId))
     .where(conditions);
 
-  return rows.map(({ ownerName, ownerPhone, ownerEmail, ownerCompany, ownerIdNumber, ownerVerifiedAt, ownerClientSince, ownerAvatarUrl, managerId, managerName, managerTitle, managerEmail, managerAvatarUrl, ...rest }) => ({
-    ...rest,
-    ownerName,
-    owner: rest.ownerContactId
-      ? {
-        name: ownerName,
-        phone: ownerPhone,
-        email: ownerEmail,
-        company: ownerCompany,
-        idNumber: ownerIdNumber,
-        verifiedAt: toISOStringSafe(ownerVerifiedAt),
-        clientSince: toISOStringSafe(ownerClientSince),
-        avatarUrl: ownerAvatarUrl,
-      }
-      : null,
-    manager: managerId
-      ? {
-        id: managerId,
-        name: managerName,
-        title: managerTitle,
-        email: managerEmail,
-        avatarUrl: managerAvatarUrl,
-      }
-      : null,
-  }));
+  return rows.map(
+    ({
+      ownerName,
+      ownerPhone,
+      ownerEmail,
+      ownerCompany,
+      ownerIdNumber,
+      ownerVerifiedAt,
+      ownerClientSince,
+      ownerAvatarUrl,
+      managerId,
+      managerName,
+      managerTitle,
+      managerEmail,
+      managerAvatarUrl,
+      ...rest
+    }) => ({
+      ...rest,
+      ownerName,
+      owner: rest.ownerContactId
+        ? {
+            name: ownerName,
+            phone: ownerPhone,
+            email: ownerEmail,
+            company: ownerCompany,
+            idNumber: ownerIdNumber,
+            verifiedAt: toISOStringSafe(ownerVerifiedAt),
+            clientSince: toISOStringSafe(ownerClientSince),
+            avatarUrl: ownerAvatarUrl,
+          }
+        : null,
+      manager: managerId
+        ? {
+            id: managerId,
+            name: managerName,
+            title: managerTitle,
+            email: managerEmail,
+            avatarUrl: managerAvatarUrl,
+          }
+        : null,
+    })
+  );
 }
 
 /**
@@ -143,7 +170,7 @@ export async function listReadyToLetProperties(ctx: CallerContext) {
     .from(properties)
     .innerJoin(
       propertyMandates,
-      and(eq(propertyMandates.propertyId, properties.id), eq(propertyMandates.status, "active")),
+      and(eq(propertyMandates.propertyId, properties.id), eq(propertyMandates.status, "active"))
     )
     .where(eq(properties.entityId, entityId));
 
@@ -157,7 +184,7 @@ export async function listReadyToLetProperties(ctx: CallerContext) {
     .from(propertyUnits)
     .where(inArray(propertyUnits.propertyId, propertyIds));
 
-  const unitsByProperty = new Map<string, (typeof units)>();
+  const unitsByProperty = new Map<string, typeof units>();
   for (const unit of units) {
     const existing = unitsByProperty.get(unit.propertyId);
     if (existing) existing.push(unit);
@@ -169,11 +196,18 @@ export async function listReadyToLetProperties(ctx: CallerContext) {
     if (propertyUnitRows.length > 0) {
       const vacantUnits = propertyUnitRows.filter((u) => u.status === "vacant");
       if (vacantUnits.length === 0) return [];
-      return [{
-        ...property,
-        vacantUnitCount: vacantUnits.length,
-        vacantUnits: vacantUnits.map((u) => ({ id: u.id, unitLabel: u.unitLabel, unitType: u.unitType, monthlyRentKes: u.monthlyRentKes })),
-      }];
+      return [
+        {
+          ...property,
+          vacantUnitCount: vacantUnits.length,
+          vacantUnits: vacantUnits.map((u) => ({
+            id: u.id,
+            unitLabel: u.unitLabel,
+            unitType: u.unitType,
+            monthlyRentKes: u.monthlyRentKes,
+          })),
+        },
+      ];
     }
     if (property.status === "occupied") return [];
     return [{ ...property, vacantUnitCount: 1, vacantUnits: [] }];
@@ -190,7 +224,9 @@ export async function listReadyToLetProperties(ctx: CallerContext) {
 type UnitBreakdownEntry = { unitType: string; count: number; monthlyRentKes?: string };
 type MediaEntry = { url: string; alt?: string };
 
-function validateUnitBreakdown(entries: UnitBreakdownEntry[] | undefined | null): UnitBreakdownEntry[] {
+function validateUnitBreakdown(
+  entries: UnitBreakdownEntry[] | undefined | null
+): UnitBreakdownEntry[] {
   if (!entries || entries.length === 0) return [];
   for (const entry of entries) {
     if (!entry.unitType || typeof entry.unitType !== "string") {
@@ -213,8 +249,8 @@ function generatePropertyCode(propertyType: string): string {
   const typeCode = typeMap[propertyType] || "OTH";
   const date = new Date();
   const yy = String(date.getFullYear()).slice(-2);
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const hash = randomBytes(2).toString('hex').toUpperCase();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const hash = randomBytes(2).toString("hex").toUpperCase();
   return `SL-${typeCode}-${yy}${mm}-${hash}`;
 }
 
@@ -398,27 +434,48 @@ export async function updateProperty(
 function describePropertyUpdate(
   changedKeys: string[],
   before: typeof properties.$inferSelect,
-  after: typeof properties.$inferSelect,
+  after: typeof properties.$inferSelect
 ): string {
   if (changedKeys.length === 1) {
     const key = changedKeys[0];
-    if (key === "status") return `Changed status from "${STATUS_LABELS[before.status] ?? before.status}" to "${STATUS_LABELS[after.status] ?? after.status}" for ${after.name}`;
-    if (key === "isFeatured") return `${after.isFeatured ? "Marked" : "Removed"} ${after.name} ${after.isFeatured ? "as featured" : "from featured"}`;
+    if (key === "status")
+      return `Changed status from "${STATUS_LABELS[before.status] ?? before.status}" to "${STATUS_LABELS[after.status] ?? after.status}" for ${after.name}`;
+    if (key === "isFeatured")
+      return `${after.isFeatured ? "Marked" : "Removed"} ${after.name} ${after.isFeatured ? "as featured" : "from featured"}`;
     if (key === "ownerContactId") return `Changed the registered owner for ${after.name}`;
   }
   const FIELD_LABELS: Record<string, string> = {
-    propertyCode: "code", name: "name", propertyType: "type", listingType: "listing type", location: "location",
-    ownerContactId: "owner", askingPriceKes: "asking price", monthlyRentKes: "monthly rent", bedrooms: "bedrooms",
-    bathrooms: "bathrooms", sizeSqft: "size", landAreaSqft: "land area", yearBuilt: "year built",
-    parkingSpaces: "parking", amenities: "amenities", description: "description", status: "status",
-    media: "photos", unitBreakdown: "unit breakdown", isFeatured: "featured status",
+    propertyCode: "code",
+    name: "name",
+    propertyType: "type",
+    listingType: "listing type",
+    location: "location",
+    ownerContactId: "owner",
+    askingPriceKes: "asking price",
+    monthlyRentKes: "monthly rent",
+    bedrooms: "bedrooms",
+    bathrooms: "bathrooms",
+    sizeSqft: "size",
+    landAreaSqft: "land area",
+    yearBuilt: "year built",
+    parkingSpaces: "parking",
+    amenities: "amenities",
+    description: "description",
+    status: "status",
+    media: "photos",
+    unitBreakdown: "unit breakdown",
+    isFeatured: "featured status",
   };
   const labels = changedKeys.map((k) => FIELD_LABELS[k] ?? k);
   return `Updated ${labels.join(", ")} for ${after.name}`;
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  available: "Available", occupied: "Occupied", under_offer: "Under Offer", off_market: "Off Market", maintenance: "Maintenance",
+  available: "Available",
+  occupied: "Occupied",
+  under_offer: "Under Offer",
+  off_market: "Off Market",
+  maintenance: "Maintenance",
 };
 
 export async function deleteProperty(ctx: CallerContext, propertyId: string) {
@@ -435,9 +492,15 @@ export async function deleteProperty(ctx: CallerContext, propertyId: string) {
   // Block on the common blockers with a clear message rather than letting a
   // raw Postgres FK violation surface as an opaque 500 (leases/transactions/
   // maintenance_requests/leads all reference properties.id with no cascade).
-  const [existingLease] = await db.select({ id: leases.id }).from(leases).where(eq(leases.propertyId, propertyId)).limit(1);
+  const [existingLease] = await db
+    .select({ id: leases.id })
+    .from(leases)
+    .where(eq(leases.propertyId, propertyId))
+    .limit(1);
   if (existingLease) {
-    throw new ConflictError("Property has lease history and cannot be deleted; mark it off-market instead.");
+    throw new ConflictError(
+      "Property has lease history and cannot be deleted; mark it off-market instead."
+    );
   }
   const [existingTransaction] = await db
     .select({ id: transactions.id })
@@ -445,7 +508,9 @@ export async function deleteProperty(ctx: CallerContext, propertyId: string) {
     .where(eq(transactions.propertyId, propertyId))
     .limit(1);
   if (existingTransaction) {
-    throw new ConflictError("Property has recorded transactions and cannot be deleted; mark it off-market instead.");
+    throw new ConflictError(
+      "Property has recorded transactions and cannot be deleted; mark it off-market instead."
+    );
   }
 
   return db.transaction(async (tx) => {
@@ -455,7 +520,9 @@ export async function deleteProperty(ctx: CallerContext, propertyId: string) {
         .where(and(eq(properties.id, propertyId), eq(properties.entityId, entityId)));
     } catch {
       // Fallback for less common referencing tables (maintenance_requests, leads).
-      throw new ConflictError("Property is referenced by other records and cannot be deleted; mark it off-market instead.");
+      throw new ConflictError(
+        "Property is referenced by other records and cannot be deleted; mark it off-market instead."
+      );
     }
 
     await writeAudit(tx, ctx, {
@@ -493,23 +560,32 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
   const now = new Date();
   const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
-  const [ownerRows, leaseRows, maintenanceRows, documentRows, rentTxRows, expenseTxRows, leadRows, mandateRows] = await Promise.all([
+  const [
+    ownerRows,
+    leaseRows,
+    maintenanceRows,
+    documentRows,
+    rentTxRows,
+    expenseTxRows,
+    leadRows,
+    mandateRows,
+  ] = await Promise.all([
     prop.ownerContactId
       ? db
-        .select({
-          id: contacts.id,
-          displayName: contacts.displayName,
-          email: contacts.email,
-          phone: contacts.phone,
-          idNumber: contacts.idNumber,
-          verifiedAt: contacts.verifiedAt,
-          verifiedByName: users.name,
-          avatarUrl: contacts.avatarUrl,
-        })
-        .from(contacts)
-        .leftJoin(users, eq(contacts.verifiedById, users.id))
-        .where(eq(contacts.id, prop.ownerContactId))
-        .limit(1)
+          .select({
+            id: contacts.id,
+            displayName: contacts.displayName,
+            email: contacts.email,
+            phone: contacts.phone,
+            idNumber: contacts.idNumber,
+            verifiedAt: contacts.verifiedAt,
+            verifiedByName: users.name,
+            avatarUrl: contacts.avatarUrl,
+          })
+          .from(contacts)
+          .leftJoin(users, eq(contacts.verifiedById, users.id))
+          .where(eq(contacts.id, prop.ownerContactId))
+          .limit(1)
       : Promise.resolve([]),
     db
       .select({
@@ -552,8 +628,11 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
       // deed applies across every property they own (ADR 014 §14.4).
       .where(
         prop.ownerContactId
-          ? or(eq(documents.propertyId, propertyId), eq(documents.ownerContactId, prop.ownerContactId))
-          : eq(documents.propertyId, propertyId),
+          ? or(
+              eq(documents.propertyId, propertyId),
+              eq(documents.ownerContactId, prop.ownerContactId)
+            )
+          : eq(documents.propertyId, propertyId)
       )
       .orderBy(desc(documents.createdAt)),
     db
@@ -563,8 +642,8 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
         and(
           eq(transactions.propertyId, propertyId),
           eq(transactions.type, "rent"),
-          gte(transactions.occurredAt, sixMonthsAgo),
-        ),
+          gte(transactions.occurredAt, sixMonthsAgo)
+        )
       ),
     db
       .select({ amountKes: transactions.amountKes, occurredAt: transactions.occurredAt })
@@ -573,8 +652,8 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
         and(
           eq(transactions.propertyId, propertyId),
           eq(transactions.type, "expense"),
-          gte(transactions.occurredAt, sixMonthsAgo),
-        ),
+          gte(transactions.occurredAt, sixMonthsAgo)
+        )
       ),
     db
       .select({
@@ -601,8 +680,8 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
       .where(
         and(
           eq(propertyMandates.propertyId, propertyId),
-          inArray(propertyMandates.status, ["pending_approval", "active"]),
-        ),
+          inArray(propertyMandates.status, ["pending_approval", "active"])
+        )
       )
       .limit(1),
   ]);
@@ -612,15 +691,15 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
   const ownerRow = ownerRows[0];
   const owner = ownerRow
     ? {
-      id: ownerRow.id,
-      name: ownerRow.displayName,
-      email: ownerRow.email,
-      phone: ownerRow.phone,
-      idNumber: ownerRow.idNumber,
-      verifiedAt: toISOStringSafe(ownerRow.verifiedAt),
-      verifiedByName: ownerRow.verifiedByName,
-      avatarUrl: ownerRow.avatarUrl,
-    }
+        id: ownerRow.id,
+        name: ownerRow.displayName,
+        email: ownerRow.email,
+        phone: ownerRow.phone,
+        idNumber: ownerRow.idNumber,
+        verifiedAt: toISOStringSafe(ownerRow.verifiedAt),
+        verifiedByName: ownerRow.verifiedByName,
+        avatarUrl: ownerRow.avatarUrl,
+      }
     : null;
 
   const activeLeaseRows = leaseRows.filter((l) => l.isActive);
@@ -646,11 +725,12 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
 
   // Expected monthly rent: sum of active leases, falling back to the listed
   // rate - expected must reflect the contracted amount when a tenancy exists.
-  const expectedMonthly = activeLeaseRows.length > 0
-    ? activeLeaseRows.reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0)
-    : prop.monthlyRentKes
-      ? parseFloat(prop.monthlyRentKes)
-      : 0;
+  const expectedMonthly =
+    activeLeaseRows.length > 0
+      ? activeLeaseRows.reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0)
+      : prop.monthlyRentKes
+        ? parseFloat(prop.monthlyRentKes)
+        : 0;
 
   // Six-month collection history bucketed by calendar month, oldest first.
   const collections = Array.from({ length: 6 }, (_, i) => {
@@ -658,7 +738,9 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
     const collected = rentTxRows
       .filter((t) => {
         const d = t.occurredAt;
-        return d.getFullYear() === monthStart.getFullYear() && d.getMonth() === monthStart.getMonth();
+        return (
+          d.getFullYear() === monthStart.getFullYear() && d.getMonth() === monthStart.getMonth()
+        );
       })
       .reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
     return {
@@ -674,11 +756,20 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
   const currentMonthExpenses = expenseTxRows
     .filter((t) => t.occurredAt >= currentMonthStart)
     .reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
-  let arrears: { status: "current" | "partial" | "defaulted"; amount: number; daysInArrears: number } | null = null;
+  let arrears: {
+    status: "current" | "partial" | "defaulted";
+    amount: number;
+    daysInArrears: number;
+  } | null = null;
   if (activeLeaseRows.length > 0 && expectedMonthly > 0) {
     const shortfall = Math.max(0, expectedMonthly - currentMonth.collected);
     arrears = {
-      status: currentMonth.collected >= expectedMonthly ? "current" : currentMonth.collected > 0 ? "partial" : "defaulted",
+      status:
+        currentMonth.collected >= expectedMonthly
+          ? "current"
+          : currentMonth.collected > 0
+            ? "partial"
+            : "defaulted",
       amount: shortfall,
       daysInArrears: shortfall > 0 ? now.getDate() : 0,
     };
@@ -688,34 +779,42 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
   const vacantSinceDate =
     prop.status !== "occupied" && activeLeaseRows.length === 0
       ? leaseRows
-        .filter((l) => !l.isActive && l.endsAt)
-        .reduce<Date | null>((latest, l) => (!latest || l.endsAt > latest ? l.endsAt : latest), null)
+          .filter((l) => !l.isActive && l.endsAt)
+          .reduce<Date | null>(
+            (latest, l) => (!latest || l.endsAt > latest ? l.endsAt : latest),
+            null
+          )
       : null;
   const vacantSince = toISOStringSafe(vacantSinceDate);
 
   // The full CRM pipeline stages collapse into the board's four display
   // stages; a lost deal means there is no live pipeline to show.
   const leadRow = leadRows[0];
-  const salesPipeline = leadRow && leadRow.stage !== "closed_lost"
-    ? {
-      stage:
-        leadRow.stage === "closed_won"
-          ? ("sale" as const)
-          : leadRow.stage === "offer" || leadRow.stage === "negotiation"
-            ? ("offer" as const)
-            : leadRow.stage === "viewing"
-              ? ("viewing" as const)
-              : ("lead" as const),
-      leadName: leadRow.leadName,
-      offerAmountKes: leadRow.expectedValueKes,
-      lastActivityAt: toISOStringSafe(leadRow.updatedAt) || "",
-    }
-    : null;
+  const salesPipeline =
+    leadRow && leadRow.stage !== "closed_lost"
+      ? {
+          stage:
+            leadRow.stage === "closed_won"
+              ? ("sale" as const)
+              : leadRow.stage === "offer" || leadRow.stage === "negotiation"
+                ? ("offer" as const)
+                : leadRow.stage === "viewing"
+                  ? ("viewing" as const)
+                  : ("lead" as const),
+          leadName: leadRow.leadName,
+          offerAmountKes: leadRow.expectedValueKes,
+          lastActivityAt: toISOStringSafe(leadRow.updatedAt) || "",
+        }
+      : null;
 
   const documentSummaries = documentRows.map((d) => ({
     id: d.id,
     name: d.title,
-    status: ((d.metadata as Record<string, unknown> | null)?.status as "draft" | "awaiting_signature" | "signed") ?? "signed",
+    status:
+      ((d.metadata as Record<string, unknown> | null)?.status as
+        | "draft"
+        | "awaiting_signature"
+        | "signed") ?? "signed",
     url: d.fileUrl,
     type: d.type,
     propertyId: d.propertyId,
@@ -731,14 +830,17 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
   let pendingApprovalRequestId: string | null = null;
   if (mandateRow && mandateRow.status === "pending_approval") {
     const [pendingApproval] = await db
-      .select({ id: approvalRequests.id, requiredApproverRole: approvalRequests.requiredApproverRole })
+      .select({
+        id: approvalRequests.id,
+        requiredApproverRole: approvalRequests.requiredApproverRole,
+      })
       .from(approvalRequests)
       .where(
         and(
           eq(approvalRequests.relatedTable, "property_mandates"),
           eq(approvalRequests.relatedId, mandateRow.id),
-          eq(approvalRequests.status, "pending"),
-        ),
+          eq(approvalRequests.status, "pending")
+        )
       )
       .limit(1);
     pendingApproverRole = pendingApproval?.requiredApproverRole ?? null;
@@ -753,32 +855,33 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
   const currentPeriod =
     mandateRow && mandateRow.status === "active"
       ? {
-        collectedAmount: currentMonth.collected,
-        managementFee: currentMonth.collected * mandateRate,
-        expenses: currentMonthExpenses,
-        landlordRemittance: currentMonth.collected - currentMonth.collected * mandateRate - currentMonthExpenses,
-      }
+          collectedAmount: currentMonth.collected,
+          managementFee: currentMonth.collected * mandateRate,
+          expenses: currentMonthExpenses,
+          landlordRemittance:
+            currentMonth.collected - currentMonth.collected * mandateRate - currentMonthExpenses,
+        }
       : undefined;
   const manager = mandateRow?.assignedPmId
     ? {
-      id: mandateRow.assignedPmId,
-      name: mandateRow.managerName,
-      title: mandateRow.managerTitle,
-      email: mandateRow.managerEmail,
-      avatarUrl: mandateRow.managerAvatarUrl,
-    }
+        id: mandateRow.assignedPmId,
+        name: mandateRow.managerName,
+        title: mandateRow.managerTitle,
+        email: mandateRow.managerEmail,
+        avatarUrl: mandateRow.managerAvatarUrl,
+      }
     : null;
   const mandate = mandateRow
     ? {
-      id: mandateRow.id,
-      status: mandateRow.status,
-      mandateRate,
-      startDate: toISOStringSafe(mandateRow.startDate) || "",
-      pendingApproverRole,
-      approvalRequestId: pendingApprovalRequestId,
-      currentPeriod,
-      manager,
-    }
+        id: mandateRow.id,
+        status: mandateRow.status,
+        mandateRate,
+        startDate: toISOStringSafe(mandateRow.startDate) || "",
+        pendingApproverRole,
+        approvalRequestId: pendingApprovalRequestId,
+        currentPeriod,
+        manager,
+      }
     : null;
 
   return {
@@ -816,23 +919,33 @@ export async function getPropertyWithDetails(ctx: CallerContext, propertyId: str
 export async function listPropertyActivity(
   ctx: CallerContext,
   propertyId: string,
-  filters: { limit?: number; offset?: number } = {},
+  filters: { limit?: number; offset?: number } = {}
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
 
-  const [prop] = await db.select({ ownerContactId: properties.ownerContactId }).from(properties).where(eq(properties.id, propertyId)).limit(1);
+  const [prop] = await db
+    .select({ ownerContactId: properties.ownerContactId })
+    .from(properties)
+    .where(eq(properties.id, propertyId))
+    .limit(1);
   if (!prop) throw new NotFoundError("Property not found");
 
   const [maintenanceRows, documentRows] = await Promise.all([
-    db.select({ id: maintenanceRequests.id }).from(maintenanceRequests).where(eq(maintenanceRequests.propertyId, propertyId)),
+    db
+      .select({ id: maintenanceRequests.id })
+      .from(maintenanceRequests)
+      .where(eq(maintenanceRequests.propertyId, propertyId)),
     db
       .select({ id: documents.id })
       .from(documents)
       .where(
         prop.ownerContactId
-          ? or(eq(documents.propertyId, propertyId), eq(documents.ownerContactId, prop.ownerContactId))
-          : eq(documents.propertyId, propertyId),
+          ? or(
+              eq(documents.propertyId, propertyId),
+              eq(documents.ownerContactId, prop.ownerContactId)
+            )
+          : eq(documents.propertyId, propertyId)
       ),
   ]);
 
@@ -897,8 +1010,8 @@ export async function listLeases(ctx: CallerContext) {
       propertyMandates,
       and(
         eq(propertyMandates.propertyId, properties.id),
-        inArray(propertyMandates.status, ["pending_approval", "active"]),
-      ),
+        inArray(propertyMandates.status, ["pending_approval", "active"])
+      )
     )
     .leftJoin(users, eq(users.id, propertyMandates.assignedPmId))
     .where(eq(leases.entityId, entityId));
@@ -916,11 +1029,19 @@ export async function listLeases(ctx: CallerContext) {
   const periodTx = await db
     .select({ leaseId: transactions.leaseId, amountKes: transactions.amountKes })
     .from(transactions)
-    .where(and(inArray(transactions.leaseId, activeIds), eq(transactions.type, "rent"), gte(transactions.occurredAt, monthStart)));
+    .where(
+      and(
+        inArray(transactions.leaseId, activeIds),
+        eq(transactions.type, "rent"),
+        gte(transactions.occurredAt, monthStart)
+      )
+    );
 
   return rows.map((l) => {
     if (!l.isActive) return { ...l, balanceKes: 0 };
-    const collected = periodTx.filter((t) => t.leaseId === l.id).reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
+    const collected = periodTx
+      .filter((t) => t.leaseId === l.id)
+      .reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
     return { ...l, balanceKes: Math.max(0, parseFloat(l.monthlyRentKes) - collected) };
   });
 }
@@ -963,7 +1084,11 @@ export async function getLeaseById(ctx: CallerContext, leaseId: string) {
 
   if (!lease) throw new NotFoundError("Lease not found");
 
-  const [prop] = await db.select({ ownerContactId: properties.ownerContactId }).from(properties).where(eq(properties.id, lease.propertyId)).limit(1);
+  const [prop] = await db
+    .select({ ownerContactId: properties.ownerContactId })
+    .from(properties)
+    .where(eq(properties.id, lease.propertyId))
+    .limit(1);
 
   let landlordData = null;
   if (prop?.ownerContactId) {
@@ -986,9 +1111,25 @@ export async function getLeaseById(ctx: CallerContext, leaseId: string) {
   // Property managers are user accounts, not CRM contacts - same join
   // shape as listLeases/getMandateWithDetails (assignedPmId -> users.id).
   let managerData = null;
-  const [mandate] = await db.select({ assignedPmId: propertyMandates.assignedPmId }).from(propertyMandates).where(and(eq(propertyMandates.propertyId, lease.propertyId), eq(propertyMandates.status, "active"))).limit(1);
+  const [mandate] = await db
+    .select({ assignedPmId: propertyMandates.assignedPmId })
+    .from(propertyMandates)
+    .where(
+      and(eq(propertyMandates.propertyId, lease.propertyId), eq(propertyMandates.status, "active"))
+    )
+    .limit(1);
   if (mandate?.assignedPmId) {
-    const [m] = await db.select({ id: users.id, name: users.name, title: users.title, email: users.email, avatarUrl: users.avatarUrl }).from(users).where(eq(users.id, mandate.assignedPmId)).limit(1);
+    const [m] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        title: users.title,
+        email: users.email,
+        avatarUrl: users.avatarUrl,
+      })
+      .from(users)
+      .where(eq(users.id, mandate.assignedPmId))
+      .limit(1);
     managerData = m || null;
   }
 
@@ -1003,7 +1144,13 @@ export async function getLeaseById(ctx: CallerContext, leaseId: string) {
     const periodTx = await db
       .select({ amountKes: transactions.amountKes })
       .from(transactions)
-      .where(and(eq(transactions.leaseId, lease.id), eq(transactions.type, "rent"), gte(transactions.occurredAt, monthStart)));
+      .where(
+        and(
+          eq(transactions.leaseId, lease.id),
+          eq(transactions.type, "rent"),
+          gte(transactions.occurredAt, monthStart)
+        )
+      );
     const collected = periodTx.reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
     balanceKes = Math.max(0, parseFloat(lease.monthlyRentKes) - collected);
   }
@@ -1045,7 +1192,10 @@ export async function getLeaseById(ctx: CallerContext, leaseId: string) {
 
   const totalUnits = Math.max(1, propertyUnitRows.length, propertyLeaseRows.length);
   const occupancyPct = Math.min(100, Math.round((propertyLeaseRows.length / totalUnits) * 100));
-  const totalPropertyRentPool = propertyLeaseRows.reduce((sum, l) => sum + parseFloat(l.monthlyRentKes || "0"), 0);
+  const totalPropertyRentPool = propertyLeaseRows.reduce(
+    (sum, l) => sum + parseFloat(l.monthlyRentKes || "0"),
+    0
+  );
 
   return {
     ...lease,
@@ -1095,7 +1245,11 @@ export async function terminateLease(ctx: CallerContext, leaseId: string, reason
         .update(propertyUnits)
         .set({ status: "vacant", currentLeaseId: null, updatedAt: new Date() })
         .where(eq(propertyUnits.id, lease.unitId));
-      const [prop] = await tx.select({ name: properties.name }).from(properties).where(eq(properties.id, lease.propertyId)).limit(1);
+      const [prop] = await tx
+        .select({ name: properties.name })
+        .from(properties)
+        .where(eq(properties.id, lease.propertyId))
+        .limit(1);
       propertyName = prop?.name;
     } else {
       const [updatedProp] = await tx
@@ -1155,9 +1309,15 @@ export async function createLease(
     }
 
     if (input.unitId) {
-      const [unit] = await tx.select().from(propertyUnits).where(eq(propertyUnits.id, input.unitId)).limit(1);
-      if (!unit || unit.propertyId !== input.propertyId) throw new NotFoundError("Unit not found on this property");
-      if (unit.status === "occupied") throw new DomainValidationError("This unit is already occupied by another active lease.");
+      const [unit] = await tx
+        .select()
+        .from(propertyUnits)
+        .where(eq(propertyUnits.id, input.unitId))
+        .limit(1);
+      if (!unit || unit.propertyId !== input.propertyId)
+        throw new NotFoundError("Unit not found on this property");
+      if (unit.status === "occupied")
+        throw new DomainValidationError("This unit is already occupied by another active lease.");
     }
 
     // 2. Insert lease record
@@ -1186,7 +1346,8 @@ export async function createLease(
         .set({ status: "occupied", currentLeaseId: inserted.id, updatedAt: new Date() })
         .where(and(eq(propertyUnits.id, input.unitId), ne(propertyUnits.status, "occupied")))
         .returning();
-      if (!updatedUnit) throw new ConflictError("This unit is already occupied by another active lease.");
+      if (!updatedUnit)
+        throw new ConflictError("This unit is already occupied by another active lease.");
     } else {
       // 3b. Single-unit property: flip the property itself, guarded by
       // status != occupied so a concurrent lease on the same property can't
@@ -1197,7 +1358,8 @@ export async function createLease(
         .set({ status: "occupied" })
         .where(and(eq(properties.id, input.propertyId), ne(properties.status, "occupied")))
         .returning();
-      if (!updatedProp) throw new ConflictError("Property unit is already occupied by another active lease.");
+      if (!updatedProp)
+        throw new ConflictError("Property unit is already occupied by another active lease.");
       propertyStatus = updatedProp.status;
     }
 
@@ -1289,7 +1451,10 @@ export async function renewLease(
   if (!existing.isActive) throw new DomainValidationError("Only an active lease can be renewed.");
 
   return db.transaction(async (tx) => {
-    await tx.update(leases).set({ isActive: false, updatedAt: new Date() }).where(eq(leases.id, leaseId));
+    await tx
+      .update(leases)
+      .set({ isActive: false, updatedAt: new Date() })
+      .where(eq(leases.id, leaseId));
 
     // New term picks up exactly where the old one ends - carries the same
     // property/tenant, and the property never leaves "occupied" since one
@@ -1314,7 +1479,10 @@ export async function renewLease(
     // Same unit, new lease id - repoint currentLeaseId so the unit doesn't
     // still reference the now-inactive prior term.
     if (existing.unitId) {
-      await tx.update(propertyUnits).set({ currentLeaseId: renewed.id, updatedAt: new Date() }).where(eq(propertyUnits.id, existing.unitId));
+      await tx
+        .update(propertyUnits)
+        .set({ currentLeaseId: renewed.id, updatedAt: new Date() })
+        .where(eq(propertyUnits.id, existing.unitId));
     }
 
     await writeAudit(tx, ctx, {
@@ -1347,29 +1515,34 @@ export async function listPropertyUnits(ctx: CallerContext, propertyId: string) 
   const leaseIds = units.map((u) => u.currentLeaseId).filter((id): id is string => !!id);
   const leaseRows = leaseIds.length
     ? await db
-      .select({
-        id: leases.id,
-        tenantContactId: leases.tenantContactId,
-        tenantName: contacts.displayName,
-        tenantAvatarUrl: contacts.avatarUrl,
-        monthlyRentKes: leases.monthlyRentKes,
-        endsAt: leases.endsAt,
-      })
-      .from(leases)
-      .innerJoin(contacts, eq(leases.tenantContactId, contacts.id))
-      .where(inArray(leases.id, leaseIds))
+        .select({
+          id: leases.id,
+          tenantContactId: leases.tenantContactId,
+          tenantName: contacts.displayName,
+          tenantAvatarUrl: contacts.avatarUrl,
+          monthlyRentKes: leases.monthlyRentKes,
+          endsAt: leases.endsAt,
+        })
+        .from(leases)
+        .innerJoin(contacts, eq(leases.tenantContactId, contacts.id))
+        .where(inArray(leases.id, leaseIds))
     : [];
 
   return units.map((u) => ({
     ...u,
-    lease: u.currentLeaseId ? leaseRows.find((l) => l.id === u.currentLeaseId) ?? null : null,
+    lease: u.currentLeaseId ? (leaseRows.find((l) => l.id === u.currentLeaseId) ?? null) : null,
   }));
 }
 
 export async function createPropertyUnit(
   ctx: CallerContext,
   propertyId: string,
-  input: { unitLabel: string; unitType?: string | null; monthlyRentKes?: string | null; notes?: string | null }
+  input: {
+    unitLabel: string;
+    unitType?: string | null;
+    monthlyRentKes?: string | null;
+    notes?: string | null;
+  }
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -1377,7 +1550,11 @@ export async function createPropertyUnit(
 
   if (!input.unitLabel?.trim()) throw new DomainValidationError("unitLabel is required");
 
-  const [prop] = await db.select({ id: properties.id }).from(properties).where(and(eq(properties.id, propertyId), eq(properties.entityId, entityId))).limit(1);
+  const [prop] = await db
+    .select({ id: properties.id })
+    .from(properties)
+    .where(and(eq(properties.id, propertyId), eq(properties.entityId, entityId)))
+    .limit(1);
   if (!prop) throw new NotFoundError("Property not found");
 
   return db.transaction(async (tx) => {
@@ -1422,14 +1599,22 @@ export async function updatePropertyUnit(
   const entityId = await resolveEntityId(ctx.entityId);
   await authorize(ctx, "properties.property.write", entityId);
 
-  const [existing] = await db.select().from(propertyUnits).where(and(eq(propertyUnits.id, unitId), eq(propertyUnits.entityId, entityId))).limit(1);
+  const [existing] = await db
+    .select()
+    .from(propertyUnits)
+    .where(and(eq(propertyUnits.id, unitId), eq(propertyUnits.entityId, entityId)))
+    .limit(1);
   if (!existing) throw new NotFoundError("Unit not found");
 
   if (input.status === "occupied" && !existing.currentLeaseId) {
-    throw new DomainValidationError("A unit can only be marked occupied by assigning a lease, not directly.");
+    throw new DomainValidationError(
+      "A unit can only be marked occupied by assigning a lease, not directly."
+    );
   }
   if (existing.currentLeaseId && input.status && input.status !== "occupied") {
-    throw new DomainValidationError("This unit has an active lease - terminate it before changing status.");
+    throw new DomainValidationError(
+      "This unit has an active lease - terminate it before changing status."
+    );
   }
 
   const updatable: Partial<typeof propertyUnits.$inferInsert> = {};
@@ -1465,9 +1650,14 @@ export async function deletePropertyUnit(ctx: CallerContext, unitId: string) {
   const entityId = await resolveEntityId(ctx.entityId);
   await authorize(ctx, "properties.property.write", entityId);
 
-  const [existing] = await db.select().from(propertyUnits).where(and(eq(propertyUnits.id, unitId), eq(propertyUnits.entityId, entityId))).limit(1);
+  const [existing] = await db
+    .select()
+    .from(propertyUnits)
+    .where(and(eq(propertyUnits.id, unitId), eq(propertyUnits.entityId, entityId)))
+    .limit(1);
   if (!existing) throw new NotFoundError("Unit not found");
-  if (existing.currentLeaseId) throw new DomainValidationError("Vacate this unit (terminate its lease) before deleting it.");
+  if (existing.currentLeaseId)
+    throw new DomainValidationError("Vacate this unit (terminate its lease) before deleting it.");
 
   return db.transaction(async (tx) => {
     await tx.delete(propertyUnits).where(eq(propertyUnits.id, unitId));
@@ -1499,14 +1689,26 @@ export async function generateUnitsFromBreakdown(ctx: CallerContext, propertyId:
   const entityId = await resolveEntityId(ctx.entityId);
   await authorize(ctx, "properties.property.write", entityId);
 
-  const [prop] = await db.select().from(properties).where(and(eq(properties.id, propertyId), eq(properties.entityId, entityId))).limit(1);
+  const [prop] = await db
+    .select()
+    .from(properties)
+    .where(and(eq(properties.id, propertyId), eq(properties.entityId, entityId)))
+    .limit(1);
   if (!prop) throw new NotFoundError("Property not found");
 
-  const [existingUnit] = await db.select({ id: propertyUnits.id }).from(propertyUnits).where(eq(propertyUnits.propertyId, propertyId)).limit(1);
-  if (existingUnit) throw new ConflictError("This property already has units - generate is only for first-time setup.");
+  const [existingUnit] = await db
+    .select({ id: propertyUnits.id })
+    .from(propertyUnits)
+    .where(eq(propertyUnits.propertyId, propertyId))
+    .limit(1);
+  if (existingUnit)
+    throw new ConflictError(
+      "This property already has units - generate is only for first-time setup."
+    );
 
   const breakdown = Array.isArray(prop.unitBreakdown) ? prop.unitBreakdown : [];
-  if (breakdown.length === 0) throw new DomainValidationError("This property has no unit breakdown to generate from.");
+  if (breakdown.length === 0)
+    throw new DomainValidationError("This property has no unit breakdown to generate from.");
 
   const rows: (typeof propertyUnits.$inferInsert)[] = [];
   let counter = 1;
@@ -1549,7 +1751,7 @@ export async function listDocuments(
     leaseId?: string;
     valuationId?: string;
     leadId?: string;
-    type?: typeof documents.type.enumValues[number];
+    type?: (typeof documents.type.enumValues)[number];
   } = {}
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
@@ -1584,7 +1786,7 @@ export async function listDocuments(
 export async function createDocument(
   ctx: CallerContext,
   input: {
-    type: typeof documents.type.enumValues[number];
+    type: (typeof documents.type.enumValues)[number];
     title: string;
     fileUrl: string;
     ownerContactId?: string | null;

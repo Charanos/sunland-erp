@@ -1,7 +1,15 @@
 import { randomBytes } from "crypto";
 import { and, desc, eq, gte, inArray, lte } from "drizzle-orm";
 import { db } from "@/db";
-import { contacts, entities, properties, reportExports, reportSchedules, transactions, users } from "@/db/schema";
+import {
+  contacts,
+  entities,
+  properties,
+  reportExports,
+  reportSchedules,
+  transactions,
+  users,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -35,8 +43,14 @@ export async function generatePnLReport(ctx: CallerContext, rawInput: unknown) {
 
   const periodStart = new Date(input.periodStart);
   const periodEnd = new Date(input.periodEnd);
-  if (Number.isNaN(periodStart.getTime()) || Number.isNaN(periodEnd.getTime()) || periodStart >= periodEnd) {
-    throw new DomainValidationError("Invalid report period - periodStart must be before periodEnd.");
+  if (
+    Number.isNaN(periodStart.getTime()) ||
+    Number.isNaN(periodEnd.getTime()) ||
+    periodStart >= periodEnd
+  ) {
+    throw new DomainValidationError(
+      "Invalid report period - periodStart must be before periodEnd."
+    );
   }
 
   const periodTx = await db
@@ -46,17 +60,27 @@ export async function generatePnLReport(ctx: CallerContext, rawInput: unknown) {
       and(
         eq(transactions.entityId, entityId),
         gte(transactions.occurredAt, periodStart),
-        lte(transactions.occurredAt, periodEnd),
-      ),
+        lte(transactions.occurredAt, periodEnd)
+      )
     );
 
   // Revenue-by-stream breakdown - same per-type treatment as computeIncome,
   // just itemized instead of summed into one number.
-  const managementFeeRevenue = periodTx.filter((t) => t.type === "rent").reduce((s, t) => s + Number(t.amountKes) * MANAGEMENT_FEE_RATE, 0);
-  const commissionRevenue = periodTx.filter((t) => t.type === "commission").reduce((s, t) => s + Number(t.amountKes), 0);
-  const valuationFeeRevenue = periodTx.filter((t) => t.type === "valuation_fee").reduce((s, t) => s + Number(t.amountKes), 0);
-  const agreementFeeRevenue = periodTx.filter((t) => t.type === "agreement_fee").reduce((s, t) => s + Number(t.amountKes), 0);
-  const salesCommissionRevenue = periodTx.filter((t) => t.type === "sales_commission").reduce((s, t) => s + Number(t.amountKes), 0);
+  const managementFeeRevenue = periodTx
+    .filter((t) => t.type === "rent")
+    .reduce((s, t) => s + Number(t.amountKes) * MANAGEMENT_FEE_RATE, 0);
+  const commissionRevenue = periodTx
+    .filter((t) => t.type === "commission")
+    .reduce((s, t) => s + Number(t.amountKes), 0);
+  const valuationFeeRevenue = periodTx
+    .filter((t) => t.type === "valuation_fee")
+    .reduce((s, t) => s + Number(t.amountKes), 0);
+  const agreementFeeRevenue = periodTx
+    .filter((t) => t.type === "agreement_fee")
+    .reduce((s, t) => s + Number(t.amountKes), 0);
+  const salesCommissionRevenue = periodTx
+    .filter((t) => t.type === "sales_commission")
+    .reduce((s, t) => s + Number(t.amountKes), 0);
 
   const totalRevenue = computeIncome(periodTx);
   const operatingExpenses = computeExpenses(periodTx);
@@ -127,14 +151,25 @@ type RevenueStreamKey = keyof typeof REVENUE_STREAM_LABELS;
  * 10% fee actually recognised on each rent transaction, not the raw rent
  * amount collected on the landlord's behalf.
  */
-export async function getRevenueStreamBreakdown(ctx: CallerContext, entityIdOrSlug: string, periodStartRaw?: string, periodEndRaw?: string) {
+export async function getRevenueStreamBreakdown(
+  ctx: CallerContext,
+  entityIdOrSlug: string,
+  periodStartRaw?: string,
+  periodEndRaw?: string
+) {
   const entityId = await resolveEntityId(entityIdOrSlug || ctx.entityId || "group");
   await authorize(ctx, "finance.transaction.read", entityId);
 
   const now = new Date();
-  const periodStart = periodStartRaw ? new Date(periodStartRaw) : new Date(now.getFullYear(), now.getMonth(), 1);
+  const periodStart = periodStartRaw
+    ? new Date(periodStartRaw)
+    : new Date(now.getFullYear(), now.getMonth(), 1);
   const periodEnd = periodEndRaw ? new Date(periodEndRaw) : now;
-  if (Number.isNaN(periodStart.getTime()) || Number.isNaN(periodEnd.getTime()) || periodStart >= periodEnd) {
+  if (
+    Number.isNaN(periodStart.getTime()) ||
+    Number.isNaN(periodEnd.getTime()) ||
+    periodStart >= periodEnd
+  ) {
     throw new DomainValidationError("Invalid period - periodStart must be before periodEnd.");
   }
 
@@ -146,15 +181,35 @@ export async function getRevenueStreamBreakdown(ctx: CallerContext, entityIdOrSl
         eq(transactions.entityId, entityId),
         gte(transactions.occurredAt, periodStart),
         lte(transactions.occurredAt, periodEnd),
-        inArray(transactions.type, ["rent", "commission", "valuation_fee", "agreement_fee", "sales_commission"]),
-      ),
+        inArray(transactions.type, [
+          "rent",
+          "commission",
+          "valuation_fee",
+          "agreement_fee",
+          "sales_commission",
+        ])
+      )
     );
 
-  const contactIds = [...new Set(periodTx.map((t) => t.contactId).filter((id): id is string => !!id))];
-  const propertyIds = [...new Set(periodTx.map((t) => t.propertyId).filter((id): id is string => !!id))];
+  const contactIds = [
+    ...new Set(periodTx.map((t) => t.contactId).filter((id): id is string => !!id)),
+  ];
+  const propertyIds = [
+    ...new Set(periodTx.map((t) => t.propertyId).filter((id): id is string => !!id)),
+  ];
   const [contactRows, propertyRows] = await Promise.all([
-    contactIds.length ? db.select({ id: contacts.id, displayName: contacts.displayName }).from(contacts).where(inArray(contacts.id, contactIds)) : Promise.resolve([]),
-    propertyIds.length ? db.select({ id: properties.id, name: properties.name }).from(properties).where(inArray(properties.id, propertyIds)) : Promise.resolve([]),
+    contactIds.length
+      ? db
+          .select({ id: contacts.id, displayName: contacts.displayName })
+          .from(contacts)
+          .where(inArray(contacts.id, contactIds))
+      : Promise.resolve([]),
+    propertyIds.length
+      ? db
+          .select({ id: properties.id, name: properties.name })
+          .from(properties)
+          .where(inArray(properties.id, propertyIds))
+      : Promise.resolve([]),
   ]);
   const contactNameById = new Map(contactRows.map((c) => [c.id, c.displayName]));
   const propertyNameById = new Map(propertyRows.map((p) => [p.id, p.name]));
@@ -173,7 +228,9 @@ export async function getRevenueStreamBreakdown(ctx: CallerContext, entityIdOrSl
       .map((t) => ({
         id: t.id,
         occurredAt: t.occurredAt.toISOString(),
-        amountKes: Math.round(t.type === "rent" ? Number(t.amountKes) * MANAGEMENT_FEE_RATE : Number(t.amountKes)),
+        amountKes: Math.round(
+          t.type === "rent" ? Number(t.amountKes) * MANAGEMENT_FEE_RATE : Number(t.amountKes)
+        ),
         counterparty: t.contactId ? (contactNameById.get(t.contactId) ?? null) : null,
         propertyName: t.propertyId ? (propertyNameById.get(t.propertyId) ?? null) : null,
         notes: t.notes,
@@ -224,31 +281,36 @@ export async function upsertReportSchedule(ctx: CallerContext, rawInput: unknown
     const [existing] = await tx
       .select()
       .from(reportSchedules)
-      .where(and(eq(reportSchedules.entityId, entityId), eq(reportSchedules.reportType, input.reportType)))
+      .where(
+        and(
+          eq(reportSchedules.entityId, entityId),
+          eq(reportSchedules.reportType, input.reportType)
+        )
+      )
       .limit(1);
 
     const [saved] = existing
       ? await tx
-        .update(reportSchedules)
-        .set({
-          cadence: input.cadence,
-          recipientIds: input.recipientIds,
-          enabled: input.enabled,
-          updatedAt: new Date(),
-        })
-        .where(eq(reportSchedules.id, existing.id))
-        .returning()
+          .update(reportSchedules)
+          .set({
+            cadence: input.cadence,
+            recipientIds: input.recipientIds,
+            enabled: input.enabled,
+            updatedAt: new Date(),
+          })
+          .where(eq(reportSchedules.id, existing.id))
+          .returning()
       : await tx
-        .insert(reportSchedules)
-        .values({
-          entityId,
-          reportType: input.reportType,
-          cadence: input.cadence,
-          recipientIds: input.recipientIds,
-          enabled: input.enabled,
-          createdById: ctx.user.id,
-        })
-        .returning();
+          .insert(reportSchedules)
+          .values({
+            entityId,
+            reportType: input.reportType,
+            cadence: input.cadence,
+            recipientIds: input.recipientIds,
+            enabled: input.enabled,
+            createdById: ctx.user.id,
+          })
+          .returning();
 
     await writeAudit(tx, ctx, {
       action: "finance.report.schedule",
@@ -271,7 +333,11 @@ export async function upsertReportSchedule(ctx: CallerContext, rawInput: unknown
  * produced output.
  */
 export async function runReportSchedule(ctx: CallerContext, scheduleId: string) {
-  const [schedule] = await db.select().from(reportSchedules).where(eq(reportSchedules.id, scheduleId)).limit(1);
+  const [schedule] = await db
+    .select()
+    .from(reportSchedules)
+    .where(eq(reportSchedules.id, scheduleId))
+    .limit(1);
   if (!schedule) throw new NotFoundError("Report schedule not found");
   await authorize(ctx, "finance.transaction.write", schedule.entityId);
 
@@ -297,7 +363,11 @@ export async function runReportSchedule(ctx: CallerContext, scheduleId: string) 
 }
 
 /** Recent verifiable exports for the console's "Recent exports" rail. */
-export async function listRecentReportExports(ctx: CallerContext, entityIdOrSlug?: string, limit = 8) {
+export async function listRecentReportExports(
+  ctx: CallerContext,
+  entityIdOrSlug?: string,
+  limit = 8
+) {
   const entityId = await resolveEntityId(entityIdOrSlug || ctx.entityId || "group");
   await authorize(ctx, "finance.transaction.read", entityId);
 

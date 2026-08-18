@@ -62,14 +62,14 @@ const UnifiedMarketBoard = dynamic(
     import("./unified-market-board").then((m) => ({
       default: m.UnifiedMarketBoard,
     })),
-  { ssr: false },
+  { ssr: false }
 );
 const InternalOperationsBoard = dynamic(
   () =>
     import("./internal-operations-board").then((m) => ({
       default: m.InternalOperationsBoard,
     })),
-  { ssr: false },
+  { ssr: false }
 );
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -190,54 +190,36 @@ const ROWS_PER_PAGE = 5;
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function DashboardOverview({
-  entityId = "group",
-}: {
-  entityId?: string;
-}) {
+export function DashboardOverview({ entityId = "group" }: { entityId?: string }) {
   const [mounted, setMounted] = useState(false);
   const { pushToast } = useToast();
   const router = useRouter();
 
   // Entity context
-  const context =
-    entityId === "commercial" || entityId === "residential"
-      ? entityId
-      : "group";
+  const context = entityId === "commercial" || entityId === "residential" ? entityId : "group";
 
   // Listing Board state
   const [listings, setListings] = useState<PropertyListing[]>([]);
-  const [activeTab, setActiveTab] = useState<
-    "listings" | "activity" | "transactions"
-  >("listings");
+  const [activeTab, setActiveTab] = useState<"listings" | "activity" | "transactions">("listings");
   const [listingSearch, setListingSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<keyof PropertyListing | null>(
-    null,
-  );
+  const [sortField, setSortField] = useState<keyof PropertyListing | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [rowMenuOpen, setRowMenuOpen] = useState<string | null>(null);
 
   // CRUD state
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
-  const [propertyModalMode, setPropertyModalMode] = useState<"create" | "edit">(
-    "create",
-  );
-  const [editingProperty, setEditingProperty] =
-    useState<PropertyListing | null>(null);
-  const [drawerProperty, setDrawerProperty] = useState<PropertyListing | null>(
-    null,
-  );
+  const [propertyModalMode, setPropertyModalMode] = useState<"create" | "edit">("create");
+  const [editingProperty, setEditingProperty] = useState<PropertyListing | null>(null);
+  const [drawerProperty, setDrawerProperty] = useState<PropertyListing | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Revenue chart state
-  const [chartFilter, setChartFilter] = useState<
-    "all" | "Revenue" | "Transactions" | "Leads"
-  >("all");
-  const [chartPeriod, setChartPeriod] = useState<"week" | "month" | "quarter">(
-    "week",
+  const [chartFilter, setChartFilter] = useState<"all" | "Revenue" | "Transactions" | "Leads">(
+    "all"
   );
+  const [chartPeriod, setChartPeriod] = useState<"week" | "month" | "quarter">("week");
 
   // Last refreshed
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
@@ -255,8 +237,7 @@ export function DashboardOverview({
       if (context !== "group") params.append("entityId", context);
       const res = await fetch(`/api/dashboard/overview?${params.toString()}`);
       const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.error || "Failed to load dashboard stats");
+      if (!res.ok) throw new Error(data.error || "Failed to load dashboard stats");
       setStats(data);
       if (data.recentListings) {
         setListings(data.recentListings);
@@ -279,7 +260,7 @@ export function DashboardOverview({
           setCurrentUserRole(data.user.role);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -302,9 +283,7 @@ export function DashboardOverview({
   const metrics = {
     activeListings: stats ? stats.totalProperties.toString() : "0",
     activeTrend: stats ? formatTrend(stats.totalPropertiesTrend) : "+0%",
-    revenueMtd: stats
-      ? `${formatCompactKES(stats.incomeKes)} / mo`
-      : "KES 0 / mo",
+    revenueMtd: stats ? `${formatCompactKES(stats.incomeKes)} / mo` : "KES 0 / mo",
     revenueTrend: stats ? formatTrend(stats.incomeTrend) : "+0%",
     closedDeals: stats ? stats.closedDealsCount.toString() : "0",
     closedTrend: stats ? formatTrend(stats.closedDealsTrend) : "+0%",
@@ -321,7 +300,15 @@ export function DashboardOverview({
     collectedThisMonthKes: stats ? stats.collectedThisMonthKes : 0,
     expectedThisMonthKes: stats ? stats.expectedThisMonthKes : 0,
     arrearsKes: stats ? stats.arrearsKes : 0,
-    mandatePortfolio: stats ? stats.mandatePortfolio : { activeCount: 0, pendingCount: 0, draftCount: 0, terminatedCount: 0, collectibleValueKes: 0 },
+    mandatePortfolio: stats
+      ? stats.mandatePortfolio
+      : {
+          activeCount: 0,
+          pendingCount: 0,
+          draftCount: 0,
+          terminatedCount: 0,
+          collectibleValueKes: 0,
+        },
     pendingRemittances: stats ? stats.pendingRemittances : { count: 0, totalKes: 0 },
     income: stats ? stats.incomeKes : 0,
     expenses: stats ? stats.expensesKes : 0,
@@ -336,9 +323,7 @@ export function DashboardOverview({
   };
 
   const profitMargin =
-    stats && stats.incomeKes > 0
-      ? Math.round((stats.profitKes / stats.incomeKes) * 100)
-      : 0;
+    stats && stats.incomeKes > 0 ? Math.round((stats.profitKes / stats.incomeKes) * 100) : 0;
 
   const hasListings = listings.length > 0;
   // Prefer a real isFeatured property (same flag driven by the Properties board's
@@ -347,16 +332,16 @@ export function DashboardOverview({
   const featuredListing = listings.find((l) => l.isFeatured) ?? listings[0];
   const featured = hasListings
     ? {
-      id: featuredListing.id,
-      name: featuredListing.name,
-      location: featuredListing.location,
-      type: featuredListing.type,
-      price: featuredListing.price,
-      roi: featuredListing.roi,
-      imageUrl: featuredListing.imageUrl,
-      status: featuredListing.status,
-      managerName: featuredListing.managerName,
-    }
+        id: featuredListing.id,
+        name: featuredListing.name,
+        location: featuredListing.location,
+        type: featuredListing.type,
+        price: featuredListing.price,
+        roi: featuredListing.roi,
+        imageUrl: featuredListing.imageUrl,
+        status: featuredListing.status,
+        managerName: featuredListing.managerName,
+      }
     : null;
 
   const chartData = stats?.chartSeries ?? [];
@@ -368,19 +353,13 @@ export function DashboardOverview({
       (l) =>
         l.name.toLowerCase().includes(listingSearch.toLowerCase()) ||
         l.location.toLowerCase().includes(listingSearch.toLowerCase()) ||
-        l.type.toLowerCase().includes(listingSearch.toLowerCase()),
+        l.type.toLowerCase().includes(listingSearch.toLowerCase())
     );
     if (sortField) {
       result = [...result].sort((a, b) => {
         const aVal = a[sortField];
         const bVal = b[sortField];
-        if (
-          aVal === undefined ||
-          bVal === undefined ||
-          aVal === null ||
-          bVal === null
-        )
-          return 0;
+        if (aVal === undefined || bVal === undefined || aVal === null || bVal === null) return 0;
         const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return sortDir === "asc" ? cmp : -cmp;
       });
@@ -388,13 +367,10 @@ export function DashboardOverview({
     return result;
   }, [listings, listingSearch, sortField, sortDir]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredListings.length / ROWS_PER_PAGE),
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredListings.length / ROWS_PER_PAGE));
   const paginatedListings = filteredListings.slice(
     (currentPage - 1) * ROWS_PER_PAGE,
-    currentPage * ROWS_PER_PAGE,
+    currentPage * ROWS_PER_PAGE
   );
 
   const handleSort = (field: keyof PropertyListing) => {
@@ -431,12 +407,9 @@ export function DashboardOverview({
     if (!deleteConfirmId) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(
-        `/api/properties?id=${deleteConfirmId}&entityId=${context}`,
-        {
-          method: "DELETE",
-        },
-      );
+      const res = await fetch(`/api/properties?id=${deleteConfirmId}&entityId=${context}`, {
+        method: "DELETE",
+      });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? "Failed to delete property");
@@ -490,9 +463,9 @@ export function DashboardOverview({
               Updated{" "}
               {mounted
                 ? lastRefreshed.toLocaleTimeString("en-KE", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
                 : "--:--"}
             </span>
           </div>
@@ -502,15 +475,11 @@ export function DashboardOverview({
               disabled={isRefreshing}
               className={cn(
                 "flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-800 transition-colors bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm hover:shadow",
-                isRefreshing && "opacity-60",
+                isRefreshing && "opacity-60"
               )}
               aria-label="Refresh dashboard"
             >
-              <IconRefresh
-                size={13}
-                stroke={2}
-                className={cn(isRefreshing && "animate-spin")}
-              />
+              <IconRefresh size={13} stroke={2} className={cn(isRefreshing && "animate-spin")} />
               Refresh
             </button>
             <div className="relative group">
@@ -559,9 +528,8 @@ export function DashboardOverview({
               : "Real Estate Management Command"}
         </h1>
         <p className="text-base text-slate-400 max-w-3xl leading-relaxed mt-1">
-          Monitor transactional metrics, manage dynamic property listings,
-          evaluate sales analytics pipelines, and coordinate operational tasks
-          from this unified command center.
+          Monitor transactional metrics, manage dynamic property listings, evaluate sales analytics
+          pipelines, and coordinate operational tasks from this unified command center.
         </p>
       </section>
 
@@ -572,10 +540,7 @@ export function DashboardOverview({
       >
         {/* Col 1: Active Listings + Revenue (Stacked) */}
         <div className="flex flex-col gap-3">
-          <Link
-            href="/admin/properties"
-            className="animate-fade-in-up stagger-1 block h-[155px]"
-          >
+          <Link href="/admin/properties" className="animate-fade-in-up stagger-1 block h-[155px]">
             <div className="relative overflow-hidden bg-gradient-to-br from-white to-[#e1f3f6]/40 border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col justify-between h-full hover:shadow-md hover:border-slate-300 hover:from-white hover:to-[#e1f3f6]/60 transition-all duration-300 group">
               <IconBuildingSkyscraper
                 size={140}
@@ -597,7 +562,7 @@ export function DashboardOverview({
                       "mono-data text-xs flex font-medium items-center px-1.5 py-0.5 rounded-md",
                       metrics.activeTrend.includes("+")
                         ? "bg-emerald-50 text-emerald-700"
-                        : "bg-rose-50 text-rose-700",
+                        : "bg-rose-50 text-rose-700"
                     )}
                   >
                     {metrics.activeTrend.includes("+") ? (
@@ -617,10 +582,7 @@ export function DashboardOverview({
             </div>
           </Link>
 
-          <Link
-            href="/fin"
-            className="animate-fade-in-up stagger-2 block h-[155px]"
-          >
+          <Link href="/fin" className="animate-fade-in-up stagger-2 block h-[155px]">
             <div className="relative overflow-hidden bg-gradient-to-br from-white to-[#e6f4ea]/40 border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col justify-between h-full hover:shadow-md hover:border-slate-300 hover:from-white hover:to-[#e6f4ea]/60 transition-all duration-300 group">
               <IconCoin
                 size={140}
@@ -643,7 +605,7 @@ export function DashboardOverview({
                       "mono-data text-xs flex font-medium items-center px-1.5 py-0.5 rounded-md",
                       metrics.revenueTrend.includes("+")
                         ? "bg-emerald-50 text-emerald-700"
-                        : "bg-rose-50 text-rose-700",
+                        : "bg-rose-50 text-rose-700"
                     )}
                   >
                     {metrics.revenueTrend.includes("+") ? (
@@ -681,11 +643,7 @@ export function DashboardOverview({
                   />
                 ) : (
                   <div className="size-full bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center">
-                    <IconBuildingSkyscraper
-                      size={48}
-                      className="text-slate-700"
-                      stroke={1}
-                    />
+                    <IconBuildingSkyscraper size={48} className="text-slate-700" stroke={1} />
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/20" />
@@ -715,7 +673,9 @@ export function DashboardOverview({
                   {featured.managerName && (
                     <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-1.5">
                       <IconUser size={12} className="text-slate-500 shrink-0" />
-                      <span>Managed by <span className="text-slate-200">{featured.managerName}</span></span>
+                      <span>
+                        Managed by <span className="text-slate-200">{featured.managerName}</span>
+                      </span>
                     </p>
                   )}
                 </div>
@@ -723,7 +683,7 @@ export function DashboardOverview({
                   <span
                     className={cn(
                       "label-caps px-2 py-0.5 rounded-full border",
-                      STATUS_DARK_TONES[featured.status],
+                      STATUS_DARK_TONES[featured.status]
                     )}
                   >
                     {featured.status}
@@ -746,11 +706,7 @@ export function DashboardOverview({
           ) : (
             <div className="size-full flex flex-col items-center justify-center gap-4 text-center px-6 bg-slate-50/50">
               <div className="size-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center">
-                <IconBuildingSkyscraper
-                  size={24}
-                  className="text-slate-400"
-                  stroke={1.5}
-                />
+                <IconBuildingSkyscraper size={24} className="text-slate-400" stroke={1.5} />
               </div>
               <div>
                 <p className="text-title-primary">No properties registered</p>
@@ -774,10 +730,7 @@ export function DashboardOverview({
 
         {/* Col 4: Profit / Loss & Revenue (Stacked) */}
         <div className="flex flex-col gap-3">
-          <Link
-            href="/fin"
-            className="animate-fade-in-up stagger-4 block h-[155px]"
-          >
+          <Link href="/fin" className="animate-fade-in-up stagger-4 block h-[155px]">
             <div className="relative overflow-hidden bg-gradient-to-br from-white to-[#f0f9ff]/40 border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col justify-between h-full hover:shadow-md hover:border-slate-300 hover:from-white hover:to-[#f0f9ff]/60 transition-all duration-300 group">
               <IconChartLine
                 size={140}
@@ -799,7 +752,7 @@ export function DashboardOverview({
                       "mono-data text-xs flex font-medium items-center px-1.5 py-0.5 rounded-md",
                       metrics.profitGrowth >= 0
                         ? "bg-emerald-50 text-emerald-700"
-                        : "bg-rose-50 text-rose-700",
+                        : "bg-rose-50 text-rose-700"
                     )}
                   >
                     {metrics.profitGrowth >= 0 ? (
@@ -819,10 +772,7 @@ export function DashboardOverview({
             </div>
           </Link>
 
-          <Link
-            href="/fin"
-            className="animate-fade-in-up stagger-5 block h-[155px]"
-          >
+          <Link href="/fin" className="animate-fade-in-up stagger-5 block h-[155px]">
             <div className="relative overflow-hidden bg-gradient-to-br from-white to-[#fdf2f8]/40 border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col justify-between h-full hover:shadow-md hover:border-slate-300 hover:from-white hover:to-[#fdf2f8]/60 transition-all duration-300 group">
               <IconWallet
                 size={140}
@@ -853,10 +803,7 @@ export function DashboardOverview({
         {/* Col 5: Radial */}
         <Card className="p-0 flex flex-col items-center justify-center h-[322px] bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-all animate-fade-in-up stagger-6 rounded-2xl overflow-hidden">
           {mounted ? (
-            <RadialProgress
-              percentage={metrics.radialPct}
-              subtitle={metrics.radialSub}
-            />
+            <RadialProgress percentage={metrics.radialPct} subtitle={metrics.radialSub} />
           ) : (
             <div className="flex-1 flex flex-col gap-4 items-center justify-center w-full">
               <div className="skeleton-shimmer h-32 w-32 rounded-full" />
@@ -887,10 +834,7 @@ export function DashboardOverview({
         </Card>
 
         {/* Col 2: Mandate Portfolio */}
-        <Link
-          href="/fin/mandates"
-          className="animate-fade-in-up stagger-8 block h-[322px]"
-        >
+        <Link href="/fin/mandates" className="animate-fade-in-up stagger-8 block h-[322px]">
           <div className="relative overflow-hidden bg-white border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col h-full hover:shadow-md hover:border-slate-300 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
@@ -911,28 +855,36 @@ export function DashboardOverview({
                   <span className="size-1.5 rounded-full bg-emerald-500" />
                   Active
                 </span>
-                <span className="mono-data text-slate-900">{metrics.mandatePortfolio.activeCount}</span>
+                <span className="mono-data text-slate-900">
+                  {metrics.mandatePortfolio.activeCount}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-meta-muted flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-amber-500" />
                   Pending Approval
                 </span>
-                <span className="mono-data text-slate-900">{metrics.mandatePortfolio.pendingCount}</span>
+                <span className="mono-data text-slate-900">
+                  {metrics.mandatePortfolio.pendingCount}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-meta-muted flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-slate-300" />
                   Draft
                 </span>
-                <span className="mono-data text-slate-900">{metrics.mandatePortfolio.draftCount}</span>
+                <span className="mono-data text-slate-900">
+                  {metrics.mandatePortfolio.draftCount}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-meta-muted flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-rose-400" />
                   Terminated
                 </span>
-                <span className="mono-data text-slate-900">{metrics.mandatePortfolio.terminatedCount}</span>
+                <span className="mono-data text-slate-900">
+                  {metrics.mandatePortfolio.terminatedCount}
+                </span>
               </div>
             </div>
 
@@ -947,31 +899,58 @@ export function DashboardOverview({
 
         {/* Col 3: Closed Deals + Active Pipeline (Stacked) */}
         <div className="flex flex-col gap-3">
-          <Link href="/admin/pipeline?stage=closed_won" className="animate-fade-in-up stagger-9 block h-[155px]">
+          <Link
+            href="/admin/pipeline?stage=closed_won"
+            className="animate-fade-in-up stagger-9 block h-[155px]"
+          >
             <div className="relative overflow-hidden bg-gradient-to-br from-white to-[#fcf0e4]/40 border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col justify-between h-full hover:shadow-md hover:border-slate-300 hover:from-white hover:to-[#fcf0e4]/60 transition-all duration-300 group">
-              <IconFileCheck size={140} stroke={1} className="absolute -right-6 -bottom-6 text-[#824429] opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none" />
+              <IconFileCheck
+                size={140}
+                stroke={1}
+                className="absolute -right-6 -bottom-6 text-[#824429] opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none"
+              />
               <div className="flex items-start justify-between relative z-10">
                 <div className="flex flex-col gap-1 max-w-[calc(100%-48px)]">
                   <span className="text-desc-secondary">Closed Deals</span>
-                  <span className="font-mono font-medium text-slate-900 mt-1 text-3xl">{metrics.closedDeals}</span>
+                  <span className="font-mono font-medium text-slate-900 mt-1 text-3xl">
+                    {metrics.closedDeals}
+                  </span>
                 </div>
               </div>
               <div className="flex items-center justify-between mt-auto relative z-10">
                 <div className="flex items-center gap-2">
-                  <span className={cn("mono-data text-xs flex items-center px-1.5 py-0.5 rounded-md", metrics.closedTrend.includes("+") ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700")}>
-                    {metrics.closedTrend.includes("+") ? <IconTrendingUp size={12} className="mr-1" /> : <IconTrendingDown size={12} className="mr-1" />}
+                  <span
+                    className={cn(
+                      "mono-data text-xs flex items-center px-1.5 py-0.5 rounded-md",
+                      metrics.closedTrend.includes("+")
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-rose-50 text-rose-700"
+                    )}
+                  >
+                    {metrics.closedTrend.includes("+") ? (
+                      <IconTrendingUp size={12} className="mr-1" />
+                    ) : (
+                      <IconTrendingDown size={12} className="mr-1" />
+                    )}
                     {metrics.closedTrend.replace("+", "")}
                   </span>
                   <span className="text-meta-muted">vs last month</span>
                 </div>
-                <IconArrowUpRight size={14} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <IconArrowUpRight
+                  size={14}
+                  className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                />
               </div>
             </div>
           </Link>
 
           <Link href="/admin/pipeline" className="animate-fade-in-up stagger-10 block h-[155px]">
             <div className="relative overflow-hidden bg-gradient-to-br from-white to-[#eef2f6]/40 border border-slate-200/80 shadow-sm rounded-2xl p-5 flex flex-col justify-between h-full hover:shadow-md hover:border-slate-300 hover:from-white hover:to-[#eef2f6]/60 transition-all duration-300 group">
-              <IconHomePlus size={140} stroke={1} className="absolute -right-6 -bottom-6 text-[#415671] opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none" />
+              <IconHomePlus
+                size={140}
+                stroke={1}
+                className="absolute -right-6 -bottom-6 text-[#415671] opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none"
+              />
               <div className="flex items-start justify-between relative z-10">
                 <div className="flex flex-col gap-1 max-w-[calc(100%-48px)]">
                   <span className="text-desc-secondary">Active Pipeline</span>
@@ -985,7 +964,10 @@ export function DashboardOverview({
                 <div className="flex items-center gap-2">
                   <span className="text-meta-muted">Currently open</span>
                 </div>
-                <IconArrowUpRight size={14} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <IconArrowUpRight
+                  size={14}
+                  className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                />
               </div>
             </div>
           </Link>
@@ -1012,7 +994,10 @@ export function DashboardOverview({
                 </span>
                 <span className="mono-data text-slate-900 flex items-center gap-1">
                   {formatCompactKES(metrics.arrearsKes)}
-                  <IconArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover/row:opacity-100 transition-opacity" />
+                  <IconArrowUpRight
+                    size={12}
+                    className="text-slate-300 opacity-0 group-hover/row:opacity-100 transition-opacity"
+                  />
                 </span>
               </Link>
               <Link
@@ -1024,8 +1009,12 @@ export function DashboardOverview({
                   Pending Remittances
                 </span>
                 <span className="mono-data text-slate-900 flex items-center gap-1">
-                  {metrics.pendingRemittances.count} · {formatCompactKES(metrics.pendingRemittances.totalKes)}
-                  <IconArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover/row:opacity-100 transition-opacity" />
+                  {metrics.pendingRemittances.count} ·{" "}
+                  {formatCompactKES(metrics.pendingRemittances.totalKes)}
+                  <IconArrowUpRight
+                    size={12}
+                    className="text-slate-300 opacity-0 group-hover/row:opacity-100 transition-opacity"
+                  />
                 </span>
               </Link>
               <Link
@@ -1038,7 +1027,10 @@ export function DashboardOverview({
                 </span>
                 <span className="mono-data text-slate-900 flex items-center gap-1">
                   {metrics.openMaintenanceCount}
-                  <IconArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover/row:opacity-100 transition-opacity" />
+                  <IconArrowUpRight
+                    size={12}
+                    className="text-slate-300 opacity-0 group-hover/row:opacity-100 transition-opacity"
+                  />
                 </span>
               </Link>
             </div>
@@ -1048,29 +1040,21 @@ export function DashboardOverview({
 
       {/* Dynamic Approvals Queue for CEO and GM */}
       {(currentUserRole === "ceo" || currentUserRole === "general_manager") &&
-        stats?.awaitingMyDecision?.count &&
-        stats.awaitingMyDecision.count > 0 ? (
-        <section
-          className="w-full mt-2 animate-fade-in-up"
-          aria-label="Approvals Queue"
-        >
+      stats?.awaitingMyDecision?.count &&
+      stats.awaitingMyDecision.count > 0 ? (
+        <section className="w-full mt-2 animate-fade-in-up" aria-label="Approvals Queue">
           <ApprovalQueue onActionComplete={loadDashboardData} />
         </section>
       ) : null}
 
       {/* ── Internal Structure & Scheduler ─────────── */}
       <section className="w-full" aria-label="Internal operations">
-        <InternalOperationsBoard
-          entityId={context}
-          departmentStats={stats?.departmentStats}
-        />
+        <InternalOperationsBoard entityId={context} departmentStats={stats?.departmentStats} />
       </section>
 
       {/* ── Revenue Analytics ─ */}
       <div className="pt-6 border-t border-slate-200/60 my-4">
-        <h2 className="title-serif text-slate-900">
-          Operational Analytics & Insights
-        </h2>
+        <h2 className="title-serif text-slate-900">Operational Analytics & Insights</h2>
         <p className="text-base text-slate-400 font-medium tracking-wide mt-1">
           Deep-dive into revenue trends and core performance metrics.
         </p>
@@ -1098,7 +1082,7 @@ export function DashboardOverview({
                         "body-sm px-3.5 py-1.5 rounded-lg transition-all capitalize",
                         chartPeriod === p
                           ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] text-slate-900"
-                          : "text-slate-400 hover:text-slate-700",
+                          : "text-slate-400 hover:text-slate-700"
                       )}
                     >
                       This {p}
@@ -1107,22 +1091,20 @@ export function DashboardOverview({
                 </div>
                 {/* Data filter */}
                 <div className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
-                  {(["all", "Revenue", "Transactions", "Leads"] as const).map(
-                    (f) => (
-                      <button
-                        key={f}
-                        onClick={() => setChartFilter(f)}
-                        className={cn(
-                          "body-sm px-4 py-1.5 rounded-lg transition-all",
-                          chartFilter === f
-                            ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] text-slate-900"
-                            : "text-slate-400 hover:text-slate-700",
-                        )}
-                      >
-                        {f === "all" ? "All" : f}
-                      </button>
-                    ),
-                  )}
+                  {(["all", "Revenue", "Transactions", "Leads"] as const).map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setChartFilter(f)}
+                      className={cn(
+                        "body-sm px-4 py-1.5 rounded-lg transition-all",
+                        chartFilter === f
+                          ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] text-slate-900"
+                          : "text-slate-400 hover:text-slate-700"
+                      )}
+                    >
+                      {f === "all" ? "All" : f}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -1142,9 +1124,7 @@ export function DashboardOverview({
                     <span
                       className={cn(
                         "mono-data flex items-center",
-                        metrics.incomeGrowth >= 0
-                          ? "text-emerald-500"
-                          : "text-rose-500",
+                        metrics.incomeGrowth >= 0 ? "text-emerald-500" : "text-rose-500"
                       )}
                     >
                       {metrics.incomeGrowth >= 0 ? (
@@ -1172,9 +1152,7 @@ export function DashboardOverview({
                     <span
                       className={cn(
                         "mono-data flex items-center",
-                        metrics.expenseGrowth <= 0
-                          ? "text-emerald-500"
-                          : "text-rose-500",
+                        metrics.expenseGrowth <= 0 ? "text-emerald-500" : "text-rose-500"
                       )}
                     >
                       {metrics.expenseGrowth > 0 ? (
@@ -1202,9 +1180,7 @@ export function DashboardOverview({
                     <span
                       className={cn(
                         "mono-data flex items-center",
-                        metrics.profitGrowth >= 0
-                          ? "text-emerald-500"
-                          : "text-rose-500",
+                        metrics.profitGrowth >= 0 ? "text-emerald-500" : "text-rose-500"
                       )}
                     >
                       {metrics.profitGrowth >= 0 ? (
@@ -1238,9 +1214,7 @@ export function DashboardOverview({
                 <IconArrowUpRight size={20} className="text-slate-400" />
               </div>
               <div className="flex items-center justify-between mb-4 relative z-10">
-                <h3 className="text-title-primary">
-                  Property Management Performance
-                </h3>
+                <h3 className="text-title-primary">Property Management Performance</h3>
               </div>
               <div className="flex items-end justify-between relative z-10 gap-2">
                 <div className="flex items-center gap-4">
@@ -1260,9 +1234,7 @@ export function DashboardOverview({
                     <span
                       className={cn(
                         "mono-data",
-                        profitMargin >= 0
-                          ? "text-emerald-500"
-                          : "text-rose-500",
+                        profitMargin >= 0 ? "text-emerald-500" : "text-rose-500"
                       )}
                     >
                       {profitMargin >= 0 ? "+" : ""}
@@ -1275,7 +1247,7 @@ export function DashboardOverview({
                         "h-full rounded-full transition-all duration-1000",
                         profitMargin >= 0
                           ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
-                          : "bg-gradient-to-r from-rose-400 to-rose-500",
+                          : "bg-gradient-to-r from-rose-400 to-rose-500"
                       )}
                       style={{
                         width: `${Math.min(100, Math.abs(profitMargin))}%`,
@@ -1326,15 +1298,11 @@ export function DashboardOverview({
                 <div>
                   <p className="label-caps mb-1">Added This Month</p>
                   <div className="flex items-center gap-2.5">
-                    <span className="font-mono font-medium text-slate-900">
-                      {metrics.newLeads}
-                    </span>
+                    <span className="font-mono font-medium text-slate-900">{metrics.newLeads}</span>
                     <span
                       className={cn(
                         "mono-data flex items-center",
-                        stats && stats.newLeadsTrend < 0
-                          ? "text-rose-500"
-                          : "text-emerald-500",
+                        stats && stats.newLeadsTrend < 0 ? "text-rose-500" : "text-emerald-500"
                       )}
                     >
                       {stats && stats.newLeadsTrend < 0 ? (
@@ -1370,13 +1338,14 @@ export function DashboardOverview({
                 <h2 className="text-title-primary">Listing Board</h2>
                 {activeTab === "listings" && (
                   <p className="text-meta-muted mt-0.5">
-                    {formatCompactKES(metrics.rentPool)} total rent pool under
-                    management
+                    {formatCompactKES(metrics.rentPool)} total rent pool under management
                     {metrics.expiringLeases30d > 0 && (
                       <>
-                        {" "}·{" "}
+                        {" "}
+                        ·{" "}
                         <Link href="/admin/leases" className="text-amber-600 hover:underline">
-                          {metrics.expiringLeases30d} lease{metrics.expiringLeases30d === 1 ? "" : "s"} expiring within 30 days
+                          {metrics.expiringLeases30d} lease
+                          {metrics.expiringLeases30d === 1 ? "" : "s"} expiring within 30 days
                         </Link>
                       </>
                     )}
@@ -1386,29 +1355,27 @@ export function DashboardOverview({
               <div className="flex items-center gap-3">
                 {/* Tab switcher */}
                 <div className="flex items-center gap-1 bg-slate-50/80 p-1 rounded-lg">
-                  {(["listings", "activity", "transactions"] as const).map(
-                    (tab) => (
-                      <button
-                        key={tab}
-                        onClick={() => {
-                          setActiveTab(tab);
-                          setCurrentPage(1);
-                        }}
-                        className={cn(
-                          "body-sm px-3.5 py-1.5 rounded-md transition-all tracking-wide capitalize",
-                          activeTab === tab
-                            ? "bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-slate-800 font-medium"
-                            : "text-slate-400 hover:text-slate-700",
-                        )}
-                      >
-                        {tab === "activity"
-                          ? "Activity Logs"
-                          : tab === "transactions"
-                            ? "Transactions"
-                            : "Listings"}
-                      </button>
-                    ),
-                  )}
+                  {(["listings", "activity", "transactions"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => {
+                        setActiveTab(tab);
+                        setCurrentPage(1);
+                      }}
+                      className={cn(
+                        "body-sm px-3.5 py-1.5 rounded-md transition-all tracking-wide capitalize",
+                        activeTab === tab
+                          ? "bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-slate-800 font-medium"
+                          : "text-slate-400 hover:text-slate-700"
+                      )}
+                    >
+                      {tab === "activity"
+                        ? "Activity Logs"
+                        : tab === "transactions"
+                          ? "Transactions"
+                          : "Listings"}
+                    </button>
+                  ))}
                 </div>
                 {activeTab === "listings" && (
                   <button
@@ -1479,7 +1446,7 @@ export function DashboardOverview({
                               className={cn(
                                 "pb-3 px-2 font-medium cursor-pointer hover:text-slate-600 transition-colors select-none",
                                 field === "name" && "pr-2 pl-0",
-                                field === "price" && "text-right",
+                                field === "price" && "text-right"
                               )}
                               onClick={() => handleSort(field)}
                             >
@@ -1497,9 +1464,7 @@ export function DashboardOverview({
                               key={listing.id}
                               className={cn(
                                 "text-base text-slate-700 hover:bg-slate-50/40 transition-colors group animate-fade-in-up",
-                                rowMenuOpen === listing.id
-                                  ? "relative z-50"
-                                  : "relative z-0",
+                                rowMenuOpen === listing.id ? "relative z-50" : "relative z-0"
                               )}
                               style={{ animationDelay: `${idx * 30}ms` }}
                             >
@@ -1538,15 +1503,13 @@ export function DashboardOverview({
                                 <span
                                   className={cn(
                                     "text-sm  px-2.5 py-1 rounded-md font-medium tracking-wide whitespace-nowrap",
-                                    TABLE_STATUS_STYLES[listing.status],
+                                    TABLE_STATUS_STYLES[listing.status]
                                   )}
                                 >
                                   {listing.status}
                                 </span>
                               </td>
-                              <td className="py-3 px-2 text-slate-600 mono-data">
-                                {listing.roi}
-                              </td>
+                              <td className="py-3 px-2 text-slate-600 mono-data">{listing.roi}</td>
                               <td className="py-3 px-2 text-right text-slate-800 mono-amount">
                                 {listing.price}
                               </td>
@@ -1554,11 +1517,7 @@ export function DashboardOverview({
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setRowMenuOpen(
-                                      rowMenuOpen === listing.id
-                                        ? null
-                                        : listing.id,
-                                    );
+                                    setRowMenuOpen(rowMenuOpen === listing.id ? null : listing.id);
                                   }}
                                   className="size-7 flex items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
                                   aria-label="Row actions"
@@ -1593,8 +1552,7 @@ export function DashboardOverview({
                                       }}
                                       className="flex items-center gap-2 w-full px-3.5 py-2 text-slate-700 hover:bg-slate-50 font-medium transition-colors text-left text-base"
                                     >
-                                      <IconStatusChange size={14} /> Change
-                                      Status
+                                      <IconStatusChange size={14} /> Change Status
                                     </button>
                                     <div className="border-t border-slate-100 my-1" />
                                     <button
@@ -1615,10 +1573,7 @@ export function DashboardOverview({
                           <tr>
                             <td colSpan={7} className="py-12 text-center">
                               <div className="flex flex-col items-center gap-2">
-                                <IconBuildingSkyscraper
-                                  size={28}
-                                  className="text-slate-300"
-                                />
+                                <IconBuildingSkyscraper size={28} className="text-slate-300" />
                                 <p className="text-base text-slate-400 font-medium">
                                   No properties match your search.
                                 </p>
@@ -1656,24 +1611,19 @@ export function DashboardOverview({
                                   className="object-cover"
                                 />
                               ) : (
-                                <IconBuildingSkyscraper
-                                  size={16}
-                                  className="text-slate-400"
-                                />
+                                <IconBuildingSkyscraper size={16} className="text-slate-400" />
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-base text-slate-800 font-medium truncate">
                                 {listing.name}
                               </h4>
-                              <p className="text-xs text-slate-455 mt-0.5">
-                                {listing.location}
-                              </p>
+                              <p className="text-xs text-slate-455 mt-0.5">{listing.location}</p>
                             </div>
                             <span
                               className={cn(
                                 "text-xs px-2.5 py-0.5 rounded-full font-medium tracking-wide whitespace-nowrap",
-                                TABLE_STATUS_STYLES[listing.status],
+                                TABLE_STATUS_STYLES[listing.status]
                               )}
                             >
                               {listing.status}
@@ -1727,10 +1677,7 @@ export function DashboardOverview({
                       ))
                     ) : (
                       <div className="text-center py-12">
-                        <IconBuildingSkyscraper
-                          size={28}
-                          className="text-slate-300 mx-auto mb-2"
-                        />
+                        <IconBuildingSkyscraper size={28} className="text-slate-300 mx-auto mb-2" />
                         <p className="text-sm text-slate-400 font-medium">
                           No properties match your search.
                         </p>
@@ -1745,11 +1692,8 @@ export function DashboardOverview({
                 <div className="flex items-center justify-between pt-3 mt-2 border-t border-slate-100">
                   <p className="text-sm text-slate-400 font-medium">
                     Showing {(currentPage - 1) * ROWS_PER_PAGE + 1}–
-                    {Math.min(
-                      currentPage * ROWS_PER_PAGE,
-                      filteredListings.length,
-                    )}{" "}
-                    of {filteredListings.length}
+                    {Math.min(currentPage * ROWS_PER_PAGE, filteredListings.length)} of{" "}
+                    {filteredListings.length}
                   </p>
                   <div className="flex items-center gap-1">
                     <button
@@ -1760,26 +1704,22 @@ export function DashboardOverview({
                     >
                       <IconChevronLeft size={16} />
                     </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (p) => (
-                        <button
-                          key={p}
-                          onClick={() => setCurrentPage(p)}
-                          className={cn(
-                            "size-8 flex items-center justify-center rounded-lg text-base font-medium transition-colors",
-                            p === currentPage
-                              ? "bg-[#151936] text-white"
-                              : "text-slate-400 hover:bg-slate-100",
-                          )}
-                        >
-                          {p}
-                        </button>
-                      ),
-                    )}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setCurrentPage(p)}
+                        className={cn(
+                          "size-8 flex items-center justify-center rounded-lg text-base font-medium transition-colors",
+                          p === currentPage
+                            ? "bg-[#151936] text-white"
+                            : "text-slate-400 hover:bg-slate-100"
+                        )}
+                      >
+                        {p}
+                      </button>
+                    ))}
                     <button
-                      onClick={() =>
-                        setCurrentPage((p) => Math.min(totalPages, p + 1))
-                      }
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                       disabled={currentPage === totalPages}
                       className="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                       aria-label="Next page"
@@ -1818,9 +1758,7 @@ export function DashboardOverview({
                         <p className="text-slate-700 leading-snug font-medium text-base">
                           {log.text}
                         </p>
-                        <p className="text-sm text-slate-400 mt-0.5">
-                          {log.time}
-                        </p>
+                        <p className="text-sm text-slate-400 mt-0.5">{log.time}</p>
                       </div>
                     </div>
                   );
@@ -1828,9 +1766,7 @@ export function DashboardOverview({
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <IconActivity size={28} className="text-slate-300 mb-2" />
-                  <p className="text-base text-slate-400 font-medium">
-                    No recent logs recorded.
-                  </p>
+                  <p className="text-base text-slate-400 font-medium">No recent logs recorded.</p>
                 </div>
               )}
             </div>
@@ -1843,9 +1779,7 @@ export function DashboardOverview({
                 <div className="flex items-center justify-center py-12">
                   <LoadingSpinner size="md" />
                 </div>
-              ) : (stats?.activityLogs || []).filter(
-                (l) => l.type === "payment",
-              ).length > 0 ? (
+              ) : (stats?.activityLogs || []).filter((l) => l.type === "payment").length > 0 ? (
                 (stats?.activityLogs || [])
                   .filter((l) => l.type === "payment")
                   .map((log, i) => {
@@ -1863,9 +1797,7 @@ export function DashboardOverview({
                           <p className="text-slate-700 leading-snug font-medium text-base">
                             {log.text}
                           </p>
-                          <p className="text-sm text-slate-400 mt-0.5">
-                            {log.time}
-                          </p>
+                          <p className="text-sm text-slate-400 mt-0.5">{log.time}</p>
                         </div>
                       </div>
                     );
@@ -1873,9 +1805,7 @@ export function DashboardOverview({
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <IconReceipt size={28} className="text-slate-300 mb-2" />
-                  <p className="text-base text-slate-400 font-medium">
-                    No recent transactions.
-                  </p>
+                  <p className="text-base text-slate-400 font-medium">No recent transactions.</p>
                 </div>
               )}
               <Link href="/fin" className="block mt-4">
@@ -1951,10 +1881,10 @@ export function DashboardOverview({
                             {item.requestType.replace(/_/g, " ")}
                           </span>
                           <p className="text-meta-muted mt-0.5 text-xs">
-                            {new Date(item.requestedAt).toLocaleDateString(
-                              "en-US",
-                              { month: "short", day: "numeric" },
-                            )}
+                            {new Date(item.requestedAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
                           </p>
                         </div>
                       </div>
@@ -1989,9 +1919,7 @@ export function DashboardOverview({
                         <span className="relative inline-flex rounded-full size-2.5 bg-emerald-500"></span>
                       </span>
                     </h3>
-                    <p className="body-sm text-slate-400 mt-1">
-                      Real-time integrity monitoring
-                    </p>
+                    <p className="body-sm text-slate-400 mt-1">Real-time integrity monitoring</p>
                   </div>
                   <div className="size-12 rounded-2xl bg-white/5 flex items-center justify-center text-emerald-400 shrink-0 border border-white/10 group-hover:bg-white/10 transition-colors shadow-sm">
                     <IconActivity size={24} stroke={1.5} />
@@ -2003,9 +1931,7 @@ export function DashboardOverview({
                       <p className="font-mono font-medium text-white leading-none tracking-tight text-5xl">
                         {stats.systemHealth.activeUserCount}
                       </p>
-                      <p className="body-md text-slate-400 font-medium">
-                        Active Users
-                      </p>
+                      <p className="body-md text-slate-400 font-medium">Active Users</p>
                     </div>
                     <div className="flex -space-x-4 mr-6">
                       <Image
@@ -2035,20 +1961,19 @@ export function DashboardOverview({
                     </div>
                   </div>
                   <div className="pt-5 border-t border-white/10">
-                    <p className="label-caps text-slate-400 mb-2.5">
-                      Last Threshold Update
-                    </p>
+                    <p className="label-caps text-slate-400 mb-2.5">Last Threshold Update</p>
                     <div className="flex items-center gap-2 text-slate-300 text-xs uppercase tracking-wider mono-data bg-white/5 px-3 py-1.5 rounded-md border border-white/5 w-fit">
                       <IconCheck size={14} className="text-emerald-500" />
                       {stats.systemHealth.lastThresholdChangeAt
-                        ? new Date(
-                          stats.systemHealth.lastThresholdChangeAt,
-                        ).toLocaleString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })
+                        ? new Date(stats.systemHealth.lastThresholdChangeAt).toLocaleString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                            }
+                          )
                         : "No updates"}
                     </div>
                   </div>
@@ -2066,9 +1991,7 @@ export function DashboardOverview({
                 <div className="flex justify-between items-start mb-6 relative z-10">
                   <div>
                     <h3 className="text-title-primary">Organizational Load</h3>
-                    <p className="text-desc-secondary mt-1">
-                      Active projects by division
-                    </p>
+                    <p className="text-desc-secondary mt-1">Active projects by division</p>
                   </div>
                   <div className="size-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 shrink-0 shadow-sm border border-indigo-100/50 group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300">
                     <IconBriefcase size={24} stroke={1.5} />
@@ -2079,9 +2002,7 @@ export function DashboardOverview({
                   <div className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-50/80 transition-colors backdrop-blur-sm">
                     <div className="flex items-center gap-3">
                       <div className="size-2 rounded-full bg-teal-500 shadow-sm" />
-                      <span className="text-body-primary font-medium">
-                        Property Management
-                      </span>
+                      <span className="text-body-primary font-medium">Property Management</span>
                     </div>
                     <span className="font-mono font-medium text-slate-900 bg-white/80 px-1.5 py-0.5 rounded">
                       {stats.departmentStats.sales}
@@ -2090,9 +2011,7 @@ export function DashboardOverview({
                   <div className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-50/80 transition-colors backdrop-blur-sm">
                     <div className="flex items-center gap-3">
                       <div className="size-2 rounded-full bg-amber-500 shadow-sm" />
-                      <span className="text-body-primary font-medium">
-                        Operations
-                      </span>
+                      <span className="text-body-primary font-medium">Operations</span>
                     </div>
                     <span className="font-mono font-medium text-slate-900 bg-white/80 px-1.5 py-0.5 rounded">
                       {stats.departmentStats.ops}
@@ -2101,9 +2020,7 @@ export function DashboardOverview({
                   <div className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-50/80 transition-colors backdrop-blur-sm">
                     <div className="flex items-center gap-3">
                       <div className="size-2 rounded-full bg-indigo-500 shadow-sm" />
-                      <span className="text-body-primary font-medium">
-                        Legal & Compliance
-                      </span>
+                      <span className="text-body-primary font-medium">Legal & Compliance</span>
                     </div>
                     <span className="font-mono font-medium text-slate-900 bg-white/80 px-1.5 py-0.5 rounded">
                       {stats.departmentStats.legal}
@@ -2134,15 +2051,15 @@ export function DashboardOverview({
         initialData={
           editingProperty
             ? {
-              id: editingProperty.id,
-              name: editingProperty.name,
-              location: editingProperty.location,
-              type: editingProperty.type,
-              status: editingProperty.status,
-              price: editingProperty.price,
-              roi: editingProperty.roi,
-              imageUrl: editingProperty.imageUrl,
-            }
+                id: editingProperty.id,
+                name: editingProperty.name,
+                location: editingProperty.location,
+                type: editingProperty.type,
+                status: editingProperty.status,
+                price: editingProperty.price,
+                roi: editingProperty.roi,
+                imageUrl: editingProperty.imageUrl,
+              }
             : undefined
         }
         mode={propertyModalMode}
@@ -2155,33 +2072,38 @@ export function DashboardOverview({
         // The drawer accesses: id, name, location, propertyType, listingType, status, isFeatured, media.
         // PropertyListing only carries {id,name,location,type,status,roi,price,imageUrl} - we
         // shim the rest with safe defaults so nothing renders broken.
-        property={drawerProperty ? {
-          id: drawerProperty.id,
-          name: drawerProperty.name,
-          location: drawerProperty.location,
-          propertyType: drawerProperty.type,
-          listingType: "let" as const,
-          status: drawerProperty.status === "Occupied"
-            ? "occupied"
-            : drawerProperty.status === "Under Offer"
-              ? "under_offer"
-              : drawerProperty.status === "Sold"
-                ? "off_market"
-                : "available",
-          propertyCode: "",
-          ownerContactId: null,
-          askingPriceKes: null,
-          monthlyRentKes: drawerProperty.price ?? null,
-          bedrooms: null,
-          bathrooms: null,
-          sizeSqft: null,
-          isFeatured: false,
-          media: drawerProperty.imageUrl
-            ? [{ url: drawerProperty.imageUrl, isPrimary: true }]
-            : [],
-        } : null}
+        property={
+          drawerProperty
+            ? {
+                id: drawerProperty.id,
+                name: drawerProperty.name,
+                location: drawerProperty.location,
+                propertyType: drawerProperty.type,
+                listingType: "let" as const,
+                status:
+                  drawerProperty.status === "Occupied"
+                    ? "occupied"
+                    : drawerProperty.status === "Under Offer"
+                      ? "under_offer"
+                      : drawerProperty.status === "Sold"
+                        ? "off_market"
+                        : "available",
+                propertyCode: "",
+                ownerContactId: null,
+                askingPriceKes: null,
+                monthlyRentKes: drawerProperty.price ?? null,
+                bedrooms: null,
+                bathrooms: null,
+                sizeSqft: null,
+                isFeatured: false,
+                media: drawerProperty.imageUrl
+                  ? [{ url: drawerProperty.imageUrl, isPrimary: true }]
+                  : [],
+              }
+            : null
+        }
         canManage={false}
-        onStatusChange={() => { }}
+        onStatusChange={() => {}}
         onEdit={(prop) => {
           const original = listings.find((l) => l.id === prop.id);
           if (original) {

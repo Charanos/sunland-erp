@@ -46,7 +46,7 @@ export async function listCalendarEvents(
     type?: string;
     contactId?: string;
     leadId?: string;
-  } = {},
+  } = {}
 ) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) throw new DomainValidationError("entityId is required");
@@ -60,18 +60,25 @@ export async function listCalendarEvents(
   const conditions = [eq(calendarEvents.entityId, entityId)];
   if (filters.startDate) conditions.push(gte(calendarEvents.startsAt, new Date(filters.startDate)));
   if (filters.endDate) conditions.push(lte(calendarEvents.startsAt, new Date(filters.endDate)));
-  if (filters.type) conditions.push(eq(calendarEvents.type, filters.type as (typeof calendarEvents.type.enumValues)[number]));
+  if (filters.type)
+    conditions.push(
+      eq(calendarEvents.type, filters.type as (typeof calendarEvents.type.enumValues)[number])
+    );
   if (filters.contactId) conditions.push(eq(calendarEvents.contactId, filters.contactId));
   if (filters.leadId) conditions.push(eq(calendarEvents.leadId, filters.leadId));
 
-  const rows = await db.select().from(calendarEvents).where(and(...conditions)).orderBy(calendarEvents.startsAt);
+  const rows = await db
+    .select()
+    .from(calendarEvents)
+    .where(and(...conditions))
+    .orderBy(calendarEvents.startsAt);
   const scoped = wantsAll
     ? rows
     : rows.filter((event) => {
-      if (event.organizerId === ctx.user.id) return true;
-      const attendees = (event.attendees as AttendeeEntry[] | null) ?? [];
-      return attendees.some((a) => a.userId === ctx.user.id);
-    });
+        if (event.organizerId === ctx.user.id) return true;
+        const attendees = (event.attendees as AttendeeEntry[] | null) ?? [];
+        return attendees.some((a) => a.userId === ctx.user.id);
+      });
 
   return scoped.map(withDisposition);
 }
@@ -127,7 +134,11 @@ async function assertCanModify(ctx: CallerContext, event: CalendarEventRow) {
 
 export async function updateCalendarEvent(ctx: CallerContext, eventId: string, rawInput: unknown) {
   const input = parseInput(updateCalendarEventSchema, rawInput);
-  const [existing] = await db.select().from(calendarEvents).where(eq(calendarEvents.id, eventId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(calendarEvents)
+    .where(eq(calendarEvents.id, eventId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Calendar event not found");
   await assertCanModify(ctx, existing);
 
@@ -178,7 +189,11 @@ export async function updateCalendarEvent(ctx: CallerContext, eventId: string, r
 /** Resolves an event's post-event disposition - organizer or scheduling.event.write, same gate as updateCalendarEvent. */
 export async function setEventOutcome(ctx: CallerContext, eventId: string, rawInput: unknown) {
   const input = parseInput(setEventOutcomeSchema, rawInput);
-  const [existing] = await db.select().from(calendarEvents).where(eq(calendarEvents.id, eventId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(calendarEvents)
+    .where(eq(calendarEvents.id, eventId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Calendar event not found");
   await assertCanModify(ctx, existing);
 
@@ -213,9 +228,17 @@ export async function setEventOutcome(ctx: CallerContext, eventId: string, rawIn
  * reporting a send that never happened - same honesty rule the M-Pesa paybill
  * scaffold follows (ADR H4).
  */
-export async function notifyEventRoleTiers(ctx: CallerContext, eventId: string, rawInput: unknown = {}) {
+export async function notifyEventRoleTiers(
+  ctx: CallerContext,
+  eventId: string,
+  rawInput: unknown = {}
+) {
   const input = parseInput(notifyEventSchema, rawInput);
-  const [event] = await db.select().from(calendarEvents).where(eq(calendarEvents.id, eventId)).limit(1);
+  const [event] = await db
+    .select()
+    .from(calendarEvents)
+    .where(eq(calendarEvents.id, eventId))
+    .limit(1);
   if (!event) throw new NotFoundError("Calendar event not found");
   await assertCanModify(ctx, event);
 
@@ -231,7 +254,7 @@ export async function notifyEventRoleTiers(ctx: CallerContext, eventId: string, 
     .select({ id: users.id, name: users.name, role: users.role, isActive: users.isActive })
     .from(users);
   const recipients = allUsers.filter(
-    (u) => u.isActive && u.id !== ctx.user.id && tiers.includes(roleTierFor(u.role)),
+    (u) => u.isActive && u.id !== ctx.user.id && tiers.includes(roleTierFor(u.role))
   );
 
   const when = event.startsAt.toISOString();
@@ -277,7 +300,7 @@ export async function notifyEventRoleTiers(ctx: CallerContext, eventId: string, 
  */
 export async function getSchedulerPulse(
   ctx: CallerContext,
-  filters: { entityId?: string; scope?: "personal" | "org" } = {},
+  filters: { entityId?: string; scope?: "personal" | "org" } = {}
 ) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) throw new DomainValidationError("entityId is required");
@@ -293,8 +316,12 @@ export async function getSchedulerPulse(
   const endOfToday = new Date(startOfToday.getTime() + 86_400_000);
   const endOfWeek = new Date(startOfToday.getTime() + 7 * 86_400_000);
 
-  const todayCount = events.filter((e) => e.startsAt >= startOfToday && e.startsAt < endOfToday).length;
-  const weekCount = events.filter((e) => e.startsAt >= startOfToday && e.startsAt < endOfWeek).length;
+  const todayCount = events.filter(
+    (e) => e.startsAt >= startOfToday && e.startsAt < endOfToday
+  ).length;
+  const weekCount = events.filter(
+    (e) => e.startsAt >= startOfToday && e.startsAt < endOfWeek
+  ).length;
   const needsDisposition = events.filter((e) => e.needsDisposition).length;
   const criticalCount = events.filter((e) => e.isCritical && e.startsAt >= now).length;
 
@@ -317,21 +344,25 @@ export async function getSchedulerPulse(
     atRiskProjects,
     nextEvent: next
       ? {
-        id: next.id,
-        title: next.title,
-        startsAt: next.startsAt.toISOString(),
-        endsAt: next.endsAt.toISOString(),
-        type: next.type,
-        location: next.location,
-        isCritical: next.isCritical,
-        attendees: next.attendees ?? [],
-      }
+          id: next.id,
+          title: next.title,
+          startsAt: next.startsAt.toISOString(),
+          endsAt: next.endsAt.toISOString(),
+          type: next.type,
+          location: next.location,
+          isCritical: next.isCritical,
+          attendees: next.attendees ?? [],
+        }
       : null,
   };
 }
 
 export async function deleteCalendarEvent(ctx: CallerContext, eventId: string) {
-  const [existing] = await db.select().from(calendarEvents).where(eq(calendarEvents.id, eventId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(calendarEvents)
+    .where(eq(calendarEvents.id, eventId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Calendar event not found");
   await assertCanModify(ctx, existing);
 

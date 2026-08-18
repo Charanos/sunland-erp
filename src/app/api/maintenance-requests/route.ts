@@ -13,7 +13,12 @@ export async function GET(request: Request) {
     const propertyId = searchParams.get("propertyId") ?? undefined;
 
     const ctx = await requireCallerContext(entityId, request);
-    const maintenanceRequests = await listMaintenanceRequests(ctx, { status, priority, category, propertyId });
+    const maintenanceRequests = await listMaintenanceRequests(ctx, {
+      status,
+      priority,
+      category,
+      propertyId,
+    });
 
     return NextResponse.json({ maintenanceRequests });
   } catch (error) {

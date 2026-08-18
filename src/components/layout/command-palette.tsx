@@ -26,28 +26,64 @@ const FILTERS = [
 ];
 
 const SEARCH_RESULTS = [
-  { id: "prop-1", title: "Acacia Court", subtitle: "Property · Westlands, Nairobi", type: "property" },
-  { id: "prop-2", title: "Sunset Apartments", subtitle: "Property · Kilimani, Nairobi", type: "property" },
-  { id: "prop-3", title: "The Atrium", subtitle: "Property · Upper Hill, Nairobi", type: "property" },
+  {
+    id: "prop-1",
+    title: "Acacia Court",
+    subtitle: "Property · Westlands, Nairobi",
+    type: "property",
+  },
+  {
+    id: "prop-2",
+    title: "Sunset Apartments",
+    subtitle: "Property · Kilimani, Nairobi",
+    type: "property",
+  },
+  {
+    id: "prop-3",
+    title: "The Atrium",
+    subtitle: "Property · Upper Hill, Nairobi",
+    type: "property",
+  },
   { id: "client-1", title: "James Kariuki", subtitle: "Client · Active", type: "client" },
   { id: "client-2", title: "Esther Howard", subtitle: "Client · Prospect", type: "client" },
   { id: "client-3", title: "Safaricom PLC", subtitle: "Client · Corporate", type: "client" },
-  { id: "lease-1", title: "Acacia Court - Unit 4B", subtitle: "Lease · Expires in 14 days", type: "lease" },
+  {
+    id: "lease-1",
+    title: "Acacia Court - Unit 4B",
+    subtitle: "Lease · Expires in 14 days",
+    type: "lease",
+  },
   { id: "lease-2", title: "The Atrium - Floor 3", subtitle: "Lease · Active", type: "lease" },
-  { id: "pay-1", title: "TXN-4821 (KES 95,000)", subtitle: "Payment · Rent · Esther Howard", type: "payment" },
-  { id: "pay-2", title: "TXN-4822 (KES 120,000)", subtitle: "Payment · Rent · James Kariuki", type: "payment" },
+  {
+    id: "pay-1",
+    title: "TXN-4821 (KES 95,000)",
+    subtitle: "Payment · Rent · Esther Howard",
+    type: "payment",
+  },
+  {
+    id: "pay-2",
+    title: "TXN-4822 (KES 120,000)",
+    subtitle: "Payment · Rent · James Kariuki",
+    type: "payment",
+  },
   { id: "staff-1", title: "Paul Amos", subtitle: "Staff · CEO", type: "staff" },
   { id: "staff-2", title: "Jane Doe", subtitle: "Staff · Property Manager", type: "staff" },
 ];
 
 const getIconForType = (type: string) => {
   switch (type) {
-    case "property": return <IconBuildingCommunity size={14} stroke={1.5} aria-hidden />;
-    case "client": return <IconUser size={14} stroke={1.5} aria-hidden />;
-    case "payment": return <IconReceipt size={14} stroke={1.5} aria-hidden />;
-    case "lease": return <IconFileText size={14} stroke={1.5} aria-hidden />;
-    case "staff": return <IconBriefcase size={14} stroke={1.5} aria-hidden />;
-    default: return <IconCommand size={14} stroke={1.5} aria-hidden />;
+    case "property":
+      return <IconBuildingCommunity size={14} stroke={1.5} aria-hidden />;
+    case "client":
+      return <IconUser size={14} stroke={1.5} aria-hidden />;
+    case "payment":
+      return <IconReceipt size={14} stroke={1.5} aria-hidden />;
+    case "lease":
+      return <IconFileText size={14} stroke={1.5} aria-hidden />;
+    case "staff":
+      return <IconBriefcase size={14} stroke={1.5} aria-hidden />;
+    default:
+      return <IconCommand size={14} stroke={1.5} aria-hidden />;
   }
 };
 
@@ -62,14 +98,13 @@ export function CommandPalette() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Filter results dynamically
-  const filteredResults = SEARCH_RESULTS.filter(
-    (item) => {
-      const matchesQuery = item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.subtitle.toLowerCase().includes(query.toLowerCase());
-      const matchesFilter = activeFilter === "all" || item.type === activeFilter;
-      return matchesQuery && matchesFilter;
-    }
-  );
+  const filteredResults = SEARCH_RESULTS.filter((item) => {
+    const matchesQuery =
+      item.title.toLowerCase().includes(query.toLowerCase()) ||
+      item.subtitle.toLowerCase().includes(query.toLowerCase());
+    const matchesFilter = activeFilter === "all" || item.type === activeFilter;
+    return matchesQuery && matchesFilter;
+  });
 
   // Focus input on open
   useEffect(() => {
@@ -220,7 +255,9 @@ export function CommandPalette() {
                     onClick={() => closeSearch()}
                     className={cn(
                       "group flex w-full items-center justify-between rounded-[14px] px-4 py-3.5 transition-all duration-200",
-                      isActive ? "bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/60" : "bg-transparent hover:bg-white hover:shadow-sm"
+                      isActive
+                        ? "bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/60"
+                        : "bg-transparent hover:bg-white hover:shadow-sm"
                     )}
                   >
                     <div className="flex items-center gap-4">
@@ -238,10 +275,12 @@ export function CommandPalette() {
 
                       {/* Text Stack */}
                       <div className="flex flex-col text-left">
-                        <span className={cn(
-                          "text-sm font-medium transition-colors",
-                          isActive ? "text-slate-900" : "text-slate-700"
-                        )}>
+                        <span
+                          className={cn(
+                            "text-sm font-medium transition-colors",
+                            isActive ? "text-slate-900" : "text-slate-700"
+                          )}
+                        >
                           {item.title}
                         </span>
                         <span className="text-xs font-normal text-slate-400 mt-0.5">
@@ -251,12 +290,21 @@ export function CommandPalette() {
                     </div>
 
                     {/* Right Arrow / Action Hint */}
-                    <div className={cn(
-                      "flex items-center gap-2 transition-all duration-200",
-                      isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
-                    )}>
-                      <span className="text-xs font-medium text-slate-400 hidden sm:inline-block">Jump to</span>
-                      <IconChevronRight size={16} stroke={2} className="text-slate-400" aria-hidden />
+                    <div
+                      className={cn(
+                        "flex items-center gap-2 transition-all duration-200",
+                        isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
+                      )}
+                    >
+                      <span className="text-xs font-medium text-slate-400 hidden sm:inline-block">
+                        Jump to
+                      </span>
+                      <IconChevronRight
+                        size={16}
+                        stroke={2}
+                        className="text-slate-400"
+                        aria-hidden
+                      />
                     </div>
                   </button>
                 );

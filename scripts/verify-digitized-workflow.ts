@@ -36,7 +36,9 @@ async function run() {
   const { db } = await import("../src/db");
   const { properties, entities, users } = await import("../src/db/schema");
   const { createContact } = await import("../src/lib/services/crm");
-  const { createProperty, createLease, createDocument } = await import("../src/lib/services/properties");
+  const { createProperty, createLease, createDocument } = await import(
+    "../src/lib/services/properties"
+  );
   const { buildCallerContext } = await import("../src/lib/services/types");
 
   // 1. Resolve seed user and entity context
@@ -110,9 +112,15 @@ async function run() {
   console.log(`✅ Lease registered. ID: ${lease.id}`);
 
   // Check property status updated to occupied
-  const [updatedProp] = await db.select().from(properties).where(eq(properties.id, property.id)).limit(1);
+  const [updatedProp] = await db
+    .select()
+    .from(properties)
+    .where(eq(properties.id, property.id))
+    .limit(1);
   if (updatedProp.status !== "occupied") {
-    throw new Error(`Assertion failed: Property status should be occupied, got: ${updatedProp.status}`);
+    throw new Error(
+      `Assertion failed: Property status should be occupied, got: ${updatedProp.status}`
+    );
   }
   console.log(`✅ Verified Property status successfully switched to: ${updatedProp.status}`);
 

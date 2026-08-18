@@ -37,11 +37,30 @@ interface SunlandNotification {
 
 type NotifCategory = "complaint" | "support_ticket" | "approval" | "system";
 
-const CATEGORY_META: Record<NotifCategory, { label: string; icon: typeof IconBell; color: string }> = {
-  complaint: { label: "HR / Complaints", icon: IconAlertTriangle, color: "bg-purple-50 text-purple-600 border-purple-100" },
-  support_ticket: { label: "Support Tickets", icon: IconLifebuoy, color: "bg-amber-50 text-amber-600 border-amber-100" },
-  approval: { label: "Approvals", icon: IconCashBanknote, color: "bg-emerald-50 text-emerald-600 border-emerald-100" },
-  system: { label: "System", icon: IconInfoCircle, color: "bg-slate-50 text-slate-400 border-slate-200" },
+const CATEGORY_META: Record<
+  NotifCategory,
+  { label: string; icon: typeof IconBell; color: string }
+> = {
+  complaint: {
+    label: "HR / Complaints",
+    icon: IconAlertTriangle,
+    color: "bg-purple-50 text-purple-600 border-purple-100",
+  },
+  support_ticket: {
+    label: "Support Tickets",
+    icon: IconLifebuoy,
+    color: "bg-amber-50 text-amber-600 border-amber-100",
+  },
+  approval: {
+    label: "Approvals",
+    icon: IconCashBanknote,
+    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
+  },
+  system: {
+    label: "System",
+    icon: IconInfoCircle,
+    color: "bg-slate-50 text-slate-400 border-slate-200",
+  },
 };
 
 function categorize(type: string): NotifCategory {
@@ -60,7 +79,7 @@ const FILTER_TABS = [
   { id: "approval", label: "Approvals" },
   { id: "system", label: "System" },
 ] as const;
-type FilterTab = typeof FILTER_TABS[number]["id"];
+type FilterTab = (typeof FILTER_TABS)[number]["id"];
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -104,22 +123,26 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
   }, [loadNotifications]);
 
   const filtered = useMemo(() => {
-    return items.filter(n => {
+    return items.filter((n) => {
       if (activeFilter === "All") return true;
       if (activeFilter === "Unread") return !n.readAt;
       return categorize(n.type) === activeFilter;
     });
   }, [items, activeFilter]);
 
-  const unreadCount = useMemo(() => items.filter(n => !n.readAt).length, [items]);
+  const unreadCount = useMemo(() => items.filter((n) => !n.readAt).length, [items]);
 
   const markAllRead = async () => {
     setIsBulkProcessing(true);
     try {
       const res = await fetch("/api/notifications/mark-all-read", { method: "POST" });
       if (!res.ok) throw new Error("Failed to mark all as read");
-      setItems(prev => prev.map(n => ({ ...n, readAt: n.readAt || new Date().toISOString() })));
-      pushToast({ tone: "success", title: "All Marked Read", body: "All unread notifications cleared." });
+      setItems((prev) => prev.map((n) => ({ ...n, readAt: n.readAt || new Date().toISOString() })));
+      pushToast({
+        tone: "success",
+        title: "All Marked Read",
+        body: "All unread notifications cleared.",
+      });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not mark all as read.";
       pushToast({ tone: "error", title: "Error", body: message });
@@ -131,7 +154,9 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
   const markRead = async (id: string) => {
     // Optimistic - the row already exists locally, so flip it immediately and
     // let the request confirm rather than blocking the click on round-trip latency.
-    setItems(prev => prev.map(n => n.id === id ? { ...n, readAt: new Date().toISOString() } : n));
+    setItems((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, readAt: new Date().toISOString() } : n))
+    );
     try {
       const res = await fetch(`/api/notifications/${id}/read`, { method: "PATCH" });
       if (!res.ok) throw new Error("Failed to mark notification as read");
@@ -153,7 +178,6 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
 
   return (
     <PageTransition className="mx-auto max-w-[98rem] flex flex-col gap-6 pb-12 px-4 md:px-6">
-
       <BoardHeader
         title={
           <span className="flex items-center gap-3">
@@ -187,9 +211,13 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
 
       {/* ── Category Tabs ──────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 border-b border-slate-150 pb-3 mb-2">
-        {FILTER_TABS.map(tab => {
-          const count = tab.id === "Unread" ? unreadCount : tab.id === "All" ? items.length :
-            items.filter(n => categorize(n.type) === tab.id).length;
+        {FILTER_TABS.map((tab) => {
+          const count =
+            tab.id === "Unread"
+              ? unreadCount
+              : tab.id === "All"
+                ? items.length
+                : items.filter((n) => categorize(n.type) === tab.id).length;
 
           return (
             <button
@@ -205,10 +233,14 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
             >
               <span>{tab.label}</span>
               {count > 0 && (
-                <span className={cn(
-                  "flex items-center justify-center rounded-full px-1.5 py-0.5 text-tiny font-medium font-mono",
-                  activeFilter === tab.id ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-400"
-                )}>
+                <span
+                  className={cn(
+                    "flex items-center justify-center rounded-full px-1.5 py-0.5 text-tiny font-medium font-mono",
+                    activeFilter === tab.id
+                      ? "bg-[#f3df27] text-[#151936]"
+                      : "bg-slate-100 text-slate-400"
+                  )}
+                >
                   {count}
                 </span>
               )}
@@ -230,7 +262,9 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
                 <IconBellOff size={28} className="text-slate-350" />
               </div>
               <p className="headline-md text-slate-800">Caught up completely</p>
-              <p className="text-caption text-slate-400 mt-1.5">No alerts exist under the {activeFilter.toLowerCase()} criteria filter.</p>
+              <p className="text-caption text-slate-400 mt-1.5">
+                No alerts exist under the {activeFilter.toLowerCase()} criteria filter.
+              </p>
             </div>
           ) : (
             filtered.map((n) => {
@@ -254,7 +288,12 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
                   )}
 
                   {/* Circular Category Badge */}
-                  <div className={cn("size-8 shrink-0 rounded-full flex items-center justify-center text-sm shadow-sm mt-0.5", meta.color)}>
+                  <div
+                    className={cn(
+                      "size-8 shrink-0 rounded-full flex items-center justify-center text-sm shadow-sm mt-0.5",
+                      meta.color
+                    )}
+                  >
                     <TypeIcon size={14} />
                   </div>
 
@@ -262,22 +301,36 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
                   <div className="flex-1 min-w-0 pr-6 flex flex-col justify-center">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-2">
-                        <p className={cn("text-caption truncate leading-tight", isUnread ? "text-slate-900 font-normal" : "text-slate-700")}>
+                        <p
+                          className={cn(
+                            "text-caption truncate leading-tight",
+                            isUnread ? "text-slate-900 font-normal" : "text-slate-700"
+                          )}
+                        >
                           {n.title}
                         </p>
                         {isUnread && (
-                          <span className="rounded bg-emerald-50 text-emerald-700 border border-emerald-200/50 text-xxs font-normal px-1.5 py-0.5 uppercase tracking-wide">New</span>
+                          <span className="rounded bg-emerald-50 text-emerald-700 border border-emerald-200/50 text-xxs font-normal px-1.5 py-0.5 uppercase tracking-wide">
+                            New
+                          </span>
                         )}
                       </div>
-                      <span className="text-tiny font-mono text-slate-400">{relativeTime(n.createdAt)}</span>
+                      <span className="text-tiny font-mono text-slate-400">
+                        {relativeTime(n.createdAt)}
+                      </span>
                     </div>
                     <p className="text-tiny text-slate-400 mt-1.5 leading-relaxed">{n.body}</p>
                     <div className="flex items-center gap-2 mt-2.5">
-                      <span className="rounded bg-slate-100 text-slate-600 text-xxs font-mono font-normal px-2 py-0.5 uppercase tracking-wider">{meta.label}</span>
+                      <span className="rounded bg-slate-100 text-slate-600 text-xxs font-mono font-normal px-2 py-0.5 uppercase tracking-wider">
+                        {meta.label}
+                      </span>
                       {resolvePortalPath(n.href) && (
                         <Link
                           href={resolvePortalPath(n.href)!}
-                          onClick={(e) => { e.stopPropagation(); markRead(n.id); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markRead(n.id);
+                          }}
                           className="text-tiny text-slate-400 hover:text-slate-900 font-normal flex items-center gap-0.5 transition-colors ml-1"
                         >
                           Access <IconChevronRight size={10} className="mt-0.5" />
@@ -291,7 +344,10 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
                     <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200">
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); markRead(n.id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markRead(n.id);
+                        }}
                         className="flex size-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors shadow-sm"
                         title="Mark read"
                       >
@@ -307,19 +363,33 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
       )}
 
       {/* ── Notification Detail Modal ───────────────────────── */}
-      <Modal open={selectedNotify !== null} onClose={() => setSelectedNotify(null)} title="Notification Details">
+      <Modal
+        open={selectedNotify !== null}
+        onClose={() => setSelectedNotify(null)}
+        title="Notification Details"
+      >
         {selectedNotify && (
           <div className="space-y-5 pt-1 text-slate-700 text-sm">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <div className={cn("size-10 rounded-xl border flex items-center justify-center shadow-inner shrink-0", CATEGORY_META[categorize(selectedNotify.type)].color)}>
+              <div
+                className={cn(
+                  "size-10 rounded-xl border flex items-center justify-center shadow-inner shrink-0",
+                  CATEGORY_META[categorize(selectedNotify.type)].color
+                )}
+              >
                 {(() => {
                   const Icon = CATEGORY_META[categorize(selectedNotify.type)].icon;
                   return <Icon size={18} />;
                 })()}
               </div>
               <div>
-                <h4 className="font-medium text-slate-900 leading-snug body-md">{selectedNotify.title}</h4>
-                <p className="text-tiny text-slate-400 mt-0.5 font-mono">{relativeTime(selectedNotify.createdAt)} · {new Date(selectedNotify.createdAt).toLocaleString()}</p>
+                <h4 className="font-medium text-slate-900 leading-snug body-md">
+                  {selectedNotify.title}
+                </h4>
+                <p className="text-tiny text-slate-400 mt-0.5 font-mono">
+                  {relativeTime(selectedNotify.createdAt)} ·{" "}
+                  {new Date(selectedNotify.createdAt).toLocaleString()}
+                </p>
               </div>
             </div>
 
@@ -338,7 +408,10 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
               {resolvePortalPath(selectedNotify.href) ? (
                 <Link
                   href={resolvePortalPath(selectedNotify.href)!}
-                  onClick={() => { markRead(selectedNotify.id); setSelectedNotify(null); }}
+                  onClick={() => {
+                    markRead(selectedNotify.id);
+                    setSelectedNotify(null);
+                  }}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 shadow-sm transition-all"
                 >
                   Resolve Alert <IconChevronRight size={13} />
@@ -347,7 +420,10 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
                 !selectedNotify.readAt && (
                   <button
                     type="button"
-                    onClick={() => { markRead(selectedNotify.id); setSelectedNotify(null); }}
+                    onClick={() => {
+                      markRead(selectedNotify.id);
+                      setSelectedNotify(null);
+                    }}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm transition-all"
                   >
                     Mark Read <IconCheck size={13} />
@@ -358,7 +434,6 @@ export function NotificationsPageContent({ portalPrefix = "/admin" }: { portalPr
           </div>
         )}
       </Modal>
-
     </PageTransition>
   );
 }

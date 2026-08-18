@@ -3,10 +3,7 @@ import { db } from "@/db";
 import { reportExports, users } from "@/db/schema";
 import { NextResponse } from "next/server";
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ token: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ token: string }> }) {
   try {
     const resolvedParams = await params;
     const token = resolvedParams.token;

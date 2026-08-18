@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  IconCheck,
-  IconPlus,
-  IconTrash,
-  IconReportMoney,
-} from "@tabler/icons-react";
+import { IconCheck, IconPlus, IconTrash, IconReportMoney } from "@tabler/icons-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -68,7 +63,9 @@ export function ValuationSubmitModal({
     Promise.resolve().then(() => {
       setForm({
         marketValueKes: valuation.marketValueKes ?? "",
-        proposedFeeRate: valuation.proposedFeeRate ? (Number(valuation.proposedFeeRate) * 100).toString() : "",
+        proposedFeeRate: valuation.proposedFeeRate
+          ? (Number(valuation.proposedFeeRate) * 100).toString()
+          : "",
         methodology: valuation.methodology ?? "",
       });
       setComparables([]);
@@ -77,18 +74,27 @@ export function ValuationSubmitModal({
 
   if (!valuation) return null;
 
-  const addComparable = () => setComparables((c) => [...c, { name: "", pricePerSqft: "", adjustmentPct: "0" }]);
+  const addComparable = () =>
+    setComparables((c) => [...c, { name: "", pricePerSqft: "", adjustmentPct: "0" }]);
   const updateComparable = (idx: number, patch: Partial<ComparableRow>) =>
     setComparables((c) => c.map((row, i) => (i === idx ? { ...row, ...patch } : row)));
   const removeComparable = (idx: number) => setComparables((c) => c.filter((_, i) => i !== idx));
 
   const handleSubmit = async () => {
     if (!form.marketValueKes.trim()) {
-      pushToast({ tone: "warning", title: "Assessed value required", body: "Record the assessed value to submit this valuation." });
+      pushToast({
+        tone: "warning",
+        title: "Assessed value required",
+        body: "Record the assessed value to submit this valuation.",
+      });
       return;
     }
     if (!form.proposedFeeRate.trim()) {
-      pushToast({ tone: "warning", title: "Proposed fee required", body: "Set the proposed management-fee rate for this prospect." });
+      pushToast({
+        tone: "warning",
+        title: "Proposed fee required",
+        body: "Set the proposed management-fee rate for this prospect.",
+      });
       return;
     }
     setIsSubmitting(true);
@@ -114,7 +120,11 @@ export function ValuationSubmitModal({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit valuation");
 
-      pushToast({ tone: "success", title: "Valuation Submitted", body: `${valuation.valuationCode} valued - awaiting the offer decision.` });
+      pushToast({
+        tone: "success",
+        title: "Valuation Submitted",
+        body: `${valuation.valuationCode} valued - awaiting the offer decision.`,
+      });
       onSubmitted();
       onClose();
     } catch (err) {
@@ -145,7 +155,10 @@ export function ValuationSubmitModal({
                 File: {valuation.valuationCode}
               </p>
               <p className="text-xxs text-slate-500 truncate mt-0.5 font-mono">
-                Status: <span className="font-medium text-[#151936]">Awaiting Assessed Market Value & Fee Proposal</span>
+                Status:{" "}
+                <span className="font-medium text-[#151936]">
+                  Awaiting Assessed Market Value & Fee Proposal
+                </span>
               </p>
             </div>
           </div>
@@ -277,9 +290,14 @@ export function ValuationSubmitModal({
             className="bg-[#151936] text-white hover:bg-[#1f254e] transition-colors rounded-xl px-5 h-10 text-xs font-medium flex items-center gap-2 shadow-2xs cursor-pointer"
           >
             {isSubmitting ? (
-              <><LoadingSpinner size="sm" /><span>Submitting Valuation…</span></>
+              <>
+                <LoadingSpinner size="sm" />
+                <span>Submitting Valuation…</span>
+              </>
             ) : (
-              <><IconCheck size={15} /> Submit Valuation File</>
+              <>
+                <IconCheck size={15} /> Submit Valuation File
+              </>
             )}
           </Button>
         </div>

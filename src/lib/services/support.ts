@@ -7,14 +7,18 @@ import { DomainValidationError, NotFoundError } from "@/lib/authz/errors";
 import { createNotification } from "@/lib/services/notifications";
 import { resolveEntityId } from "@/lib/services/entity";
 import type { CallerContext } from "@/lib/services/types";
-import { addTicketMessageSchema, createSupportTicketSchema, updateSupportTicketSchema } from "@/lib/validation/support";
+import {
+  addTicketMessageSchema,
+  createSupportTicketSchema,
+  updateSupportTicketSchema,
+} from "@/lib/validation/support";
 import { parseInput } from "@/lib/validation/parse";
 
 type SupportTicketRow = typeof supportTickets.$inferSelect;
 
 async function notifyTicketManagers(
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  ticket: SupportTicketRow,
+  ticket: SupportTicketRow
 ) {
   const managers = await tx
     .select()
@@ -72,7 +76,7 @@ export async function createSupportTicket(ctx: CallerContext, rawInput: unknown)
 /** `scope: "mine"` needs no permission (self-scoped); `"all"` is the literal "admin is the main support endpoint" view. */
 export async function listSupportTickets(
   ctx: CallerContext,
-  filters: { entityId?: string; scope?: "mine" | "all" } = {},
+  filters: { entityId?: string; scope?: "mine" | "all" } = {}
 ) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) return [];
@@ -90,7 +94,11 @@ export async function listSupportTickets(
 }
 
 export async function getSupportTicket(ctx: CallerContext, ticketId: string) {
-  const [ticket] = await db.select().from(supportTickets).where(eq(supportTickets.id, ticketId)).limit(1);
+  const [ticket] = await db
+    .select()
+    .from(supportTickets)
+    .where(eq(supportTickets.id, ticketId))
+    .limit(1);
   if (!ticket) throw new NotFoundError("Support ticket not found");
 
   if (ticket.raisedById === ctx.user.id) return ticket;
@@ -101,7 +109,11 @@ export async function getSupportTicket(ctx: CallerContext, ticketId: string) {
 /** Status/assignment/resolution changes are CEO/GM-only - the filer can view but not self-resolve. */
 export async function updateSupportTicket(ctx: CallerContext, ticketId: string, rawInput: unknown) {
   const input = parseInput(updateSupportTicketSchema, rawInput);
-  const [existing] = await db.select().from(supportTickets).where(eq(supportTickets.id, ticketId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(supportTickets)
+    .where(eq(supportTickets.id, ticketId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Support ticket not found");
 
   await authorize(ctx, "support.ticket.manage", existing.entityId);
@@ -160,7 +172,11 @@ export async function updateSupportTicket(ctx: CallerContext, ticketId: string, 
  * filer, since they are staff working context, not correspondence.
  */
 export async function listTicketMessages(ctx: CallerContext, ticketId: string) {
-  const [ticket] = await db.select().from(supportTickets).where(eq(supportTickets.id, ticketId)).limit(1);
+  const [ticket] = await db
+    .select()
+    .from(supportTickets)
+    .where(eq(supportTickets.id, ticketId))
+    .limit(1);
   if (!ticket) throw new NotFoundError("Support ticket not found");
 
   const isFiler = ticket.raisedById === ctx.user.id;
@@ -194,7 +210,11 @@ export async function listTicketMessages(ctx: CallerContext, ticketId: string) {
  */
 export async function addTicketMessage(ctx: CallerContext, ticketId: string, rawInput: unknown) {
   const input = parseInput(addTicketMessageSchema, rawInput);
-  const [ticket] = await db.select().from(supportTickets).where(eq(supportTickets.id, ticketId)).limit(1);
+  const [ticket] = await db
+    .select()
+    .from(supportTickets)
+    .where(eq(supportTickets.id, ticketId))
+    .limit(1);
   if (!ticket) throw new NotFoundError("Support ticket not found");
 
   const isFiler = ticket.raisedById === ctx.user.id;
@@ -235,7 +255,11 @@ export async function addTicketMessage(ctx: CallerContext, ticketId: string, raw
       associatedId: ticketId,
       summary: `${ctx.user.name} ${input.isInternal ? "added an internal note on" : "replied to"} "${ticket.subject}"`,
       entityId: ticket.entityId,
-      after: { messageId: message.id, isInternal: input.isInternal, firstResponse: isFirstStaffReply },
+      after: {
+        messageId: message.id,
+        isInternal: input.isInternal,
+        firstResponse: isFirstStaffReply,
+      },
     });
 
     // Keep the filer in the loop on real replies (never on internal notes).

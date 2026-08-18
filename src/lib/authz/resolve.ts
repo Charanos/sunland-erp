@@ -27,7 +27,7 @@ const ANY_SCOPE = "__any__";
  */
 export async function resolveActorPermissions(
   ctx: CallerContext,
-  entityId: string | null | undefined = ctx.entityId,
+  entityId: string | null | undefined = ctx.entityId
 ): Promise<Set<string>> {
   let perEntity = permissionCache.get(ctx);
   if (!perEntity) {

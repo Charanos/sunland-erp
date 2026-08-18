@@ -75,10 +75,14 @@ export default function RevenueStreamDropdown({ entityId = "group" }: { entityId
     <div className="w-full space-y-2">
       {data.streams.map((stream) => {
         const isOpen = expandedKey === stream.key;
-        const pct = data.totalRevenueKes > 0 ? Math.round((stream.totalKes / data.totalRevenueKes) * 100) : 0;
+        const pct =
+          data.totalRevenueKes > 0 ? Math.round((stream.totalKes / data.totalRevenueKes) * 100) : 0;
 
         return (
-          <div key={stream.key} className="rounded-xl border border-slate-100 bg-white overflow-hidden">
+          <div
+            key={stream.key}
+            className="rounded-xl border border-slate-100 bg-white overflow-hidden"
+          >
             <button
               type="button"
               onClick={() => setExpandedKey(isOpen ? null : stream.key)}
@@ -87,35 +91,51 @@ export default function RevenueStreamDropdown({ entityId = "group" }: { entityId
               <div className="flex items-center gap-3 min-w-0">
                 <IconChevronDown
                   size={16}
-                  className={cn("text-slate-400 shrink-0 transition-transform duration-200", isOpen && "rotate-180")}
+                  className={cn(
+                    "text-slate-400 shrink-0 transition-transform duration-200",
+                    isOpen && "rotate-180"
+                  )}
                 />
                 <div className="min-w-0">
                   <p className="font-medium text-slate-800 truncate">{stream.label}</p>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    {stream.transactionCount} {stream.transactionCount === 1 ? "transaction" : "transactions"} · {pct}% of revenue
+                    {stream.transactionCount}{" "}
+                    {stream.transactionCount === 1 ? "transaction" : "transactions"} · {pct}% of
+                    revenue
                   </p>
                 </div>
               </div>
-              <span className="mono-data text-slate-900 shrink-0 ml-3">{formatCompactKES(stream.totalKes)}</span>
+              <span className="mono-data text-slate-900 shrink-0 ml-3">
+                {formatCompactKES(stream.totalKes)}
+              </span>
             </button>
 
             {isOpen && (
               <div className="border-t border-slate-100 bg-slate-50/40 max-h-64 overflow-y-auto custom-scrollbar">
                 {stream.transactions.length === 0 ? (
-                  <p className="text-sm text-slate-400 px-4 py-4 text-center">No transactions in this stream for the period.</p>
+                  <p className="text-sm text-slate-400 px-4 py-4 text-center">
+                    No transactions in this stream for the period.
+                  </p>
                 ) : (
                   <table className="w-full text-sm">
                     <tbody>
                       {stream.transactions.map((t) => (
                         <tr key={t.id} className="border-b border-slate-100/80 last:border-0">
                           <td className="px-4 py-2.5 text-slate-400 font-mono text-xs whitespace-nowrap">
-                            {new Date(t.occurredAt).toLocaleDateString("en-KE", { day: "2-digit", month: "short" })}
+                            {new Date(t.occurredAt).toLocaleDateString("en-KE", {
+                              day: "2-digit",
+                              month: "short",
+                            })}
                           </td>
                           <td className="px-2 py-2.5 text-slate-700 truncate max-w-[160px]">
                             {t.counterparty ?? t.propertyName ?? "—"}
                           </td>
-                          <td className="px-2 py-2.5 text-slate-400 truncate max-w-[180px] hidden md:table-cell">{t.notes}</td>
-                          <td className="px-4 py-2.5 text-right mono-data text-slate-800 whitespace-nowrap">{formatKES(t.amountKes)}</td>
+                          <td className="px-2 py-2.5 text-slate-400 truncate max-w-[180px] hidden md:table-cell">
+                            {t.notes}
+                          </td>
+                          <td className="px-4 py-2.5 text-right mono-data text-slate-800 whitespace-nowrap">
+                            {formatKES(t.amountKes)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

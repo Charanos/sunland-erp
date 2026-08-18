@@ -35,7 +35,7 @@ export function useTeamMembers(entityId = "group") {
           setMembers(
             usersData.users
               .filter((u: { id: string }) => u.id !== selfId)
-              .slice(0, QUICK_CHAT_LIMIT),
+              .slice(0, QUICK_CHAT_LIMIT)
           );
         }
       } catch {
@@ -48,7 +48,10 @@ export function useTeamMembers(entityId = "group") {
 }
 
 /** Resolves (creating if needed) the DM conversation id for a colleague, so nav quick-chat buttons open a real thread. */
-export async function getOrCreateDmConversationId(entityId: string, otherUserId: string): Promise<string | null> {
+export async function getOrCreateDmConversationId(
+  entityId: string,
+  otherUserId: string
+): Promise<string | null> {
   try {
     const res = await fetch("/api/messaging/conversations/dm", {
       method: "POST",

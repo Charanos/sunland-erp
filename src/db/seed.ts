@@ -13,7 +13,8 @@ try {
           const key = match[1];
           let value = match[2] || "";
           if (value.endsWith("\r")) value = value.substring(0, value.length - 1);
-          if (value.startsWith('"') && value.endsWith('"')) value = value.substring(1, value.length - 1);
+          if (value.startsWith('"') && value.endsWith('"'))
+            value = value.substring(1, value.length - 1);
           process.env[key] = value;
         }
       }
@@ -148,7 +149,9 @@ async function runSeed() {
       ])
       .returning();
 
-    console.log(`Created 4 divisions: Group (${groupEntity.id}), Commercial (${commEntity.id}), Residential (${resEntity.id}), Valuers (${valEntity.id}).`);
+    console.log(
+      `Created 4 divisions: Group (${groupEntity.id}), Commercial (${commEntity.id}), Residential (${resEntity.id}), Valuers (${valEntity.id}).`
+    );
 
     // 3. Create Demo Users
     console.log("Step 3: Creating administrative and operational user roles...");
@@ -172,13 +175,31 @@ async function runSeed() {
       .insert(users)
       .values([
         {
-          email: "ceo@sunlandre.co.ke", passwordHash: hashedPass, name: "Paul Amos", role: "ceo", title: "Chief Executive Officer", avatarUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80", primaryEntityId: groupEntity.id,
+          email: "ceo@sunlandre.co.ke",
+          passwordHash: hashedPass,
+          name: "Paul Amos",
+          role: "ceo",
+          title: "Chief Executive Officer",
+          avatarUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80",
+          primaryEntityId: groupEntity.id,
         },
         {
-          email: "gm@sunlandre.co.ke", passwordHash: hashedPass, name: "Grace Mutua", role: "general_manager", title: "General Manager", avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80", primaryEntityId: groupEntity.id,
+          email: "gm@sunlandre.co.ke",
+          passwordHash: hashedPass,
+          name: "Grace Mutua",
+          role: "general_manager",
+          title: "General Manager",
+          avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
+          primaryEntityId: groupEntity.id,
         },
         {
-          email: "finance.head@sunlandre.co.ke", passwordHash: hashedPass, name: "Dennis Munge", role: "finance_head", title: "Head of Finance", avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80", primaryEntityId: groupEntity.id,
+          email: "finance.head@sunlandre.co.ke",
+          passwordHash: hashedPass,
+          name: "Dennis Munge",
+          role: "finance_head",
+          title: "Head of Finance",
+          avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80",
+          primaryEntityId: groupEntity.id,
         },
         {
           email: "finance.officer@sunlandre.co.ke",
@@ -242,10 +263,22 @@ async function runSeed() {
         },
         // Seeded Sales / BD Agents
         {
-          email: "sales1@sunlandre.co.ke", passwordHash: hashedPass, name: "Kevin Mbugua", role: "property_manager", title: "Senior Broker", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80", primaryEntityId: commEntity.id,
+          email: "sales1@sunlandre.co.ke",
+          passwordHash: hashedPass,
+          name: "Kevin Mbugua",
+          role: "property_manager",
+          title: "Senior Broker",
+          avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+          primaryEntityId: commEntity.id,
         },
         {
-          email: "sales2@sunlandre.co.ke", passwordHash: hashedPass, name: "Lucy Kariuki", role: "property_manager", title: "Sales Agent", avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80", primaryEntityId: resEntity.id,
+          email: "sales2@sunlandre.co.ke",
+          passwordHash: hashedPass,
+          name: "Lucy Kariuki",
+          role: "property_manager",
+          title: "Sales Agent",
+          avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80",
+          primaryEntityId: resEntity.id,
         },
         // Seeded Legal / Escrow Officers
         {
@@ -283,7 +316,11 @@ async function runSeed() {
       { userId: propertyManager2User.id, roleSlug: "property_manager", entityId: resEntity.id },
       { userId: salesAgent1User.id, roleSlug: "property_manager", entityId: commEntity.id },
       { userId: salesAgent2User.id, roleSlug: "property_manager", entityId: resEntity.id },
-      { userId: legalOfficerUser.id, roleSlug: "rentals_mandates_officer", entityId: groupEntity.id },
+      {
+        userId: legalOfficerUser.id,
+        roleSlug: "rentals_mandates_officer",
+        entityId: groupEntity.id,
+      },
     ];
     for (const grant of roleGrants) {
       await grantUserRole(grant.userId, grant.roleSlug, grant.entityId);
@@ -429,9 +466,9 @@ async function runSeed() {
         entityId: groupEntity.id,
         type: isLandlord ? "landlord" : "tenant",
         displayName: isLandlord ? `Landlord Corp ${i}` : `Tenant Client ${i}`,
-        companyName: i % 3 === 0 ? `Company ${i} Ltd` : null as unknown as string,
+        companyName: i % 3 === 0 ? `Company ${i} Ltd` : (null as unknown as string),
         email: `contact${i}@example.co.ke`,
-        phone: `+2547000000${i.toString().padStart(2, '0')}`,
+        phone: `+2547000000${i.toString().padStart(2, "0")}`,
         avatarUrl: [
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
           "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
@@ -440,21 +477,31 @@ async function runSeed() {
           "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400&q=80",
           "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
           "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80",
-          "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80"
+          "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80",
         ][i % 8],
         source: i % 4 === 0 ? "Listing Portal" : "Direct Referral",
         assignedToId: i % 2 === 0 ? pmUser.id : financeOfficerUser.id,
         // Variety for the landlord "Verified" badge - roughly a third of
         // generated landlords are verified, the rest (and every tenant) are not.
-        verifiedAt: isLandlord && i % 6 === 0 ? new Date(Date.now() - (30 + i) * 86_400_000) : undefined,
+        verifiedAt:
+          isLandlord && i % 6 === 0 ? new Date(Date.now() - (30 + i) * 86_400_000) : undefined,
       });
     }
 
-    const insertedContacts = await db
-      .insert(contacts)
-      .values(contactsToInsert)
-      .returning();
-    const [landlordA, landlordB, tenantA, tenantB, buyerJames, companyMeridian, buyerDaniel, buyerGrace, sellerSamuel, buyerPeter, companyConstructive] = insertedContacts;
+    const insertedContacts = await db.insert(contacts).values(contactsToInsert).returning();
+    const [
+      landlordA,
+      landlordB,
+      tenantA,
+      tenantB,
+      buyerJames,
+      companyMeridian,
+      buyerDaniel,
+      buyerGrace,
+      sellerSamuel,
+      buyerPeter,
+      companyConstructive,
+    ] = insertedContacts;
 
     console.log(`Created ${insertedContacts.length} contacts.`);
 
@@ -474,12 +521,28 @@ async function runSeed() {
         sizeSqft: 2400,
         yearBuilt: 2018,
         parkingSpaces: 5,
-        amenities: ["Ample Parking", "Backup Generator", "High-Speed Elevators", "24/7 Security", "Internet / Fiber Ready", "CCTV Surveillance", "Commercial Zoning"],
-        description: "A premium Grade-A commercial office suite situated in the prestigious heart of Westlands, Nairobi's premier business district.\n\nThis meticulously designed 2,400 sq.ft space offers an unparalleled corporate environment, featuring open-plan flexibility alongside executive private offices. The property boasts full-capacity backup power generation, guaranteeing zero downtime for mission-critical operations. High-speed, multi-provider fiber connectivity is pre-installed, ensuring seamless global communications from day one.\n\nTenants enjoy exclusive access to dedicated, secure basement parking, with 5 reserved bays included in the lease. The building is serviced by high-speed, intelligent elevators that minimize wait times even during peak hours. Security is paramount, with 24/7 manned guarding, comprehensive CCTV surveillance covering all common areas, and restricted biometric access control.\n\nThe Plaza is perfectly zoned for commercial use and sits within walking distance of high-end dining, luxury hotels, and major financial institutions, offering the ultimate convenience for your team and visiting clients.",
+        amenities: [
+          "Ample Parking",
+          "Backup Generator",
+          "High-Speed Elevators",
+          "24/7 Security",
+          "Internet / Fiber Ready",
+          "CCTV Surveillance",
+          "Commercial Zoning",
+        ],
+        description:
+          "A premium Grade-A commercial office suite situated in the prestigious heart of Westlands, Nairobi's premier business district.\n\nThis meticulously designed 2,400 sq.ft space offers an unparalleled corporate environment, featuring open-plan flexibility alongside executive private offices. The property boasts full-capacity backup power generation, guaranteeing zero downtime for mission-critical operations. High-speed, multi-provider fiber connectivity is pre-installed, ensuring seamless global communications from day one.\n\nTenants enjoy exclusive access to dedicated, secure basement parking, with 5 reserved bays included in the lease. The building is serviced by high-speed, intelligent elevators that minimize wait times even during peak hours. Security is paramount, with 24/7 manned guarding, comprehensive CCTV surveillance covering all common areas, and restricted biometric access control.\n\nThe Plaza is perfectly zoned for commercial use and sits within walking distance of high-end dining, luxury hotels, and major financial institutions, offering the ultimate convenience for your team and visiting clients.",
         media: [
-          { url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80", alt: "Office exterior", isPrimary: true },
-          { url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80", alt: "Lobby" },
-        ]
+          {
+            url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
+            alt: "Office exterior",
+            isPrimary: true,
+          },
+          {
+            url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80",
+            alt: "Lobby",
+          },
+        ],
       },
       {
         entityId: groupEntity.id,
@@ -494,12 +557,27 @@ async function runSeed() {
         sizeSqft: 1500,
         yearBuilt: 2021,
         parkingSpaces: 2,
-        amenities: ["Swimming Pool", "Gym / Fitness Center", "Balcony", "Fitted Kitchen", "Children's Play Area", "Borehole Water Supply"],
-        description: "Luxurious, sunlit residential apartment overlooking the Lavington valley. Modern fitted kitchen and exclusive access to the resident clubhouse and pool.",
+        amenities: [
+          "Swimming Pool",
+          "Gym / Fitness Center",
+          "Balcony",
+          "Fitted Kitchen",
+          "Children's Play Area",
+          "Borehole Water Supply",
+        ],
+        description:
+          "Luxurious, sunlit residential apartment overlooking the Lavington valley. Modern fitted kitchen and exclusive access to the resident clubhouse and pool.",
         media: [
-          { url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80", alt: "Living room", isPrimary: true },
-          { url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80", alt: "Bedroom" },
-        ]
+          {
+            url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
+            alt: "Living room",
+            isPrimary: true,
+          },
+          {
+            url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",
+            alt: "Bedroom",
+          },
+        ],
       },
       {
         entityId: groupEntity.id,
@@ -529,57 +607,77 @@ async function runSeed() {
           "Backup Generator (Full Load)",
           "Borehole Water Supply",
           "High-Speed Fiber Internet",
-          "EV Charging Stations"
+          "EV Charging Stations",
         ],
-        description: "An architectural masterpiece redefining luxury living in Nairobi, The Sovereign Riverside Penthouse offers an unparalleled residential experience. Perched atop the city's most exclusive new development on Riverside Drive, this expansive 4,200 sq.ft, four-bedroom residence delivers breathtaking, uninterrupted 360-degree views of the Nairobi skyline and lush canopy below.\n\nDesigned for the most discerning tenant, the penthouse features a sprawling open-concept living and dining area, wrapped in floor-to-ceiling double-glazed acoustic glass that ensures absolute tranquility. The chef-grade kitchen is a culinary dream, arriving fully fitted with top-of-the-line integrated Bosch appliances, custom European cabinetry, and a stunning Calacatta marble waterfall island. Entertainment is effortless with a seamless flow onto the massive wrap-around terrace, complete with a private, temperature-controlled plunge pool.\n\nThe master suite operates as a private sanctuary, boasting a custom walk-in dressing room, a spa-inspired en-suite bathroom with a freestanding soaking tub, dual rain showers, and premium fixtures. Every room is fully integrated with a cutting-edge smart home automation system, allowing you to control lighting, climate, automated blinds, and multi-room audio straight from your smartphone or the central control hub.\n\nResidents enjoy access to world-class communal amenities including a rooftop infinity pool, a commercial-grade fitness center, a dedicated yoga studio, and a wellness spa. Security is military-grade, featuring multi-tier biometric access, 24/7 CCTV surveillance, and a round-the-clock dedicated concierge and management team. The property includes a self-contained domestic staff quarter (DSQ) with a discrete entrance and three reserved premium parking bays equipped with EV charging capabilities.",
+        description:
+          "An architectural masterpiece redefining luxury living in Nairobi, The Sovereign Riverside Penthouse offers an unparalleled residential experience. Perched atop the city's most exclusive new development on Riverside Drive, this expansive 4,200 sq.ft, four-bedroom residence delivers breathtaking, uninterrupted 360-degree views of the Nairobi skyline and lush canopy below.\n\nDesigned for the most discerning tenant, the penthouse features a sprawling open-concept living and dining area, wrapped in floor-to-ceiling double-glazed acoustic glass that ensures absolute tranquility. The chef-grade kitchen is a culinary dream, arriving fully fitted with top-of-the-line integrated Bosch appliances, custom European cabinetry, and a stunning Calacatta marble waterfall island. Entertainment is effortless with a seamless flow onto the massive wrap-around terrace, complete with a private, temperature-controlled plunge pool.\n\nThe master suite operates as a private sanctuary, boasting a custom walk-in dressing room, a spa-inspired en-suite bathroom with a freestanding soaking tub, dual rain showers, and premium fixtures. Every room is fully integrated with a cutting-edge smart home automation system, allowing you to control lighting, climate, automated blinds, and multi-room audio straight from your smartphone or the central control hub.\n\nResidents enjoy access to world-class communal amenities including a rooftop infinity pool, a commercial-grade fitness center, a dedicated yoga studio, and a wellness spa. Security is military-grade, featuring multi-tier biometric access, 24/7 CCTV surveillance, and a round-the-clock dedicated concierge and management team. The property includes a self-contained domestic staff quarter (DSQ) with a discrete entrance and three reserved premium parking bays equipped with EV charging capabilities.",
         media: [
-          { url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80", alt: "Penthouse exterior and terrace", isPrimary: true },
-          { url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80", alt: "Luxury open-plan living room" },
-          { url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&q=80", alt: "Fitted designer kitchen with marble island" },
-          { url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80", alt: "Master bedroom with floor-to-ceiling windows" },
-          { url: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80", alt: "Spa-inspired en-suite bathroom" }
-        ]
+          {
+            url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80",
+            alt: "Penthouse exterior and terrace",
+            isPrimary: true,
+          },
+          {
+            url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+            alt: "Luxury open-plan living room",
+          },
+          {
+            url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&q=80",
+            alt: "Fitted designer kitchen with marble island",
+          },
+          {
+            url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&q=80",
+            alt: "Master bedroom with floor-to-ceiling windows",
+          },
+          {
+            url: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80",
+            alt: "Spa-inspired en-suite bathroom",
+          },
+        ],
       },
     ];
 
     const propertyTypes = ["Apartment", "Commercial", "House", "Villa", "Land"];
     const typeImages: Record<string, string[]> = {
-      "Apartment": [
+      Apartment: [
         "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
         "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80",
-        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
       ],
-      "Commercial": [
+      Commercial: [
         "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
         "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&q=80",
-        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80"
+        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
       ],
-      "House": [
+      House: [
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
         "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
-        "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&q=80"
+        "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&q=80",
       ],
-      "Villa": [
+      Villa: [
         "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
         "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&q=80",
-        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80"
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80",
       ],
-      "Land": [
+      Land: [
         "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80",
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"
-      ]
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
+      ],
     };
     const secondaryImages = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80",
       "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80"
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",
     ];
 
     // Real landlord pool (not just landlordA/landlordB) so ownership - and
     // therefore mandate/expense attribution downstream in Step 7 - is spread
     // across many distinct contacts, matching the larger property count below.
-    const allLandlordsForOwnership = await db.select().from(contacts).where(eq(contacts.type, "landlord"));
+    const allLandlordsForOwnership = await db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.type, "landlord"));
 
     // Grown from i<=60 to i<=130 (129 auto-generated + 3 explicit = 132
     // properties total, up from 62) per the D2 "grow meaningfully larger" pass.
@@ -592,16 +690,38 @@ async function runSeed() {
       const isCommercial = type === "Commercial";
       const hasBuilding = !isLand;
 
-      const statuses = ["available", "occupied", "under_offer", "maintenance", "off_market"] as const;
+      const statuses = [
+        "available",
+        "occupied",
+        "under_offer",
+        "maintenance",
+        "off_market",
+      ] as const;
       const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
 
       // Give them a random subset of amenities
       const allAmenities = [
-        "Swimming Pool", "Gym / Fitness Center", "Backup Generator", "Borehole Water Supply",
-        "High-Speed Elevators", "24/7 Security", "CCTV Surveillance", "Ample Parking",
-        "Children's Play Area", "Clubhouse", "Fitted Kitchen", "Balcony",
-        "Electric Fence", "Servant Quarters (DSQ)", "Solar Water Heating", "Internet / Fiber Ready",
-        "Garden / Landscaping", "Paved Driveway", "Commercial Zoning", "Office Partitioning", "Boundary Wall"
+        "Swimming Pool",
+        "Gym / Fitness Center",
+        "Backup Generator",
+        "Borehole Water Supply",
+        "High-Speed Elevators",
+        "24/7 Security",
+        "CCTV Surveillance",
+        "Ample Parking",
+        "Children's Play Area",
+        "Clubhouse",
+        "Fitted Kitchen",
+        "Balcony",
+        "Electric Fence",
+        "Servant Quarters (DSQ)",
+        "Solar Water Heating",
+        "Internet / Fiber Ready",
+        "Garden / Landscaping",
+        "Paved Driveway",
+        "Commercial Zoning",
+        "Office Partitioning",
+        "Boundary Wall",
       ];
       const propAmenities = [];
       const numAmenities = Math.floor(Math.random() * 5) + (isLand ? 1 : 4);
@@ -620,13 +740,13 @@ async function runSeed() {
           : i % 10 === 5
             ? [{ url: primaryImg, alt: `${type} exterior view`, isPrimary: true }]
             : [
-              { url: primaryImg, alt: `${type} exterior view`, isPrimary: true },
-              { url: secImg, alt: "Interior view" },
-            ];
+                { url: primaryImg, alt: `${type} exterior view`, isPrimary: true },
+                { url: secImg, alt: "Interior view" },
+              ];
 
       propsToInsert.push({
         entityId: groupEntity.id,
-        propertyCode: `PROP-AUTO-${i.toString().padStart(3, '0')}`,
+        propertyCode: `PROP-AUTO-${i.toString().padStart(3, "0")}`,
         name: `Premium ${type} ${i}`,
         propertyType: type,
         listingType: i % 3 === 0 ? "sale" : "let",
@@ -637,7 +757,10 @@ async function runSeed() {
         bedrooms: hasBuilding && !isCommercial ? Math.floor(Math.random() * 5) + 1 : null,
         bathrooms: hasBuilding && !isCommercial ? Math.floor(Math.random() * 4) + 1 : null,
         sizeSqft: hasBuilding ? Math.floor(Math.random() * 2000) + 1000 : null,
-        landAreaSqft: isLand || type === "Villa" || type === "House" ? Math.floor(Math.random() * 10000) + 2000 : null,
+        landAreaSqft:
+          isLand || type === "Villa" || type === "House"
+            ? Math.floor(Math.random() * 10000) + 2000
+            : null,
         yearBuilt: hasBuilding ? 2010 + Math.floor(Math.random() * 13) : null,
         parkingSpaces: hasBuilding ? Math.floor(Math.random() * 10) : null,
         amenities: propAmenities,
@@ -646,10 +769,7 @@ async function runSeed() {
       });
     }
 
-    const insertedProps = await db
-      .insert(properties)
-      .values(propsToInsert)
-      .returning();
+    const insertedProps = await db.insert(properties).values(propsToInsert).returning();
 
     const propComm = insertedProps[0];
     const propRes = insertedProps[1];
@@ -665,7 +785,13 @@ async function runSeed() {
     // the featured carousel's landlord/manager mini-cards always render real
     // data rather than an "Unassigned" state.
     console.log("Step 5a: Establishing management mandates and PM assignments...");
-    const pmRoster = [lineManagerUser, propertyManager1User, propertyManager2User, salesAgent1User, salesAgent2User];
+    const pmRoster = [
+      lineManagerUser,
+      propertyManager1User,
+      propertyManager2User,
+      salesAgent1User,
+      salesAgent2User,
+    ];
     const featuredExtraIdx = [5, 12, 20, 30, 42];
 
     // D2: grown from 8 fixed active-mandate indices to a much larger pool so
@@ -675,13 +801,28 @@ async function runSeed() {
     const draftExtraIdx = [50, 58, 66];
     const pendingExtraIdx2 = [74, 82];
     const terminatedExtraIdx2 = [90, 98];
-    const reservedIdx = new Set([35, 45, ...draftExtraIdx, ...pendingExtraIdx2, ...terminatedExtraIdx2]);
-    const additionalActiveIdx = Array.from({ length: 44 }, (_, k) => 3 + k * 2).filter((i) => !reservedIdx.has(i));
+    const reservedIdx = new Set([
+      35,
+      45,
+      ...draftExtraIdx,
+      ...pendingExtraIdx2,
+      ...terminatedExtraIdx2,
+    ]);
+    const additionalActiveIdx = Array.from({ length: 44 }, (_, k) => 3 + k * 2).filter(
+      (i) => !reservedIdx.has(i)
+    );
     const mandatedExtraIdx = Array.from(new Set([...featuredExtraIdx, ...additionalActiveIdx]));
 
-    await db.update(properties).set({ isFeatured: true }).where(
-      inArray(properties.id, [propComm.id, propRes.id, ...featuredExtraIdx.map((i) => insertedProps[i].id)]),
-    );
+    await db
+      .update(properties)
+      .set({ isFeatured: true })
+      .where(
+        inArray(properties.id, [
+          propComm.id,
+          propRes.id,
+          ...featuredExtraIdx.map((i) => insertedProps[i].id),
+        ])
+      );
 
     const mandateStartDate = new Date();
     mandateStartDate.setMonth(mandateStartDate.getMonth() - 6);
@@ -695,54 +836,66 @@ async function runSeed() {
       { unitType: "2 Bedroom", count: 8, monthlyRentKes: "45000.00" },
       { unitType: "3 Bedroom", count: 4, monthlyRentKes: "65000.00" },
     ];
-    await db.update(properties).set({ unitBreakdown: propResUnitBreakdown }).where(eq(properties.id, propRes.id));
+    await db
+      .update(properties)
+      .set({ unitBreakdown: propResUnitBreakdown })
+      .where(eq(properties.id, propRes.id));
 
     // Renewal-type/notice-period vocabulary for the optional mandate term
     // fields - previously populated on zero mandates anywhere in the seed.
     const renewalTypes = ["automatic", "manual", "negotiated"] as const;
-    const activeMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = activeMandateProps.map((p, i) => {
-      // Every 4th non-propRes mandate gets its optional term fields populated,
-      // so the Overview tab's term cards have real (not "Not yet configured")
-      // data on a meaningful subset, not just the one property this was
-      // previously retrofitted onto.
-      const withTerms = p.id !== propRes.id && i % 4 === 0;
-      return {
-        entityId: groupEntity.id,
-        propertyId: p.id,
-        landlordContactId: p.ownerContactId!,
-        // Every 5th mandate stays unassigned so the "Unassigned" empty state
-        // (grid card / table / drawer trigger) also has real data to exercise.
-        assignedPmId: i % 5 === 4 ? null : pmRoster[i % pmRoster.length].id,
-        mandateRate: "0.1000",
-        unitCount: p.id === propRes.id ? 12 : 1,
-        startDate: mandateStartDate,
-        status: "active",
-        maintenanceAuthorityKes: withTerms ? (Math.floor(Math.random() * 8) * 25000 + 50000).toFixed(2) : undefined,
-        renewalType: withTerms ? renewalTypes[i % renewalTypes.length] : undefined,
-        noticePeriodDays: withTerms ? [30, 60, 90][i % 3] : undefined,
-        scopeDescription: withTerms
-          ? "Full rent collection, tenant sourcing/vetting, routine maintenance coordination, and monthly remittance reporting to the landlord."
-          : undefined,
-      };
-    });
-    const insertedActiveMandates = await db.insert(propertyMandates).values(activeMandatesToInsert).returning();
+    const activeMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = activeMandateProps.map(
+      (p, i) => {
+        // Every 4th non-propRes mandate gets its optional term fields populated,
+        // so the Overview tab's term cards have real (not "Not yet configured")
+        // data on a meaningful subset, not just the one property this was
+        // previously retrofitted onto.
+        const withTerms = p.id !== propRes.id && i % 4 === 0;
+        return {
+          entityId: groupEntity.id,
+          propertyId: p.id,
+          landlordContactId: p.ownerContactId!,
+          // Every 5th mandate stays unassigned so the "Unassigned" empty state
+          // (grid card / table / drawer trigger) also has real data to exercise.
+          assignedPmId: i % 5 === 4 ? null : pmRoster[i % pmRoster.length].id,
+          mandateRate: "0.1000",
+          unitCount: p.id === propRes.id ? 12 : 1,
+          startDate: mandateStartDate,
+          status: "active",
+          maintenanceAuthorityKes: withTerms
+            ? (Math.floor(Math.random() * 8) * 25000 + 50000).toFixed(2)
+            : undefined,
+          renewalType: withTerms ? renewalTypes[i % renewalTypes.length] : undefined,
+          noticePeriodDays: withTerms ? [30, 60, 90][i % 3] : undefined,
+          scopeDescription: withTerms
+            ? "Full rent collection, tenant sourcing/vetting, routine maintenance coordination, and monthly remittance reporting to the landlord."
+            : undefined,
+        };
+      }
+    );
+    const insertedActiveMandates = await db
+      .insert(propertyMandates)
+      .values(activeMandatesToInsert)
+      .returning();
 
     // Draft mandates - proposed but not yet submitted for approval. Zero
     // representation previously; "draft" is the mandateStatus column default
     // but nothing ever actually inserted one.
-    const draftMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = draftExtraIdx.map((idx) => {
-      const p = insertedProps[idx];
-      return {
-        entityId: groupEntity.id,
-        propertyId: p.id,
-        landlordContactId: p.ownerContactId!,
-        assignedPmId: null,
-        mandateRate: "0.1000",
-        unitCount: 1,
-        startDate: new Date(),
-        status: "draft",
-      };
-    });
+    const draftMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = draftExtraIdx.map(
+      (idx) => {
+        const p = insertedProps[idx];
+        return {
+          entityId: groupEntity.id,
+          propertyId: p.id,
+          landlordContactId: p.ownerContactId!,
+          assignedPmId: null,
+          mandateRate: "0.1000",
+          unitCount: 1,
+          startDate: new Date(),
+          status: "draft",
+        };
+      }
+    );
     await db.insert(propertyMandates).values(draftMandatesToInsert).returning();
 
     // Real property_units rows for propRes, generated the same way
@@ -764,7 +917,10 @@ async function runSeed() {
         propResUnitCounter++;
       }
     }
-    const insertedPropResUnits = await db.insert(propertyUnits).values(propResUnitsToInsert).returning();
+    const insertedPropResUnits = await db
+      .insert(propertyUnits)
+      .values(propResUnitsToInsert)
+      .returning();
     const propResOccupiedUnit = insertedPropResUnits[0];
 
     // Bugfix (confirmed via screenshot): every OTHER active-mandate property
@@ -784,11 +940,16 @@ async function runSeed() {
       monthlyRentKes: p.monthlyRentKes || "120000.00",
       status: "vacant",
     }));
-    const insertedSingleUnits = await db.insert(propertyUnits).values(singleUnitsToInsert).returning();
-    const propertyUnitMap = new Map<string, typeof insertedSingleUnits[number]>();
+    const insertedSingleUnits = await db
+      .insert(propertyUnits)
+      .values(singleUnitsToInsert)
+      .returning();
+    const propertyUnitMap = new Map<string, (typeof insertedSingleUnits)[number]>();
     insertedSingleUnits.forEach((u, i) => propertyUnitMap.set(singleUnitProps[i].id, u));
     propertyUnitMap.set(propRes.id, propResOccupiedUnit);
-    console.log(`Created ${insertedSingleUnits.length} single property_units rows (1 per non-propRes active mandate + propComm) so the Units & Tenants tab never diverges from the real lease/vitals data.`);
+    console.log(
+      `Created ${insertedSingleUnits.length} single property_units rows (1 per non-propRes active mandate + propComm) so the Units & Tenants tab never diverges from the real lease/vitals data.`
+    );
 
     // Make propComm have a pending mandate and critical maintenance request
     const pendingProp1 = propComm;
@@ -853,7 +1014,10 @@ async function runSeed() {
     });
 
     const terminatedProp = insertedProps[45];
-    const terminatedMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = [terminatedProp, ...terminatedExtraIdx2.map((i) => insertedProps[i])].map((p, i) => ({
+    const terminatedMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = [
+      terminatedProp,
+      ...terminatedExtraIdx2.map((i) => insertedProps[i]),
+    ].map((p, i) => ({
       entityId: groupEntity.id,
       propertyId: p.id,
       landlordContactId: p.ownerContactId!,
@@ -865,24 +1029,31 @@ async function runSeed() {
       endDate: new Date(Date.now() - (i * 20 + 5) * 86_400_000),
       status: "terminated",
     }));
-    const insertedTerminatedMandates = await db.insert(propertyMandates).values(terminatedMandatesToInsert).returning();
+    const insertedTerminatedMandates = await db
+      .insert(propertyMandates)
+      .values(terminatedMandatesToInsert)
+      .returning();
 
     // Two more pending_approval mandates beyond the original propComm +
     // insertedProps[35], for more Decision Queue variety.
-    const extraPendingMandatesToInsert: (typeof propertyMandates.$inferInsert)[] = pendingExtraIdx2.map((idx) => {
-      const p = insertedProps[idx];
-      return {
-        entityId: groupEntity.id,
-        propertyId: p.id,
-        landlordContactId: p.ownerContactId!,
-        assignedPmId: propertyManager2User.id,
-        mandateRate: "0.1100",
-        unitCount: 1,
-        startDate: new Date(),
-        status: "pending_approval",
-      };
-    });
-    const insertedExtraPendingMandates = await db.insert(propertyMandates).values(extraPendingMandatesToInsert).returning();
+    const extraPendingMandatesToInsert: (typeof propertyMandates.$inferInsert)[] =
+      pendingExtraIdx2.map((idx) => {
+        const p = insertedProps[idx];
+        return {
+          entityId: groupEntity.id,
+          propertyId: p.id,
+          landlordContactId: p.ownerContactId!,
+          assignedPmId: propertyManager2User.id,
+          mandateRate: "0.1100",
+          unitCount: 1,
+          startDate: new Date(),
+          status: "pending_approval",
+        };
+      });
+    const insertedExtraPendingMandates = await db
+      .insert(propertyMandates)
+      .values(extraPendingMandatesToInsert)
+      .returning();
     await db.insert(approvalRequests).values(
       insertedExtraPendingMandates.map((m) => ({
         entityId: groupEntity.id,
@@ -892,11 +1063,11 @@ async function runSeed() {
         requestedById: propertyManager2User.id,
         requiredApproverRole: "gm" as const,
         status: "pending" as const,
-      })),
+      }))
     );
 
     console.log(
-      `Created ${activeMandatesToInsert.length} active, ${draftMandatesToInsert.length} draft, ${2 + extraPendingMandatesToInsert.length} pending, and ${terminatedMandatesToInsert.length} terminated management mandates, and marked ${2 + featuredExtraIdx.length} properties as featured.`,
+      `Created ${activeMandatesToInsert.length} active, ${draftMandatesToInsert.length} draft, ${2 + extraPendingMandatesToInsert.length} pending, and ${terminatedMandatesToInsert.length} terminated management mandates, and marked ${2 + featuredExtraIdx.length} properties as featured.`
     );
 
     // 5a2. The pending remittance advice against propRes's mandate used to be
@@ -915,114 +1086,109 @@ async function runSeed() {
     console.log("Step 5b: Populating sales pipeline...");
     const daysAgo = (n: number) => new Date(Date.now() - n * 86400000);
     const hoursFromNow = (n: number) => new Date(Date.now() + n * 3_600_000);
-    const [
-      leadInquiry,
-      leadQualification,
-      leadViewing,
-      leadOffer,
-      leadNegotiation,
-      ,
-      ,
-      ,
-    ] = await db.insert(leads).values([
-      {
-        entityId: groupEntity.id,
-        title: "3BR Apartment Inquiry - Kilimani",
-        stage: "inquiry",
-        priority: "medium",
-        contactId: buyerJames.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "14000000.00",
-        probability: 10,
-        nextActionAt: hoursFromNow(30),
-        createdAt: daysAgo(2),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Office Space Lease - Westlands",
-        stage: "qualification",
-        priority: "high",
-        contactId: companyMeridian.id,
-        propertyId: propComm.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "4200000.00",
-        probability: 25,
-        nextActionAt: hoursFromNow(-6),
-        createdAt: daysAgo(5),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Villa Purchase - Karen",
-        stage: "viewing",
-        priority: "high",
-        contactId: buyerDaniel.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "62000000.00",
-        probability: 40,
-        nextActionAt: hoursFromNow(4),
-        createdAt: daysAgo(12),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Retail Unit - CBD",
-        stage: "offer",
-        priority: "medium",
-        contactId: buyerGrace.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "9500000.00",
-        probability: 60,
-        createdAt: daysAgo(18),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Land Sale - Ruiru",
-        stage: "negotiation",
-        priority: "low",
-        contactId: sellerSamuel.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "18000000.00",
-        probability: 75,
-        createdAt: daysAgo(20),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Nexus Tech Office Lease",
-        stage: "closed_won",
-        priority: "medium",
-        contactId: tenantA.id,
-        propertyId: propComm.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "4200000.00",
-        probability: 100,
-        createdAt: daysAgo(25),
-        closedAt: daysAgo(10),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Riverside Apartment Sale",
-        stage: "closed_won",
-        priority: "medium",
-        contactId: buyerPeter.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "8500000.00",
-        probability: 100,
-        createdAt: daysAgo(50),
-        closedAt: daysAgo(35),
-      },
-      {
-        entityId: groupEntity.id,
-        title: "Industrial Warehouse Deal",
-        stage: "closed_lost",
-        priority: "low",
-        contactId: companyConstructive.id,
-        assignedToId: lineManagerUser.id,
-        expectedValueKes: "16000000.00",
-        probability: 0,
-        lostReason: "Budget constraints on buyer side",
-        createdAt: daysAgo(28),
-        closedAt: daysAgo(8),
-      },
-    ]).returning();
+    const [leadInquiry, leadQualification, leadViewing, leadOffer, leadNegotiation, , , ,] =
+      await db
+        .insert(leads)
+        .values([
+          {
+            entityId: groupEntity.id,
+            title: "3BR Apartment Inquiry - Kilimani",
+            stage: "inquiry",
+            priority: "medium",
+            contactId: buyerJames.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "14000000.00",
+            probability: 10,
+            nextActionAt: hoursFromNow(30),
+            createdAt: daysAgo(2),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Office Space Lease - Westlands",
+            stage: "qualification",
+            priority: "high",
+            contactId: companyMeridian.id,
+            propertyId: propComm.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "4200000.00",
+            probability: 25,
+            nextActionAt: hoursFromNow(-6),
+            createdAt: daysAgo(5),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Villa Purchase - Karen",
+            stage: "viewing",
+            priority: "high",
+            contactId: buyerDaniel.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "62000000.00",
+            probability: 40,
+            nextActionAt: hoursFromNow(4),
+            createdAt: daysAgo(12),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Retail Unit - CBD",
+            stage: "offer",
+            priority: "medium",
+            contactId: buyerGrace.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "9500000.00",
+            probability: 60,
+            createdAt: daysAgo(18),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Land Sale - Ruiru",
+            stage: "negotiation",
+            priority: "low",
+            contactId: sellerSamuel.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "18000000.00",
+            probability: 75,
+            createdAt: daysAgo(20),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Nexus Tech Office Lease",
+            stage: "closed_won",
+            priority: "medium",
+            contactId: tenantA.id,
+            propertyId: propComm.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "4200000.00",
+            probability: 100,
+            createdAt: daysAgo(25),
+            closedAt: daysAgo(10),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Riverside Apartment Sale",
+            stage: "closed_won",
+            priority: "medium",
+            contactId: buyerPeter.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "8500000.00",
+            probability: 100,
+            createdAt: daysAgo(50),
+            closedAt: daysAgo(35),
+          },
+          {
+            entityId: groupEntity.id,
+            title: "Industrial Warehouse Deal",
+            stage: "closed_lost",
+            priority: "low",
+            contactId: companyConstructive.id,
+            assignedToId: lineManagerUser.id,
+            expectedValueKes: "16000000.00",
+            probability: 0,
+            lostReason: "Budget constraints on buyer side",
+            createdAt: daysAgo(28),
+            closedAt: daysAgo(8),
+          },
+        ])
+        .returning();
     console.log("Created 8 pipeline leads across the funnel.");
 
     // Real, persisted lead notes + file attachments (Sales Pipeline precision
@@ -1078,10 +1244,7 @@ async function runSeed() {
     const endsAt = new Date();
     endsAt.setFullYear(endsAt.getFullYear() + 1);
 
-    const allTenants = await db
-      .select()
-      .from(contacts)
-      .where(eq(contacts.type, "tenant"));
+    const allTenants = await db.select().from(contacts).where(eq(contacts.type, "tenant"));
 
     // propRes's lease is deliberately given a near-term end date so the
     // Leases Board's "expiring soon" Needs Attention branch has real data in dev.
@@ -1135,7 +1298,7 @@ async function runSeed() {
       });
     });
 
-    if (!activeMandateProps.some(p => p.id === propComm.id)) {
+    if (!activeMandateProps.some((p) => p.id === propComm.id)) {
       const propCommUnit = propertyUnitMap.get(propComm.id)!;
       leasesToInsert.push({
         entityId: groupEntity.id,
@@ -1150,13 +1313,10 @@ async function runSeed() {
       });
     }
 
-    const insertedLeases = await db
-      .insert(leases)
-      .values(leasesToInsert)
-      .returning();
+    const insertedLeases = await db.insert(leases).values(leasesToInsert).returning();
 
-    const leaseA = insertedLeases.find(l => l.propertyId === propComm.id) || insertedLeases[0];
-    const leaseB = insertedLeases.find(l => l.propertyId === propRes.id) || insertedLeases[1];
+    const leaseA = insertedLeases.find((l) => l.propertyId === propComm.id) || insertedLeases[0];
+    const leaseB = insertedLeases.find((l) => l.propertyId === propRes.id) || insertedLeases[1];
 
     // Sync every unit-scoped ACTIVE lease's unit to occupied/currentLeaseId -
     // mirrors what createLease's service-layer logic does, done directly here
@@ -1174,7 +1334,9 @@ async function runSeed() {
     }
 
     const activeLeaseCount = insertedLeases.filter((l) => l.isActive).length;
-    console.log(`Created ${insertedLeases.length} leases (${activeLeaseCount} active, ${insertedLeases.length - activeLeaseCount} terminated); synced ${unitsSynced} property_units rows to occupied (propRes: 1 of 12 units occupied, 11 vacant).`);
+    console.log(
+      `Created ${insertedLeases.length} leases (${activeLeaseCount} active, ${insertedLeases.length - activeLeaseCount} terminated); synced ${unitsSynced} property_units rows to occupied (propRes: 1 of 12 units occupied, 11 vacant).`
+    );
 
     // 7. Create Transactions
     console.log("Step 7: Generating ledger transactions...");
@@ -1203,7 +1365,9 @@ async function runSeed() {
     let defaultedCount = 0;
     let partialCount = 0;
     let currentCount = 0;
-    const activeNonCommLeases = insertedLeases.filter((l) => l.isActive && l.propertyId !== propComm.id);
+    const activeNonCommLeases = insertedLeases.filter(
+      (l) => l.isActive && l.propertyId !== propComm.id
+    );
     activeNonCommLeases.forEach((l, idx) => {
       usedLeaseMonths.add(`${l.id}:${monthKeyOf(nowForRent)}`);
 
@@ -1218,7 +1382,8 @@ async function runSeed() {
       }
 
       const collectedAmount = isPartial ? fullRent * (0.3 + (idx % 5) * 0.1) : fullRent;
-      if (isPartial) partialCount++; else currentCount++;
+      if (isPartial) partialCount++;
+      else currentCount++;
 
       txs.push({
         entityId: groupEntity.id,
@@ -1232,7 +1397,9 @@ async function runSeed() {
         notes: isPartial ? "Partial rent payment - current month" : "Rent payment - current month",
       });
     });
-    console.log(`Current-month collection variety: ${currentCount} fully current, ${partialCount} partial arrears, ${defaultedCount} fully defaulted (plus propComm's hardcoded unpaid lease).`);
+    console.log(
+      `Current-month collection variety: ${currentCount} fully current, ${partialCount} partial arrears, ${defaultedCount} fully defaulted (plus propComm's hardcoded unpaid lease).`
+    );
 
     // Random historical rent/expense transactions distributed across all
     // leased properties. D1 fixes applied here: (a) a candidate date is
@@ -1356,12 +1523,14 @@ async function runSeed() {
         occurredAt: daysAgo(35),
         recordedById: financeOfficerUser.id,
         notes: "Sales commission (3%) - Riverside Apartment Sale",
-      },
+      }
     );
 
     await db.insert(transactions).values(txs);
 
-    console.log(`Created ${txs.length} transactions and rent ledger entries (${operatingExpensesToInsert.length} of which are Sunland's own entity-level operating expenses).`);
+    console.log(
+      `Created ${txs.length} transactions and rent ledger entries (${operatingExpensesToInsert.length} of which are Sunland's own entity-level operating expenses).`
+    );
 
     // 5a2 (moved here from before Step 6/7). Seed remittance advices across a
     // SAMPLE of active mandates (previously only ever 1, tied to propRes,
@@ -1378,10 +1547,20 @@ async function runSeed() {
       const mandate = insertedActiveMandates[mandateIdx];
       const mandateProperty = activeMandateProps[mandateIdx];
       const collected = txs
-        .filter((t) => t.propertyId === mandateProperty.id && t.type === "rent" && (t.occurredAt as Date) >= remittancePeriodStart)
+        .filter(
+          (t) =>
+            t.propertyId === mandateProperty.id &&
+            t.type === "rent" &&
+            (t.occurredAt as Date) >= remittancePeriodStart
+        )
         .reduce((sum, t) => sum + parseFloat(t.amountKes as string), 0);
       const expenses = txs
-        .filter((t) => t.propertyId === mandateProperty.id && t.type === "expense" && (t.occurredAt as Date) >= remittancePeriodStart)
+        .filter(
+          (t) =>
+            t.propertyId === mandateProperty.id &&
+            t.type === "expense" &&
+            (t.occurredAt as Date) >= remittancePeriodStart
+        )
         .reduce((sum, t) => sum + parseFloat(t.amountKes as string), 0);
       const rate = parseFloat(mandate.mandateRate);
       const fee = collected * rate;
@@ -1389,7 +1568,11 @@ async function runSeed() {
       const token = randomBytes(24).toString("base64url");
       const isReleased = sampleIdx % 4 === 1;
       const isFlagged = sampleIdx % 7 === 3;
-      const status: "pending" | "released" | "flagged" = isFlagged ? "flagged" : isReleased ? "released" : "pending";
+      const status: "pending" | "released" | "flagged" = isFlagged
+        ? "flagged"
+        : isReleased
+          ? "released"
+          : "pending";
 
       const [inserted] = await db
         .insert(remittanceAdvices)
@@ -1406,8 +1589,14 @@ async function runSeed() {
           verificationToken: token,
           generatedById: propertyManager1User.id,
           releasedById: status === "released" ? financeHeadUser.id : undefined,
-          releasedAt: status === "released" ? new Date(Date.now() - (sampleIdx + 1) * 3 * 86_400_000) : undefined,
-          flagReason: status === "flagged" ? "Collected amount is below the expected rent roll - verify with the tenant before releasing." : undefined,
+          releasedAt:
+            status === "released"
+              ? new Date(Date.now() - (sampleIdx + 1) * 3 * 86_400_000)
+              : undefined,
+          flagReason:
+            status === "flagged"
+              ? "Collected amount is below the expected rent roll - verify with the tenant before releasing."
+              : undefined,
         })
         .returning();
 
@@ -1432,7 +1621,9 @@ async function runSeed() {
       remittancesCreated++;
     }
     await db.insert(reportExports).values(reportExportsToInsert);
-    console.log(`Seeded ${remittancesCreated} remittance advices across ${remittanceSampleIdx.length} mandates (mixed pending/released/flagged), each reconciled to real transactions.`);
+    console.log(
+      `Seeded ${remittancesCreated} remittance advices across ${remittanceSampleIdx.length} mandates (mixed pending/released/flagged), each reconciled to real transactions.`
+    );
 
     // 7b. Create Contractors, Maintenance Requests and Documents
     console.log("Step 7b: Generating contractors, maintenance requests, and property documents...");
@@ -1443,14 +1634,54 @@ async function runSeed() {
     // metadata.specialty (contacts has no dedicated column for it - reusing
     // the existing, already-unused jsonb field rather than adding one).
     const contractorCatalog = [
-      { displayName: "Fundi Bora Plumbing Services", specialty: "Plumbing", phone: "+254 722 340 118", email: "jobs@fundibora.co.ke" },
-      { displayName: "Voltage Masters Electrical Ltd", specialty: "Electrical", phone: "+254 733 561 902", email: "dispatch@voltagemasters.co.ke" },
-      { displayName: "CoolBreeze HVAC & Generators", specialty: "Generator & HVAC", phone: "+254 710 224 887", email: "service@coolbreeze.co.ke" },
-      { displayName: "Jenga Imara General Contractors", specialty: "General & Structural", phone: "+254 720 998 341", email: "info@jengaimara.co.ke" },
-      { displayName: "SecureGuard Access Systems Kenya", specialty: "Security & Access", phone: "+254 701 445 672", email: "support@secureguardke.com" },
-      { displayName: "Safi Pest Control Services", specialty: "Pest Control", phone: "+254 715 662 034", email: "bookings@safipest.co.ke" },
-      { displayName: "AquaFlow Water Systems", specialty: "Plumbing", phone: "+254 728 117 559", email: "aquaflow.nairobi@gmail.com" },
-      { displayName: "Nyota Glass & Aluminium Works", specialty: "Glazing & General", phone: "+254 734 882 260", email: "orders@nyotaglass.co.ke" },
+      {
+        displayName: "Fundi Bora Plumbing Services",
+        specialty: "Plumbing",
+        phone: "+254 722 340 118",
+        email: "jobs@fundibora.co.ke",
+      },
+      {
+        displayName: "Voltage Masters Electrical Ltd",
+        specialty: "Electrical",
+        phone: "+254 733 561 902",
+        email: "dispatch@voltagemasters.co.ke",
+      },
+      {
+        displayName: "CoolBreeze HVAC & Generators",
+        specialty: "Generator & HVAC",
+        phone: "+254 710 224 887",
+        email: "service@coolbreeze.co.ke",
+      },
+      {
+        displayName: "Jenga Imara General Contractors",
+        specialty: "General & Structural",
+        phone: "+254 720 998 341",
+        email: "info@jengaimara.co.ke",
+      },
+      {
+        displayName: "SecureGuard Access Systems Kenya",
+        specialty: "Security & Access",
+        phone: "+254 701 445 672",
+        email: "support@secureguardke.com",
+      },
+      {
+        displayName: "Safi Pest Control Services",
+        specialty: "Pest Control",
+        phone: "+254 715 662 034",
+        email: "bookings@safipest.co.ke",
+      },
+      {
+        displayName: "AquaFlow Water Systems",
+        specialty: "Plumbing",
+        phone: "+254 728 117 559",
+        email: "aquaflow.nairobi@gmail.com",
+      },
+      {
+        displayName: "Nyota Glass & Aluminium Works",
+        specialty: "Glazing & General",
+        phone: "+254 734 882 260",
+        email: "orders@nyotaglass.co.ke",
+      },
     ];
     const insertedContractors = await db
       .insert(contacts)
@@ -1463,11 +1694,16 @@ async function runSeed() {
           email: c.email,
           source: "referral",
           metadata: { specialty: c.specialty },
-        })),
+        }))
       )
       .returning();
-    console.log(`Created ${insertedContractors.length} contractors across ${new Set(contractorCatalog.map((c) => c.specialty)).size} specialties.`);
-    const contractorBySpecialty = (specialty: string) => insertedContractors.filter((c) => (c.metadata as { specialty?: string } | null)?.specialty === specialty);
+    console.log(
+      `Created ${insertedContractors.length} contractors across ${new Set(contractorCatalog.map((c) => c.specialty)).size} specialties.`
+    );
+    const contractorBySpecialty = (specialty: string) =>
+      insertedContractors.filter(
+        (c) => (c.metadata as { specialty?: string } | null)?.specialty === specialty
+      );
 
     // D2 follow-up: grown from 3 total (all tied to propComm/propRes) to a
     // real spread across many leased properties, with full priority/status
@@ -1475,26 +1711,94 @@ async function runSeed() {
     // Internal Structure panel both read openMaintenanceCount from this
     // table, and 3 rows barely moved that number.
     const maintenanceCatalog = [
-      { title: "Kitchen sink drainage blocked", description: "Water pools in the sink and drains very slowly.", specialty: "Plumbing", costKes: 4500 },
-      { title: "Living room ceiling water stain", description: "A brown stain has appeared on the ceiling after recent rains.", specialty: "General & Structural", costKes: 18000 },
-      { title: "Main gate motor not responding", description: "The automatic gate no longer opens on remote signal.", specialty: "Security & Access", costKes: 32000 },
-      { title: "Bedroom window latch broken", description: "The window will not lock securely.", specialty: "Glazing & General", costKes: 2500 },
-      { title: "Communal hallway lighting out", description: "Two light fixtures in the shared corridor are not working.", specialty: "Electrical", costKes: 6000 },
-      { title: "Backup generator fuel gauge fault", description: "Fuel gauge reads empty even when the tank is full.", specialty: "Generator & HVAC", costKes: 45000 },
-      { title: "Bathroom tiles cracked", description: "Several floor tiles near the shower have cracked and shifted.", specialty: "General & Structural", costKes: 15000 },
-      { title: "Pest control - ants in kitchen", description: "Recurring ant trail spotted near the kitchen counter.", specialty: "Pest Control", costKes: 3500 },
-      { title: "Intercom system unresponsive", description: "Visitors cannot reach the unit via the entry intercom.", specialty: "Security & Access", costKes: 9000 },
-      { title: "Water heater not heating", description: "Hot water supply has been intermittent for three days.", specialty: "Plumbing", costKes: 12000 },
-      { title: "Parking gate remote unpaired", description: "Tenant's remote no longer triggers the parking barrier.", specialty: "Security & Access", costKes: 1800 },
-      { title: "Balcony door seal worn", description: "Draft and light rain coming in around the sliding door frame.", specialty: "Glazing & General", costKes: 5000 },
+      {
+        title: "Kitchen sink drainage blocked",
+        description: "Water pools in the sink and drains very slowly.",
+        specialty: "Plumbing",
+        costKes: 4500,
+      },
+      {
+        title: "Living room ceiling water stain",
+        description: "A brown stain has appeared on the ceiling after recent rains.",
+        specialty: "General & Structural",
+        costKes: 18000,
+      },
+      {
+        title: "Main gate motor not responding",
+        description: "The automatic gate no longer opens on remote signal.",
+        specialty: "Security & Access",
+        costKes: 32000,
+      },
+      {
+        title: "Bedroom window latch broken",
+        description: "The window will not lock securely.",
+        specialty: "Glazing & General",
+        costKes: 2500,
+      },
+      {
+        title: "Communal hallway lighting out",
+        description: "Two light fixtures in the shared corridor are not working.",
+        specialty: "Electrical",
+        costKes: 6000,
+      },
+      {
+        title: "Backup generator fuel gauge fault",
+        description: "Fuel gauge reads empty even when the tank is full.",
+        specialty: "Generator & HVAC",
+        costKes: 45000,
+      },
+      {
+        title: "Bathroom tiles cracked",
+        description: "Several floor tiles near the shower have cracked and shifted.",
+        specialty: "General & Structural",
+        costKes: 15000,
+      },
+      {
+        title: "Pest control - ants in kitchen",
+        description: "Recurring ant trail spotted near the kitchen counter.",
+        specialty: "Pest Control",
+        costKes: 3500,
+      },
+      {
+        title: "Intercom system unresponsive",
+        description: "Visitors cannot reach the unit via the entry intercom.",
+        specialty: "Security & Access",
+        costKes: 9000,
+      },
+      {
+        title: "Water heater not heating",
+        description: "Hot water supply has been intermittent for three days.",
+        specialty: "Plumbing",
+        costKes: 12000,
+      },
+      {
+        title: "Parking gate remote unpaired",
+        description: "Tenant's remote no longer triggers the parking barrier.",
+        specialty: "Security & Access",
+        costKes: 1800,
+      },
+      {
+        title: "Balcony door seal worn",
+        description: "Draft and light rain coming in around the sliding door frame.",
+        specialty: "Glazing & General",
+        costKes: 5000,
+      },
     ];
     // Real 3-tier severity / 5-stage status vocabulary (Maintenance Board
     // design, ADR 015 follow-up) - all 12 catalog items above are genuinely
     // reactive (tenant-reported repairs); planned/compliance get their own
     // honestly-labeled entries below rather than being force-fit into this loop.
     const maintenancePriorities = ["routine", "urgent", "critical"] as const;
-    const maintenanceStatuses = ["reported", "awaiting_approval", "scheduled", "in_progress", "done"] as const;
-    const sampledLeasesForMaintenance = insertedLeases.filter((l) => l.isActive).filter((_, i) => i % 2 === 0);
+    const maintenanceStatuses = [
+      "reported",
+      "awaiting_approval",
+      "scheduled",
+      "in_progress",
+      "done",
+    ] as const;
+    const sampledLeasesForMaintenance = insertedLeases
+      .filter((l) => l.isActive)
+      .filter((_, i) => i % 2 === 0);
 
     const maintenanceToInsert: (typeof maintenanceRequests.$inferInsert)[] = [
       {
@@ -1504,7 +1808,8 @@ async function runSeed() {
         priority: "critical",
         status: "reported",
         category: "reactive",
-        description: "The main backup generator is failing to auto-start during grid blackouts. Needs urgent technician attention.",
+        description:
+          "The main backup generator is failing to auto-start during grid blackouts. Needs urgent technician attention.",
         reportedByContactId: tenantA.id,
         createdAt: new Date(Date.now() - 2 * 86_400_000),
         estimatedCostKes: "120000.00",
@@ -1531,7 +1836,10 @@ async function runSeed() {
         // Real assignment for anything past "reported" - matches a contractor
         // of the matching specialty, round-robin within that specialty pool.
         const specialtyPool = contractorBySpecialty(item.specialty);
-        const assignedContractorId = status !== "reported" && specialtyPool.length > 0 ? specialtyPool[idx % specialtyPool.length].id : null;
+        const assignedContractorId =
+          status !== "reported" && specialtyPool.length > 0
+            ? specialtyPool[idx % specialtyPool.length].id
+            : null;
         return {
           entityId: groupEntity.id,
           propertyId: lease.propertyId,
@@ -1544,7 +1852,9 @@ async function runSeed() {
           assignedContractorId,
           createdAt: new Date(Date.now() - createdDaysAgo * 86_400_000),
           dueAt: !isDone ? new Date(Date.now() + (3 + (idx % 10)) * 86_400_000) : undefined,
-          resolvedAt: isDone ? new Date(Date.now() - Math.max(0, createdDaysAgo - (2 + (idx % 5))) * 86_400_000) : undefined,
+          resolvedAt: isDone
+            ? new Date(Date.now() - Math.max(0, createdDaysAgo - (2 + (idx % 5))) * 86_400_000)
+            : undefined,
           estimatedCostKes: status !== "reported" ? item.costKes.toFixed(2) : undefined,
           actualCostKes: isDone ? item.costKes.toFixed(2) : undefined,
         };
@@ -1557,7 +1867,8 @@ async function runSeed() {
         entityId: groupEntity.id,
         propertyId: propComm.id,
         title: "Quarterly generator preventive service",
-        description: "Scheduled preventive service and load-bank test for the main backup generator, per the Q3 planned-works calendar.",
+        description:
+          "Scheduled preventive service and load-bank test for the main backup generator, per the Q3 planned-works calendar.",
         priority: "routine",
         status: "scheduled",
         category: "planned",
@@ -1571,7 +1882,8 @@ async function runSeed() {
         entityId: groupEntity.id,
         propertyId: propRes.id,
         title: "Fire extinguisher service certificate renewal",
-        description: "Annual fire extinguisher inspection and recharge certificate expires this week - required for the occupancy compliance file.",
+        description:
+          "Annual fire extinguisher inspection and recharge certificate expires this week - required for the occupancy compliance file.",
         priority: "urgent",
         status: "awaiting_approval",
         category: "compliance",
@@ -1584,7 +1896,8 @@ async function runSeed() {
         entityId: groupEntity.id,
         propertyId: propComm.id,
         title: "Lift service compliance inspection",
-        description: "Annual statutory lift inspection and certification - required before the certificate lapses.",
+        description:
+          "Annual statutory lift inspection and certification - required before the certificate lapses.",
         priority: "critical",
         status: "awaiting_approval",
         category: "compliance",
@@ -1594,16 +1907,25 @@ async function runSeed() {
         estimatedCostKes: "142000.00",
       },
     ];
-    const insertedMaintenance = await db.insert(maintenanceRequests).values(maintenanceToInsert).returning();
-    console.log(`Created ${insertedMaintenance.length} maintenance requests (reactive/planned/compliance) across ${sampledLeasesForMaintenance.length + 5} properties, full severity/status variety, real contractor assignment.`);
-    const scheduledGeneratorService = insertedMaintenance.find((m) => m.title === "Quarterly generator preventive service")!;
+    const insertedMaintenance = await db
+      .insert(maintenanceRequests)
+      .values(maintenanceToInsert)
+      .returning();
+    console.log(
+      `Created ${insertedMaintenance.length} maintenance requests (reactive/planned/compliance) across ${sampledLeasesForMaintenance.length + 5} properties, full severity/status variety, real contractor assignment.`
+    );
+    const scheduledGeneratorService = insertedMaintenance.find(
+      (m) => m.title === "Quarterly generator preventive service"
+    )!;
 
     // Real, in-flight cost approvals so the Maintenance Board's "Pending Cost
     // Approvals" strip and /admin/approvals both have real content - matches
     // the exact costApprovalTierFor/submitMaintenanceCostForApproval shape
     // (relatedTable: "maintenance_requests", status: "awaiting_approval" on
     // both sides of the link), not a fabricated demo row.
-    const highCostCandidates = insertedMaintenance.filter((m) => m.status === "awaiting_approval" && m.estimatedCostKes).slice(0, 3);
+    const highCostCandidates = insertedMaintenance
+      .filter((m) => m.status === "awaiting_approval" && m.estimatedCostKes)
+      .slice(0, 3);
     if (highCostCandidates.length > 0) {
       await db.insert(approvalRequests).values(
         highCostCandidates.map((m) => ({
@@ -1613,9 +1935,10 @@ async function runSeed() {
           relatedId: m.id,
           requestedById: propertyManager1User.id,
           amountKes: m.estimatedCostKes!,
-          requiredApproverRole: parseFloat(m.estimatedCostKes!) > 100000 ? ("ceo" as const) : ("gm" as const),
+          requiredApproverRole:
+            parseFloat(m.estimatedCostKes!) > 100000 ? ("ceo" as const) : ("gm" as const),
           status: "pending" as const,
-        })),
+        }))
       );
       console.log(`Seeded ${highCostCandidates.length} pending maintenance cost approval(s).`);
     }
@@ -1874,43 +2197,48 @@ async function runSeed() {
     // for any mandate except by coincidence.
     const mandateActivitySeed: (typeof activityLogs.$inferInsert)[] = [];
 
-    insertedActiveMandates.filter((_, i) => i % 6 === 0).forEach((m, idx) => {
-      mandateActivitySeed.push({
-        entityId: groupEntity.id,
-        actorId: financeHeadUser.id,
-        associatedType: "property_mandate",
-        associatedId: m.id,
-        action: "properties.mandate.create",
-        summary: "Management mandate established and activated.",
-        createdAt: daysAgoTs(150 + idx * 3),
-      });
-      if (m.assignedPmId) {
+    insertedActiveMandates
+      .filter((_, i) => i % 6 === 0)
+      .forEach((m, idx) => {
         mandateActivitySeed.push({
           entityId: groupEntity.id,
-          actorId: gmUser.id,
+          actorId: financeHeadUser.id,
           associatedType: "property_mandate",
           associatedId: m.id,
-          action: "properties.mandate.assign_pm",
-          summary: "Property manager assigned to this mandate.",
-          createdAt: daysAgoTs(145 + idx * 3),
+          action: "properties.mandate.create",
+          summary: "Management mandate established and activated.",
+          createdAt: daysAgoTs(150 + idx * 3),
         });
-      }
-    });
+        if (m.assignedPmId) {
+          mandateActivitySeed.push({
+            entityId: groupEntity.id,
+            actorId: gmUser.id,
+            associatedType: "property_mandate",
+            associatedId: m.id,
+            action: "properties.mandate.assign_pm",
+            summary: "Property manager assigned to this mandate.",
+            createdAt: daysAgoTs(145 + idx * 3),
+          });
+        }
+      });
 
     // Term-update activity for every mandate whose optional term fields were
     // actually populated (D2's "withTerms" subset) - keeps the Overview
     // tab's real term cards and the Activity tab's narrative consistent.
-    insertedActiveMandates.filter((m) => m.maintenanceAuthorityKes !== null).forEach((m, idx) => {
-      mandateActivitySeed.push({
-        entityId: groupEntity.id,
-        actorId: lineManagerUser.id,
-        associatedType: "property_mandate",
-        associatedId: m.id,
-        action: "properties.mandate.update_terms",
-        summary: "Mandate terms updated - maintenance authority, renewal type, and notice period set.",
-        createdAt: hoursAgo(20 + idx * 7),
+    insertedActiveMandates
+      .filter((m) => m.maintenanceAuthorityKes !== null)
+      .forEach((m, idx) => {
+        mandateActivitySeed.push({
+          entityId: groupEntity.id,
+          actorId: lineManagerUser.id,
+          associatedType: "property_mandate",
+          associatedId: m.id,
+          action: "properties.mandate.update_terms",
+          summary:
+            "Mandate terms updated - maintenance authority, renewal type, and notice period set.",
+          createdAt: hoursAgo(20 + idx * 7),
+        });
       });
-    });
 
     // Termination reasoning for every terminated mandate.
     const terminationReasons = [
@@ -1948,7 +2276,12 @@ async function runSeed() {
     // (previously only propComm/propRes ever had any lease activity).
     const terminatedLeaseSample = insertedLeases.filter((l) => !l.isActive).slice(0, 4);
     const expiringSoonLeaseSample = insertedLeases
-      .filter((l) => l.isActive && l.propertyId !== propRes.id && l.endsAt.getTime() - Date.now() <= 30 * 86_400_000)
+      .filter(
+        (l) =>
+          l.isActive &&
+          l.propertyId !== propRes.id &&
+          l.endsAt.getTime() - Date.now() <= 30 * 86_400_000
+      )
       .slice(0, 4);
     terminatedLeaseSample.forEach((l, idx) => {
       mandateActivitySeed.push({
@@ -2100,119 +2433,133 @@ async function runSeed() {
         createdAt: hoursAgo(48),
       },
     ]);
-    console.log(`Created ${3 + leaseActivitySeed.length + mandateActivitySeed.length + dashboardActivityVariety.length} activity log entries across mandates, leases, auth, and the dashboard variety batch.`);
+    console.log(
+      `Created ${3 + leaseActivitySeed.length + mandateActivitySeed.length + dashboardActivityVariety.length} activity log entries across mandates, leases, auth, and the dashboard variety batch.`
+    );
 
     // Real Account-console content on first load (ADR 018): stamp the CEO's
     // password-age baseline + a couple of notification routing prefs.
-    await db.update(users).set({ passwordChangedAt: hoursAgo(42 * 24), phone: "+254 722 000 118" }).where(eq(users.id, ceoUser.id));
-    await db.insert(notificationPrefs).values([
-      { userId: ceoUser.id, category: "remittance", inApp: true, email: true, sms: false },
-      { userId: ceoUser.id, category: "maintenance", inApp: true, email: true, sms: true },
-    ]).onConflictDoNothing();
+    await db
+      .update(users)
+      .set({ passwordChangedAt: hoursAgo(42 * 24), phone: "+254 722 000 118" })
+      .where(eq(users.id, ceoUser.id));
+    await db
+      .insert(notificationPrefs)
+      .values([
+        { userId: ceoUser.id, category: "remittance", inApp: true, email: true, sms: false },
+        { userId: ceoUser.id, category: "maintenance", inApp: true, email: true, sms: true },
+      ])
+      .onConflictDoNothing();
 
     // 10. Cross-Department Projects - real rows behind the Overview's
     // "Cross-Department Operations" panel and the /admin/projects page,
     // replacing what used to be hardcoded example JSX.
     console.log("Step 10: Populating cross-department projects...");
     const now = new Date();
-    const daysFromNow = (n: number) => new Date(now.getTime() + n * 86_400_000).toISOString().split("T")[0];
+    const daysFromNow = (n: number) =>
+      new Date(now.getTime() + n * 86_400_000).toISOString().split("T")[0];
     const eventDaysAgo = (n: number) => new Date(now.getTime() - n * 86_400_000);
 
-    const [recruitmentProject, escrowProject, safetyAuditProject, payrollMigrationProject, onboardingProject] =
-      await db
-        .insert(projects)
-        .values([
-          {
-            entityId: groupEntity.id,
-            title: "Q3 Broker Recruitment Drive",
-            description: "Interviewing 12 candidates for the commercial sector.",
-            department: "sales",
-            status: "in_progress",
-            progressPercent: 60,
-            assigneeIds: [salesAgent1User.id, salesAgent2User.id],
-            createdById: gmUser.id,
-            startDate: daysFromNow(-24),
-            dueDate: daysFromNow(18),
-            budgetKes: "350000.00",
-            milestones: [
-              { label: "Shortlist drawn up", done: true },
-              { label: "First-round interviews", done: true },
-              { label: "Offers issued", done: false },
-            ],
-          },
-          {
-            entityId: groupEntity.id,
-            title: "Escrow Clearance: Muthaiga Estate",
-            description: "Finalizing deed transfers and tax documentation.",
-            department: "legal",
-            status: "awaiting_review",
-            assigneeIds: [legalOfficerUser.id, financeHeadUser.id],
-            createdById: financeHeadUser.id,
-            startDate: daysFromNow(-12),
-            dueDate: daysFromNow(9),
-            budgetKes: "120000.00",
-            milestones: [
-              { label: "Deed pack assembled", done: true },
-              { label: "Tax clearance filed", done: false },
-              { label: "Transfer registered", done: false },
-            ],
-          },
-          {
-            entityId: groupEntity.id,
-            title: "Routine Safety Audits",
-            description: "Inspecting 4 multi-family complexes in Westlands.",
-            department: "ops",
-            status: "planning",
-            assigneeIds: [propertyManager1User.id],
-            startDate: daysFromNow(3),
-            dueDate: daysFromNow(14),
-            budgetKes: "96500.00",
-            milestones: [
-              { label: "Inspector booked", done: false },
-              { label: "Site walks complete", done: false },
-              { label: "Findings filed", done: false },
-            ],
-            createdById: pmUser.id,
-          },
-          {
-            entityId: groupEntity.id,
-            title: "Payroll System Migration",
-            description: "Moving statutory calculations onto the new ledger module.",
-            department: "finance",
-            status: "in_progress",
-            progressPercent: 35,
-            assigneeIds: [financeHeadUser.id],
-            createdById: financeHeadUser.id,
-            // Genuinely behind: gives the Projects Board an At Risk column
-            // and the Scheduler's at-risk hero stat something real on load.
-            atRisk: true,
-            startDate: daysFromNow(-40),
-            dueDate: daysFromNow(6),
-            budgetKes: "210000.00",
-            milestones: [
-              { label: "Vendor scope signed", done: true },
-              { label: "Parallel run", done: false },
-              { label: "Cutover", done: false },
-            ],
-          },
-          {
-            entityId: groupEntity.id,
-            title: "New Hire Onboarding Playbook",
-            description: "Standardizing the first-week checklist across departments.",
-            department: "hr",
-            status: "on_hold",
-            assigneeIds: [hrHeadUser.id],
-            dueDate: daysFromNow(30),
-            startDate: daysFromNow(-6),
-            budgetKes: "40000.00",
-            milestones: [
-              { label: "Draft checklist", done: true },
-              { label: "Department sign-off", done: false },
-            ],
-            createdById: hrHeadUser.id,
-          },
-        ])
-        .returning();
+    const [
+      recruitmentProject,
+      escrowProject,
+      safetyAuditProject,
+      payrollMigrationProject,
+      onboardingProject,
+    ] = await db
+      .insert(projects)
+      .values([
+        {
+          entityId: groupEntity.id,
+          title: "Q3 Broker Recruitment Drive",
+          description: "Interviewing 12 candidates for the commercial sector.",
+          department: "sales",
+          status: "in_progress",
+          progressPercent: 60,
+          assigneeIds: [salesAgent1User.id, salesAgent2User.id],
+          createdById: gmUser.id,
+          startDate: daysFromNow(-24),
+          dueDate: daysFromNow(18),
+          budgetKes: "350000.00",
+          milestones: [
+            { label: "Shortlist drawn up", done: true },
+            { label: "First-round interviews", done: true },
+            { label: "Offers issued", done: false },
+          ],
+        },
+        {
+          entityId: groupEntity.id,
+          title: "Escrow Clearance: Muthaiga Estate",
+          description: "Finalizing deed transfers and tax documentation.",
+          department: "legal",
+          status: "awaiting_review",
+          assigneeIds: [legalOfficerUser.id, financeHeadUser.id],
+          createdById: financeHeadUser.id,
+          startDate: daysFromNow(-12),
+          dueDate: daysFromNow(9),
+          budgetKes: "120000.00",
+          milestones: [
+            { label: "Deed pack assembled", done: true },
+            { label: "Tax clearance filed", done: false },
+            { label: "Transfer registered", done: false },
+          ],
+        },
+        {
+          entityId: groupEntity.id,
+          title: "Routine Safety Audits",
+          description: "Inspecting 4 multi-family complexes in Westlands.",
+          department: "ops",
+          status: "planning",
+          assigneeIds: [propertyManager1User.id],
+          startDate: daysFromNow(3),
+          dueDate: daysFromNow(14),
+          budgetKes: "96500.00",
+          milestones: [
+            { label: "Inspector booked", done: false },
+            { label: "Site walks complete", done: false },
+            { label: "Findings filed", done: false },
+          ],
+          createdById: pmUser.id,
+        },
+        {
+          entityId: groupEntity.id,
+          title: "Payroll System Migration",
+          description: "Moving statutory calculations onto the new ledger module.",
+          department: "finance",
+          status: "in_progress",
+          progressPercent: 35,
+          assigneeIds: [financeHeadUser.id],
+          createdById: financeHeadUser.id,
+          // Genuinely behind: gives the Projects Board an At Risk column
+          // and the Scheduler's at-risk hero stat something real on load.
+          atRisk: true,
+          startDate: daysFromNow(-40),
+          dueDate: daysFromNow(6),
+          budgetKes: "210000.00",
+          milestones: [
+            { label: "Vendor scope signed", done: true },
+            { label: "Parallel run", done: false },
+            { label: "Cutover", done: false },
+          ],
+        },
+        {
+          entityId: groupEntity.id,
+          title: "New Hire Onboarding Playbook",
+          description: "Standardizing the first-week checklist across departments.",
+          department: "hr",
+          status: "on_hold",
+          assigneeIds: [hrHeadUser.id],
+          dueDate: daysFromNow(30),
+          startDate: daysFromNow(-6),
+          budgetKes: "40000.00",
+          milestones: [
+            { label: "Draft checklist", done: true },
+            { label: "Department sign-off", done: false },
+          ],
+          createdById: hrHeadUser.id,
+        },
+      ])
+      .returning();
 
     console.log("Created 5 cross-department projects.");
 
@@ -2221,7 +2568,9 @@ async function runSeed() {
     // event left at outcome="pending" so the disposition flow has something
     // real to surface on first load.
     console.log("Step 11: Populating cross-department calendar events...");
-    const generatorServiceVisitStart = scheduledGeneratorService.dueAt ? scheduledGeneratorService.dueAt.getTime() : now.getTime() + 3 * 86_400_000;
+    const generatorServiceVisitStart = scheduledGeneratorService.dueAt
+      ? scheduledGeneratorService.dueAt.getTime()
+      : now.getTime() + 3 * 86_400_000;
     await db.insert(calendarEvents).values([
       {
         entityId: groupEntity.id,
@@ -2386,7 +2735,8 @@ async function runSeed() {
         isLand: true,
         stage: "requested",
         stageEnteredAt: valDaysAgo(4),
-        notes: "Landlord approached Front Office directly asking about management of a 2-acre parcel zoned for residential development.",
+        notes:
+          "Landlord approached Front Office directly asking about management of a 2-acre parcel zoned for residential development.",
         createdAt: valDaysAgo(4),
       },
       {
@@ -2414,11 +2764,27 @@ async function runSeed() {
         stage: "valued",
         marketValueKes: "28500000.00",
         proposedFeeRate: "0.0900",
-        methodology: "Income capitalization approach using comparable market rents for Syokimau's 2-3BR apartment segment, capped at a 9.5% yield reflecting current absorption rates along the SGR corridor.",
+        methodology:
+          "Income capitalization approach using comparable market rents for Syokimau's 2-3BR apartment segment, capped at a 9.5% yield reflecting current absorption rates along the SGR corridor.",
         comparables: [
-          { name: "Comp A - same estate", pricePerSqft: 6800, adjustmentPct: -3, adjustedValueKes: 27700000 },
-          { name: "Comp B - 1.2km east", pricePerSqft: 7100, adjustmentPct: 4, adjustedValueKes: 29600000 },
-          { name: "Comp C - recent sale", pricePerSqft: 6950, adjustmentPct: 0, adjustedValueKes: 28500000 },
+          {
+            name: "Comp A - same estate",
+            pricePerSqft: 6800,
+            adjustmentPct: -3,
+            adjustedValueKes: 27700000,
+          },
+          {
+            name: "Comp B - 1.2km east",
+            pricePerSqft: 7100,
+            adjustmentPct: 4,
+            adjustedValueKes: 29600000,
+          },
+          {
+            name: "Comp C - recent sale",
+            pricePerSqft: 6950,
+            adjustmentPct: 0,
+            adjustedValueKes: 28500000,
+          },
         ],
         siteVisitAt: valDaysAgo(14),
         completedAt: valDaysAgo(9),
@@ -2437,7 +2803,8 @@ async function runSeed() {
         stage: "offer_sent",
         marketValueKes: "41000000.00",
         proposedFeeRate: "0.0800",
-        methodology: "Direct comparison against three recently transacted coastal apartment blocks within 1km, adjusted for sea-view premium and finish quality.",
+        methodology:
+          "Direct comparison against three recently transacted coastal apartment blocks within 1km, adjusted for sea-view premium and finish quality.",
         siteVisitAt: valDaysAgo(20),
         completedAt: valDaysAgo(11),
         stageEnteredAt: valDaysAgo(9),
@@ -2458,7 +2825,8 @@ async function runSeed() {
         stage: "offer_sent",
         marketValueKes: "19800000.00",
         proposedFeeRate: "0.1000",
-        methodology: "Rental-yield approach for an existing 8-unit walk-up, cross-checked against Tysons Ltd's internal comparable database.",
+        methodology:
+          "Rental-yield approach for an existing 8-unit walk-up, cross-checked against Tysons Ltd's internal comparable database.",
         siteVisitAt: valDaysAgo(40),
         completedAt: valDaysAgo(33),
         stageEnteredAt: valDaysAgo(33),
@@ -2479,10 +2847,21 @@ async function runSeed() {
         stage: "accepted",
         marketValueKes: "56000000.00",
         proposedFeeRate: "0.0750",
-        methodology: "Income capitalization on current 94% occupancy across 12 office suites, cross-checked against two recent Upper Hill Grade-A transactions.",
+        methodology:
+          "Income capitalization on current 94% occupancy across 12 office suites, cross-checked against two recent Upper Hill Grade-A transactions.",
         comparables: [
-          { name: "Comp A - same block", pricePerSqft: 9200, adjustmentPct: -2, adjustedValueKes: 54900000 },
-          { name: "Comp B - 400m away", pricePerSqft: 9600, adjustmentPct: 3, adjustedValueKes: 57700000 },
+          {
+            name: "Comp A - same block",
+            pricePerSqft: 9200,
+            adjustmentPct: -2,
+            adjustedValueKes: 54900000,
+          },
+          {
+            name: "Comp B - 400m away",
+            pricePerSqft: 9600,
+            adjustmentPct: 3,
+            adjustedValueKes: 57700000,
+          },
         ],
         siteVisitAt: valDaysAgo(30),
         completedAt: valDaysAgo(22),
@@ -2501,16 +2880,20 @@ async function runSeed() {
         stage: "declined",
         marketValueKes: "33000000.00",
         proposedFeeRate: "0.0850",
-        methodology: "Direct comparison against industrial-zoned warehouse transactions in the Athi River corridor.",
+        methodology:
+          "Direct comparison against industrial-zoned warehouse transactions in the Athi River corridor.",
         siteVisitAt: valDaysAgo(70),
         completedAt: valDaysAgo(60),
         stageEnteredAt: valDaysAgo(50),
-        notes: "Landlord opted to self-manage after reviewing the offer; declined to proceed with a mandate.",
+        notes:
+          "Landlord opted to self-manage after reviewing the offer; declined to proceed with a mandate.",
         createdAt: valDaysAgo(75),
       },
     ];
     await db.insert(valuations).values(valuationsToInsert);
-    console.log(`Created ${valuationsToInsert.length} valuations across the acquisition pipeline (requested/site_visit/valued/offer_sent x2/accepted/declined - mandate_signed reached via real conversion in backend verification).`);
+    console.log(
+      `Created ${valuationsToInsert.length} valuations across the acquisition pipeline (requested/site_visit/valued/offer_sent x2/accepted/declined - mandate_signed reached via real conversion in backend verification).`
+    );
 
     console.log("--------------------------------------------------");
     console.log("Database Seed Finished Successfully!");

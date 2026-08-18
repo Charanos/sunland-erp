@@ -99,9 +99,7 @@ export default function PublicVerifyPage() {
                     <IconUser size={16} />
                     <span>Signatory Officer</span>
                   </div>
-                  <span className="font-medium text-slate-800">
-                    {result.generatedByName}
-                  </span>
+                  <span className="font-medium text-slate-800">{result.generatedByName}</span>
                 </div>
 
                 <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
@@ -109,9 +107,7 @@ export default function PublicVerifyPage() {
                     <IconBuilding size={16} />
                     <span>Issuing Entity</span>
                   </div>
-                  <span className="font-medium text-slate-800">
-                    Sunland Group Limited
-                  </span>
+                  <span className="font-medium text-slate-800">Sunland Group Limited</span>
                 </div>
               </div>
 
@@ -123,8 +119,11 @@ export default function PublicVerifyPage() {
                     <div key={key} className="flex justify-between gap-4">
                       <span className="text-slate-400">{key}:</span>
                       <span className="text-right">
-                        {typeof val === "number" || (typeof val === "string" && !isNaN(Number(val)) && val.length > 3)
-                          ? formatCompactKES(typeof val === "number" ? val : parseFloat(String(val)))
+                        {typeof val === "number" ||
+                        (typeof val === "string" && !isNaN(Number(val)) && val.length > 3)
+                          ? formatCompactKES(
+                              typeof val === "number" ? val : parseFloat(String(val))
+                            )
                           : String(val)}
                       </span>
                     </div>
@@ -141,7 +140,8 @@ export default function PublicVerifyPage() {
                 Invalid Verification Certificate
               </h1>
               <p className="text-slate-400 max-w-sm text-base">
-                {result?.error || "The signature token provided does not match any official document registered in the Sunland Enterprise Directory."}
+                {result?.error ||
+                  "The signature token provided does not match any official document registered in the Sunland Enterprise Directory."}
               </p>
             </div>
           )}

@@ -18,9 +18,9 @@ export default async function FinanceReportTokenPage({
           Document Authentication Portal
         </h1>
         <p className="max-w-2xl leading-relaxed text-slate-400 font-normal headline-md">
-          You are accessing the Sunland Group secure verification registry.
-          The document associated with this token has been cryptographically signed
-          and its authenticity can be verified against our immutable ledger.
+          You are accessing the Sunland Group secure verification registry. The document associated
+          with this token has been cryptographically signed and its authenticity can be verified
+          against our immutable ledger.
         </p>
       </div>
 
@@ -29,7 +29,13 @@ export default async function FinanceReportTokenPage({
         <div className="p-1">
           <FinanceQrProof
             artifactRef={token.includes("chq_") ? `CHQ-${token.split("_").pop()}` : "TRX-VERIFIED"}
-            artifactType={token.includes("credited") ? "Cheque Credit Receipt" : token.includes("returned") ? "Returned Cheque Notice" : "Secure Financial Artifact"}
+            artifactType={
+              token.includes("credited")
+                ? "Cheque Credit Receipt"
+                : token.includes("returned")
+                  ? "Returned Cheque Notice"
+                  : "Secure Financial Artifact"
+            }
             entityName="Sunland Group"
             generatedAt={new Date().toISOString().split("T")[0]}
             token={token}

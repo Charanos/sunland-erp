@@ -1,13 +1,4 @@
-import {
-  index,
-  integer,
-  jsonb,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { index, integer, jsonb, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { entities, timestamps, users } from "@/db/schema/platform";
 import { contacts, leads } from "@/db/schema/crm";
 import { properties, leases } from "@/db/schema/properties";
@@ -33,11 +24,15 @@ export const documents = pgTable(
   "documents",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
     type: documentType("type").notNull(),
     title: text("title").notNull(),
     fileUrl: text("file_url").notNull(),
-    uploadedById: uuid("uploaded_by_id").references(() => users.id).notNull(),
+    uploadedById: uuid("uploaded_by_id")
+      .references(() => users.id)
+      .notNull(),
     ownerContactId: uuid("owner_contact_id").references(() => contacts.id),
     // Nullable - owner-level paperwork (ID, statements) has no property; a
     // title deed or lease agreement belongs to one. Lets the property full
@@ -67,16 +62,20 @@ export const documents = pgTable(
     valuationIdx: index("documents_valuation_idx").on(table.valuationId),
     leadIdx: index("documents_lead_idx").on(table.leadId),
     typeIdx: index("documents_type_idx").on(table.type),
-  }),
+  })
 );
 
 export const reportExports = pgTable(
   "report_exports",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
     reportType: text("report_type").notNull(),
-    generatedById: uuid("generated_by_id").references(() => users.id).notNull(),
+    generatedById: uuid("generated_by_id")
+      .references(() => users.id)
+      .notNull(),
     verificationToken: text("verification_token").unique().notNull(),
     expiresAt: timestamp("expires_at", { withTimezone: true }),
     snapshot: jsonb("snapshot").$type<Record<string, unknown>>().notNull(),
@@ -85,5 +84,5 @@ export const reportExports = pgTable(
   (table) => ({
     entityIdx: index("report_exports_entity_idx").on(table.entityId),
     tokenIdx: index("report_exports_token_idx").on(table.verificationToken),
-  }),
+  })
 );

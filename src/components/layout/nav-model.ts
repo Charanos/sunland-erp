@@ -187,8 +187,6 @@ export const navSections: NavSection[] = [
     ],
   },
 
-
-
   // ── Executive: Scheduling ──────────────────────────────────────────────────
   // The Scheduler is the unified calendar + gantt surface (ADR 019); Projects
   // is the deeper kanban/timeline board it links out to. /admin/events now
@@ -211,7 +209,12 @@ export const navSections: NavSection[] = [
     items: [
       { label: "Finance", href: "/admin/finance", icon: IconCash, group: "Internal Portals" },
       { href: "/admin/hr", label: "Human Resources", icon: IconUsers, group: "Internal Portals" },
-      { href: "/admin/front-office", label: "Front Office", icon: IconBriefcase, group: "Internal Portals" },
+      {
+        href: "/admin/front-office",
+        label: "Front Office",
+        icon: IconBriefcase,
+        group: "Internal Portals",
+      },
     ],
   },
 
@@ -279,8 +282,7 @@ export function findSectionByPath(pathname: string): NavSection {
   if (!activeItem) return navSections[0];
 
   return (
-    navSections.find((section) =>
-      section.items.some((item) => item.href === activeItem.href),
-    ) ?? navSections[0]
+    navSections.find((section) => section.items.some((item) => item.href === activeItem.href)) ??
+    navSections[0]
   );
 }

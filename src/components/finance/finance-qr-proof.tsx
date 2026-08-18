@@ -98,7 +98,19 @@ export function FinanceQrProof({
   const qrRef = useRef<SVGSVGElement>(null);
 
   const verificationPath = `/fin/reports/verify/${token}`;
-  const qrPayload = useMemo(() => buildQrPayload({ artifactRef, artifactType, entityName, generatedAt, token, amount, metadata }), [artifactRef, artifactType, entityName, generatedAt, token, amount, metadata]);
+  const qrPayload = useMemo(
+    () =>
+      buildQrPayload({
+        artifactRef,
+        artifactType,
+        entityName,
+        generatedAt,
+        token,
+        amount,
+        metadata,
+      }),
+    [artifactRef, artifactType, entityName, generatedAt, token, amount, metadata]
+  );
 
   const downloadQr = useQrDownload(qrRef, `${artifactRef}-qr.png`);
 
@@ -112,7 +124,11 @@ export function FinanceQrProof({
   const handleShare = async () => {
     const url = `${window.location.origin}${verificationPath}`;
     if (navigator.share) {
-      await navigator.share({ title: `Sunland QR - ${artifactRef}`, text: `Verify ${artifactType}: ${artifactRef}`, url });
+      await navigator.share({
+        title: `Sunland QR - ${artifactRef}`,
+        text: `Verify ${artifactType}: ${artifactRef}`,
+        url,
+      });
     } else {
       await handleCopy();
     }
@@ -126,14 +142,22 @@ export function FinanceQrProof({
       )}
       aria-label="Secure QR artifact verification"
     >
-      <div className={cn("grid gap-5 items-start", compact ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[auto_1fr]")}>
-
+      <div
+        className={cn(
+          "grid gap-5 items-start",
+          compact ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[auto_1fr]"
+        )}
+      >
         {/* ── QR Code + Header Header ────────────────────────── */}
-        <div className={cn("flex gap-4 shrink-0", compact ? "items-center" : "flex-col items-center")}>
-          <div className={cn(
-            "relative rounded-2xl border border-slate-200 bg-white p-2.5 shadow-2xs overflow-hidden group shrink-0",
-            verified && "ring-2 ring-emerald-400 ring-offset-2"
-          )}>
+        <div
+          className={cn("flex gap-4 shrink-0", compact ? "items-center" : "flex-col items-center")}
+        >
+          <div
+            className={cn(
+              "relative rounded-2xl border border-slate-200 bg-white p-2.5 shadow-2xs overflow-hidden group shrink-0",
+              verified && "ring-2 ring-emerald-400 ring-offset-2"
+            )}
+          >
             {/* Scan animation line */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan" />
 
@@ -165,7 +189,10 @@ export function FinanceQrProof({
 
           <div className="flex flex-col gap-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <Badge tone={verified ? "success" : "primary"} className="gap-1 px-2 py-0.5 text-xxs font-mono">
+              <Badge
+                tone={verified ? "success" : "primary"}
+                className="gap-1 px-2 py-0.5 text-xxs font-mono"
+              >
                 {verified ? <IconShieldCheck size={13} /> : <IconQrcode size={13} />}
                 {verified ? "Verified Authentic" : "Scan to Verify"}
               </Badge>
@@ -174,7 +201,9 @@ export function FinanceQrProof({
               </span>
             </div>
 
-            <h3 className="text-base sm:text-lg font-medium tracking-tight text-slate-900 mt-1 leading-snug">{artifactType}</h3>
+            <h3 className="text-base sm:text-lg font-medium tracking-tight text-slate-900 mt-1 leading-snug">
+              {artifactType}
+            </h3>
 
             {compact && (
               <button
@@ -192,31 +221,67 @@ export function FinanceQrProof({
         <div className="min-w-0 flex flex-col justify-center h-full">
           {!compact && (
             <p className="leading-relaxed text-slate-500 text-xs max-w-xl">
-              This document carries a cryptographically generated QR code ensuring its authenticity. Scan the code to verify this artifact against the central immutable registry.
+              This document carries a cryptographically generated QR code ensuring its authenticity.
+              Scan the code to verify this artifact against the central immutable registry.
             </p>
           )}
 
           {/* Meta grid */}
-          <div className={cn("grid gap-2.5", compact ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4 mt-4")}>
+          <div
+            className={cn(
+              "grid gap-2.5",
+              compact ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4 mt-4"
+            )}
+          >
             {[
               { label: "Entity", value: entityName },
-              { label: "Generated", value: new Date(generatedAt).toLocaleDateString("en-KE", { day: "numeric", month: "short" }) },
+              {
+                label: "Generated",
+                value: new Date(generatedAt).toLocaleDateString("en-KE", {
+                  day: "numeric",
+                  month: "short",
+                }),
+              },
               { label: "Token ID", value: token.slice(0, 8).toUpperCase(), mono: true },
-              { label: "Value Auth", value: typeof amount === "number" ? formatCompactKES(amount) : "Document only", mono: true },
-            ].map(item => (
-              <div key={item.label} className="rounded-xl border border-slate-100 bg-white p-2.5 shadow-2xs transition-colors hover:border-slate-200">
-                <p className="text-slate-400 font-mono text-xxs uppercase tracking-wider">{item.label}</p>
-                <p className={cn("mt-0.5 text-slate-800 truncate text-xs font-medium", item.mono && "font-mono")}>{item.value}</p>
+              {
+                label: "Value Auth",
+                value: typeof amount === "number" ? formatCompactKES(amount) : "Document only",
+                mono: true,
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-xl border border-slate-100 bg-white p-2.5 shadow-2xs transition-colors hover:border-slate-200"
+              >
+                <p className="text-slate-400 font-mono text-xxs uppercase tracking-wider">
+                  {item.label}
+                </p>
+                <p
+                  className={cn(
+                    "mt-0.5 text-slate-800 truncate text-xs font-medium",
+                    item.mono && "font-mono"
+                  )}
+                >
+                  {item.value}
+                </p>
               </div>
             ))}
 
             {/* Extra metadata fields */}
-            {metadata && Object.entries(metadata).map(([key, val]) => (
-              <div key={key} className="rounded-xl border border-slate-100 bg-white p-2.5 shadow-2xs transition-colors hover:border-slate-200">
-                <p className="text-slate-400 font-mono text-xxs uppercase tracking-wider">{key}</p>
-                <p className="mt-0.5 text-slate-800 truncate text-xs font-mono font-medium">{String(val)}</p>
-              </div>
-            ))}
+            {metadata &&
+              Object.entries(metadata).map(([key, val]) => (
+                <div
+                  key={key}
+                  className="rounded-xl border border-slate-100 bg-white p-2.5 shadow-2xs transition-colors hover:border-slate-200"
+                >
+                  <p className="text-slate-400 font-mono text-xxs uppercase tracking-wider">
+                    {key}
+                  </p>
+                  <p className="mt-0.5 text-slate-800 truncate text-xs font-mono font-medium">
+                    {String(val)}
+                  </p>
+                </div>
+              ))}
           </div>
 
           {/* Actions */}
@@ -228,7 +293,9 @@ export function FinanceQrProof({
               disabled={verified}
               className={cn(
                 "transition-all text-xs rounded-xl px-3.5 py-1.5 font-medium flex-1 sm:flex-none justify-center",
-                verified ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-[#151936] text-white hover:bg-slate-800"
+                verified
+                  ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                  : "bg-[#151936] text-white hover:bg-slate-800"
               )}
             >
               <IconShieldCheck size={14} />

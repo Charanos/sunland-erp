@@ -6,7 +6,11 @@ import { publishToChannel } from "@/lib/realtime/ably";
 import { resolveEntityId } from "@/lib/services/entity";
 import { roleTierFor } from "@/components/sunland/account-constants";
 import type { CallerContext } from "@/lib/services/types";
-import { createChannelSchema, getOrCreateDmSchema, sendMessageSchema } from "@/lib/validation/messaging";
+import {
+  createChannelSchema,
+  getOrCreateDmSchema,
+  sendMessageSchema,
+} from "@/lib/validation/messaging";
 import { parseInput } from "@/lib/validation/parse";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
@@ -18,7 +22,9 @@ type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
  * be expressed as a SQL predicate without duplicating the mapping.
  */
 export async function resolveUserIdsByTiers(tx: Tx, tiers: string[]): Promise<string[]> {
-  const rows = await tx.select({ id: users.id, role: users.role, isActive: users.isActive }).from(users);
+  const rows = await tx
+    .select({ id: users.id, role: users.role, isActive: users.isActive })
+    .from(users);
   return rows.filter((u) => u.isActive && tiers.includes(roleTierFor(u.role))).map((u) => u.id);
 }
 
@@ -28,14 +34,20 @@ async function assertParticipant(conversationId: string, userId: string) {
     .select()
     .from(conversationParticipants)
     .where(
-      and(eq(conversationParticipants.conversationId, conversationId), eq(conversationParticipants.userId, userId)),
+      and(
+        eq(conversationParticipants.conversationId, conversationId),
+        eq(conversationParticipants.userId, userId)
+      )
     )
     .limit(1);
   if (!participant) throw new NotFoundError("Conversation not found");
   return participant;
 }
 
-export async function listConversations(ctx: CallerContext, filters: { type?: "dm" | "channel" } = {}) {
+export async function listConversations(
+  ctx: CallerContext,
+  filters: { type?: "dm" | "channel" } = {}
+) {
   const myParticipations = await db
     .select()
     .from(conversationParticipants)
@@ -47,27 +59,33 @@ export async function listConversations(ctx: CallerContext, filters: { type?: "d
   if (filters.type) conditions.push(eq(conversations.type, filters.type));
 
   const [convoRows, allMessages, allParticipants] = await Promise.all([
-    db.select().from(conversations).where(and(...conditions)),
+    db
+      .select()
+      .from(conversations)
+      .where(and(...conditions)),
     db.select().from(messages).where(inArray(messages.conversationId, conversationIds)),
-    db.select().from(conversationParticipants).where(inArray(conversationParticipants.conversationId, conversationIds)),
+    db
+      .select()
+      .from(conversationParticipants)
+      .where(inArray(conversationParticipants.conversationId, conversationIds)),
   ]);
 
   const otherUserIds = Array.from(
-    new Set(allParticipants.filter((p) => p.userId !== ctx.user.id).map((p) => p.userId)),
+    new Set(allParticipants.filter((p) => p.userId !== ctx.user.id).map((p) => p.userId))
   );
   const otherUsers = otherUserIds.length
     ? await db
-      .select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        title: users.title,
-        avatarUrl: users.avatarUrl,
-        phone: users.phone,
-      })
-      .from(users)
-      .where(inArray(users.id, otherUserIds))
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          role: users.role,
+          title: users.title,
+          avatarUrl: users.avatarUrl,
+          phone: users.phone,
+        })
+        .from(users)
+        .where(inArray(users.id, otherUserIds))
     : [];
 
   return convoRows
@@ -75,14 +93,19 @@ export async function listConversations(ctx: CallerContext, filters: { type?: "d
       const myParticipant = myParticipations.find((p) => p.conversationId === convo.id)!;
       const convoMessages = allMessages.filter((m) => m.conversationId === convo.id);
       const unreadCount = convoMessages.filter(
-        (m) => !myParticipant.lastReadAt || m.createdAt > myParticipant.lastReadAt,
+        (m) => !myParticipant.lastReadAt || m.createdAt > myParticipant.lastReadAt
       ).length;
-      const lastMessage = [...convoMessages].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0] ?? null;
+      const lastMessage =
+        [...convoMessages].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0] ?? null;
 
       let otherParticipant = null;
       if (convo.type === "dm") {
-        const otherRow = allParticipants.find((p) => p.conversationId === convo.id && p.userId !== ctx.user.id);
-        otherParticipant = otherRow ? (otherUsers.find((u) => u.id === otherRow.userId) ?? null) : null;
+        const otherRow = allParticipants.find(
+          (p) => p.conversationId === convo.id && p.userId !== ctx.user.id
+        );
+        otherParticipant = otherRow
+          ? (otherUsers.find((u) => u.id === otherRow.userId) ?? null)
+          : null;
       }
 
       return {
@@ -108,7 +131,11 @@ export async function listConversations(ctx: CallerContext, filters: { type?: "d
 }
 
 /** Per-user archive - hides the thread from your inbox only, never anyone else's. */
-export async function setConversationArchived(ctx: CallerContext, conversationId: string, archived: boolean) {
+export async function setConversationArchived(
+  ctx: CallerContext,
+  conversationId: string,
+  archived: boolean
+) {
   const participant = await assertParticipant(conversationId, ctx.user.id);
   await db
     .update(conversationParticipants)
@@ -139,7 +166,7 @@ export async function appendSystemMessage(
     linkedRecordType?: string;
     linkedRecordId?: string;
     linkedRecordCode?: string;
-  },
+  }
 ) {
   const [existing] = await tx
     .select()
@@ -148,8 +175,8 @@ export async function appendSystemMessage(
       and(
         eq(conversations.entityId, input.entityId),
         eq(conversations.type, "system"),
-        eq(conversations.name, input.feedName),
-      ),
+        eq(conversations.name, input.feedName)
+      )
     )
     .limit(1);
 
@@ -229,7 +256,11 @@ export async function getOrCreateDm(ctx: CallerContext, rawInput: unknown) {
       .from(conversationParticipants)
       .where(eq(conversationParticipants.conversationId, conversationId));
     if (participants.length === 2 && participants.some((p) => p.userId === input.otherUserId)) {
-      const [existing] = await db.select().from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+      const [existing] = await db
+        .select()
+        .from(conversations)
+        .where(eq(conversations.id, conversationId))
+        .limit(1);
       if (existing) return existing;
     }
   }
@@ -277,7 +308,7 @@ export async function createChannel(ctx: CallerContext, rawInput: unknown) {
 export async function listMessages(
   ctx: CallerContext,
   conversationId: string,
-  filters: { before?: string; limit?: number } = {},
+  filters: { before?: string; limit?: number } = {}
 ) {
   await assertParticipant(conversationId, ctx.user.id);
 
@@ -308,7 +339,10 @@ export async function sendMessage(ctx: CallerContext, conversationId: string, ra
       .values({ conversationId, senderId: ctx.user.id, content: input.content })
       .returning();
 
-    await tx.update(conversations).set({ updatedAt: new Date() }).where(eq(conversations.id, conversationId));
+    await tx
+      .update(conversations)
+      .set({ updatedAt: new Date() })
+      .where(eq(conversations.id, conversationId));
 
     try {
       await publishToChannel(`conversation-${conversationId}`, "message", message);

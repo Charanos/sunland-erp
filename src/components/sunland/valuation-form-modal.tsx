@@ -115,33 +115,55 @@ export function ValuationFormModal({
       .then((r) => r.json())
       .then((d) => {
         if (Array.isArray(d.properties)) {
-          setProperties(d.properties.map((p: { id: string; name: string; location: string }) => ({ id: p.id, name: p.name, location: p.location })));
+          setProperties(
+            d.properties.map((p: { id: string; name: string; location: string }) => ({
+              id: p.id,
+              name: p.name,
+              location: p.location,
+            }))
+          );
         }
       })
-      .catch(() => { });
+      .catch(() => {});
     fetch(`/api/contacts?entityId=${entityId}`)
       .then((r) => r.json())
       .then((d) => {
         if (Array.isArray(d.contacts)) {
-          setContacts(d.contacts.map((c: { id: string; displayName: string }) => ({ id: c.id, displayName: c.displayName })));
+          setContacts(
+            d.contacts.map((c: { id: string; displayName: string }) => ({
+              id: c.id,
+              displayName: c.displayName,
+            }))
+          );
         }
       })
-      .catch(() => { });
+      .catch(() => {});
     fetch(`/api/identity/users?entityId=${entityId}&role=property_manager`)
       .then((r) => r.json())
       .then((d) => {
-        if (Array.isArray(d.users)) setManagers(d.users.map((u: { id: string; name: string }) => ({ id: u.id, name: u.name })));
+        if (Array.isArray(d.users))
+          setManagers(
+            d.users.map((u: { id: string; name: string }) => ({ id: u.id, name: u.name }))
+          );
       })
-      .catch(() => { });
+      .catch(() => {});
   }, [open, entityId]);
 
   const handleSubmit = async () => {
     if (form.subjectMode === "portfolio" && !form.propertyId) {
-      pushToast({ tone: "warning", title: "Missing subject", body: "Pick the portfolio property being valued." });
+      pushToast({
+        tone: "warning",
+        title: "Missing subject",
+        body: "Pick the portfolio property being valued.",
+      });
       return;
     }
     if (form.subjectMode === "external" && !form.externalPropertyName.trim()) {
-      pushToast({ tone: "warning", title: "Missing subject", body: "Name the prospect property or land being valued." });
+      pushToast({
+        tone: "warning",
+        title: "Missing subject",
+        body: "Name the prospect property or land being valued.",
+      });
       return;
     }
     setIsSaving(true);
@@ -149,18 +171,23 @@ export function ValuationFormModal({
       const payload = {
         entityId,
         propertyId: form.subjectMode === "portfolio" ? form.propertyId : null,
-        externalPropertyName: form.subjectMode === "external" ? form.externalPropertyName.trim() : null,
-        externalLocation: form.subjectMode === "external" ? (form.externalLocation.trim() || null) : null,
+        externalPropertyName:
+          form.subjectMode === "external" ? form.externalPropertyName.trim() : null,
+        externalLocation:
+          form.subjectMode === "external" ? form.externalLocation.trim() || null : null,
         isLand: form.isLand,
         landlordContactId: form.landlordContactId || null,
         assignedManagerId: form.assignedManagerId || null,
-        valuerId: form.valuerMode === "sunland" ? (form.valuerId || null) : null,
-        externalValuerName: form.valuerMode === "external" ? (form.externalValuerName.trim() || null) : null,
+        valuerId: form.valuerMode === "sunland" ? form.valuerId || null : null,
+        externalValuerName:
+          form.valuerMode === "external" ? form.externalValuerName.trim() || null : null,
         siteVisitAt: form.siteVisitAt ? new Date(form.siteVisitAt).toISOString() : null,
         notes: form.notes.trim() || null,
       };
       // Create rejects nulls for optional fields it treats as absent - strip them.
-      const createPayload = Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== null));
+      const createPayload = Object.fromEntries(
+        Object.entries(payload).filter(([, v]) => v !== null)
+      );
 
       const res = await fetch(isEdit ? `/api/valuations/${valuation!.id}` : "/api/valuations", {
         method: isEdit ? "PATCH" : "POST",
@@ -173,7 +200,9 @@ export function ValuationFormModal({
       pushToast({
         tone: "success",
         title: isEdit ? "Valuation Updated" : "Valuation Scheduled",
-        body: isEdit ? `${valuation!.valuationCode} has been updated.` : `${data.valuation.valuationCode} added to the pipeline.`,
+        body: isEdit
+          ? `${valuation!.valuationCode} has been updated.`
+          : `${data.valuation.valuationCode} added to the pipeline.`,
       });
       onSubmit();
       onClose();
@@ -189,8 +218,14 @@ export function ValuationFormModal({
     <Modal
       open={open}
       onClose={() => !isSaving && onClose()}
-      title={isEdit ? `Edit Valuation File: ${valuation!.valuationCode}` : "Schedule Property Valuation"}
-      description={isEdit ? "Update prospect details, assigned manager, or site visit schedule." : "Record a new prospect valuation or portfolio asset assessment into the acquisition funnel."}
+      title={
+        isEdit ? `Edit Valuation File: ${valuation!.valuationCode}` : "Schedule Property Valuation"
+      }
+      description={
+        isEdit
+          ? "Update prospect details, assigned manager, or site visit schedule."
+          : "Record a new prospect valuation or portfolio asset assessment into the acquisition funnel."
+      }
       size="lg"
     >
       <div className="space-y-6 pt-1">
@@ -203,11 +238,17 @@ export function ValuationFormModal({
             <div className="flex flex-col min-w-0">
               <p className="text-xs font-medium text-slate-900 truncate leading-snug">
                 {form.subjectMode === "portfolio"
-                  ? (properties.find((p) => p.id === form.propertyId)?.name || "Select Portfolio Asset")
-                  : (form.externalPropertyName.trim() || "New Prospect Subject")}
+                  ? properties.find((p) => p.id === form.propertyId)?.name ||
+                    "Select Portfolio Asset"
+                  : form.externalPropertyName.trim() || "New Prospect Subject"}
               </p>
               <p className="text-xxs text-slate-600 truncate mt-0.5 font-mono">
-                Location: <span className="font-medium text-slate-700">{form.subjectMode === "portfolio" ? (properties.find((p) => p.id === form.propertyId)?.location || "Portfolio") : (form.externalLocation.trim() || "Unspecified")}</span>
+                Location:{" "}
+                <span className="font-medium text-slate-700">
+                  {form.subjectMode === "portfolio"
+                    ? properties.find((p) => p.id === form.propertyId)?.location || "Portfolio"
+                    : form.externalLocation.trim() || "Unspecified"}
+                </span>
               </p>
             </div>
           </div>
@@ -221,13 +262,19 @@ export function ValuationFormModal({
                   onClick={() => setForm((f) => ({ ...f, subjectMode: m }))}
                   className={cn(
                     "px-3 py-1 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
-                    form.subjectMode === m ? "bg-white text-slate-900 shadow-2xs" : "text-slate-600 hover:text-slate-900",
+                    form.subjectMode === m
+                      ? "bg-white text-slate-900 shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900"
                   )}
                 >
                   {m === "external" ? (
-                    <><IconPlus size={13} /> New Prospect</>
+                    <>
+                      <IconPlus size={13} /> New Prospect
+                    </>
                   ) : (
-                    <><IconBuildingCommunity size={13} /> Portfolio</>
+                    <>
+                      <IconBuildingCommunity size={13} /> Portfolio
+                    </>
                   )}
                 </button>
               ))}
@@ -255,7 +302,9 @@ export function ValuationFormModal({
               >
                 <option value="">-- Select portfolio property --</option>
                 {properties.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name} · {p.location}</option>
+                  <option key={p.id} value={p.id}>
+                    {p.name} · {p.location}
+                  </option>
                 ))}
               </select>
             </div>
@@ -270,7 +319,9 @@ export function ValuationFormModal({
                     className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 text-xs font-medium text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs"
                     placeholder="e.g. Riverside Apartments, Kileleshwa"
                     value={form.externalPropertyName}
-                    onChange={(e) => setForm((f) => ({ ...f, externalPropertyName: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, externalPropertyName: e.target.value }))
+                    }
                   />
                 </div>
                 <div>
@@ -290,22 +341,35 @@ export function ValuationFormModal({
                 onClick={() => setForm((f) => ({ ...f, isLand: !f.isLand }))}
                 className={cn(
                   "flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer shadow-2xs select-none",
-                  form.isLand ? "bg-amber-50/80 border-amber-300/80" : "bg-slate-50/40 border-slate-200/80 hover:bg-slate-100/60"
+                  form.isLand
+                    ? "bg-amber-50/80 border-amber-300/80"
+                    : "bg-slate-50/40 border-slate-200/80 hover:bg-slate-100/60"
                 )}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <span className={cn("size-7 rounded-lg flex items-center justify-center shrink-0 border", form.isLand ? "bg-amber-100 border-amber-300 text-amber-800" : "bg-white border-slate-200 text-slate-600")}>
+                  <span
+                    className={cn(
+                      "size-7 rounded-lg flex items-center justify-center shrink-0 border",
+                      form.isLand
+                        ? "bg-amber-100 border-amber-300 text-amber-800"
+                        : "bg-white border-slate-200 text-slate-600"
+                    )}
+                  >
                     <IconMapPin size={15} />
                   </span>
                   <div>
-                    <span className="block text-xs font-medium text-slate-900">Raw Land Parcel</span>
-                    <span className="block text-xxs text-slate-600 font-mono">Subject is an unbuilt plot or undeveloped land</span>
+                    <span className="block text-xs font-medium text-slate-900">
+                      Raw Land Parcel
+                    </span>
+                    <span className="block text-xxs text-slate-600 font-mono">
+                      Subject is an unbuilt plot or undeveloped land
+                    </span>
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={form.isLand}
-                  onChange={() => { }}
+                  onChange={() => {}}
                   className="size-4 rounded border-slate-300 text-[#151936] focus:ring-[#151936]"
                 />
               </label>
@@ -327,13 +391,19 @@ export function ValuationFormModal({
                   onClick={() => setForm((f) => ({ ...f, valuerMode: m }))}
                   className={cn(
                     "px-2.5 py-0.5 text-xxs font-medium rounded-md transition-all flex items-center gap-1 cursor-pointer",
-                    form.valuerMode === m ? "bg-white text-slate-900 shadow-2xs" : "text-slate-600 hover:text-slate-900",
+                    form.valuerMode === m
+                      ? "bg-white text-slate-900 shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900"
                   )}
                 >
                   {m === "sunland" ? (
-                    <><IconBuildingBank size={12} /> Sunland Valuers</>
+                    <>
+                      <IconBuildingBank size={12} /> Sunland Valuers
+                    </>
                   ) : (
-                    <><IconBuildingSkyscraper size={12} /> Independent Firm</>
+                    <>
+                      <IconBuildingSkyscraper size={12} /> Independent Firm
+                    </>
                   )}
                 </button>
               ))}
@@ -352,7 +422,9 @@ export function ValuationFormModal({
               >
                 <option value="">-- No contact on record --</option>
                 {contacts.map((c) => (
-                  <option key={c.id} value={c.id}>{c.displayName}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.displayName}
+                  </option>
                 ))}
               </select>
             </div>
@@ -367,7 +439,9 @@ export function ValuationFormModal({
               >
                 <option value="">-- Unassigned --</option>
                 {managers.map((u) => (
-                  <option key={u.id} value={u.id}>{u.name}</option>
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -385,7 +459,9 @@ export function ValuationFormModal({
               >
                 <option value="">-- Sunland Valuers Ltd (default) --</option>
                 {managers.map((u) => (
-                  <option key={u.id} value={u.id}>{u.name} (Internal Staff)</option>
+                  <option key={u.id} value={u.id}>
+                    {u.name} (Internal Staff)
+                  </option>
                 ))}
               </select>
             ) : (
@@ -450,9 +526,14 @@ export function ValuationFormModal({
             className="bg-[#151936] text-white hover:bg-[#1f254e] transition-colors rounded-xl px-5 h-10 text-xs font-medium flex items-center gap-2 shadow-2xs cursor-pointer"
           >
             {isSaving ? (
-              <><LoadingSpinner size="sm" /><span>{isEdit ? "Saving Changes…" : "Scheduling Prospect…"}</span></>
+              <>
+                <LoadingSpinner size="sm" />
+                <span>{isEdit ? "Saving Changes…" : "Scheduling Prospect…"}</span>
+              </>
+            ) : isEdit ? (
+              "Save Changes"
             ) : (
-              isEdit ? "Save Changes" : "Schedule & Assign Prospect"
+              "Schedule & Assign Prospect"
             )}
           </Button>
         </div>

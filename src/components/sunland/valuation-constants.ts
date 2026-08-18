@@ -43,13 +43,41 @@ export const STAGE_WIP_LIMITS: Record<ValuationStage, number> = {
 };
 
 export const STAGE_META: Record<ValuationStage, { label: string; pill: string; dot: string }> = {
-  requested: { label: "Requested", pill: "bg-slate-100 text-slate-600 border-slate-200", dot: "bg-slate-400" },
-  site_visit: { label: "Site Visit", pill: "bg-slate-100 text-slate-600 border-slate-200", dot: "bg-slate-500" },
-  valued: { label: "Valued", pill: "bg-[#eef2f6] text-[#151936] border-[#cbd5e1]", dot: "bg-[#151936]" },
-  offer_sent: { label: "Offer Sent", pill: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-500" },
-  accepted: { label: "Accepted", pill: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
-  mandate_signed: { label: "Mandate Signed", pill: "bg-[#122a20]/10 text-[#122a20] border-[#122a20]/30", dot: "bg-[#122a20]" },
-  declined: { label: "Declined", pill: "bg-rose-50 text-rose-700 border-rose-200", dot: "bg-rose-500" },
+  requested: {
+    label: "Requested",
+    pill: "bg-slate-100 text-slate-600 border-slate-200",
+    dot: "bg-slate-400",
+  },
+  site_visit: {
+    label: "Site Visit",
+    pill: "bg-slate-100 text-slate-600 border-slate-200",
+    dot: "bg-slate-500",
+  },
+  valued: {
+    label: "Valued",
+    pill: "bg-[#eef2f6] text-[#151936] border-[#cbd5e1]",
+    dot: "bg-[#151936]",
+  },
+  offer_sent: {
+    label: "Offer Sent",
+    pill: "bg-amber-50 text-amber-700 border-amber-200",
+    dot: "bg-amber-500",
+  },
+  accepted: {
+    label: "Accepted",
+    pill: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    dot: "bg-emerald-500",
+  },
+  mandate_signed: {
+    label: "Mandate Signed",
+    pill: "bg-[#122a20]/10 text-[#122a20] border-[#122a20]/30",
+    dot: "bg-[#122a20]",
+  },
+  declined: {
+    label: "Declined",
+    pill: "bg-rose-50 text-rose-700 border-rose-200",
+    dot: "bg-rose-500",
+  },
 };
 
 export type BadgeTone = "primary" | "neutral" | "success" | "warning" | "risk" | "data" | "brand";
@@ -117,19 +145,31 @@ export function scoreForValuation(input: {
   const freshScore = Math.max(0, 20 - Math.min(20, input.ageDays / 8));
   const score = Math.round(feeScore + valScore + verifiedScore + freshScore);
   const grade = score >= 80 ? "A" : score >= 66 ? "B" : score >= 52 ? "C" : "D";
-  const color = score >= 80 ? "#047857" : score >= 66 ? "#122a20" : score >= 52 ? "#b45309" : "#be123c";
-  const label = score >= 80 ? "Strong fit" : score >= 66 ? "Good fit" : score >= 52 ? "Moderate" : "Marginal";
+  const color =
+    score >= 80 ? "#047857" : score >= 66 ? "#122a20" : score >= 52 ? "#b45309" : "#be123c";
+  const label =
+    score >= 80 ? "Strong fit" : score >= 66 ? "Good fit" : score >= 52 ? "Moderate" : "Marginal";
   return { score, grade, color, label };
 }
 
 export function fmtDate(iso: string | Date | null): string {
   if (!iso) return "-";
-  return new Date(iso).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-KE", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export function fmtDateTime(iso: string | Date | null): string {
   if (!iso) return "-";
-  return new Date(iso).toLocaleString("en-KE", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleString("en-KE", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export function toDatetimeLocal(iso: string | null): string {

@@ -38,7 +38,10 @@ export default function LandlordOverviewPage() {
       {/* Welcome banner */}
       <div className="rounded-2xl bg-[#151936] px-6 py-5 text-white">
         <p className="label-caps text-white/40">Sunland ERP - Landlord Portal</p>
-        <h1 className="mt-1 text-2xl text-white" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
+        <h1
+          className="mt-1 text-2xl text-white"
+          style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}
+        >
           Your Portfolio Overview
         </h1>
         <p className="mt-1 text-white/60 text-base">
@@ -81,7 +84,8 @@ export default function LandlordOverviewPage() {
           <div>
             <h2 className="text-heading-primary">June 2026 Remittance Summary</h2>
             <p className="mt-0.5 text-slate-400 text-base">
-              Final remittance is derived from the Sunland Finance ledger - every figure is auditable.
+              Final remittance is derived from the Sunland Finance ledger - every figure is
+              auditable.
             </p>
           </div>
           <Badge tone="warning">Pending Disbursement</Badge>
@@ -94,7 +98,10 @@ export default function LandlordOverviewPage() {
             { label: "Approved Expenses", value: 0, positive: true },
             { label: "Net Remittance Due", value: d.remittanceDue, positive: true, bold: true },
           ].map(({ label, value, bold }) => (
-            <div key={label} className={cn("flex items-center justify-between px-4 py-3", bold && "bg-slate-50")}>
+            <div
+              key={label}
+              className={cn("flex items-center justify-between px-4 py-3", bold && "bg-slate-50")}
+            >
               <p className={cn("text-base", bold ? "text-slate-900" : "text-slate-600")}>{label}</p>
               <p className={cn("mono-data", bold ? "text-slate-900" : "text-slate-700")}>
                 {value < 0 ? `− ${formatCompactKES(Math.abs(value))}` : formatCompactKES(value)}
@@ -108,18 +115,25 @@ export default function LandlordOverviewPage() {
       <BoardPanel className="gsap-stagger space-y-4">
         <div>
           <h2 className="text-heading-primary">Managed Properties</h2>
-          <p className="mt-0.5 text-slate-400 text-base">Occupancy and arrears status across your portfolio.</p>
+          <p className="mt-0.5 text-slate-400 text-base">
+            Occupancy and arrears status across your portfolio.
+          </p>
         </div>
         <div className="divide-y divide-slate-100">
           {MOCK_PROPERTIES.map((property) => (
-            <div key={property.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+            <div
+              key={property.id}
+              className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+            >
               <div className="flex items-center gap-3">
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-slate-100">
                   <IconBuildingCommunity size={17} className="text-slate-400" />
                 </div>
                 <div>
                   <p className="text-title-primary">{property.name}</p>
-                  <p className="text-slate-400 text-base">{property.occupied}/{property.units} occupied</p>
+                  <p className="text-slate-400 text-base">
+                    {property.occupied}/{property.units} occupied
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">

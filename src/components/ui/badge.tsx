@@ -21,11 +21,7 @@ export function Badge({
   className?: string;
   tone?: BadgeTone;
 }) {
-  return (
-    <span className={cn("badge-pill text-xxs", tones[tone], className)}>
-      {children}
-    </span>
-  );
+  return <span className={cn("badge-pill text-xxs", tones[tone], className)}>{children}</span>;
 }
 
 export type MarketBadgeTone = "neutral" | "success" | "warning" | "risk" | "info";
@@ -59,4 +55,3 @@ export function MarketBadge({
     </span>
   );
 }
-

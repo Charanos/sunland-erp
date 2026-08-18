@@ -1,6 +1,15 @@
 "use client";
 
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, TooltipContentProps } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  TooltipContentProps,
+} from "recharts";
 import { formatCompactKES } from "@/lib/utils/format";
 
 interface ChartDataPoint {
@@ -10,14 +19,24 @@ interface ChartDataPoint {
   Leads: number;
 }
 
-const CustomTooltip = ({ active, payload, label }: Partial<TooltipContentProps<number, string>>) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: Partial<TooltipContentProps<number, string>>) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-xl border border-slate-100 bg-white/95 p-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur-md animate-scale-in">
-        <p className="text-base font-medium text-slate-400 uppercase tracking-wider mb-2">{label}</p>
+        <p className="text-base font-medium text-slate-400 uppercase tracking-wider mb-2">
+          {label}
+        </p>
         <div className="space-y-1.5 text-sm font-medium">
           {payload.map((entry, i) => (
-            <p key={i} className="flex items-center justify-between gap-4" style={{ color: entry.color ?? "#151936" }}>
+            <p
+              key={i}
+              className="flex items-center justify-between gap-4"
+              style={{ color: entry.color ?? "#151936" }}
+            >
               <span>{entry.name}:</span>
               <span className="font-mono text-slate-800">
                 {entry.name === "Revenue"
@@ -42,7 +61,6 @@ export default function SalesChart({
   data: ChartDataPoint[];
   activeFilter?: "all" | "Revenue" | "Transactions" | "Leads";
 }) {
-
   const showRevenue = activeFilter === "all" || activeFilter === "Revenue";
   const showTransactions = activeFilter === "all" || activeFilter === "Transactions";
   const showLeads = activeFilter === "all" || activeFilter === "Leads";
@@ -50,11 +68,7 @@ export default function SalesChart({
   return (
     <div className="h-72 w-full body-sm">
       <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0}>
-        <BarChart
-          data={data}
-          margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-          barGap={6}
-        >
+        <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }} barGap={6}>
           <XAxis
             dataKey="day"
             stroke="#94a3b8"
@@ -78,7 +92,9 @@ export default function SalesChart({
             height={36}
             iconSize={8}
             iconType="circle"
-            formatter={(value) => <span className="text-slate-400 font-medium text-sm ">{value}</span>}
+            formatter={(value) => (
+              <span className="text-slate-400 font-medium text-sm ">{value}</span>
+            )}
           />
           {showRevenue && (
             <Bar

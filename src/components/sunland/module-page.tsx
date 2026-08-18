@@ -26,12 +26,7 @@ export function ModulePage({
         title={title}
         description={description}
       />
-      <EmptyState
-        action={action}
-        description={emptyDescription}
-        icon={icon}
-        title={emptyTitle}
-      />
+      <EmptyState action={action} description={emptyDescription} icon={icon} title={emptyTitle} />
     </div>
   );
 }

@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { DomainValidationError, handleRouteError } from "@/lib/authz/errors";
-import { createProperty, listProperties, updateProperty, deleteProperty } from "@/lib/services/properties";
+import {
+  createProperty,
+  listProperties,
+  updateProperty,
+  deleteProperty,
+} from "@/lib/services/properties";
 import { requireCallerContext } from "@/lib/services/types";
 
 export async function GET(request: Request) {
@@ -9,7 +14,8 @@ export async function GET(request: Request) {
     const entityId = searchParams.get("entityId") ?? null;
     const ownerContactId = searchParams.get("ownerContactId") ?? undefined;
     const viewParam = searchParams.get("view");
-    const view = viewParam === "intake" ? "intake" : viewParam === "managed" ? "managed" : undefined;
+    const view =
+      viewParam === "intake" ? "intake" : viewParam === "managed" ? "managed" : undefined;
 
     const ctx = await requireCallerContext(entityId, request);
     const propertiesList = await listProperties(ctx, { ownerContactId, view });

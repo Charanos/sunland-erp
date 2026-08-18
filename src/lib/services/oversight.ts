@@ -75,7 +75,8 @@ export async function getOversightPulse(ctx: CallerContext, entityIdOrSlug?: str
   // rather than a reassuring 100%.
   const latestByService = new Map<string, ServiceHealthStatus>();
   for (const row of healthRows) {
-    if (!latestByService.has(row.service)) latestByService.set(row.service, row.status as ServiceHealthStatus);
+    if (!latestByService.has(row.service))
+      latestByService.set(row.service, row.status as ServiceHealthStatus);
   }
   const measured = MONITORED_SERVICES.filter((s) => latestByService.has(s.key));
   const healthy = measured.filter((s) => latestByService.get(s.key) === "healthy").length;
@@ -121,10 +122,10 @@ export async function resolveTicketSlaTargets(): Promise<Record<TicketPriority, 
     (Object.keys(TICKET_SLA_SETTING_KEYS) as TicketPriority[]).map(async (priority) => {
       const value = await getGroupSettingValue<number>(
         TICKET_SLA_SETTING_KEYS[priority],
-        TICKET_SLA_DEFAULT_HOURS[priority],
+        TICKET_SLA_DEFAULT_HOURS[priority]
       );
       return [priority, Number(value) || TICKET_SLA_DEFAULT_HOURS[priority]] as const;
-    }),
+    })
   );
   return Object.fromEntries(entries) as Record<TicketPriority, number>;
 }

@@ -13,10 +13,7 @@ export async function GET(request: Request) {
     const filter = await scopeEntityFilter(transactions.entityId, entityId || "group");
 
     // Fetch all transactions scoped by entity
-    const rawTx = await db
-      .select()
-      .from(transactions)
-      .where(filter);
+    const rawTx = await db.select().from(transactions).where(filter);
 
     // Apply period filtering if provided
     let txs = rawTx;
@@ -54,63 +51,221 @@ export async function GET(request: Request) {
       else if (tx.type === "sales_commission") salesCommissionSum += amt;
     });
 
-    const operatingAccount = rentSum + commissionSum + valuationSum + depositSum + otherSum + agreementFeeSum + salesCommissionSum - expenseSum;
+    const operatingAccount =
+      rentSum +
+      commissionSum +
+      valuationSum +
+      depositSum +
+      otherSum +
+      agreementFeeSum +
+      salesCommissionSum -
+      expenseSum;
     const rentClearing = 0; // Rent is allocated immediately
-    const remittancesPayable = rentSum * 0.90 - expenseSum;
+    const remittancesPayable = rentSum * 0.9 - expenseSum;
     const securityDeposit = depositSum;
-    const managementFeeRev = rentSum * 0.10 + commissionSum + valuationSum;
+    const managementFeeRev = rentSum * 0.1 + commissionSum + valuationSum;
     const operatingExpenses = expenseSum;
     const retainedEarnings = 3485000 + otherSum; // Seed base + other
 
     const accounts = [
-      { code: "1000", name: "Operating Bank Account", category: "Asset", balance: operatingAccount },
-      { code: "1200", name: "Tenant Rent Clearing Account", category: "Liability", balance: rentClearing },
-      { code: "1300", name: "Tenant Security Deposit Account", category: "Liability", balance: securityDeposit },
-      { code: "2000", name: "Landlord Remittances Payable", category: "Liability", balance: remittancesPayable },
+      {
+        code: "1000",
+        name: "Operating Bank Account",
+        category: "Asset",
+        balance: operatingAccount,
+      },
+      {
+        code: "1200",
+        name: "Tenant Rent Clearing Account",
+        category: "Liability",
+        balance: rentClearing,
+      },
+      {
+        code: "1300",
+        name: "Tenant Security Deposit Account",
+        category: "Liability",
+        balance: securityDeposit,
+      },
+      {
+        code: "2000",
+        name: "Landlord Remittances Payable",
+        category: "Liability",
+        balance: remittancesPayable,
+      },
       { code: "3000", name: "Retained Earnings", category: "Equity", balance: retainedEarnings },
-      { code: "4000", name: "Management Fee Revenue", category: "Revenue", balance: managementFeeRev },
-      { code: "4100", name: "Letting / Lease Fee Revenue (Agreement Fees)", category: "Revenue", balance: agreementFeeSum },
-      { code: "4200", name: "Sales Commission Revenue", category: "Revenue", balance: salesCommissionSum },
-      { code: "5000", name: "Office Administrative Expense", category: "Expense", balance: operatingExpenses },
+      {
+        code: "4000",
+        name: "Management Fee Revenue",
+        category: "Revenue",
+        balance: managementFeeRev,
+      },
+      {
+        code: "4100",
+        name: "Letting / Lease Fee Revenue (Agreement Fees)",
+        category: "Revenue",
+        balance: agreementFeeSum,
+      },
+      {
+        code: "4200",
+        name: "Sales Commission Revenue",
+        category: "Revenue",
+        balance: salesCommissionSum,
+      },
+      {
+        code: "5000",
+        name: "Office Administrative Expense",
+        category: "Expense",
+        balance: operatingExpenses,
+      },
     ];
 
     // Generate Journal Entries
     const journals = txs.map((tx) => {
       const amt = parseFloat(tx.amountKes.toString()) || 0;
-      const lines: Array<{ accountCode: string; accountName: string; type: "debit" | "credit"; amount: number }> = [];
+      const lines: Array<{
+        accountCode: string;
+        accountName: string;
+        type: "debit" | "credit";
+        amount: number;
+      }> = [];
 
       if (tx.type === "rent") {
         // Rent Collection
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "1200", accountName: "Tenant Rent Clearing Account", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "1200",
+          accountName: "Tenant Rent Clearing Account",
+          type: "credit",
+          amount: amt,
+        });
         // Allocation
-        lines.push({ accountCode: "1200", accountName: "Tenant Rent Clearing Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "2000", accountName: "Landlord Remittances Payable", type: "credit", amount: amt * 0.90 });
-        lines.push({ accountCode: "4000", accountName: "Management Fee Revenue", type: "credit", amount: amt * 0.10 });
+        lines.push({
+          accountCode: "1200",
+          accountName: "Tenant Rent Clearing Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "2000",
+          accountName: "Landlord Remittances Payable",
+          type: "credit",
+          amount: amt * 0.9,
+        });
+        lines.push({
+          accountCode: "4000",
+          accountName: "Management Fee Revenue",
+          type: "credit",
+          amount: amt * 0.1,
+        });
       } else if (tx.type === "expense") {
-        lines.push({ accountCode: "5000", accountName: "Office Administrative Expense", type: "debit", amount: amt });
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "5000",
+          accountName: "Office Administrative Expense",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "credit",
+          amount: amt,
+        });
         // Landlord deduction
-        lines.push({ accountCode: "2000", accountName: "Landlord Remittances Payable", type: "debit", amount: amt });
-        lines.push({ accountCode: "5000", accountName: "Office Administrative Expense", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "2000",
+          accountName: "Landlord Remittances Payable",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "5000",
+          accountName: "Office Administrative Expense",
+          type: "credit",
+          amount: amt,
+        });
       } else if (tx.type === "commission") {
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "4000", accountName: "Management Fee Revenue", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "4000",
+          accountName: "Management Fee Revenue",
+          type: "credit",
+          amount: amt,
+        });
       } else if (tx.type === "valuation_fee") {
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "4000", accountName: "Management Fee Revenue", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "4000",
+          accountName: "Management Fee Revenue",
+          type: "credit",
+          amount: amt,
+        });
       } else if (tx.type === "deposit") {
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "1300", accountName: "Tenant Security Deposit Account", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "1300",
+          accountName: "Tenant Security Deposit Account",
+          type: "credit",
+          amount: amt,
+        });
       } else if (tx.type === "agreement_fee") {
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "4100", accountName: "Letting / Lease Fee Revenue (Agreement Fees)", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "4100",
+          accountName: "Letting / Lease Fee Revenue (Agreement Fees)",
+          type: "credit",
+          amount: amt,
+        });
       } else if (tx.type === "sales_commission") {
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "4200", accountName: "Sales Commission Revenue", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "4200",
+          accountName: "Sales Commission Revenue",
+          type: "credit",
+          amount: amt,
+        });
       } else {
-        lines.push({ accountCode: "1000", accountName: "Operating Bank Account", type: "debit", amount: amt });
-        lines.push({ accountCode: "3000", accountName: "Retained Earnings", type: "credit", amount: amt });
+        lines.push({
+          accountCode: "1000",
+          accountName: "Operating Bank Account",
+          type: "debit",
+          amount: amt,
+        });
+        lines.push({
+          accountCode: "3000",
+          accountName: "Retained Earnings",
+          type: "credit",
+          amount: amt,
+        });
       }
 
       return {

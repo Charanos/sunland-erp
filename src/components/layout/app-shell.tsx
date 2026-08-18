@@ -21,18 +21,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "min-h-screen transition-[padding] duration-300 ease-out lg:pl-[272px]",
-          sidebarCollapsed && "lg:pl-[72px]",
+          sidebarCollapsed && "lg:pl-[72px]"
         )}
       >
         <TopNav />
-        <main className="px-4 pb-28 pt-2 sm:px-6 lg:px-8 lg:pb-8">
-          {children}
-        </main>
+        <main className="px-4 pb-28 pt-2 sm:px-6 lg:px-8 lg:pb-8">{children}</main>
       </div>
       <MobileBottomNav />
       <GlobalChatWidget />
       <EntitySwitchOverlay />
-      
+
       {activeModal === "create-property" && (
         <PropertyFormModal
           open={true}
@@ -46,4 +44,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-

@@ -173,7 +173,12 @@ function usePanel(ref: React.RefObject<HTMLElement | null>) {
 
 const panelVariants = {
   hidden: { opacity: 0, y: -6, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] as const } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] as const },
+  },
   exit: { opacity: 0, y: -4, scale: 0.97, transition: { duration: 0.13 } },
 };
 
@@ -227,7 +232,7 @@ function PanelShell({
         "shadow-[0_8px_32px_rgba(0,0,0,0.10),0_2px_8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)]",
         align === "right" ? "right-0" : "left-0",
         width,
-        className,
+        className
       )}
     >
       {children}
@@ -259,7 +264,7 @@ function NavActionBtn({
         "focus-ring relative flex size-9 items-center justify-center rounded-xl transition-colors",
         active
           ? "bg-slate-100 text-slate-800"
-          : "text-slate-400 hover:bg-slate-100/80 hover:text-slate-700",
+          : "text-slate-400 hover:bg-slate-100/80 hover:text-slate-700"
       )}
     >
       {children}
@@ -352,10 +357,12 @@ function NotificationsPanel({
               >
                 {/* Left Icon with pulsating unread dot */}
                 <div className="relative shrink-0 mt-0.5">
-                  <span className={cn(
-                    "flex size-8 items-center justify-center rounded-[10px] border transition-all",
-                    toneData.bg
-                  )}>
+                  <span
+                    className={cn(
+                      "flex size-8 items-center justify-center rounded-[10px] border transition-all",
+                      toneData.bg
+                    )}
+                  >
                     <IconComponent size={14} stroke={2} aria-hidden />
                   </span>
                   {!n.read && (
@@ -369,10 +376,12 @@ function NotificationsPanel({
                 {/* Body Details */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <p className={cn(
-                      "text-sm transition-colors group-hover:text-slate-900 leading-snug",
-                      !n.read ? "text-slate-800 font-medium" : "text-slate-600 font-medium"
-                    )}>
+                    <p
+                      className={cn(
+                        "text-sm transition-colors group-hover:text-slate-900 leading-snug",
+                        !n.read ? "text-slate-800 font-medium" : "text-slate-600 font-medium"
+                      )}
+                    >
                       {n.title}
                     </p>
                     <span className="text-xs font-mono font-medium text-slate-400 shrink-0 mt-0.5">
@@ -429,7 +438,9 @@ function QuickCreatePanel({ onClose }: { onClose: () => void }) {
               <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-white border border-slate-100 text-slate-500 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all group-hover:border-slate-200 group-hover:text-slate-800 group-hover:shadow-sm">
                 <action.icon size={14} stroke={2} aria-hidden />
               </span>
-              <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors group-hover:text-slate-900">{action.label}</span>
+              <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors group-hover:text-slate-900">
+                {action.label}
+              </span>
               {action.shortcut && (
                 <kbd className="text-xxs select-none rounded-[6px] border border-slate-200/80 bg-white px-1.5 py-0.5 font-mono font-medium text-slate-400 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors group-hover:border-slate-300 group-hover:text-slate-500">
                   ⌘{action.shortcut}
@@ -437,7 +448,8 @@ function QuickCreatePanel({ onClose }: { onClose: () => void }) {
               )}
             </>
           );
-          const className = "group flex w-full items-center gap-3 rounded-xl px-2.5 py-2 transition-all hover:bg-slate-50/80";
+          const className =
+            "group flex w-full items-center gap-3 rounded-xl px-2.5 py-2 transition-all hover:bg-slate-50/80";
 
           if (action.action) {
             return (
@@ -455,12 +467,7 @@ function QuickCreatePanel({ onClose }: { onClose: () => void }) {
           }
 
           return (
-            <Link
-              key={action.href}
-              href={action.href!}
-              onClick={onClose}
-              className={className}
-            >
+            <Link key={action.href} href={action.href!} onClick={onClose} className={className}>
               {content}
             </Link>
           );
@@ -480,7 +487,9 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
   const [viewMode, setViewMode] = useState<"monthly" | "yearly">("monthly");
   const [selected, setSelected] = useState(new Date());
   const [isAdding, setIsAdding] = useState(false);
-  const [form, setForm] = useState<Partial<{ title: string; time: string; type: ApiEvent["type"]; description: string }>>({ title: "", time: "", type: "internal", description: "" });
+  const [form, setForm] = useState<
+    Partial<{ title: string; time: string; type: ApiEvent["type"]; description: string }>
+  >({ title: "", time: "", type: "internal", description: "" });
 
   const loadEvents = useCallback(() => {
     fetch("/api/scheduling/events?entityId=group&scope=all")
@@ -496,10 +505,16 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
   }, [loadEvents]);
 
   const selectedStr = format(selected, "yyyy-MM-dd");
-  const dayEvents = events.filter((e) => {
-    const d = new Date(e.startsAt);
-    return d.getFullYear() === selected.getFullYear() && d.getMonth() === selected.getMonth() && d.getDate() === selected.getDate();
-  }).sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+  const dayEvents = events
+    .filter((e) => {
+      const d = new Date(e.startsAt);
+      return (
+        d.getFullYear() === selected.getFullYear() &&
+        d.getMonth() === selected.getMonth() &&
+        d.getDate() === selected.getDate()
+      );
+    })
+    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
 
   const monthStart = startOfMonth(month);
   const monthEnd = endOfMonth(month);
@@ -509,7 +524,10 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
   // Build calendar grid
   const cells: Date[] = [];
   let cursor = calStart;
-  while (cursor <= calEnd) { cells.push(cursor); cursor = addDays(cursor, 1); }
+  while (cursor <= calEnd) {
+    cells.push(cursor);
+    cursor = addDays(cursor, 1);
+  }
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -580,7 +598,9 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               aria-label="Previous"
-              onClick={() => setMonth(viewMode === "monthly" ? subMonths(month, 1) : subYears(month, 1))}
+              onClick={() =>
+                setMonth(viewMode === "monthly" ? subMonths(month, 1) : subYears(month, 1))
+              }
               className="flex size-8 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-800"
             >
               <IconChevronLeft size={18} aria-hidden />
@@ -595,7 +615,9 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               aria-label="Next"
-              onClick={() => setMonth(viewMode === "monthly" ? addMonths(month, 1) : addYears(month, 1))}
+              onClick={() =>
+                setMonth(viewMode === "monthly" ? addMonths(month, 1) : addYears(month, 1))
+              }
               className="flex size-8 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-800"
             >
               <IconChevronRight size={18} aria-hidden />
@@ -607,7 +629,10 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
               {/* Day labels */}
               <div className="mb-4 grid grid-cols-7 gap-1">
                 {WEEKDAYS.map((d) => (
-                  <div key={d} className="text-center text-ms font-medium uppercase tracking-widest text-slate-400">
+                  <div
+                    key={d}
+                    className="text-center text-ms font-medium uppercase tracking-widest text-slate-400"
+                  >
                     {d}
                   </div>
                 ))}
@@ -619,7 +644,11 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                   const dateStr = format(day, "yyyy-MM-dd");
                   const hasEvents = events.some((e) => {
                     const d = new Date(e.startsAt);
-                    return d.getFullYear() === day.getFullYear() && d.getMonth() === day.getMonth() && d.getDate() === day.getDate();
+                    return (
+                      d.getFullYear() === day.getFullYear() &&
+                      d.getMonth() === day.getMonth() &&
+                      d.getDate() === day.getDate()
+                    );
                   });
                   const isSelected = isSameDay(day, selected);
                   const isToday = isSameDay(day, new Date());
@@ -630,7 +659,10 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                       key={dateStr}
                       type="button"
                       aria-label={format(day, "MMMM d yyyy")}
-                      onClick={() => { setSelected(day); setIsAdding(false); }}
+                      onClick={() => {
+                        setSelected(day);
+                        setIsAdding(false);
+                      }}
                       className={cn(
                         "relative mx-auto flex size-9 flex-col items-center justify-center rounded-full transition-all duration-200",
                         isSelected
@@ -639,17 +671,24 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                             ? "bg-slate-100/80 text-[var(--sidebar)] font-medium hover:bg-slate-200/60"
                             : isCurrentM
                               ? "text-slate-700 hover:bg-slate-50"
-                              : "text-slate-300 hover:bg-slate-50",
+                              : "text-slate-300 hover:bg-slate-50"
                       )}
                     >
-                      <span className={cn("text-sm", isSelected || isToday ? "font-medium" : "font-normal")}>
+                      <span
+                        className={cn(
+                          "text-sm",
+                          isSelected || isToday ? "font-medium" : "font-normal"
+                        )}
+                      >
                         {format(day, "d")}
                       </span>
                       {hasEvents && (
-                        <span className={cn(
-                          "absolute bottom-1.5 size-[3.5px] rounded-full",
-                          isSelected ? "bg-white/90" : "bg-[var(--sidebar)]/60",
-                        )} />
+                        <span
+                          className={cn(
+                            "absolute bottom-1.5 size-[3.5px] rounded-full",
+                            isSelected ? "bg-white/90" : "bg-[var(--sidebar)]/60"
+                          )}
+                        />
                       )}
                     </button>
                   );
@@ -666,7 +705,10 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                   <button
                     key={i}
                     type="button"
-                    onClick={() => { setMonth(m); setViewMode("monthly"); }}
+                    onClick={() => {
+                      setMonth(m);
+                      setViewMode("monthly");
+                    }}
                     className={cn(
                       "flex h-[3.25rem] items-center justify-center rounded-[14px] text-sm transition-all",
                       isSelectedMonth
@@ -687,7 +729,10 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
           <div className="mt-auto border-t border-slate-100/60 pt-4">
             <button
               type="button"
-              onClick={() => { setMonth(new Date()); setSelected(new Date()); }}
+              onClick={() => {
+                setMonth(new Date());
+                setSelected(new Date());
+              }}
               className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-[var(--sidebar)]"
             >
               <span className="flex size-5 items-center justify-center rounded-full bg-slate-100">
@@ -706,7 +751,9 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                 {format(selected, "EEEE, MMMM d")}
               </p>
               <p className="text-xs font-medium text-slate-400">
-                {dayEvents.length === 0 ? "No events scheduled" : `${dayEvents.length} event${dayEvents.length > 1 ? "s" : ""} today`}
+                {dayEvents.length === 0
+                  ? "No events scheduled"
+                  : `${dayEvents.length} event${dayEvents.length > 1 ? "s" : ""} today`}
               </p>
             </div>
             {!isAdding && (
@@ -729,17 +776,27 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                   <IconCalendar size={24} stroke={1.5} aria-hidden />
                 </div>
                 <p className="text-sm font-medium text-slate-600">Your day is clear</p>
-                <p className="text-sm text-slate-400 mt-1 max-w-[180px]">Enjoy the free time or schedule a new event.</p>
+                <p className="text-sm text-slate-400 mt-1 max-w-[180px]">
+                  Enjoy the free time or schedule a new event.
+                </p>
               </div>
             ) : (
               dayEvents.map((ev) => {
-                const timeStr = new Date(ev.startsAt).toLocaleTimeString("en-KE", { hour: "2-digit", minute: "2-digit" });
+                const timeStr = new Date(ev.startsAt).toLocaleTimeString("en-KE", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
                 return (
                   <div
                     key={ev.id}
                     className="group relative flex items-start gap-3.5 bg-white my-2"
                   >
-                    <span className={cn("mt-[6px] size-2.5 shrink-0 rounded-full", EVENT_COLORS[ev.type])} />
+                    <span
+                      className={cn(
+                        "mt-[6px] size-2.5 shrink-0 rounded-full",
+                        EVENT_COLORS[ev.type]
+                      )}
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-slate-800 leading-snug">{ev.title}</p>
                       <p className="mt-1.5 flex items-center gap-1.5 font-mono text-ms font-medium tracking-tight text-slate-400">
@@ -747,11 +804,19 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                         {timeStr}
                       </p>
                       {ev.description && (
-                        <p className="mt-2 text-sm leading-relaxed text-slate-500 line-clamp-2">{ev.description}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-slate-500 line-clamp-2">
+                          {ev.description}
+                        </p>
                       )}
                       <div className="mt-3 flex items-center">
                         <Badge tone={EVENT_BADGE_TONE[ev.type]}>
-                          {ev.type === "internal" ? "Internal Sync" : ev.type === "external" ? "Client Meeting" : ev.type === "legal" ? "Legal Deadline" : "Maintenance"}
+                          {ev.type === "internal"
+                            ? "Internal Sync"
+                            : ev.type === "external"
+                              ? "Client Meeting"
+                              : ev.type === "legal"
+                                ? "Legal Deadline"
+                                : "Maintenance"}
                         </Badge>
                       </div>
                     </div>
@@ -764,7 +829,7 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
                       <IconTrash size={14} aria-hidden />
                     </button>
                   </div>
-                )
+                );
               })
             )}
           </div>
@@ -782,7 +847,11 @@ function CalendarPanel({ onClose }: { onClose: () => void }) {
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium text-slate-800">Create Event</span>
-                  <button type="button" onClick={() => setIsAdding(false)} className="flex size-7 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700">
+                  <button
+                    type="button"
+                    onClick={() => setIsAdding(false)}
+                    className="flex size-7 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                  >
                     <IconX size={14} aria-hidden />
                   </button>
                 </div>
@@ -877,7 +946,7 @@ function SearchBar() {
         "border transition-all duration-300",
         focused
           ? "border-slate-300 bg-white shadow-sm ring-4 ring-slate-100"
-          : "border-slate-200/60 bg-slate-50/50 hover:bg-white hover:border-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+          : "border-slate-200/60 bg-slate-50/50 hover:bg-white hover:border-slate-200 hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
       )}
     >
       <span className="sr-only">Search clients, properties, payments</span>
@@ -885,15 +954,25 @@ function SearchBar() {
         aria-hidden
         size={14}
         stroke={1.5}
-        className={cn("shrink-0 transition-colors", focused ? "text-slate-600" : "text-slate-400 group-hover:text-slate-500")}
+        className={cn(
+          "shrink-0 transition-colors",
+          focused ? "text-slate-600" : "text-slate-400 group-hover:text-slate-500"
+        )}
       />
-      <span className={cn("text-sm flex-1 transition-colors", focused ? "text-slate-700" : "text-slate-400 group-hover:text-slate-500")}>
+      <span
+        className={cn(
+          "text-sm flex-1 transition-colors",
+          focused ? "text-slate-700" : "text-slate-400 group-hover:text-slate-500"
+        )}
+      >
         Search anything...
       </span>
       <kbd
         className={cn(
           "pointer-events-none text-caption select-none rounded-[6px] border px-1.5 py-0.5 font-medium tracking-widest transition-opacity shadow-[0_1px_1px_rgba(0,0,0,0.02)]",
-          focused ? "opacity-0" : "border-slate-200 bg-white text-slate-400 group-hover:border-slate-300 group-hover:text-slate-500",
+          focused
+            ? "opacity-0"
+            : "border-slate-200 bg-white text-slate-400 group-hover:border-slate-300 group-hover:text-slate-500"
         )}
       >
         ⌘ K
@@ -986,7 +1065,8 @@ export function TopNav() {
     id: "",
     name: "Paul Amos",
     role: "ceo",
-    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
   });
 
   useEffect(() => {
@@ -998,17 +1078,19 @@ export function TopNav() {
             id: data.user.id || "",
             name: data.user.name || "Paul Amos",
             role: data.user.role || "ceo",
-            avatarUrl: data.user.avatarUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+            avatarUrl:
+              data.user.avatarUrl ||
+              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
           });
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-    } catch { }
+    } catch {}
     window.location.href = "/login";
   };
 
@@ -1049,55 +1131,64 @@ export function TopNav() {
   // Live notifications: subscribe to the per-user Ably channel createNotification
   // already publishes to (previously a publisher with no subscriber - the bell
   // was fetch-once). A new notification now lands in the bell in real time.
-  const handleLiveNotification = useCallback((data: { id: string; type: string; title: string; body: string; createdAt: string }) => {
-    setNotifications((prev) => {
-      if (prev.some((n) => n.id === data.id)) return prev;
-      return [
-        {
-          id: data.id,
-          tone: toneForType(data.type),
-          title: data.title,
-          body: data.body,
-          time: "just now",
-          read: false,
-        },
-        ...prev,
-      ];
-    });
-  }, []);
+  const handleLiveNotification = useCallback(
+    (data: { id: string; type: string; title: string; body: string; createdAt: string }) => {
+      setNotifications((prev) => {
+        if (prev.some((n) => n.id === data.id)) return prev;
+        return [
+          {
+            id: data.id,
+            tone: toneForType(data.type),
+            title: data.title,
+            body: data.body,
+            time: "just now",
+            read: false,
+          },
+          ...prev,
+        ];
+      });
+    },
+    []
+  );
   useAblyChannel<{ id: string; type: string; title: string; body: string; createdAt: string }>(
     currentUser.id ? `private-user-${currentUser.id}` : null,
     "notification",
-    handleLiveNotification,
+    handleLiveNotification
   );
 
   const handleMarkRead = (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-    fetch(`/api/notifications/${id}/read`, { method: "PATCH" }).catch(() => { });
+    fetch(`/api/notifications/${id}/read`, { method: "PATCH" }).catch(() => {});
   };
 
   const handleMarkAllRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    fetch("/api/notifications/mark-all-read", { method: "POST" }).catch(() => { });
+    fetch("/api/notifications/mark-all-read", { method: "POST" }).catch(() => {});
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  function closeAll() { notif.close(); create.close(); calendar.close(); }
+  function closeAll() {
+    notif.close();
+    create.close();
+    calendar.close();
+  }
 
   return (
     <header className="sticky top-0 z-20 px-4 md:sm:px-5 lg:px-6 pt-8 pb-12">
-
       {/* ── Desktop Bar ──────────────────────────────────────── */}
-      <div className={cn(
-        "hidden items-center gap-3 rounded-xl lg:flex",
-        "border border-black/[0.04] bg-white px-3 py-2",
-        "shadow-[0_1px_4px_rgba(0,0,0,0.04),0_4px_20px_rgba(0,0,0,0.06)]",
-      )}>
-
+      <div
+        className={cn(
+          "hidden items-center gap-3 rounded-xl lg:flex",
+          "border border-black/[0.04] bg-white px-3 py-2",
+          "shadow-[0_1px_4px_rgba(0,0,0,0.04),0_4px_20px_rgba(0,0,0,0.06)]"
+        )}
+      >
         {/* Left: breadcrumb + search */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
-          <div className="hidden"><EntityBadge /></div>
+          <div className="hidden">
+            <EntityBadge />
+          </div>
           <div className="hidden h-4 w-px bg-slate-200/80" aria-hidden />
           <Breadcrumb />
           <div className="hidden h-4 w-px bg-slate-200/80 xl:block" aria-hidden />
@@ -1106,13 +1197,16 @@ export function TopNav() {
 
         {/* Right: actions */}
         <div className="flex shrink-0 items-center gap-0.5">
-
           {/* Calendar */}
           <div className="relative" ref={calendarRef}>
             <NavActionBtn
               label="Open calendar"
               active={calendar.open}
-              onClick={() => { calendar.setOpen((v) => !v); notif.close(); create.close(); }}
+              onClick={() => {
+                calendar.setOpen((v) => !v);
+                notif.close();
+                create.close();
+              }}
             >
               <IconCalendar size={18} stroke={1.5} aria-hidden />
             </NavActionBtn>
@@ -1126,7 +1220,11 @@ export function TopNav() {
             <NavActionBtn
               label="Quick create"
               active={create.open}
-              onClick={() => { create.setOpen((v) => !v); notif.close(); calendar.close(); }}
+              onClick={() => {
+                create.setOpen((v) => !v);
+                notif.close();
+                calendar.close();
+              }}
             >
               <IconPlus size={18} stroke={1.8} aria-hidden />
             </NavActionBtn>
@@ -1151,7 +1249,11 @@ export function TopNav() {
               label="Notifications"
               active={notif.open}
               badge={unreadCount}
-              onClick={() => { notif.setOpen((v) => !v); create.close(); calendar.close(); }}
+              onClick={() => {
+                notif.setOpen((v) => !v);
+                create.close();
+                calendar.close();
+              }}
             >
               <IconBell size={18} stroke={1.5} aria-hidden />
             </NavActionBtn>
@@ -1179,17 +1281,30 @@ export function TopNav() {
               <div className="flex items-center gap-3 rounded-xl pl-2 pr-3 py-1.5 hover:bg-slate-100/80 transition-colors cursor-pointer select-none group/profile">
                 <Avatar
                   src={currentUser.avatarUrl}
-                  fallback={currentUser.name ? currentUser.name.split(" ").map((n) => n[0]).join("") : "DM"}
+                  fallback={
+                    currentUser.name
+                      ? currentUser.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                      : "DM"
+                  }
                   status="online"
                   className="size-9 ring-1 ring-slate-200/60 shadow-sm"
                 />
                 <div className="hidden flex-col items-start leading-tight xl:flex justify-center">
-                  <span className="text-sm font-medium text-slate-800 transition-colors group-hover/profile:text-slate-950">{currentUser.name}</span>
+                  <span className="text-sm font-medium text-slate-800 transition-colors group-hover/profile:text-slate-950">
+                    {currentUser.name}
+                  </span>
                   <span className="text-xs font-medium uppercase tracking-widest text-slate-500 transition-colors group-hover/profile:text-slate-700 mt-0.5">
                     {currentUser.role.replace(/_/g, " ")}
                   </span>
                 </div>
-                <IconChevronDown size={14} stroke={2} className="text-slate-400 ml-1 transition-transform group-hover/profile:translate-y-px hidden xl:block" />
+                <IconChevronDown
+                  size={14}
+                  stroke={2}
+                  className="text-slate-400 ml-1 transition-transform group-hover/profile:translate-y-px hidden xl:block"
+                />
               </div>
             }
           >
@@ -1197,13 +1312,23 @@ export function TopNav() {
             <div className="flex items-center gap-3.5 p-3 mb-1.5 border-b border-slate-100/80 mx-1">
               <Avatar
                 src={currentUser.avatarUrl}
-                fallback={currentUser.name ? currentUser.name.split(" ").map((n) => n[0]).join("") : "DM"}
+                fallback={
+                  currentUser.name
+                    ? currentUser.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                    : "DM"
+                }
                 className="size-10 shadow-sm ring-1 ring-slate-200 shrink-0"
               />
               <div className="flex flex-col min-w-0">
                 <p className="text-sm font-medium text-slate-800 truncate">{currentUser.name}</p>
                 <div className="mt-1 flex items-center">
-                  <Badge tone="neutral" className="text-xxs uppercase tracking-widest bg-white border-slate-200/60 shadow-sm">
+                  <Badge
+                    tone="neutral"
+                    className="text-xxs uppercase tracking-widest bg-white border-slate-200/60 shadow-sm"
+                  >
                     {currentUser.role.replace(/_/g, " ")}
                   </Badge>
                 </div>
@@ -1212,23 +1337,29 @@ export function TopNav() {
 
             {/* Menu Items */}
             <div className="pb-1 space-y-0.5">
-              <DropdownItem onClick={() => window.location.href = `${portalPrefix}/profile`}>
+              <DropdownItem onClick={() => (window.location.href = `${portalPrefix}/profile`)}>
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-100 text-slate-500 shadow-sm transition-all">
                   <IconUser size={14} stroke={2} aria-hidden />
                 </span>
-                <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors ml-1.5">My Profile</span>
+                <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors ml-1.5">
+                  My Profile
+                </span>
               </DropdownItem>
-              <DropdownItem onClick={() => window.location.href = `${portalPrefix}/settings`}>
+              <DropdownItem onClick={() => (window.location.href = `${portalPrefix}/settings`)}>
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-100 text-slate-500 shadow-sm transition-all">
                   <IconSettings size={14} stroke={2} aria-hidden />
                 </span>
-                <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors ml-1.5">System Settings</span>
+                <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors ml-1.5">
+                  System Settings
+                </span>
               </DropdownItem>
-              <DropdownItem onClick={() => window.location.href = `${portalPrefix}/security`}>
+              <DropdownItem onClick={() => (window.location.href = `${portalPrefix}/security`)}>
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-100 text-slate-500 shadow-sm transition-all">
                   <IconShieldLock size={14} stroke={2} aria-hidden />
                 </span>
-                <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors ml-1.5">Security & Keys</span>
+                <span className="text-sm font-medium flex-1 text-slate-600 text-left transition-colors ml-1.5">
+                  Security & Keys
+                </span>
               </DropdownItem>
 
               <div className="my-1.5 border-t border-slate-100/80 mx-2" />
@@ -1237,7 +1368,9 @@ export function TopNav() {
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white border border-rose-100 text-rose-500 shadow-sm transition-all">
                   <IconLogout size={14} stroke={2} aria-hidden />
                 </span>
-                <span className="text-sm font-medium flex-1 text-rose-600 text-left transition-colors ml-1.5">Logout</span>
+                <span className="text-sm font-medium flex-1 text-rose-600 text-left transition-colors ml-1.5">
+                  Logout
+                </span>
               </DropdownItem>
             </div>
           </DropdownMenu>
@@ -1245,11 +1378,13 @@ export function TopNav() {
       </div>
 
       {/* ── Mobile Bar ───────────────────────────────────────── */}
-      <div className={cn(
-        "flex items-center gap-2 rounded-2xl lg:hidden",
-        "border border-black/[0.04] bg-white px-2.5 py-2",
-        "shadow-[0_1px_4px_rgba(0,0,0,0.04),0_4px_20px_rgba(0,0,0,0.06)]",
-      )}>
+      <div
+        className={cn(
+          "flex items-center gap-2 rounded-2xl lg:hidden",
+          "border border-black/[0.04] bg-white px-2.5 py-2",
+          "shadow-[0_1px_4px_rgba(0,0,0,0.04),0_4px_20px_rgba(0,0,0,0.06)]"
+        )}
+      >
         <button
           type="button"
           aria-label="Open navigation"
@@ -1265,12 +1400,7 @@ export function TopNav() {
           className="relative min-w-0 flex-1 text-left flex items-center h-9 w-full rounded-xl border border-slate-200/80 bg-slate-50/80 pl-3 pr-3 transition-all hover:bg-white focus:border-slate-300 focus:bg-white focus:outline-none"
         >
           <span className="sr-only">Search Sunland ERP</span>
-          <IconSearch
-            aria-hidden
-            size={13}
-            stroke={1.8}
-            className="text-slate-400 mr-2 shrink-0"
-          />
+          <IconSearch aria-hidden size={13} stroke={1.8} className="text-slate-400 mr-2 shrink-0" />
           <span className="text-caption text-slate-400">Search...</span>
         </button>
 
@@ -1278,7 +1408,10 @@ export function TopNav() {
         <button
           type="button"
           aria-label="Notifications"
-          onClick={() => { closeAll(); router.push(`${portalPrefix}/notifications`); }}
+          onClick={() => {
+            closeAll();
+            router.push(`${portalPrefix}/notifications`);
+          }}
           className="relative flex size-9 shrink-0 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100"
         >
           <IconBell size={18} stroke={1.5} aria-hidden />
@@ -1288,14 +1421,17 @@ export function TopNav() {
         </button>
 
         {/* Mobile profile avatar - navigates to profile page */}
-        <Link
-          href={`${portalPrefix}/profile`}
-          aria-label="My profile"
-          className="shrink-0"
-        >
+        <Link href={`${portalPrefix}/profile`} aria-label="My profile" className="shrink-0">
           <Avatar
             src={currentUser.avatarUrl}
-            fallback={currentUser.name ? currentUser.name.split(" ").map((n) => n[0]).join("") : "ME"}
+            fallback={
+              currentUser.name
+                ? currentUser.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                : "ME"
+            }
             status="online"
             className="size-9"
           />

@@ -50,16 +50,29 @@ export async function recordTransaction(ctx: CallerContext, rawInput: unknown) {
         transactionId: transaction.id,
         type: transaction.type,
         amountKes: input.amountKes,
-        occurredAt: (transaction.occurredAt instanceof Date ? transaction.occurredAt : new Date(transaction.occurredAt)).toISOString().split("T")[0],
+        occurredAt: (transaction.occurredAt instanceof Date
+          ? transaction.occurredAt
+          : new Date(transaction.occurredAt)
+        )
+          .toISOString()
+          .split("T")[0],
         recordedBy: ctx.user.name,
       };
 
       if (input.contactId) {
-        const [tenant] = await tx.select().from(contacts).where(eq(contacts.id, input.contactId)).limit(1);
+        const [tenant] = await tx
+          .select()
+          .from(contacts)
+          .where(eq(contacts.id, input.contactId))
+          .limit(1);
         if (tenant) snapshot.tenant = tenant.displayName;
       }
       if (input.propertyId) {
-        const [property] = await tx.select().from(properties).where(eq(properties.id, input.propertyId)).limit(1);
+        const [property] = await tx
+          .select()
+          .from(properties)
+          .where(eq(properties.id, input.propertyId))
+          .limit(1);
         if (property) snapshot.property = property.name;
       }
 
@@ -88,7 +101,10 @@ export async function recordTransaction(ctx: CallerContext, rawInput: unknown) {
   });
 }
 
-export async function listTransactions(ctx: CallerContext, filters: { entityId?: string; leaseId?: string } = {}) {
+export async function listTransactions(
+  ctx: CallerContext,
+  filters: { entityId?: string; leaseId?: string } = {}
+) {
   const entityIdParam = filters.entityId ?? ctx.entityId;
   if (!entityIdParam) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(entityIdParam);
@@ -97,6 +113,11 @@ export async function listTransactions(ctx: CallerContext, filters: { entityId?:
   return db
     .select()
     .from(transactions)
-    .where(and(eq(transactions.entityId, entityId), filters.leaseId ? eq(transactions.leaseId, filters.leaseId) : undefined))
+    .where(
+      and(
+        eq(transactions.entityId, entityId),
+        filters.leaseId ? eq(transactions.leaseId, filters.leaseId) : undefined
+      )
+    )
     .orderBy(desc(transactions.occurredAt));
 }

@@ -40,11 +40,19 @@ export function VerifyContactModal({
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to confirm landlord");
 
-      pushToast({ tone: "success", title: "Landlord confirmed", body: `${contactName}'s identity is now verified.` });
+      pushToast({
+        tone: "success",
+        title: "Landlord confirmed",
+        body: `${contactName}'s identity is now verified.`,
+      });
       onVerified();
       onClose();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not confirm landlord." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not confirm landlord.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -53,14 +61,16 @@ export function VerifyContactModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title="Confirm Landlord"
       description={contactName}
       size="sm"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="label-caps text-slate-400 mb-1.5 block">National ID / Passport Number</label>
+          <label className="label-caps text-slate-400 mb-1.5 block">
+            National ID / Passport Number
+          </label>
           <input
             type="text"
             placeholder="e.g., 12345678"
@@ -70,8 +80,8 @@ export function VerifyContactModal({
           />
         </div>
         <p className="body-sm text-slate-400">
-          Confirming records this ID number against the landlord and marks their identity as verified, alongside any
-          title deed or ID documents already on file.
+          Confirming records this ID number against the landlord and marks their identity as
+          verified, alongside any title deed or ID documents already on file.
         </p>
 
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">

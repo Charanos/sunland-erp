@@ -5,14 +5,12 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
-  primary:
-    "border-transparent bg-tertiary-gradient text-white hover:opacity-90",
+  primary: "border-transparent bg-tertiary-gradient text-white hover:opacity-90",
   secondary:
     "border-[var(--outline)] bg-white text-[var(--on-surface)] hover:bg-[var(--surface-muted)]",
   ghost:
     "border-transparent bg-transparent text-[var(--on-surface-dim)] hover:bg-black/[0.04] hover:text-[var(--on-surface)]",
-  danger:
-    "border-transparent bg-[var(--error)] text-white hover:bg-[#bd3232]",
+  danger: "border-transparent bg-[var(--error)] text-white hover:bg-[#bd3232]",
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -38,11 +36,10 @@ export function Button({
         "disabled:opacity-60",
         variants[variant],
         sizes[size],
-        className,
+        className
       )}
       type={type}
       {...props}
     />
   );
 }
-

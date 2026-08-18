@@ -17,13 +17,7 @@ import {
  */
 export type PropertyType = "Apartment" | "Commercial" | "House" | "Land" | "Villa";
 
-export const PROPERTY_TYPES: PropertyType[] = [
-  "Apartment",
-  "Commercial",
-  "House",
-  "Land",
-  "Villa",
-];
+export const PROPERTY_TYPES: PropertyType[] = ["Apartment", "Commercial", "House", "Land", "Villa"];
 
 export const AMENITIES_LIST = [
   "Swimming Pool",
@@ -140,10 +134,26 @@ export const MANDATE_STATUS_CONFIG: Record<
   MandateStatus,
   { label: string; dot: string; pill: string }
 > = {
-  draft: { label: "Draft", dot: "bg-slate-400", pill: "bg-slate-100 text-slate-600 border-slate-200" },
-  pending_approval: { label: "Pending", dot: "bg-amber-500", pill: "bg-amber-500/15 text-amber-700 border-amber-300/60" },
-  active: { label: "Active", dot: "bg-emerald-500", pill: "bg-emerald-500/15 text-emerald-700 border-emerald-300/60" },
-  terminated: { label: "Terminated", dot: "bg-rose-500", pill: "bg-rose-500/15 text-rose-700 border-rose-300/60" },
+  draft: {
+    label: "Draft",
+    dot: "bg-slate-400",
+    pill: "bg-slate-100 text-slate-600 border-slate-200",
+  },
+  pending_approval: {
+    label: "Pending",
+    dot: "bg-amber-500",
+    pill: "bg-amber-500/15 text-amber-700 border-amber-300/60",
+  },
+  active: {
+    label: "Active",
+    dot: "bg-emerald-500",
+    pill: "bg-emerald-500/15 text-emerald-700 border-emerald-300/60",
+  },
+  terminated: {
+    label: "Terminated",
+    dot: "bg-rose-500",
+    pill: "bg-rose-500/15 text-rose-700 border-rose-300/60",
+  },
 };
 
 export type Property = {

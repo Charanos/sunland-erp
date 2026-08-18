@@ -92,7 +92,9 @@ export function MandateFormModal({
     Promise.resolve().then(() => {
       setMaintenanceAuthorityKes(editMandate?.maintenanceAuthorityKes ?? "");
       setRenewalType(editMandate?.renewalType ?? "");
-      setNoticePeriodDays(editMandate?.noticePeriodDays != null ? String(editMandate.noticePeriodDays) : "");
+      setNoticePeriodDays(
+        editMandate?.noticePeriodDays != null ? String(editMandate.noticePeriodDays) : ""
+      );
       setScopeDescription(editMandate?.scopeDescription ?? "");
     });
   }, [open, editMandate]);
@@ -129,7 +131,8 @@ export function MandateFormModal({
       .then((data) => {
         if (!active || !data) return;
         const eligible = (data.properties ?? []).filter(
-          (p: PropertyOption) => p.mandateStatus !== "pending_approval" && p.mandateStatus !== "active",
+          (p: PropertyOption) =>
+            p.mandateStatus !== "pending_approval" && p.mandateStatus !== "active"
         );
         setPropertyOptions(eligible);
       })
@@ -143,20 +146,28 @@ export function MandateFormModal({
 
   const selectedProperty = propertyOptions.find((p) => p.id === selectedPropertyId);
   const resolvedPropertyName = propertyId ? propertyName : selectedProperty?.name;
-  const resolvedLandlordName = propertyId ? landlordName : selectedProperty?.owner?.name ?? undefined;
-  const resolvedLandlordVerified = propertyId ? landlordVerified : Boolean(selectedProperty?.owner?.verifiedAt);
+  const resolvedLandlordName = propertyId
+    ? landlordName
+    : (selectedProperty?.owner?.name ?? undefined);
+  const resolvedLandlordVerified = propertyId
+    ? landlordVerified
+    : Boolean(selectedProperty?.owner?.verifiedAt);
 
   useEffect(() => {
     if (propertyId || !selectedProperty) return;
     Promise.resolve().then(() => {
-      const breakdownCount = (selectedProperty.unitBreakdown ?? []).reduce((sum, u) => sum + (u.count ?? 0), 0);
+      const breakdownCount = (selectedProperty.unitBreakdown ?? []).reduce(
+        (sum, u) => sum + (u.count ?? 0),
+        0
+      );
       setUnitCount(String(Math.max(1, breakdownCount)));
     });
   }, [propertyId, selectedProperty]);
 
   const rateValue = parseFloat(ratePercent);
   const parsedUnits = parseInt(unitCount, 10) || 1;
-  const rateDiffersFromDefault = Number.isFinite(rateValue) && Math.abs(rateValue - DEFAULT_RATE_PERCENT) > 0.01;
+  const rateDiffersFromDefault =
+    Number.isFinite(rateValue) && Math.abs(rateValue - DEFAULT_RATE_PERCENT) > 0.01;
   const requiresCeoApproval = parsedUnits > 10;
 
   const handleSubmitTerms = async () => {
@@ -183,7 +194,11 @@ export function MandateFormModal({
       onClose();
     } catch (err) {
       console.error(err);
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not update mandate terms." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not update mandate terms.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -196,15 +211,27 @@ export function MandateFormModal({
       return;
     }
     if (!selectedPropertyId) {
-      pushToast({ tone: "warning", title: "Select a property", body: "Choose which property this mandate covers." });
+      pushToast({
+        tone: "warning",
+        title: "Select a property",
+        body: "Choose which property this mandate covers.",
+      });
       return;
     }
     if (!Number.isFinite(rateValue) || rateValue <= 0 || rateValue > 100) {
-      pushToast({ tone: "warning", title: "Invalid rate", body: "Enter a management fee rate between 0 and 100%." });
+      pushToast({
+        tone: "warning",
+        title: "Invalid rate",
+        body: "Enter a management fee rate between 0 and 100%.",
+      });
       return;
     }
     if (rateDiffersFromDefault && !rateJustification.trim()) {
-      pushToast({ tone: "warning", title: "Justification required", body: "Explain why this rate differs from the standard 10%." });
+      pushToast({
+        tone: "warning",
+        title: "Justification required",
+        body: "Explain why this rate differs from the standard 10%.",
+      });
       return;
     }
 
@@ -234,9 +261,17 @@ export function MandateFormModal({
         throw new Error(data?.error ?? "Failed to submit mandate");
       }
 
-      const requiredApproverRole = data?.mandate?.requiredApproverRole as "gm" | "ceo" | null | undefined;
+      const requiredApproverRole = data?.mandate?.requiredApproverRole as
+        | "gm"
+        | "ceo"
+        | null
+        | undefined;
       if (!requiredApproverRole) {
-        pushToast({ tone: "success", title: "Mandate activated", body: "Created and activated immediately under your authority." });
+        pushToast({
+          tone: "success",
+          title: "Mandate activated",
+          body: "Created and activated immediately under your authority.",
+        });
       } else {
         const approverLabel = requiredApproverRole === "ceo" ? "CEO" : "GM";
         pushToast({
@@ -249,7 +284,11 @@ export function MandateFormModal({
       onClose();
     } catch (err) {
       console.error(err);
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not submit the mandate." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not submit the mandate.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -258,7 +297,7 @@ export function MandateFormModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title={isEditingTerms ? "Edit Mandate Terms" : "Create Management Mandate"}
       description={
         isEditingTerms
@@ -268,7 +307,6 @@ export function MandateFormModal({
       size="xl"
     >
       <form onSubmit={handleSubmit} className="space-y-5 py-1">
-
         {/* ── SECTION 1: Property Selection & Identity Deck ── */}
         {!isEditingTerms && !propertyId && (
           <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4 shadow-2xs space-y-3">
@@ -304,21 +342,38 @@ export function MandateFormModal({
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="size-10 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center shrink-0 text-slate-500 overflow-hidden relative">
                     {selectedProperty.media?.[0]?.url ? (
-                      <Image src={selectedProperty.media[0].url} alt={selectedProperty.name} fill className="object-cover" />
+                      <Image
+                        src={selectedProperty.media[0].url}
+                        alt={selectedProperty.name}
+                        fill
+                        className="object-cover"
+                      />
                     ) : (
                       <IconBuildingCommunity size={18} />
                     )}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <p className="text-xs font-medium text-slate-900 truncate">{selectedProperty.name}</p>
+                    <p className="text-xs font-medium text-slate-900 truncate">
+                      {selectedProperty.name}
+                    </p>
                     <p className="text-xxs text-slate-500 truncate mt-0.5">
-                      Landlord: <span className="font-medium text-slate-700">{selectedProperty.owner?.name ?? "Unassigned"}</span>
+                      Landlord:{" "}
+                      <span className="font-medium text-slate-700">
+                        {selectedProperty.owner?.name ?? "Unassigned"}
+                      </span>
                     </p>
                   </div>
                 </div>
 
-                <Badge tone={selectedProperty.owner?.verifiedAt ? "success" : "warning"} className="text-xxs shrink-0">
-                  {selectedProperty.owner?.verifiedAt ? <IconUserCheck size={12} /> : <IconAlertTriangle size={12} />}
+                <Badge
+                  tone={selectedProperty.owner?.verifiedAt ? "success" : "warning"}
+                  className="text-xxs shrink-0"
+                >
+                  {selectedProperty.owner?.verifiedAt ? (
+                    <IconUserCheck size={12} />
+                  ) : (
+                    <IconAlertTriangle size={12} />
+                  )}
                   {selectedProperty.owner?.verifiedAt ? "Verified Owner" : "Pending Verification"}
                 </Badge>
               </div>
@@ -334,13 +389,21 @@ export function MandateFormModal({
                 {resolvedPropertyName.slice(0, 2).toUpperCase()}
               </div>
               <div className="flex flex-col min-w-0">
-                <p className="text-sm font-medium text-slate-900 truncate">{resolvedPropertyName}</p>
+                <p className="text-sm font-medium text-slate-900 truncate">
+                  {resolvedPropertyName}
+                </p>
                 <p className="text-xs text-slate-500 truncate mt-0.5">
-                  Landlord: <span className="font-medium text-slate-700">{resolvedLandlordName ?? "Direct Owner"}</span>
+                  Landlord:{" "}
+                  <span className="font-medium text-slate-700">
+                    {resolvedLandlordName ?? "Direct Owner"}
+                  </span>
                 </p>
               </div>
             </div>
-            <Badge tone={resolvedLandlordVerified ? "success" : "warning"} className="text-xxs shrink-0">
+            <Badge
+              tone={resolvedLandlordVerified ? "success" : "warning"}
+              className="text-xxs shrink-0"
+            >
               {resolvedLandlordVerified ? "Verified Landlord" : "Unverified Landlord"}
             </Badge>
           </div>
@@ -351,7 +414,9 @@ export function MandateFormModal({
           <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 text-xs text-amber-800 leading-relaxed shadow-2xs">
             <IconAlertTriangle size={16} className="text-amber-500 shrink-0 mt-0.5" />
             <p>
-              <span className="font-medium">{resolvedLandlordName ?? "This landlord"}</span> has not completed identity verification. You may submit this mandate, but verification is strongly recommended prior to disbursement.
+              <span className="font-medium">{resolvedLandlordName ?? "This landlord"}</span> has not
+              completed identity verification. You may submit this mandate, but verification is
+              strongly recommended prior to disbursement.
             </p>
           </div>
         )}
@@ -375,7 +440,9 @@ export function MandateFormModal({
                     onChange={(e) => setRatePercent(e.target.value)}
                     className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 pr-8 font-mono text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400 font-medium">%</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400 font-medium">
+                    %
+                  </span>
                 </div>
               </div>
 
@@ -400,10 +467,17 @@ export function MandateFormModal({
               <div className="flex items-center gap-2">
                 <IconBuildingBank size={16} className="text-[#151936] shrink-0" />
                 <span className="text-slate-600 font-medium">Configured Commission:</span>
-                <span className="font-mono font-medium text-slate-900">{rateValue.toFixed(1)}%</span>
+                <span className="font-mono font-medium text-slate-900">
+                  {rateValue.toFixed(1)}%
+                </span>
               </div>
-              <Badge tone={requiresCeoApproval ? "warning" : "primary"} className="text-xxs font-mono">
-                {requiresCeoApproval ? "Requires GM + CEO Approval (>10 Units)" : "Requires GM Sign-off"}
+              <Badge
+                tone={requiresCeoApproval ? "warning" : "primary"}
+                className="text-xxs font-mono"
+              >
+                {requiresCeoApproval
+                  ? "Requires GM + CEO Approval (>10 Units)"
+                  : "Requires GM Sign-off"}
               </Badge>
             </div>
 
@@ -458,7 +532,10 @@ export function MandateFormModal({
                 Assigned Property Manager (Optional)
               </label>
               <div className="relative">
-                <IconUserCog size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <IconUserCog
+                  size={16}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <select
                   value={assignedPmId}
                   onChange={(e) => setAssignedPmId(e.target.value)}
@@ -467,7 +544,8 @@ export function MandateFormModal({
                   <option value="">Unassigned (Desk Pool)</option>
                   {managers.map((m) => (
                     <option key={m.id} value={m.id}>
-                      {m.name}{m.title ? ` · ${m.title}` : ""}
+                      {m.name}
+                      {m.title ? ` · ${m.title}` : ""}
                     </option>
                   ))}
                 </select>
@@ -528,7 +606,9 @@ export function MandateFormModal({
             >
               <option value="">Not yet configured</option>
               {RENEWAL_TYPE_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
               ))}
             </select>
           </div>
@@ -552,17 +632,31 @@ export function MandateFormModal({
           <div className="flex items-start gap-2.5 rounded-xl border border-emerald-200/80 bg-emerald-50/50 p-3.5 text-xs text-emerald-800 leading-relaxed shadow-2xs">
             <IconShieldCheck size={16} className="text-emerald-700 shrink-0 mt-0.5" />
             <p>
-              <span className="font-medium text-emerald-900">Executive Self-Authorization:</span> Mandates submitted under Chief Executive Officer / Main Admin authority activate immediately upon submission with <span className="font-medium text-emerald-900">0 escalation required</span> (ADR 014 §14.2). Non-executive submissions route automatically for GM/CEO approval.
+              <span className="font-medium text-emerald-900">Executive Self-Authorization:</span>{" "}
+              Mandates submitted under Chief Executive Officer / Main Admin authority activate
+              immediately upon submission with{" "}
+              <span className="font-medium text-emerald-900">0 escalation required</span> (ADR 014
+              §14.2). Non-executive submissions route automatically for GM/CEO approval.
             </p>
           </div>
         )}
 
         {/* Modal Controls */}
         <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100">
-          <Button type="button" variant="secondary" onClick={onClose} disabled={submitting} className="rounded-xl text-xs px-4 py-2 font-medium">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onClose}
+            disabled={submitting}
+            className="rounded-xl text-xs px-4 py-2 font-medium"
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={submitting} className="bg-[#151936] text-white hover:bg-slate-800 rounded-xl text-xs px-5 py-2 font-medium shadow-2xs">
+          <Button
+            type="submit"
+            disabled={submitting}
+            className="bg-[#151936] text-white hover:bg-slate-800 rounded-xl text-xs px-5 py-2 font-medium shadow-2xs"
+          >
             {submitting ? "Submitting..." : isEditingTerms ? "Save Terms" : "Submit Mandate"}
           </Button>
         </div>
@@ -570,4 +664,3 @@ export function MandateFormModal({
     </Modal>
   );
 }
-

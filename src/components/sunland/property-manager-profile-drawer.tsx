@@ -55,7 +55,7 @@ export function PropertyManagerProfileDrawer({
 
   const assignedProperties = useMemo(
     () => (managerId ? properties.filter((p) => p.manager?.id === managerId) : []),
-    [managerId, properties],
+    [managerId, properties]
   );
   const manager = assignedProperties[0]?.manager ?? null;
   const managerName = manager?.name || "Property Manager";
@@ -74,8 +74,16 @@ export function PropertyManagerProfileDrawer({
         if (!active || !data) return;
         const sum = (data.transactions ?? [])
           .filter(
-            (t: { type: string; propertyId: string | null; occurredAt: string; amountKes: string }) =>
-              t.type === "rent" && t.propertyId && propertyIds.has(t.propertyId) && new Date(t.occurredAt).getTime() >= yearStart
+            (t: {
+              type: string;
+              propertyId: string | null;
+              occurredAt: string;
+              amountKes: string;
+            }) =>
+              t.type === "rent" &&
+              t.propertyId &&
+              propertyIds.has(t.propertyId) &&
+              new Date(t.occurredAt).getTime() >= yearStart
           )
           .reduce((acc: number, t: { amountKes: string }) => acc + parseFloat(t.amountKes), 0);
         setCollectedYtd(sum);
@@ -96,7 +104,12 @@ export function PropertyManagerProfileDrawer({
         {/* Restored Photo Hero Card matching user preference */}
         <div className="relative h-64 rounded-3xl overflow-hidden shadow-sm flex flex-col justify-end bg-slate-900 border border-slate-100/10">
           {manager?.avatarUrl ? (
-            <Image src={manager.avatarUrl} alt={managerName} fill className="object-cover opacity-80" />
+            <Image
+              src={manager.avatarUrl}
+              alt={managerName}
+              fill
+              className="object-cover opacity-80"
+            />
           ) : (
             <div className="absolute inset-0 bg-tertiary-gradient flex items-center justify-center">
               <span className="text-6xl font-mono text-white/30">{initialsOf(managerName)}</span>
@@ -108,14 +121,21 @@ export function PropertyManagerProfileDrawer({
             <div>
               <h2 className="title-serif text-white mt-8">{managerName}</h2>
               <div className="flex items-center justify-center gap-1.5 text-slate-300 body-sm mb-5">
-                <IconBriefcase size={14} /> {manager?.title || "Senior Property Manager"} · Sunland staff
+                <IconBriefcase size={14} /> {manager?.title || "Senior Property Manager"} · Sunland
+                staff
               </div>
             </div>
 
             <div className="flex items-center justify-center gap-3">
               <button
                 type="button"
-                onClick={() => pushToast({ tone: "info", title: "Message drafted", body: "Opens the internal messaging composer." })}
+                onClick={() =>
+                  pushToast({
+                    tone: "info",
+                    title: "Message drafted",
+                    body: "Opens the internal messaging composer.",
+                  })
+                }
                 aria-label="Message manager"
                 className="size-9 rounded-full bg-white hover:bg-slate-50 text-[#151936] flex items-center justify-center shadow-lg transition-all hover:scale-105 cursor-pointer"
               >
@@ -136,11 +156,17 @@ export function PropertyManagerProfileDrawer({
         {/* Portfolio Executive 2-Stat KPI Bar */}
         <div className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-4 shadow-2xs grid grid-cols-2 divide-x divide-slate-200/80 text-center">
           <div className="px-2">
-            <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Assigned Properties</span>
-            <span className="font-mono text-2xl font-medium text-slate-900 mt-1 block">{assignedProperties.length}</span>
+            <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+              Assigned Properties
+            </span>
+            <span className="font-mono text-2xl font-medium text-slate-900 mt-1 block">
+              {assignedProperties.length}
+            </span>
           </div>
           <div className="px-2">
-            <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Collected YTD</span>
+            <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+              Collected YTD
+            </span>
             <span className="font-mono text-lg font-medium text-[#151936] mt-1.5 block">
               {collectedYtd != null ? formatCompactKES(collectedYtd) : "—"}
             </span>
@@ -156,8 +182,12 @@ export function PropertyManagerProfileDrawer({
                 <IconBriefcase size={15} />
               </div>
               <div className="min-w-0">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Title</span>
-                <span className="block text-xs font-medium text-slate-900 truncate">{manager?.title || "Senior Property Manager"}</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Title
+                </span>
+                <span className="block text-xs font-medium text-slate-900 truncate">
+                  {manager?.title || "Senior Property Manager"}
+                </span>
               </div>
             </div>
 
@@ -166,8 +196,12 @@ export function PropertyManagerProfileDrawer({
                 <IconMail size={15} />
               </div>
               <div className="min-w-0">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Work Email</span>
-                <span className="block text-xs font-mono font-medium text-slate-900 truncate">{manager?.email || "—"}</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Work Email
+                </span>
+                <span className="block text-xs font-mono font-medium text-slate-900 truncate">
+                  {manager?.email || "—"}
+                </span>
               </div>
             </div>
           </div>
@@ -177,7 +211,9 @@ export function PropertyManagerProfileDrawer({
         {assignedProperties.length > 0 && (
           <div className="space-y-2 my-4">
             <div className="flex items-center justify-between px-1">
-              <span className="label-caps text-slate-500">Assigned Properties ({assignedProperties.length})</span>
+              <span className="label-caps text-slate-500">
+                Assigned Properties ({assignedProperties.length})
+              </span>
               <span className="text-xxs font-mono text-slate-400">CLICK TO OPEN</span>
             </div>
             <div className="flex flex-col gap-4">
@@ -203,7 +239,9 @@ export function PropertyManagerProfileDrawer({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-slate-900 group-hover/prop:text-[#151936] transition-colors truncate">{p.name}</span>
+                        <span className="text-xs font-medium text-slate-900 group-hover/prop:text-[#151936] transition-colors truncate">
+                          {p.name}
+                        </span>
                         <span className="font-mono text-xxs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60 shrink-0">
                           {p.propertyCode}
                         </span>
@@ -212,7 +250,10 @@ export function PropertyManagerProfileDrawer({
                         {p.location || "Nairobi"}
                       </p>
                     </div>
-                    <IconChevronRight size={16} className="text-slate-400 group-hover/prop:text-slate-900 transition-colors shrink-0" />
+                    <IconChevronRight
+                      size={16}
+                      className="text-slate-400 group-hover/prop:text-slate-900 transition-colors shrink-0"
+                    />
                   </button>
                 );
               })}

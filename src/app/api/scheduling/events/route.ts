@@ -20,7 +20,15 @@ export async function GET(request: Request) {
     const leadId = searchParams.get("leadId") ?? undefined;
 
     const ctx = await requireCallerContext(entityId, request);
-    const events = await listCalendarEvents(ctx, { entityId: entityId ?? undefined, startDate, endDate, scope, type, contactId, leadId });
+    const events = await listCalendarEvents(ctx, {
+      entityId: entityId ?? undefined,
+      startDate,
+      endDate,
+      scope,
+      type,
+      contactId,
+      leadId,
+    });
 
     return NextResponse.json({ events });
   } catch (error) {

@@ -38,7 +38,9 @@ export function TenantNav() {
   const pathname = usePathname();
 
   const handleLogout = async () => {
-    try { await fetch("/api/auth/logout", { method: "POST" }); } catch { }
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
     window.location.href = "/login";
   };
 
@@ -53,7 +55,10 @@ export function TenantNav() {
               <IconHome size={19} stroke={1.75} className="text-[#151936]" />
             </div>
             <div>
-              <p className="text-sm text-slate-900" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
+              <p
+                className="text-sm text-slate-900"
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}
+              >
                 Sunland ERP
               </p>
               <p className="text-xs text-slate-400">Tenant Portal</p>
@@ -83,7 +88,7 @@ export function TenantNav() {
                     "relative flex h-10 items-center gap-3 rounded-xl px-3 text-base transition-colors",
                     isActive
                       ? "bg-[#151936] text-white"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   )}
                 >
                   <ItemIcon
@@ -94,10 +99,12 @@ export function TenantNav() {
                   />
                   <span className="flex-1">{item.label}</span>
                   {item.badge && (
-                    <span className={cn(
-                      "flex size-5 shrink-0 items-center justify-center rounded-full text-sm",
-                      isActive ? "bg-[#f3df27] text-[#151936]" : "bg-amber-100 text-amber-700",
-                    )}>
+                    <span
+                      className={cn(
+                        "flex size-5 shrink-0 items-center justify-center rounded-full text-sm",
+                        isActive ? "bg-[#f3df27] text-[#151936]" : "bg-amber-100 text-amber-700"
+                      )}
+                    >
                       {item.badge}
                     </span>
                   )}
@@ -123,7 +130,7 @@ export function TenantNav() {
                     "flex h-9 items-center gap-3 rounded-xl px-3 text-base transition-colors",
                     isActive
                       ? "bg-slate-100 text-slate-900"
-                      : "text-slate-400 hover:bg-slate-50 hover:text-slate-800",
+                      : "text-slate-400 hover:bg-slate-50 hover:text-slate-800"
                   )}
                 >
                   <ItemIcon size={15} stroke={1.5} className="shrink-0 opacity-60" aria-hidden />
@@ -162,15 +169,24 @@ export function TenantNav() {
           <div className="flex size-8 items-center justify-center rounded-lg bg-slate-100">
             <IconHome size={18} stroke={1.75} className="text-[#151936]" />
           </div>
-          <span className="text-base text-slate-900" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <span
+            className="text-base text-slate-900"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
             Tenant Portal
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Link href="/tenant/notifications" className="flex size-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100">
+          <Link
+            href="/tenant/notifications"
+            className="flex size-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100"
+          >
             <IconBell size={18} />
           </Link>
-          <Link href="/tenant/profile" className="flex size-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100">
+          <Link
+            href="/tenant/profile"
+            className="flex size-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100"
+          >
             <IconUserCircle size={20} />
           </Link>
         </div>
@@ -187,7 +203,7 @@ export function TenantNav() {
               href={item.href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-1 py-2 text-center transition-colors",
-                isActive ? "text-[#151936]" : "text-slate-400 hover:text-slate-600",
+                isActive ? "text-[#151936]" : "text-slate-400 hover:text-slate-600"
               )}
             >
               <ItemIcon size={20} stroke={1.5} aria-hidden />

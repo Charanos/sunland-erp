@@ -31,9 +31,15 @@ export function PhotoLightbox({ open, media, index, onIndexChange, onClose }: Ph
   const current = media[safeIndex];
 
   return (
-    <div role="dialog" aria-label="Photo gallery" className="fixed inset-0 text-sm z-modal flex flex-col p-5 bg-[#0f132b]/95 animate-fade-in">
+    <div
+      role="dialog"
+      aria-label="Photo gallery"
+      className="fixed inset-0 text-sm z-modal flex flex-col p-5 bg-[#0f132b]/95 animate-fade-in"
+    >
       <div className="flex items-center justify-between mb-3.5">
-        <span className="mono-data text-white/75">{safeIndex + 1} / {media.length}</span>
+        <span className="mono-data text-white/75">
+          {safeIndex + 1} / {media.length}
+        </span>
         <button
           type="button"
           onClick={onClose}
@@ -80,7 +86,9 @@ export function PhotoLightbox({ open, media, index, onIndexChange, onClose }: Ph
               aria-label={`Show photo ${i + 1}`}
               className={cn(
                 "relative w-14 h-10 rounded-lg overflow-hidden border-2 transition-opacity",
-                i === safeIndex ? "border-[#f3df27] opacity-100" : "border-transparent opacity-60 hover:opacity-90"
+                i === safeIndex
+                  ? "border-[#f3df27] opacity-100"
+                  : "border-transparent opacity-60 hover:opacity-90"
               )}
             >
               <Image src={m.url} alt="" fill sizes="56px" className="object-cover" />

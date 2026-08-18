@@ -26,7 +26,7 @@ function getClient(): Ably.Realtime {
 export function useAblyChannel<T = unknown>(
   channelName: string | null,
   eventName: string,
-  onMessage: (data: T) => void,
+  onMessage: (data: T) => void
 ) {
   const callbackRef = useRef(onMessage);
   useEffect(() => {

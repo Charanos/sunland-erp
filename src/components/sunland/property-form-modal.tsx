@@ -9,11 +9,24 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useToast } from "@/components/ui/toast-provider";
 import { useUIStore } from "@/store/ui";
 import { cn } from "@/lib/utils/cn";
-import { IconPlus, IconTrash, IconPhotoUp, IconFileText, IconExternalLink, IconBuildingSkyscraper } from "@tabler/icons-react";
+import {
+  IconPlus,
+  IconTrash,
+  IconPhotoUp,
+  IconFileText,
+  IconExternalLink,
+  IconBuildingSkyscraper,
+} from "@tabler/icons-react";
 
 type MediaEntry = { url: string; alt?: string };
 type UnitBreakdownEntry = { unitType: string; count: number; monthlyRentKes: string };
-type LandlordDocument = { id: string; type: string; title: string; fileUrl: string; createdAt: string };
+type LandlordDocument = {
+  id: string;
+  type: string;
+  title: string;
+  fileUrl: string;
+  createdAt: string;
+};
 
 const LANDLORD_DOCUMENT_TYPES = [
   { value: "title_deed", label: "Title Deed" },
@@ -117,12 +130,23 @@ export function PropertyFormModal({
     id: initialData?.id as string | undefined,
     propertyCode: (initialData?.propertyCode as string | undefined) ?? "",
     name: (initialData?.name as string | undefined) ?? "",
-    propertyType: (initialData?.propertyType as string | undefined) ?? (initialData?.type as string | undefined) ?? "Apartment",
+    propertyType:
+      (initialData?.propertyType as string | undefined) ??
+      (initialData?.type as string | undefined) ??
+      "Apartment",
     listingType: (initialData?.listingType as "let" | "sale" | undefined) ?? "let",
     location: (initialData?.location as string | undefined) ?? "",
     ownerContactId: (initialData?.ownerContactId as string | undefined) ?? "",
-    monthlyRentKes: (initialData?.monthlyRentKes as string | undefined) ?? (initialData?.listingType === "let" || !initialData?.listingType ? (initialData?.price as string | undefined) : "") ?? "",
-    askingPriceKes: (initialData?.askingPriceKes as string | undefined) ?? (initialData?.listingType === "sale" ? (initialData?.price as string | undefined) : "") ?? "",
+    monthlyRentKes:
+      (initialData?.monthlyRentKes as string | undefined) ??
+      (initialData?.listingType === "let" || !initialData?.listingType
+        ? (initialData?.price as string | undefined)
+        : "") ??
+      "",
+    askingPriceKes:
+      (initialData?.askingPriceKes as string | undefined) ??
+      (initialData?.listingType === "sale" ? (initialData?.price as string | undefined) : "") ??
+      "",
     bedrooms: (initialData?.bedrooms as number | undefined) ?? null,
     bathrooms: (initialData?.bathrooms as number | undefined) ?? null,
     sizeSqft: (initialData?.sizeSqft as number | undefined) ?? null,
@@ -145,7 +169,12 @@ export function PropertyFormModal({
         const res = await fetch(`/api/contacts?entityId=${activeEntityId}&type=landlord`);
         const data = await res.json();
         if (data.contacts) {
-          setLandlords(data.contacts.map((c: { id: string; displayName: string }) => ({ id: c.id, name: c.displayName })));
+          setLandlords(
+            data.contacts.map((c: { id: string; displayName: string }) => ({
+              id: c.id,
+              name: c.displayName,
+            }))
+          );
         }
       } catch (err) {
         console.error("Failed to load landlords:", err);
@@ -165,7 +194,9 @@ export function PropertyFormModal({
   const [isAddingDoc, setIsAddingDoc] = useState(false);
 
   const fetchLandlordDocuments = async (ownerContactId: string) => {
-    const res = await fetch(`/api/documents?entityId=${activeEntityId}&ownerContactId=${ownerContactId}`);
+    const res = await fetch(
+      `/api/documents?entityId=${activeEntityId}&ownerContactId=${ownerContactId}`
+    );
     const data = await res.json();
     return data.documents ?? [];
   };
@@ -205,18 +236,23 @@ export function PropertyFormModal({
       setDocTitle("");
       setDocUrl("");
       setLandlordDocuments(await fetchLandlordDocuments(form.ownerContactId));
-      pushToast({ tone: "success", title: "Document Attached", body: `${docTitle} has been catalogued for this landlord.` });
+      pushToast({
+        tone: "success",
+        title: "Document Attached",
+        body: `${docTitle} has been catalogued for this landlord.`,
+      });
     } catch (err) {
-      pushToast({ tone: "warning", title: "Failed to attach document", body: err instanceof Error ? err.message : "Could not attach document." });
+      pushToast({
+        tone: "warning",
+        title: "Failed to attach document",
+        body: err instanceof Error ? err.message : "Could not attach document.",
+      });
     } finally {
       setIsAddingDoc(false);
     }
   };
 
-  const updateField = <K extends keyof PropertyFormData>(
-    field: K,
-    value: PropertyFormData[K]
-  ) => {
+  const updateField = <K extends keyof PropertyFormData>(field: K, value: PropertyFormData[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -236,13 +272,22 @@ export function PropertyFormModal({
 
   // ─── Unit breakdown editor (multi-unit property types) ─────────────────
   const addUnitRow = () => {
-    updateField("unitBreakdown", [...form.unitBreakdown, { unitType: UNIT_TYPE_OPTIONS[0], count: 1, monthlyRentKes: "" }]);
+    updateField("unitBreakdown", [
+      ...form.unitBreakdown,
+      { unitType: UNIT_TYPE_OPTIONS[0], count: 1, monthlyRentKes: "" },
+    ]);
   };
   const updateUnitRow = (index: number, patch: Partial<UnitBreakdownEntry>) => {
-    updateField("unitBreakdown", form.unitBreakdown.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+    updateField(
+      "unitBreakdown",
+      form.unitBreakdown.map((row, i) => (i === index ? { ...row, ...patch } : row))
+    );
   };
   const removeUnitRow = (index: number) => {
-    updateField("unitBreakdown", form.unitBreakdown.filter((_, i) => i !== index));
+    updateField(
+      "unitBreakdown",
+      form.unitBreakdown.filter((_, i) => i !== index)
+    );
   };
   const totalUnits = form.unitBreakdown.reduce((sum, row) => sum + (row.count || 0), 0);
 
@@ -253,14 +298,17 @@ export function PropertyFormModal({
     setManualImageUrl("");
   };
   const removeImage = (index: number) => {
-    updateField("media", form.media.filter((_, i) => i !== index));
+    updateField(
+      "media",
+      form.media.filter((_, i) => i !== index)
+    );
   };
 
   // Auto-compute total rent from unit mix if it's a multi-unit property
   const computedTotalRent = form.unitBreakdown.reduce((sum, row) => {
     const count = parseInt(row.count?.toString() || "0", 10) || 0;
     const rent = parseFloat(row.monthlyRentKes?.toString() || "0") || 0;
-    return sum + (count * rent);
+    return sum + count * rent;
   }, 0);
 
   const validate = (): boolean => {
@@ -309,8 +357,18 @@ export function PropertyFormModal({
         listingType: form.listingType,
         location: form.location,
         ownerContactId: form.ownerContactId || null,
-        monthlyRentKes: form.listingType === "let" ? (isMultiUnit ? computedTotalRent.toString() : form.monthlyRentKes) : null,
-        askingPriceKes: form.listingType === "sale" ? (isMultiUnit ? computedTotalRent.toString() : form.askingPriceKes) : null,
+        monthlyRentKes:
+          form.listingType === "let"
+            ? isMultiUnit
+              ? computedTotalRent.toString()
+              : form.monthlyRentKes
+            : null,
+        askingPriceKes:
+          form.listingType === "sale"
+            ? isMultiUnit
+              ? computedTotalRent.toString()
+              : form.askingPriceKes
+            : null,
         bedrooms: isMultiUnit ? null : form.bedrooms,
         bathrooms: isMultiUnit ? null : form.bathrooms,
         sizeSqft: form.sizeSqft,
@@ -325,9 +383,9 @@ export function PropertyFormModal({
         // use null for "not applicable" instead of an empty string.
         unitBreakdown: isMultiUnit
           ? form.unitBreakdown.map((row) => ({
-            ...row,
-            monthlyRentKes: row.monthlyRentKes?.trim() ? row.monthlyRentKes : undefined,
-          }))
+              ...row,
+              monthlyRentKes: row.monthlyRentKes?.trim() ? row.monthlyRentKes : undefined,
+            }))
           : [],
       };
 
@@ -403,14 +461,22 @@ export function PropertyFormModal({
     }
   };
 
-  const displayRent = isMultiUnit ? computedTotalRent.toString() : (form.listingType === "let" ? form.monthlyRentKes : form.askingPriceKes);
+  const displayRent = isMultiUnit
+    ? computedTotalRent.toString()
+    : form.listingType === "let"
+      ? form.monthlyRentKes
+      : form.askingPriceKes;
 
   return (
     <Modal
       open={open}
-      onClose={isSubmitting ? () => { } : onClose}
+      onClose={isSubmitting ? () => {} : onClose}
       title={mode === "create" ? "Register Property Portfolio" : "Edit Property"}
-      description={mode === "create" ? "Add a new managed property linked to an owner contact" : "Update property details"}
+      description={
+        mode === "create"
+          ? "Add a new managed property linked to an owner contact"
+          : "Update property details"
+      }
       size="xl"
     >
       <div className="space-y-6 pt-1">
@@ -425,7 +491,14 @@ export function PropertyFormModal({
                 {form.name.trim() || "New Property Unit"}
               </p>
               <p className="text-xxs text-slate-600 truncate mt-0.5 font-mono">
-                Code: <span className="font-medium text-slate-700">{mode === "create" ? "Auto-generated" : form.propertyCode}</span> · Location: <span className="font-medium text-slate-700">{form.location.trim() || "Unspecified"}</span>
+                Code:{" "}
+                <span className="font-medium text-slate-700">
+                  {mode === "create" ? "Auto-generated" : form.propertyCode}
+                </span>{" "}
+                · Location:{" "}
+                <span className="font-medium text-slate-700">
+                  {form.location.trim() || "Unspecified"}
+                </span>
               </p>
             </div>
           </div>
@@ -447,56 +520,76 @@ export function PropertyFormModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Property ID</label>
+              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                Property ID
+              </label>
               <div className="flex h-11 items-center px-3.5 rounded-xl border border-slate-200 bg-slate-100/60 text-slate-600 font-mono text-xs font-medium shadow-2xs">
                 {mode === "create" ? "Auto-generated" : form.propertyCode}
               </div>
             </div>
             <div className="sm:col-span-2">
-              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Property Name *</label>
+              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                Property Name *
+              </label>
               <input
                 className={cn(
                   "w-full h-11 rounded-xl border bg-white px-3.5 text-xs font-medium text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                  errors.name ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                  errors.name
+                    ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                    : "border-slate-200/90"
                 )}
                 placeholder="e.g. Park View Apartment 4B"
                 value={form.name}
                 onChange={(e) => updateField("name", e.target.value)}
               />
-              {errors.name && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-xxs font-medium text-rose-600 mt-1">{errors.name}</p>
+              )}
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Location *</label>
+              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                Location *
+              </label>
               <input
                 className={cn(
                   "w-full h-11 rounded-xl border bg-white px-3.5 text-xs font-medium text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                  errors.location ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                  errors.location
+                    ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                    : "border-slate-200/90"
                 )}
                 placeholder="e.g. Westlands, Nairobi"
                 value={form.location}
                 onChange={(e) => updateField("location", e.target.value)}
               />
-              {errors.location && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.location}</p>}
+              {errors.location && (
+                <p className="text-xxs font-medium text-rose-600 mt-1">{errors.location}</p>
+              )}
             </div>
             <div>
-              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Property Type</label>
+              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                Property Type
+              </label>
               <select
                 className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs"
                 value={form.propertyType}
                 onChange={(e) => updateField("propertyType", e.target.value)}
               >
                 {PROPERTY_TYPES.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
           <div>
-            <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Description & Overview</label>
+            <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+              Description & Overview
+            </label>
             <textarea
               className="w-full rounded-xl border border-slate-200/90 bg-white p-3.5 text-xs text-slate-900 resize-none h-20 placeholder:text-slate-600 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs"
               placeholder="Short marketing/context blurb shown on the property's full view…"
@@ -515,7 +608,9 @@ export function PropertyFormModal({
           </div>
 
           <div>
-            <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Portfolio Owner (Landlord)</label>
+            <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+              Portfolio Owner (Landlord)
+            </label>
             <select
               className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs"
               value={form.ownerContactId}
@@ -523,7 +618,9 @@ export function PropertyFormModal({
             >
               <option value="">-- No Owner Assigned / Direct Inventory --</option>
               {landlords.map((l) => (
-                <option key={l.id} value={l.id}>{l.name}</option>
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
               ))}
             </select>
           </div>
@@ -531,8 +628,12 @@ export function PropertyFormModal({
           {form.ownerContactId && (
             <div className="rounded-2xl border border-slate-200/90 bg-slate-50/50 p-4 shadow-2xs space-y-3">
               <div>
-                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-700 block">Landlord Documents</label>
-                <p className="text-xxs text-slate-600 font-mono">Title deed, identification, and mandate paperwork for this landlord.</p>
+                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-700 block">
+                  Landlord Documents
+                </label>
+                <p className="text-xxs text-slate-600 font-mono">
+                  Title deed, identification, and mandate paperwork for this landlord.
+                </p>
               </div>
 
               {landlordDocuments.length > 0 && (
@@ -548,11 +649,17 @@ export function PropertyFormModal({
                       <div className="size-7 rounded-lg bg-slate-50 border border-slate-200/60 flex items-center justify-center shrink-0">
                         <IconFileText size={15} className="text-slate-600" />
                       </div>
-                      <span className="text-xs font-medium text-slate-900 truncate flex-1">{doc.title}</span>
-                      <span className="text-xxs font-mono text-slate-600 shrink-0 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
-                        {LANDLORD_DOCUMENT_TYPES.find((t) => t.value === doc.type)?.label ?? doc.type}
+                      <span className="text-xs font-medium text-slate-900 truncate flex-1">
+                        {doc.title}
                       </span>
-                      <IconExternalLink size={13} className="text-slate-600 group-hover:text-slate-600 transition-colors shrink-0" />
+                      <span className="text-xxs font-mono text-slate-600 shrink-0 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
+                        {LANDLORD_DOCUMENT_TYPES.find((t) => t.value === doc.type)?.label ??
+                          doc.type}
+                      </span>
+                      <IconExternalLink
+                        size={13}
+                        className="text-slate-600 group-hover:text-slate-600 transition-colors shrink-0"
+                      />
                     </a>
                   ))}
                 </div>
@@ -571,7 +678,9 @@ export function PropertyFormModal({
                   onChange={(e) => setDocType(e.target.value)}
                 >
                   {LANDLORD_DOCUMENT_TYPES.map((t) => (
-                    <option key={t.value} value={t.value}>{t.label}</option>
+                    <option key={t.value} value={t.value}>
+                      {t.label}
+                    </option>
                   ))}
                 </select>
                 <input
@@ -579,7 +688,12 @@ export function PropertyFormModal({
                   placeholder="Document URL"
                   value={docUrl}
                   onChange={(e) => setDocUrl(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addLandlordDocument(); } }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addLandlordDocument();
+                    }
+                  }}
                 />
                 <button
                   type="button"
@@ -587,7 +701,13 @@ export function PropertyFormModal({
                   disabled={isAddingDoc || !docTitle.trim() || !docUrl.trim()}
                   className="w-full sm:w-auto h-10 flex items-center justify-center gap-1 text-xs font-medium text-slate-800 bg-white border border-slate-200/90 px-3.5 rounded-xl shadow-2xs hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0 cursor-pointer"
                 >
-                  {isAddingDoc ? <LoadingSpinner size="sm" /> : <><IconPlus size={15} /> Attach</>}
+                  {isAddingDoc ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    <>
+                      <IconPlus size={15} /> Attach
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -604,7 +724,9 @@ export function PropertyFormModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Listing Type</label>
+              <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                Listing Type
+              </label>
               <select
                 className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs"
                 value={form.listingType}
@@ -623,13 +745,17 @@ export function PropertyFormModal({
                       {isMultiUnit ? "Expected Total Monthly Rent (KES)" : "Monthly Rent (KES) *"}
                     </label>
                     {isMultiUnit && (
-                      <span className="text-xxs text-slate-600 font-mono italic">Auto-computed from unit mix</span>
+                      <span className="text-xxs text-slate-600 font-mono italic">
+                        Auto-computed from unit mix
+                      </span>
                     )}
                   </div>
                   <input
                     className={cn(
                       "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                      errors.monthlyRentKes ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90",
+                      errors.monthlyRentKes
+                        ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                        : "border-slate-200/90",
                       isMultiUnit ? "bg-slate-100/60 text-slate-600 cursor-not-allowed" : ""
                     )}
                     placeholder="e.g. 85000"
@@ -637,7 +763,11 @@ export function PropertyFormModal({
                     disabled={isMultiUnit}
                     onChange={(e) => updateField("monthlyRentKes", e.target.value)}
                   />
-                  {errors.monthlyRentKes && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.monthlyRentKes}</p>}
+                  {errors.monthlyRentKes && (
+                    <p className="text-xxs font-medium text-rose-600 mt-1">
+                      {errors.monthlyRentKes}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div>
@@ -646,13 +776,17 @@ export function PropertyFormModal({
                       {isMultiUnit ? "Expected Total Asking Price (KES)" : "Asking Price (KES) *"}
                     </label>
                     {isMultiUnit && (
-                      <span className="text-xxs text-slate-600 font-mono italic">Auto-computed from unit mix</span>
+                      <span className="text-xxs text-slate-600 font-mono italic">
+                        Auto-computed from unit mix
+                      </span>
                     )}
                   </div>
                   <input
                     className={cn(
                       "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                      errors.askingPriceKes ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90",
+                      errors.askingPriceKes
+                        ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                        : "border-slate-200/90",
                       isMultiUnit ? "bg-slate-100/60 text-slate-600 cursor-not-allowed" : ""
                     )}
                     placeholder="e.g. 15000000"
@@ -660,7 +794,11 @@ export function PropertyFormModal({
                     disabled={isMultiUnit}
                     onChange={(e) => updateField("askingPriceKes", e.target.value)}
                   />
-                  {errors.askingPriceKes && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.askingPriceKes}</p>}
+                  {errors.askingPriceKes && (
+                    <p className="text-xxs font-medium text-rose-600 mt-1">
+                      {errors.askingPriceKes}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -679,9 +817,15 @@ export function PropertyFormModal({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-700 block">Unit Mix Breakdown</label>
+                  <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-700 block">
+                    Unit Mix Breakdown
+                  </label>
                   <p className="text-xxs text-slate-600 font-mono mt-0.5">
-                    Capture each unit type. Total: <span className="font-mono text-xs font-medium text-slate-800 px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200/60">{totalUnits}</span> unit{totalUnits === 1 ? "" : "s"}.
+                    Capture each unit type. Total:{" "}
+                    <span className="font-mono text-xs font-medium text-slate-800 px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200/60">
+                      {totalUnits}
+                    </span>{" "}
+                    unit{totalUnits === 1 ? "" : "s"}.
                   </p>
                 </div>
                 <button
@@ -699,19 +843,26 @@ export function PropertyFormModal({
                     <IconBuildingSkyscraper size={18} className="text-slate-600" />
                   </div>
                   <p className="text-xs font-medium text-slate-600">No unit types added yet.</p>
-                  <p className="text-xxs text-slate-600 font-mono mt-0.5">Click &quot;Add Unit Type&quot; to break down this property.</p>
+                  <p className="text-xxs text-slate-600 font-mono mt-0.5">
+                    Click &quot;Add Unit Type&quot; to break down this property.
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-2.5">
                   {form.unitBreakdown.map((row, index) => (
-                    <div key={index} className="grid grid-cols-[1fr_90px_140px_40px] gap-2.5 items-center bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div
+                      key={index}
+                      className="grid grid-cols-[1fr_90px_140px_40px] gap-2.5 items-center bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs"
+                    >
                       <select
                         className="h-10 rounded-lg border border-slate-200/80 bg-slate-50 px-3 text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936]"
                         value={row.unitType}
                         onChange={(e) => updateUnitRow(index, { unitType: e.target.value })}
                       >
                         {UNIT_TYPE_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt}>{opt}</option>
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
                         ))}
                       </select>
                       <input
@@ -720,7 +871,11 @@ export function PropertyFormModal({
                         className="h-10 rounded-lg border border-slate-200/80 bg-slate-50 px-3 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936]"
                         placeholder="Count"
                         value={row.count}
-                        onChange={(e) => updateUnitRow(index, { count: e.target.value ? parseInt(e.target.value) : 0 })}
+                        onChange={(e) =>
+                          updateUnitRow(index, {
+                            count: e.target.value ? parseInt(e.target.value) : 0,
+                          })
+                        }
                       />
                       <input
                         type="number"
@@ -748,43 +903,65 @@ export function PropertyFormModal({
               <div className="pt-2">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div>
-                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Total Size (SqFt)</label>
+                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                      Total Size (SqFt)
+                    </label>
                     <input
                       type="number"
                       className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                       placeholder="e.g. 12000"
                       value={form.sizeSqft ?? ""}
-                      onChange={(e) => updateField("sizeSqft", e.target.value ? parseInt(e.target.value) : null)}
+                      onChange={(e) =>
+                        updateField("sizeSqft", e.target.value ? parseInt(e.target.value) : null)
+                      }
                     />
                   </div>
                   <div>
-                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Land Area (SqFt)</label>
+                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                      Land Area (SqFt)
+                    </label>
                     <input
                       type="number"
                       className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                       placeholder="e.g. 5000"
                       value={form.landAreaSqft ?? ""}
-                      onChange={(e) => updateField("landAreaSqft", e.target.value ? parseInt(e.target.value) : null)}
+                      onChange={(e) =>
+                        updateField(
+                          "landAreaSqft",
+                          e.target.value ? parseInt(e.target.value) : null
+                        )
+                      }
                     />
                   </div>
                   <div>
-                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Year Built</label>
+                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                      Year Built
+                    </label>
                     <input
                       type="number"
                       className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                       placeholder="e.g. 2018"
                       value={form.yearBuilt ?? ""}
-                      onChange={(e) => updateField("yearBuilt", e.target.value ? parseInt(e.target.value) : null)}
+                      onChange={(e) =>
+                        updateField("yearBuilt", e.target.value ? parseInt(e.target.value) : null)
+                      }
                     />
                   </div>
                   <div>
-                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Parking Spaces</label>
+                    <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                      Parking Spaces
+                    </label>
                     <input
                       type="number"
                       className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                       placeholder="e.g. 20"
                       value={form.parkingSpaces ?? ""}
-                      onChange={(e) => updateField("parkingSpaces", e.target.value ? parseInt(e.target.value) : null)}
+                      onChange={(e) =>
+                        updateField(
+                          "parkingSpaces",
+                          e.target.value ? parseInt(e.target.value) : null
+                        )
+                      }
                     />
                   </div>
                 </div>
@@ -793,33 +970,45 @@ export function PropertyFormModal({
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div>
-                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Bedrooms</label>
+                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                  Bedrooms
+                </label>
                 <input
                   type="number"
                   className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                   placeholder="e.g. 3"
                   value={form.bedrooms ?? ""}
-                  onChange={(e) => updateField("bedrooms", e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    updateField("bedrooms", e.target.value ? parseInt(e.target.value) : null)
+                  }
                 />
               </div>
               <div>
-                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Bathrooms</label>
+                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                  Bathrooms
+                </label>
                 <input
                   type="number"
                   className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                   placeholder="e.g. 2"
                   value={form.bathrooms ?? ""}
-                  onChange={(e) => updateField("bathrooms", e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    updateField("bathrooms", e.target.value ? parseInt(e.target.value) : null)
+                  }
                 />
               </div>
               <div>
-                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">Size (SqFt)</label>
+                <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 block mb-1.5">
+                  Size (SqFt)
+                </label>
                 <input
                   type="number"
                   className="w-full h-11 rounded-xl border border-slate-200/90 bg-white px-3.5 font-mono text-xs text-slate-900 focus:outline-none focus:border-[#151936] shadow-2xs"
                   placeholder="e.g. 1500"
                   value={form.sizeSqft ?? ""}
-                  onChange={(e) => updateField("sizeSqft", e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    updateField("sizeSqft", e.target.value ? parseInt(e.target.value) : null)
+                  }
                 />
               </div>
               <div>
@@ -829,7 +1018,9 @@ export function PropertyFormModal({
                   className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 mono-data focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
                   placeholder="e.g. 5000"
                   value={form.landAreaSqft ?? ""}
-                  onChange={(e) => updateField("landAreaSqft", e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    updateField("landAreaSqft", e.target.value ? parseInt(e.target.value) : null)
+                  }
                 />
               </div>
               <div>
@@ -839,7 +1030,9 @@ export function PropertyFormModal({
                   className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 mono-data focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
                   placeholder="e.g. 2018"
                   value={form.yearBuilt ?? ""}
-                  onChange={(e) => updateField("yearBuilt", e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    updateField("yearBuilt", e.target.value ? parseInt(e.target.value) : null)
+                  }
                 />
               </div>
               <div>
@@ -849,7 +1042,9 @@ export function PropertyFormModal({
                   className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 mono-data focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
                   placeholder="e.g. 2"
                   value={form.parkingSpaces ?? ""}
-                  onChange={(e) => updateField("parkingSpaces", e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    updateField("parkingSpaces", e.target.value ? parseInt(e.target.value) : null)
+                  }
                 />
               </div>
             </div>
@@ -889,8 +1084,17 @@ export function PropertyFormModal({
           {form.media.length > 0 ? (
             <div className="flex flex-wrap gap-3 mb-4">
               {form.media.map((m, index) => (
-                <div key={index} className="relative size-24 rounded-xl overflow-hidden border border-slate-200 group shadow-sm bg-white">
-                  <Image src={m.url} alt={m.alt ?? form.name} fill sizes="96px" className="object-cover" />
+                <div
+                  key={index}
+                  className="relative size-24 rounded-xl overflow-hidden border border-slate-200 group shadow-sm bg-white"
+                >
+                  <Image
+                    src={m.url}
+                    alt={m.alt ?? form.name}
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
@@ -918,7 +1122,12 @@ export function PropertyFormModal({
               placeholder="Paste an image URL…"
               value={manualImageUrl}
               onChange={(e) => setManualImageUrl(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addImageUrl(); } }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addImageUrl();
+                }
+              }}
             />
             <button
               type="button"
@@ -962,8 +1171,10 @@ export function PropertyFormModal({
                 <LoadingSpinner size="sm" />
                 <span className="ml-2">{mode === "create" ? "Enrolling…" : "Saving…"}</span>
               </>
+            ) : mode === "create" ? (
+              "Register Property"
             ) : (
-              mode === "create" ? "Register Property" : "Save Changes"
+              "Save Changes"
             )}
           </Button>
         </div>

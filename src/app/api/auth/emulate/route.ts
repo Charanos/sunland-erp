@@ -29,7 +29,10 @@ export async function POST(request: NextRequest) {
       user = {
         id: `usr-mock-${role}`,
         email: `${role}@sunland.co.ke`,
-        name: role.split("_").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+        name: role
+          .split("_")
+          .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" "),
         role: role as UserRole,
       };
     }
@@ -44,7 +47,7 @@ export async function POST(request: NextRequest) {
       {
         ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
         userAgent: request.headers.get("user-agent") ?? undefined,
-      },
+      }
     );
 
     const redirectPath = getDefaultPortal(user.role as UserRole);

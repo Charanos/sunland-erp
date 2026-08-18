@@ -1,6 +1,17 @@
 import { and, desc, eq, gte, inArray } from "drizzle-orm";
 import { db } from "@/db";
-import { approvalRequests, contacts, documents, mandateStatus, properties, propertyMandates, remittanceAdvices, transactions, users, valuations } from "@/db/schema";
+import {
+  approvalRequests,
+  contacts,
+  documents,
+  mandateStatus,
+  properties,
+  propertyMandates,
+  remittanceAdvices,
+  transactions,
+  users,
+  valuations,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { ConflictError, DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -12,7 +23,12 @@ import { getUser } from "@/lib/services/identity/users";
 import { listAuditLog } from "@/lib/services/audit-log";
 import { resolveEntityId } from "@/lib/services/entity";
 import type { CallerContext } from "@/lib/services/types";
-import { assignMandateManagerSchema, createMandateSchema, terminateMandateSchema, updateMandateTermsSchema } from "@/lib/validation/mandates";
+import {
+  assignMandateManagerSchema,
+  createMandateSchema,
+  terminateMandateSchema,
+  updateMandateTermsSchema,
+} from "@/lib/validation/mandates";
 import { parseInput } from "@/lib/validation/parse";
 
 // Mandates reuse the properties.property.* permission keys deliberately, same
@@ -32,9 +48,10 @@ async function notifyMandateApprovers(
   tx: Tx,
   entityId: string,
   requiredApproverRole: "gm" | "ceo",
-  request: { id: string; propertyName: string },
+  request: { id: string; propertyName: string }
 ) {
-  const targetRoles = requiredApproverRole === "gm" ? (["general_manager"] as const) : (["ceo"] as const);
+  const targetRoles =
+    requiredApproverRole === "gm" ? (["general_manager"] as const) : (["ceo"] as const);
   const recipients = await tx.select().from(users).where(inArray(users.role, targetRoles));
   for (const recipient of recipients) {
     await createNotification(tx, {
@@ -52,7 +69,13 @@ async function notifyMandateApprovers(
 
 export async function listMandates(
   ctx: CallerContext,
-  filters: { propertyId?: string; status?: string; paperworkStatus?: "verified" | "pending_upload"; search?: string; includeFinancials?: boolean } = {},
+  filters: {
+    propertyId?: string;
+    status?: string;
+    paperworkStatus?: "verified" | "pending_upload";
+    search?: string;
+    includeFinancials?: boolean;
+  } = {}
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -61,7 +84,9 @@ export async function listMandates(
   const conditions = [eq(propertyMandates.entityId, entityId)];
   if (filters.propertyId) conditions.push(eq(propertyMandates.propertyId, filters.propertyId));
   if (filters.status && (MANDATE_STATUS_VALUES as readonly string[]).includes(filters.status)) {
-    conditions.push(eq(propertyMandates.status, filters.status as (typeof MANDATE_STATUS_VALUES)[number]));
+    conditions.push(
+      eq(propertyMandates.status, filters.status as (typeof MANDATE_STATUS_VALUES)[number])
+    );
   }
 
   const baseRows = await db
@@ -103,36 +128,71 @@ export async function listMandates(
   const propertyIdsForPaperwork = baseRows.map((r) => r.propertyId);
   const [letterDocs, originRows, pendingApprovals] = await Promise.all([
     propertyIdsForPaperwork.length
-      ? db.select({ propertyId: documents.propertyId }).from(documents).where(and(eq(documents.type, "mandate_letter"), inArray(documents.propertyId, propertyIdsForPaperwork)))
-      : Promise.resolve([]),
-    mandateIds.length
-      ? db.select({ id: valuations.id, valuationCode: valuations.valuationCode, resultingMandateId: valuations.resultingMandateId }).from(valuations).where(inArray(valuations.resultingMandateId, mandateIds))
+      ? db
+          .select({ propertyId: documents.propertyId })
+          .from(documents)
+          .where(
+            and(
+              eq(documents.type, "mandate_letter"),
+              inArray(documents.propertyId, propertyIdsForPaperwork)
+            )
+          )
       : Promise.resolve([]),
     mandateIds.length
       ? db
-        .select({ relatedId: approvalRequests.relatedId, requiredApproverRole: approvalRequests.requiredApproverRole })
-        .from(approvalRequests)
-        .where(and(eq(approvalRequests.relatedTable, "property_mandates"), eq(approvalRequests.status, "pending"), inArray(approvalRequests.relatedId, mandateIds)))
+          .select({
+            id: valuations.id,
+            valuationCode: valuations.valuationCode,
+            resultingMandateId: valuations.resultingMandateId,
+          })
+          .from(valuations)
+          .where(inArray(valuations.resultingMandateId, mandateIds))
+      : Promise.resolve([]),
+    mandateIds.length
+      ? db
+          .select({
+            relatedId: approvalRequests.relatedId,
+            requiredApproverRole: approvalRequests.requiredApproverRole,
+          })
+          .from(approvalRequests)
+          .where(
+            and(
+              eq(approvalRequests.relatedTable, "property_mandates"),
+              eq(approvalRequests.status, "pending"),
+              inArray(approvalRequests.relatedId, mandateIds)
+            )
+          )
       : Promise.resolve([]),
   ]);
   const propertyIdsWithLetter = new Set(letterDocs.map((d) => d.propertyId));
   const originByMandateId = new Map(originRows.map((v) => [v.resultingMandateId as string, v]));
-  const pendingApproverByMandateId = new Map(pendingApprovals.map((a) => [a.relatedId, a.requiredApproverRole]));
+  const pendingApproverByMandateId = new Map(
+    pendingApprovals.map((a) => [a.relatedId, a.requiredApproverRole])
+  );
 
   let rows = baseRows.map((r) => {
     const origin = originByMandateId.get(r.id) ?? null;
     return {
       ...r,
-      paperworkStatus: (propertyIdsWithLetter.has(r.propertyId) ? "verified" : "pending_upload") as "verified" | "pending_upload",
+      paperworkStatus: (propertyIdsWithLetter.has(r.propertyId) ? "verified" : "pending_upload") as
+        | "verified"
+        | "pending_upload",
       originValuation: origin ? { id: origin.id, valuationCode: origin.valuationCode } : null,
-      pendingApproverRole: r.status === "pending_approval" ? (pendingApproverByMandateId.get(r.id) ?? null) : null,
+      pendingApproverRole:
+        r.status === "pending_approval" ? (pendingApproverByMandateId.get(r.id) ?? null) : null,
     };
   });
 
-  if (filters.paperworkStatus) rows = rows.filter((r) => r.paperworkStatus === filters.paperworkStatus);
+  if (filters.paperworkStatus)
+    rows = rows.filter((r) => r.paperworkStatus === filters.paperworkStatus);
   if (filters.search) {
     const q = filters.search.toLowerCase();
-    rows = rows.filter((r) => r.propertyName.toLowerCase().includes(q) || r.landlordName.toLowerCase().includes(q) || r.propertyCode.toLowerCase().includes(q));
+    rows = rows.filter(
+      (r) =>
+        r.propertyName.toLowerCase().includes(q) ||
+        r.landlordName.toLowerCase().includes(q) ||
+        r.propertyCode.toLowerCase().includes(q)
+    );
   }
 
   if (!filters.includeFinancials || rows.length === 0) return rows;
@@ -149,7 +209,13 @@ export async function listMandates(
     db
       .select({ propertyId: transactions.propertyId, amountKes: transactions.amountKes })
       .from(transactions)
-      .where(and(inArray(transactions.propertyId, propertyIds), eq(transactions.type, "rent"), gte(transactions.occurredAt, monthStart))),
+      .where(
+        and(
+          inArray(transactions.propertyId, propertyIds),
+          eq(transactions.type, "rent"),
+          gte(transactions.occurredAt, monthStart)
+        )
+      ),
     Promise.all(rows.map((r) => getLatestPendingRemittance(r.id))),
   ]);
 
@@ -217,7 +283,12 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
   const landlordMandateRows = await db
     .select({ propertyId: propertyMandates.propertyId })
     .from(propertyMandates)
-    .where(and(eq(propertyMandates.landlordContactId, mandateRow.landlordContactId), inArray(propertyMandates.status, ["active", "pending_approval"])));
+    .where(
+      and(
+        eq(propertyMandates.landlordContactId, mandateRow.landlordContactId),
+        inArray(propertyMandates.status, ["active", "pending_approval"])
+      )
+    );
   const landlordPropertiesUnderMandate = new Set(landlordMandateRows.map((r) => r.propertyId)).size;
 
   // PM's real assigned-property count + a real on-time-collection rate (this
@@ -228,10 +299,18 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
   let pmOnTimeCollectionPct: number | null = null;
   if (mandateRow.assignedPmId) {
     const pmMandateRows = await db
-      .select({ propertyId: propertyMandates.propertyId, monthlyRentKes: properties.monthlyRentKes })
+      .select({
+        propertyId: propertyMandates.propertyId,
+        monthlyRentKes: properties.monthlyRentKes,
+      })
       .from(propertyMandates)
       .innerJoin(properties, eq(propertyMandates.propertyId, properties.id))
-      .where(and(eq(propertyMandates.assignedPmId, mandateRow.assignedPmId), eq(propertyMandates.status, "active")));
+      .where(
+        and(
+          eq(propertyMandates.assignedPmId, mandateRow.assignedPmId),
+          eq(propertyMandates.status, "active")
+        )
+      );
     pmAssignedPropertyCount = pmMandateRows.length;
 
     const pmPropertyIds = pmMandateRows.map((m) => m.propertyId);
@@ -239,9 +318,15 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const pmPeriodTx = pmPropertyIds.length
       ? await db
-        .select({ propertyId: transactions.propertyId, amountKes: transactions.amountKes })
-        .from(transactions)
-        .where(and(inArray(transactions.propertyId, pmPropertyIds), eq(transactions.type, "rent"), gte(transactions.occurredAt, monthStart)))
+          .select({ propertyId: transactions.propertyId, amountKes: transactions.amountKes })
+          .from(transactions)
+          .where(
+            and(
+              inArray(transactions.propertyId, pmPropertyIds),
+              eq(transactions.type, "rent"),
+              gte(transactions.occurredAt, monthStart)
+            )
+          )
       : [];
 
     let eligible = 0;
@@ -250,7 +335,9 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
       const expected = m.monthlyRentKes ? parseFloat(m.monthlyRentKes) : 0;
       if (expected <= 0) continue;
       eligible++;
-      const collected = pmPeriodTx.filter((t) => t.propertyId === m.propertyId).reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
+      const collected = pmPeriodTx
+        .filter((t) => t.propertyId === m.propertyId)
+        .reduce((sum, t) => sum + parseFloat(t.amountKes), 0);
       if (collected >= expected) onTime++;
     }
     pmOnTimeCollectionPct = eligible > 0 ? Math.round((onTime / eligible) * 100) : null;
@@ -260,14 +347,17 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
   let approvalRequestId: string | null = null;
   if (mandateRow.status === "pending_approval") {
     const [pendingApproval] = await db
-      .select({ id: approvalRequests.id, requiredApproverRole: approvalRequests.requiredApproverRole })
+      .select({
+        id: approvalRequests.id,
+        requiredApproverRole: approvalRequests.requiredApproverRole,
+      })
       .from(approvalRequests)
       .where(
         and(
           eq(approvalRequests.relatedTable, "property_mandates"),
           eq(approvalRequests.relatedId, mandateId),
-          eq(approvalRequests.status, "pending"),
-        ),
+          eq(approvalRequests.status, "pending")
+        )
       )
       .limit(1);
     pendingApproverRole = pendingApproval?.requiredApproverRole ?? null;
@@ -278,7 +368,8 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
   // Property.mandate is the property's currently in-flight mandate, if any -
   // only trust its currentPeriod snapshot when it actually IS this mandate;
   // a terminated mandate being viewed here has no "this month" to show.
-  const currentPeriod = property.mandate?.id === mandateId ? property.mandate.currentPeriod : undefined;
+  const currentPeriod =
+    property.mandate?.id === mandateId ? property.mandate.currentPeriod : undefined;
 
   // Honest origin trail (ADR 015 §15.3): a mandate either has a real
   // acquisition-pipeline valuation pointing at it or it doesn't - no history
@@ -318,14 +409,14 @@ export async function getMandateWithDetails(ctx: CallerContext, mandateId: strin
     },
     manager: mandateRow.assignedPmId
       ? {
-        id: mandateRow.assignedPmId,
-        name: mandateRow.managerName,
-        title: mandateRow.managerTitle,
-        email: mandateRow.managerEmail,
-        avatarUrl: mandateRow.managerAvatarUrl,
-        assignedPropertyCount: pmAssignedPropertyCount,
-        onTimeCollectionPct: pmOnTimeCollectionPct,
-      }
+          id: mandateRow.assignedPmId,
+          name: mandateRow.managerName,
+          title: mandateRow.managerTitle,
+          email: mandateRow.managerEmail,
+          avatarUrl: mandateRow.managerAvatarUrl,
+          assignedPropertyCount: pmAssignedPropertyCount,
+          onTimeCollectionPct: pmOnTimeCollectionPct,
+        }
       : null,
     property: {
       id: property.id,
@@ -367,7 +458,14 @@ export async function getMandatesSummary(ctx: CallerContext) {
     .where(and(eq(propertyMandates.entityId, entityId), eq(propertyMandates.status, "active")));
 
   if (activeMandates.length === 0) {
-    return { activeMandateCount: 0, underManagementKes: 0, expectedRentRollKes: 0, collectedMtdKes: 0, managementFeeMtdKes: 0, remittancesPending: 0 };
+    return {
+      activeMandateCount: 0,
+      underManagementKes: 0,
+      expectedRentRollKes: 0,
+      collectedMtdKes: 0,
+      managementFeeMtdKes: 0,
+      remittancesPending: 0,
+    };
   }
 
   const now = new Date();
@@ -377,7 +475,13 @@ export async function getMandatesSummary(ctx: CallerContext) {
   const periodTx = await db
     .select({ propertyId: transactions.propertyId, amountKes: transactions.amountKes })
     .from(transactions)
-    .where(and(inArray(transactions.propertyId, propertyIds), eq(transactions.type, "rent"), gte(transactions.occurredAt, monthStart)));
+    .where(
+      and(
+        inArray(transactions.propertyId, propertyIds),
+        eq(transactions.type, "rent"),
+        gte(transactions.occurredAt, monthStart)
+      )
+    );
 
   let expectedRentRollKes = 0;
   let collectedMtdKes = 0;
@@ -398,12 +502,23 @@ export async function getMandatesSummary(ctx: CallerContext) {
     .where(eq(propertyMandates.entityId, entityId));
   const pendingRemittances = allMandateIds.length
     ? await db
-      .select({ id: remittanceAdvices.id, amountKes: remittanceAdvices.netRemittanceKes })
-      .from(remittanceAdvices)
-      .where(and(inArray(remittanceAdvices.mandateId, allMandateIds.map((m) => m.id)), eq(remittanceAdvices.status, "pending")))
+        .select({ id: remittanceAdvices.id, amountKes: remittanceAdvices.netRemittanceKes })
+        .from(remittanceAdvices)
+        .where(
+          and(
+            inArray(
+              remittanceAdvices.mandateId,
+              allMandateIds.map((m) => m.id)
+            ),
+            eq(remittanceAdvices.status, "pending")
+          )
+        )
     : [];
 
-  const remittancesPendingKes = pendingRemittances.reduce((sum, r) => sum + parseFloat(r.amountKes), 0);
+  const remittancesPendingKes = pendingRemittances.reduce(
+    (sum, r) => sum + parseFloat(r.amountKes),
+    0
+  );
 
   return {
     activeMandateCount: activeMandates.length,
@@ -455,16 +570,22 @@ export async function getManagerProfile(ctx: CallerContext, userId: string) {
   const [collectedRows, activity] = await Promise.all([
     propertyIds.length
       ? db
-        .select({ propertyId: transactions.propertyId, amountKes: transactions.amountKes })
-        .from(transactions)
-        .where(and(inArray(transactions.propertyId, propertyIds), eq(transactions.type, "rent"), gte(transactions.occurredAt, yearStart)))
+          .select({ propertyId: transactions.propertyId, amountKes: transactions.amountKes })
+          .from(transactions)
+          .where(
+            and(
+              inArray(transactions.propertyId, propertyIds),
+              eq(transactions.type, "rent"),
+              gte(transactions.occurredAt, yearStart)
+            )
+          )
       : Promise.resolve([]),
     mandateRows.length
       ? listAuditLog(ctx, {
-        entityId,
-        associatedGroups: [{ type: "property_mandate", ids: mandateRows.map((m) => m.id) }],
-        limit: 50,
-      })
+          entityId,
+          associatedGroups: [{ type: "property_mandate", ids: mandateRows.map((m) => m.id) }],
+          limit: 50,
+        })
       : Promise.resolve([]),
   ]);
 
@@ -483,7 +604,12 @@ export async function getManagerProfile(ctx: CallerContext, userId: string) {
     })),
     activeMandateCount: mandateRows.filter((m) => m.status === "active").length,
     collectedYtd,
-    activity: activity.map((a) => ({ id: a.id, summary: a.summary, actorName: a.actorName, createdAt: toISOStringSafe(a.createdAt) })),
+    activity: activity.map((a) => ({
+      id: a.id,
+      summary: a.summary,
+      actorName: a.actorName,
+      createdAt: toISOStringSafe(a.createdAt),
+    })),
   };
 }
 
@@ -501,14 +627,18 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
   const landlordContactId = input.landlordContactId ?? property.ownerContactId;
   if (!landlordContactId) {
     throw new DomainValidationError(
-      "This property has no owner on record - set an owner before creating a mandate.",
+      "This property has no owner on record - set an owner before creating a mandate."
     );
   }
   const [landlord] = await db.select().from(contacts).where(eq(contacts.id, landlordContactId));
   if (!landlord) throw new NotFoundError("Landlord contact not found");
 
   if (input.assignedPmId) {
-    const [manager] = await db.select().from(users).where(eq(users.id, input.assignedPmId)).limit(1);
+    const [manager] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, input.assignedPmId))
+      .limit(1);
     if (!manager) throw new NotFoundError("Property manager not found");
     if (manager.role !== "property_manager") {
       throw new DomainValidationError("Selected staff member is not a Property Manager");
@@ -521,8 +651,8 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
     .where(
       and(
         eq(propertyMandates.propertyId, input.propertyId),
-        inArray(propertyMandates.status, ["pending_approval", "active"]),
-      ),
+        inArray(propertyMandates.status, ["pending_approval", "active"])
+      )
     )
     .limit(1);
   if (existingInFlight) {
@@ -532,11 +662,15 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
   const defaultRate = await getGroupSettingValue("mandate_default_rate", 0.1);
   const mandateRate = input.mandateRate !== undefined ? Number(input.mandateRate) : defaultRate;
   if (!Number.isFinite(mandateRate) || mandateRate <= 0 || mandateRate > 1) {
-    throw new DomainValidationError("Mandate rate must be a fraction between 0 and 1 (e.g. 0.10 for 10%).");
+    throw new DomainValidationError(
+      "Mandate rate must be a fraction between 0 and 1 (e.g. 0.10 for 10%)."
+    );
   }
   const rateDiffersFromDefault = Math.abs(mandateRate - defaultRate) > 0.0001;
   if (rateDiffersFromDefault && !input.rateJustification?.trim()) {
-    throw new DomainValidationError("A mandate rate different from the default requires a justification.");
+    throw new DomainValidationError(
+      "A mandate rate different from the default requires a justification."
+    );
   }
 
   const unitBreakdownCount = Array.isArray(property.unitBreakdown)
@@ -548,9 +682,9 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
     ? Number(property.monthlyRentKes)
     : Array.isArray(property.unitBreakdown)
       ? property.unitBreakdown.reduce(
-        (sum, u) => sum + (u.monthlyRentKes ? Number(u.monthlyRentKes) * u.count : 0),
-        0,
-      )
+          (sum, u) => sum + (u.monthlyRentKes ? Number(u.monthlyRentKes) * u.count : 0),
+          0
+        )
       : 0;
   const annualizedValueKes = monthlyValue * 12;
 
@@ -560,7 +694,10 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
   // This is the *ceiling* the mandate needs to clear, not who necessarily has
   // to clear it - see the self-approval check below (ADR 014 §14.2).
   const ceoUnitThreshold = await getGroupSettingValue("mandate_activation_ceo_unit_threshold", 10);
-  const ceoAnnualThreshold = await getGroupSettingValue("mandate_activation_ceo_annual_value_kes", 5000000);
+  const ceoAnnualThreshold = await getGroupSettingValue(
+    "mandate_activation_ceo_annual_value_kes",
+    5000000
+  );
   const requiredTier: "gm" | "ceo" =
     unitCount > ceoUnitThreshold || annualizedValueKes > ceoAnnualThreshold ? "ceo" : "gm";
 
@@ -570,7 +707,10 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
   // escalating to CEO when the mandate itself crosses the CEO threshold.
   // Everyone else (Property Manager, Head of Strategy, ...) always needs at
   // least GM sign-off. ADR 014 §14.2.
-  const isExecutive = ctx.user.role === "ceo" || ctx.user.role === "head_of_strategy" || (ctx.user.role as unknown as string) === "admin";
+  const isExecutive =
+    ctx.user.role === "ceo" ||
+    ctx.user.role === "head_of_strategy" ||
+    (ctx.user.role as unknown as string) === "admin";
   const actorRank = isExecutive ? 3 : ctx.user.role === "general_manager" ? 2 : 1;
   const requiredTierRank = requiredTier === "ceo" ? 3 : 2;
   const selfApproves = actorRank >= requiredTierRank;
@@ -578,7 +718,8 @@ export async function createMandate(ctx: CallerContext, rawInput: unknown) {
   const startDate = input.startDate ? new Date(input.startDate) : new Date();
   if (Number.isNaN(startDate.getTime())) throw new DomainValidationError("Invalid start date");
   const endDate = input.endDate ? new Date(input.endDate) : null;
-  if (endDate && Number.isNaN(endDate.getTime())) throw new DomainValidationError("Invalid end date");
+  if (endDate && Number.isNaN(endDate.getTime()))
+    throw new DomainValidationError("Invalid end date");
 
   return db.transaction(async (tx) => {
     const [mandate] = await tx
@@ -652,7 +793,11 @@ export async function terminateMandate(ctx: CallerContext, mandateId: string, ra
 
   // The mandate's own entity is the authorization scope, loaded first rather
   // than trusted from client input - same reasoning as decideApprovalRequest.
-  const [existing] = await db.select().from(propertyMandates).where(eq(propertyMandates.id, mandateId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(propertyMandates)
+    .where(eq(propertyMandates.id, mandateId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Mandate not found");
 
   await authorize(ctx, "properties.property.write", existing.entityId);
@@ -682,8 +827,8 @@ export async function terminateMandate(ctx: CallerContext, mandateId: string, ra
         and(
           eq(approvalRequests.relatedTable, "property_mandates"),
           eq(approvalRequests.relatedId, mandateId),
-          eq(approvalRequests.status, "pending"),
-        ),
+          eq(approvalRequests.status, "pending")
+        )
       );
 
     await writeAudit(tx, ctx, {
@@ -700,10 +845,18 @@ export async function terminateMandate(ctx: CallerContext, mandateId: string, ra
   });
 }
 
-export async function assignMandateManager(ctx: CallerContext, mandateId: string, rawInput: unknown) {
+export async function assignMandateManager(
+  ctx: CallerContext,
+  mandateId: string,
+  rawInput: unknown
+) {
   const input = parseInput(assignMandateManagerSchema, rawInput);
 
-  const [existing] = await db.select().from(propertyMandates).where(eq(propertyMandates.id, mandateId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(propertyMandates)
+    .where(eq(propertyMandates.id, mandateId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Mandate not found");
 
   await authorize(ctx, "properties.property.write", existing.entityId);
@@ -713,7 +866,11 @@ export async function assignMandateManager(ctx: CallerContext, mandateId: string
   }
 
   if (input.assignedPmId) {
-    const [manager] = await db.select().from(users).where(eq(users.id, input.assignedPmId)).limit(1);
+    const [manager] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, input.assignedPmId))
+      .limit(1);
     if (!manager) throw new NotFoundError("Property manager not found");
     if (manager.role !== "property_manager") {
       throw new DomainValidationError("Selected staff member is not a Property Manager");
@@ -752,16 +909,22 @@ export async function assignMandateManager(ctx: CallerContext, mandateId: string
 export async function updateMandateTerms(ctx: CallerContext, mandateId: string, rawInput: unknown) {
   const input = parseInput(updateMandateTermsSchema, rawInput);
 
-  const [existing] = await db.select().from(propertyMandates).where(eq(propertyMandates.id, mandateId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(propertyMandates)
+    .where(eq(propertyMandates.id, mandateId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Mandate not found");
 
   await authorize(ctx, "properties.property.write", existing.entityId);
 
   const updatable: Partial<typeof propertyMandates.$inferInsert> = {};
-  if (input.maintenanceAuthorityKes !== undefined) updatable.maintenanceAuthorityKes = input.maintenanceAuthorityKes;
+  if (input.maintenanceAuthorityKes !== undefined)
+    updatable.maintenanceAuthorityKes = input.maintenanceAuthorityKes;
   if (input.renewalType !== undefined) updatable.renewalType = input.renewalType;
   if (input.noticePeriodDays !== undefined) updatable.noticePeriodDays = input.noticePeriodDays;
-  if (input.scopeDescription !== undefined) updatable.scopeDescription = input.scopeDescription?.trim() || null;
+  if (input.scopeDescription !== undefined)
+    updatable.scopeDescription = input.scopeDescription?.trim() || null;
 
   return db.transaction(async (tx) => {
     const [updated] = await tx

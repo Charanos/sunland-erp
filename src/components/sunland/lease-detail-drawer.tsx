@@ -85,9 +85,7 @@ export function LeaseDetailDrawer({
       Promise.resolve().then(() => setActivity([]));
       return;
     }
-    fetch(
-      `/api/audit?entityId=${entityId}&associatedType=lease&associatedId=${lease.id}&limit=10`
-    )
+    fetch(`/api/audit?entityId=${entityId}&associatedType=lease&associatedId=${lease.id}&limit=10`)
       .then((r) => r.json())
       .then((data) => setActivity(Array.isArray(data.entries) ? data.entries : []))
       .catch(() => setActivity([]));
@@ -96,7 +94,9 @@ export function LeaseDetailDrawer({
   if (!lease) return null;
 
   const rentVal = formatCompactKES(parseFloat(lease.monthlyRentKes));
-  const PropIcon = (PROPERTY_TYPE_ICON as Record<string, React.ElementType>)[lease.propertyType] ?? IconBuildingCommunity;
+  const PropIcon =
+    (PROPERTY_TYPE_ICON as Record<string, React.ElementType>)[lease.propertyType] ??
+    IconBuildingCommunity;
 
   const confirmTerminate = async () => {
     setUpdating(true);
@@ -151,7 +151,10 @@ export function LeaseDetailDrawer({
               </Button>
             )}
             <Link href={`/admin/leases/${lease.id}`} className="flex-1">
-              <Button size="sm" className="w-full bg-[#151936] text-white hover:bg-[#151936]/90 shadow-none border-transparent transition-colors">
+              <Button
+                size="sm"
+                className="w-full bg-[#151936] text-white hover:bg-[#151936]/90 shadow-none border-transparent transition-colors"
+              >
                 <IconEye size={14} className="mr-1.5" />
                 Full View
               </Button>
@@ -188,7 +191,9 @@ export function LeaseDetailDrawer({
             {/* Bottom Row / Title */}
             <div className="relative z-10 flex flex-col gap-1">
               <p className="text-white/70 label-caps tracking-widest">{lease.propertyType}</p>
-              <h3 className="headline-md text-white tracking-tight leading-tight">{lease.propertyName}</h3>
+              <h3 className="headline-md text-white tracking-tight leading-tight">
+                {lease.propertyName}
+              </h3>
             </div>
           </div>
 
@@ -196,9 +201,13 @@ export function LeaseDetailDrawer({
           <div className="flex flex-col gap-5 border-b border-slate-100 pb-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <p className="text-slate-400 label-caps mb-1.5 tracking-widest">Expected Monthly Rent</p>
+                <p className="text-slate-400 label-caps mb-1.5 tracking-widest">
+                  Expected Monthly Rent
+                </p>
                 <div className="flex items-baseline gap-1.5 text-slate-900">
-                  <span className="font-mono font-medium text-4xl sm:text-5xl font-normal tracking-tight">{rentVal.replace("KES ", "").replace("/mo", "")}</span>
+                  <span className="font-mono font-medium text-4xl sm:text-5xl font-normal tracking-tight">
+                    {rentVal.replace("KES ", "").replace("/mo", "")}
+                  </span>
                   <span className="text-slate-400 label-caps font-normal">KES / mo</span>
                 </div>
               </div>
@@ -211,7 +220,9 @@ export function LeaseDetailDrawer({
             </div>
             <div className="flex items-center gap-2 text-slate-500">
               <IconMapPin size={16} stroke={1.2} className="text-slate-400 shrink-0" />
-              <span className="body-sm">{lease.propertyLocation || "Sunland Managed Location"}</span>
+              <span className="body-sm">
+                {lease.propertyLocation || "Sunland Managed Location"}
+              </span>
             </div>
           </div>
 
@@ -220,14 +231,33 @@ export function LeaseDetailDrawer({
             <p className="label-caps text-slate-400 mb-5 tracking-widest">Lease Specifications</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
               {[
-                { icon: IconCalendar, label: "Starts On", value: new Date(lease.startsAt).toLocaleDateString() },
-                { icon: IconCalendar, label: "Ends On", value: new Date(lease.endsAt).toLocaleDateString() },
+                {
+                  icon: IconCalendar,
+                  label: "Starts On",
+                  value: new Date(lease.startsAt).toLocaleDateString(),
+                },
+                {
+                  icon: IconCalendar,
+                  label: "Ends On",
+                  value: new Date(lease.endsAt).toLocaleDateString(),
+                },
                 { icon: PropIcon, label: "Unit Code", value: lease.propertyCode },
-                { icon: IconShield, label: "Tenancy Status", value: lease.isActive ? "Active Resident" : "Former Resident" },
-                { icon: IconClock, label: "Duration", value: `${Math.max(1, Math.round((new Date(lease.endsAt).getTime() - new Date(lease.startsAt).getTime()) / (1000 * 60 * 60 * 24 * 30)))} months` },
+                {
+                  icon: IconShield,
+                  label: "Tenancy Status",
+                  value: lease.isActive ? "Active Resident" : "Former Resident",
+                },
+                {
+                  icon: IconClock,
+                  label: "Duration",
+                  value: `${Math.max(1, Math.round((new Date(lease.endsAt).getTime() - new Date(lease.startsAt).getTime()) / (1000 * 60 * 60 * 24 * 30)))} months`,
+                },
                 { icon: IconReceipt2, label: "Frequency", value: "Monthly" },
               ].map((tile, idx) => (
-                <div key={tile.label + idx} className="flex flex-col gap-1.5 border-l border-slate-100 pl-4">
+                <div
+                  key={tile.label + idx}
+                  className="flex flex-col gap-1.5 border-l border-slate-100 pl-4"
+                >
                   <div className="flex items-center gap-1.5 text-slate-400">
                     <tile.icon size={14} stroke={1.5} />
                     <span className="label-caps tracking-widest">{tile.label}</span>
@@ -250,7 +280,9 @@ export function LeaseDetailDrawer({
                 />
                 <div>
                   <p className="text-slate-900 font-medium text-base">{lease.tenantName}</p>
-                  <p className="text-slate-500 text-sm mt-0.5">{lease.isActive ? "Resident" : "Former Resident"}</p>
+                  <p className="text-slate-500 text-sm mt-0.5">
+                    {lease.isActive ? "Resident" : "Former Resident"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">

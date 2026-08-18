@@ -53,7 +53,11 @@ interface TicketMessage {
   createdAt: string;
 }
 
-interface StaffUser { id: string; name: string; avatarUrl: string | null }
+interface StaffUser {
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+}
 
 type Filter = "open" | "in_progress" | "breached" | "resolved" | "all";
 
@@ -69,7 +73,13 @@ function ageLabel(iso: string): string {
   return `${Math.floor(hrs / 24)}d`;
 }
 
-export function TicketsSection({ entityId, onChanged }: { entityId: string; onChanged: () => void }) {
+export function TicketsSection({
+  entityId,
+  onChanged,
+}: {
+  entityId: string;
+  onChanged: () => void;
+}) {
   const { pushToast } = useToast();
   const [rows, setRows] = useState<TicketRow[]>([]);
   const [staff, setStaff] = useState<StaffUser[]>([]);
@@ -92,45 +102,79 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
       load();
       fetch("/api/identity/users?entityId=group")
         .then((r) => r.json())
-        .then((d) => { if (Array.isArray(d.users)) setStaff(d.users); })
-        .catch(() => { });
+        .then((d) => {
+          if (Array.isArray(d.users)) setStaff(d.users);
+        })
+        .catch(() => {});
     });
   }, [load]);
 
   const staffById = useMemo(() => new Map(staff.map((s) => [s.id, s])), [staff]);
 
   /** Real SLA derivation - the same computation the service uses for the pulse. */
-  const slaOf = useCallback((t: TicketRow) => ticketSlaFor({
-    priority: t.priority,
-    createdAt: t.createdAt,
-    firstRespondedAt: t.firstRespondedAt,
-    resolvedAt: t.resolvedAt,
-    targetHours: TICKET_SLA_DEFAULT_HOURS[t.priority],
-  }), []);
+  const slaOf = useCallback(
+    (t: TicketRow) =>
+      ticketSlaFor({
+        priority: t.priority,
+        createdAt: t.createdAt,
+        firstRespondedAt: t.firstRespondedAt,
+        resolvedAt: t.resolvedAt,
+        targetHours: TICKET_SLA_DEFAULT_HOURS[t.priority],
+      }),
+    []
+  );
 
-  const counts = useMemo(() => ({
-    open: rows.filter((t) => t.status === "open").length,
-    in_progress: rows.filter((t) => t.status === "in_progress").length,
-    breached: rows.filter((t) => (t.status === "open" || t.status === "in_progress") && slaOf(t).state === "breached").length,
-    resolved: rows.filter((t) => t.status === "resolved" || t.status === "closed").length,
-    all: rows.length,
-  }), [rows, slaOf]);
+  const counts = useMemo(
+    () => ({
+      open: rows.filter((t) => t.status === "open").length,
+      in_progress: rows.filter((t) => t.status === "in_progress").length,
+      breached: rows.filter(
+        (t) => (t.status === "open" || t.status === "in_progress") && slaOf(t).state === "breached"
+      ).length,
+      resolved: rows.filter((t) => t.status === "resolved" || t.status === "closed").length,
+      all: rows.length,
+    }),
+    [rows, slaOf]
+  );
 
   const visible = useMemo(() => {
     switch (filter) {
-      case "open": return rows.filter((t) => t.status === "open");
-      case "in_progress": return rows.filter((t) => t.status === "in_progress");
-      case "breached": return rows.filter((t) => (t.status === "open" || t.status === "in_progress") && slaOf(t).state === "breached");
-      case "resolved": return rows.filter((t) => t.status === "resolved" || t.status === "closed");
-      default: return rows;
+      case "open":
+        return rows.filter((t) => t.status === "open");
+      case "in_progress":
+        return rows.filter((t) => t.status === "in_progress");
+      case "breached":
+        return rows.filter(
+          (t) =>
+            (t.status === "open" || t.status === "in_progress") && slaOf(t).state === "breached"
+        );
+      case "resolved":
+        return rows.filter((t) => t.status === "resolved" || t.status === "closed");
+      default:
+        return rows;
     }
   }, [rows, filter, slaOf]);
 
   const stats = [
     { label: "Open", value: counts.open, icon: IconLifebuoy, tone: "text-amber-600 bg-amber-50" },
-    { label: "In progress", value: counts.in_progress, icon: IconProgress, tone: "text-indigo-600 bg-indigo-50" },
-    { label: "SLA breached", value: counts.breached, icon: IconAlertTriangle, tone: "text-rose-600 bg-rose-50" },
-    { label: "Resolved", value: counts.resolved, icon: IconCircleCheck, tone: "text-emerald-600 bg-emerald-50" },
+    {
+      label: "In progress",
+      value: counts.in_progress,
+      icon: IconProgress,
+      tone: "text-indigo-600 bg-indigo-50",
+    },
+    {
+      label: "SLA breached",
+      value: counts.breached,
+      icon: IconAlertTriangle,
+      tone: "text-rose-600 bg-rose-50",
+    },
+    {
+      label: "Resolved",
+      value: counts.resolved,
+      icon: IconCircleCheck,
+      tone: "text-emerald-600 bg-emerald-50",
+    },
   ];
 
   const resolve = async (t: TicketRow) => {
@@ -147,7 +191,11 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
       load();
       onChanged();
     } catch (err) {
-      pushToast({ tone: "error", title: "Couldn't resolve", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Couldn't resolve",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -155,8 +203,13 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
     <div className="flex flex-col gap-3.5">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
         {stats.map((s) => (
-          <div key={s.label} className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-            <span className={cn("size-9 rounded-xl flex items-center justify-center shrink-0", s.tone)}>
+          <div
+            key={s.label}
+            className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
+          >
+            <span
+              className={cn("size-9 rounded-xl flex items-center justify-center shrink-0", s.tone)}
+            >
               <s.icon size={18} />
             </span>
             <div>
@@ -169,27 +222,35 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
 
       <div className="flex items-center gap-2.5 flex-wrap">
         <div className="flex gap-1.5 flex-wrap">
-          {([
-            ["open", "Open", counts.open],
-            ["in_progress", "In progress", counts.in_progress],
-            ["breached", "SLA breached", counts.breached],
-            ["resolved", "Resolved", counts.resolved],
-            ["all", "All", counts.all],
-          ] as Array<[Filter, string, number]>).map(([key, label, count]) => (
+          {(
+            [
+              ["open", "Open", counts.open],
+              ["in_progress", "In progress", counts.in_progress],
+              ["breached", "SLA breached", counts.breached],
+              ["resolved", "Resolved", counts.resolved],
+              ["all", "All", counts.all],
+            ] as Array<[Filter, string, number]>
+          ).map(([key, label, count]) => (
             <button
               key={key}
               onClick={() => setFilter(key)}
               aria-pressed={filter === key}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                filter === key ? "bg-[#151936] text-white border-[#151936]" : "bg-white text-slate-500 border-slate-200 hover:border-slate-300",
+                filter === key
+                  ? "bg-[#151936] text-white border-[#151936]"
+                  : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
               )}
             >
               {label}
-              <span className={cn(
-                "font-mono text-xxs rounded-full px-1.5",
-                filter === key ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-500",
-              )}>{count}</span>
+              <span
+                className={cn(
+                  "font-mono text-xxs rounded-full px-1.5",
+                  filter === key ? "bg-[#f3df27] text-[#151936]" : "bg-slate-100 text-slate-500"
+                )}
+              >
+                {count}
+              </span>
             </button>
           ))}
         </div>
@@ -200,7 +261,9 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
 
       {loading ? (
         <div className="flex flex-col gap-2">
-          {Array.from({ length: 5 }).map((_, i) => <SkeletonBlock key={i} className="h-16 w-full rounded-2xl" />)}
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonBlock key={i} className="h-16 w-full rounded-2xl" />
+          ))}
         </div>
       ) : visible.length === 0 ? (
         <div className="bg-white border border-slate-100 rounded-3xl p-8">
@@ -217,7 +280,9 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
           {/* Desktop table */}
           <div className="hidden lg:grid grid-cols-[1.9fr_0.7fr_0.7fr_0.9fr_0.5fr_auto] gap-3 px-5 py-3 border-b border-slate-100">
             {["Ticket", "Priority", "Channel", "Assignee", "Age", ""].map((h, i) => (
-              <span key={i} className="label-caps text-slate-400">{h}</span>
+              <span key={i} className="label-caps text-slate-400">
+                {h}
+              </span>
             ))}
           </div>
 
@@ -227,7 +292,8 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
             const chan = TICKET_CHANNEL_META[t.channel] ?? TICKET_CHANNEL_META.portal;
             const sla = slaOf(t);
             const assignee = t.assignedToId ? staffById.get(t.assignedToId) : null;
-            const breached = sla.state === "breached" && (t.status === "open" || t.status === "in_progress");
+            const breached =
+              sla.state === "breached" && (t.status === "open" || t.status === "in_progress");
 
             return (
               <div
@@ -236,19 +302,37 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xxs text-slate-400">TKT-{t.id.slice(0, 6).toUpperCase()}</span>
-                    {breached && <span className="size-1.5 rounded-full bg-rose-500" title="SLA breached" />}
-                    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-xxs font-medium", st.pill)}>{st.label}</span>
+                    <span className="font-mono text-xxs text-slate-400">
+                      TKT-{t.id.slice(0, 6).toUpperCase()}
+                    </span>
+                    {breached && (
+                      <span className="size-1.5 rounded-full bg-rose-500" title="SLA breached" />
+                    )}
+                    <span
+                      className={cn(
+                        "inline-flex rounded-full px-2 py-0.5 text-xxs font-medium",
+                        st.pill
+                      )}
+                    >
+                      {st.label}
+                    </span>
                   </div>
                   <p className="text-sm font-medium text-slate-900 truncate mt-0.5">{t.subject}</p>
-                  <p className={cn("text-xs mt-0.5", breached ? "text-rose-600" : "text-slate-400")}>
+                  <p
+                    className={cn("text-xs mt-0.5", breached ? "text-rose-600" : "text-slate-400")}
+                  >
                     {t.firstRespondedAt
                       ? `First reply in ${Math.round(sla.hoursElapsed)}h · ${SLA_STATE_META[sla.state].label}`
                       : `No reply yet · ${SLA_STATE_META[sla.state].label}`}
                   </p>
                 </div>
 
-                <span className={cn("inline-flex w-fit rounded-full px-2 py-0.5 text-xxs font-medium uppercase tracking-wide", prio.pill)}>
+                <span
+                  className={cn(
+                    "inline-flex w-fit rounded-full px-2 py-0.5 text-xxs font-medium uppercase tracking-wide",
+                    prio.pill
+                  )}
+                >
                   {prio.label}
                 </span>
 
@@ -259,7 +343,11 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
                 <span className="inline-flex items-center gap-2 min-w-0">
                   {assignee ? (
                     <>
-                      <Avatar src={assignee.avatarUrl ?? undefined} fallback={initialsOf(assignee.name)} className="size-6 rounded-full shrink-0" />
+                      <Avatar
+                        src={assignee.avatarUrl ?? undefined}
+                        fallback={initialsOf(assignee.name)}
+                        className="size-6 rounded-full shrink-0"
+                      />
                       <span className="text-xs text-slate-600 truncate">{assignee.name}</span>
                     </>
                   ) : (
@@ -299,7 +387,11 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
         <NewTicketModal
           entityId={entityId}
           onClose={() => setNewOpen(false)}
-          onCreated={() => { setNewOpen(false); load(); onChanged(); }}
+          onCreated={() => {
+            setNewOpen(false);
+            load();
+            onChanged();
+          }}
         />
       )}
 
@@ -307,7 +399,10 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
         <TicketThread
           ticket={rows.find((t) => t.id === threadId)!}
           onClose={() => setThreadId(null)}
-          onReplied={() => { load(); onChanged(); }}
+          onReplied={() => {
+            load();
+            onChanged();
+          }}
         />
       )}
     </div>
@@ -316,7 +411,9 @@ export function TicketsSection({ entityId, onChanged }: { entityId: string; onCh
 
 /** The real reply thread. The first staff reply stamps firstRespondedAt server-side. */
 function TicketThread({
-  ticket, onClose, onReplied,
+  ticket,
+  onClose,
+  onReplied,
 }: {
   ticket: TicketRow;
   onClose: () => void;
@@ -333,7 +430,7 @@ function TicketThread({
     fetch(`/api/support/tickets/${ticket.id}/messages`)
       .then((r) => r.json())
       .then((d) => setMessages(Array.isArray(d.messages) ? d.messages : []))
-      .catch(() => { })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [ticket.id]);
 
@@ -361,7 +458,11 @@ function TicketThread({
         body: internal ? "Visible to support staff only." : "The filer has been notified.",
       });
     } catch (err) {
-      pushToast({ tone: "error", title: "Couldn't send", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Couldn't send",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setBusy(false);
     }
@@ -381,24 +482,44 @@ function TicketThread({
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={3}
-            placeholder={internal ? "Internal note — the filer will not see this…" : "Write a reply…"}
+            placeholder={
+              internal ? "Internal note — the filer will not see this…" : "Write a reply…"
+            }
             className="w-full box-border resize-none border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-[#151936]/40 transition-colors"
           />
           <div className="flex items-center justify-between gap-2">
             <label className="inline-flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
-              <input type="checkbox" checked={internal} onChange={(e) => setInternal(e.target.checked)} className="size-4 rounded accent-[#151936]" />
+              <input
+                type="checkbox"
+                checked={internal}
+                onChange={(e) => setInternal(e.target.checked)}
+                className="size-4 rounded accent-[#151936]"
+              />
               Internal note
             </label>
-            <Button size="sm" onClick={send} disabled={busy || !body.trim()}>{busy ? "Sending…" : "Send"}</Button>
+            <Button size="sm" onClick={send} disabled={busy || !body.trim()}>
+              {busy ? "Sending…" : "Send"}
+            </Button>
           </div>
         </div>
       }
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-xs text-slate-400">TKT-{ticket.id.slice(0, 6).toUpperCase()}</span>
-          <span className={cn("inline-flex rounded-full px-2.5 py-1 text-xxs font-medium uppercase tracking-wide", prio.pill)}>{prio.label}</span>
-          <span className="text-xs text-slate-400 capitalize">{ticket.category} · {ticket.channel}</span>
+          <span className="font-mono text-xs text-slate-400">
+            TKT-{ticket.id.slice(0, 6).toUpperCase()}
+          </span>
+          <span
+            className={cn(
+              "inline-flex rounded-full px-2.5 py-1 text-xxs font-medium uppercase tracking-wide",
+              prio.pill
+            )}
+          >
+            {prio.label}
+          </span>
+          <span className="text-xs text-slate-400 capitalize">
+            {ticket.category} · {ticket.channel}
+          </span>
         </div>
 
         <div className="rounded-2xl border border-slate-100 bg-[#fafbf8] px-3.5 py-3">
@@ -410,10 +531,14 @@ function TicketThread({
           <p className="label-caps text-slate-400 mb-2">Thread</p>
           {loading ? (
             <div className="flex flex-col gap-2">
-              {Array.from({ length: 2 }).map((_, i) => <SkeletonBlock key={i} className="h-14 w-full rounded-xl" />)}
+              {Array.from({ length: 2 }).map((_, i) => (
+                <SkeletonBlock key={i} className="h-14 w-full rounded-xl" />
+              ))}
             </div>
           ) : messages.length === 0 ? (
-            <p className="text-xs text-slate-400">No replies yet. The first staff reply starts the SLA response clock.</p>
+            <p className="text-xs text-slate-400">
+              No replies yet. The first staff reply starts the SLA response clock.
+            </p>
           ) : (
             <div className="flex flex-col gap-2.5">
               {messages.map((m) => (
@@ -421,13 +546,19 @@ function TicketThread({
                   key={m.id}
                   className={cn(
                     "rounded-xl border px-3.5 py-2.5",
-                    m.isInternal ? "border-amber-200 bg-amber-50/60" : "border-slate-100 bg-white",
+                    m.isInternal ? "border-amber-200 bg-amber-50/60" : "border-slate-100 bg-white"
                   )}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-medium text-slate-800">{m.authorName}</span>
                     <span className="font-mono text-xxs text-slate-400">
-                      {new Date(m.createdAt).toLocaleString("en-KE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false })}
+                      {new Date(m.createdAt).toLocaleString("en-KE", {
+                        day: "numeric",
+                        month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })}
                     </span>
                   </div>
                   {m.isInternal && (
@@ -447,7 +578,9 @@ function TicketThread({
 }
 
 function NewTicketModal({
-  entityId, onClose, onCreated,
+  entityId,
+  onClose,
+  onCreated,
 }: {
   entityId: string;
   onClose: () => void;
@@ -455,14 +588,21 @@ function NewTicketModal({
 }) {
   const { pushToast } = useToast();
   const [form, setForm] = useState({
-    subject: "", description: "", category: "technical",
-    priority: "normal" as TicketPriority, channel: "portal" as TicketChannel,
+    subject: "",
+    description: "",
+    category: "technical",
+    priority: "normal" as TicketPriority,
+    channel: "portal" as TicketChannel,
   });
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
     if (!form.subject.trim() || !form.description.trim()) {
-      pushToast({ tone: "warning", title: "Missing details", body: "A subject and description are required." });
+      pushToast({
+        tone: "warning",
+        title: "Missing details",
+        body: "A subject and description are required.",
+      });
       return;
     }
     setBusy(true);
@@ -470,20 +610,30 @@ function NewTicketModal({
       const res = await fetch("/api/support/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entityId, ...form, subject: form.subject.trim(), description: form.description.trim() }),
+        body: JSON.stringify({
+          entityId,
+          ...form,
+          subject: form.subject.trim(),
+          description: form.description.trim(),
+        }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Could not log the ticket");
       pushToast({ tone: "success", title: "Ticket logged", body: form.subject.trim() });
       onCreated();
     } catch (err) {
-      pushToast({ tone: "error", title: "Couldn't log ticket", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "error",
+        title: "Couldn't log ticket",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setBusy(false);
     }
   };
 
-  const field = "w-full box-border border border-slate-200 rounded-lg h-10 px-3 text-sm text-slate-800 outline-none focus:border-[#151936]/40 transition-colors";
+  const field =
+    "w-full box-border border border-slate-200 rounded-lg h-10 px-3 text-sm text-slate-800 outline-none focus:border-[#151936]/40 transition-colors";
 
   return (
     <Modal
@@ -496,7 +646,12 @@ function NewTicketModal({
       <div className="flex flex-col gap-3.5">
         <div>
           <label className="label-caps text-slate-400 mb-1.5 block">Subject</label>
-          <input className={field} value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} autoFocus />
+          <input
+            className={field}
+            value={form.subject}
+            onChange={(e) => setForm({ ...form, subject: e.target.value })}
+            autoFocus
+          />
         </div>
         <div>
           <label className="label-caps text-slate-400 mb-1.5 block">What happened</label>
@@ -509,15 +664,29 @@ function NewTicketModal({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="label-caps text-slate-400 mb-1.5 block">Category</label>
-            <select className={cn(field, "bg-white")} value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-              {["technical", "access", "data", "other"].map((c) => <option key={c} value={c} className="capitalize">{c}</option>)}
+            <select
+              className={cn(field, "bg-white")}
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+            >
+              {["technical", "access", "data", "other"].map((c) => (
+                <option key={c} value={c} className="capitalize">
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
           <div>
             <label className="label-caps text-slate-400 mb-1.5 block">Channel</label>
-            <select className={cn(field, "bg-white")} value={form.channel} onChange={(e) => setForm({ ...form, channel: e.target.value as TicketChannel })}>
+            <select
+              className={cn(field, "bg-white")}
+              value={form.channel}
+              onChange={(e) => setForm({ ...form, channel: e.target.value as TicketChannel })}
+            >
               {(Object.keys(TICKET_CHANNEL_META) as TicketChannel[]).map((c) => (
-                <option key={c} value={c}>{TICKET_CHANNEL_META[c].label}</option>
+                <option key={c} value={c}>
+                  {TICKET_CHANNEL_META[c].label}
+                </option>
               ))}
             </select>
           </div>
@@ -532,9 +701,13 @@ function NewTicketModal({
                 aria-pressed={form.priority === p}
                 className={cn(
                   "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                  form.priority === p ? "bg-[#151936] text-white border-[#151936]" : "bg-white text-slate-600 border-slate-200 hover:border-slate-300",
+                  form.priority === p
+                    ? "bg-[#151936] text-white border-[#151936]"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
                 )}
-              >{TICKET_PRIORITY_META[p].label}</button>
+              >
+                {TICKET_PRIORITY_META[p].label}
+              </button>
             ))}
           </div>
           <p className="text-xs text-slate-400 mt-1.5">
@@ -542,8 +715,12 @@ function NewTicketModal({
           </p>
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
-          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>Cancel</Button>
-          <Button size="sm" onClick={submit} disabled={busy}>{busy ? "Logging…" : "Log ticket"}</Button>
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>
+            Cancel
+          </Button>
+          <Button size="sm" onClick={submit} disabled={busy}>
+            {busy ? "Logging…" : "Log ticket"}
+          </Button>
         </div>
       </div>
     </Modal>

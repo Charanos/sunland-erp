@@ -20,10 +20,10 @@ export function EmptyState({
         <IconComponent aria-hidden size={22} stroke={1.8} />
       </div>
       <h2 className="headline-md">{title}</h2>
-      <p className="body-sm mt-2 max-w-sm text-[var(--on-surface-dim)]">
-        {description}
-      </p>
-      <Button onClick={onClick} className="mt-5">{action}</Button>
+      <p className="body-sm mt-2 max-w-sm text-[var(--on-surface-dim)]">{description}</p>
+      <Button onClick={onClick} className="mt-5">
+        {action}
+      </Button>
     </div>
   );
 }

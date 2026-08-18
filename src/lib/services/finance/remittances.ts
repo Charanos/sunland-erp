@@ -1,7 +1,14 @@
 import { randomBytes } from "crypto";
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { db } from "@/db";
-import { contacts, propertyMandates, properties, remittanceAdvices, reportExports, transactions } from "@/db/schema";
+import {
+  contacts,
+  propertyMandates,
+  properties,
+  remittanceAdvices,
+  reportExports,
+  transactions,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -20,23 +27,45 @@ function generateVerificationToken(): string {
  * same computation already built for getPropertyWithDetails's currentPeriod
  * block, applied over a caller-chosen period instead of "this month".
  */
-export async function generateRemittanceAdvice(ctx: CallerContext, mandateId: string, rawInput: unknown) {
+export async function generateRemittanceAdvice(
+  ctx: CallerContext,
+  mandateId: string,
+  rawInput: unknown
+) {
   const input = parseInput(generateRemittanceSchema, rawInput);
 
-  const [mandate] = await db.select().from(propertyMandates).where(eq(propertyMandates.id, mandateId)).limit(1);
+  const [mandate] = await db
+    .select()
+    .from(propertyMandates)
+    .where(eq(propertyMandates.id, mandateId))
+    .limit(1);
   if (!mandate) throw new NotFoundError("Mandate not found");
 
   await authorize(ctx, "finance.transaction.write", mandate.entityId);
 
   const periodStart = new Date(input.periodStart);
   const periodEnd = new Date(input.periodEnd);
-  if (Number.isNaN(periodStart.getTime()) || Number.isNaN(periodEnd.getTime()) || periodStart >= periodEnd) {
-    throw new DomainValidationError("Invalid remittance period - periodStart must be before periodEnd.");
+  if (
+    Number.isNaN(periodStart.getTime()) ||
+    Number.isNaN(periodEnd.getTime()) ||
+    periodStart >= periodEnd
+  ) {
+    throw new DomainValidationError(
+      "Invalid remittance period - periodStart must be before periodEnd."
+    );
   }
 
   const [property, landlord] = await Promise.all([
-    db.select().from(properties).where(eq(properties.id, mandate.propertyId)).then((r) => r[0]),
-    db.select().from(contacts).where(eq(contacts.id, mandate.landlordContactId)).then((r) => r[0]),
+    db
+      .select()
+      .from(properties)
+      .where(eq(properties.id, mandate.propertyId))
+      .then((r) => r[0]),
+    db
+      .select()
+      .from(contacts)
+      .where(eq(contacts.id, mandate.landlordContactId))
+      .then((r) => r[0]),
   ]);
   if (!property) throw new NotFoundError("Property not found");
 
@@ -47,12 +76,16 @@ export async function generateRemittanceAdvice(ctx: CallerContext, mandateId: st
       and(
         eq(transactions.propertyId, mandate.propertyId),
         gte(transactions.occurredAt, periodStart),
-        lte(transactions.occurredAt, periodEnd),
-      ),
+        lte(transactions.occurredAt, periodEnd)
+      )
     );
 
-  const collected = periodTx.filter((t) => t.type === "rent").reduce((sum, t) => sum + Number(t.amountKes), 0);
-  const expenses = periodTx.filter((t) => t.type === "expense").reduce((sum, t) => sum + Number(t.amountKes), 0);
+  const collected = periodTx
+    .filter((t) => t.type === "rent")
+    .reduce((sum, t) => sum + Number(t.amountKes), 0);
+  const expenses = periodTx
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + Number(t.amountKes), 0);
   const managementFee = collected * Number(mandate.mandateRate);
   const net = collected - managementFee - expenses;
 
@@ -111,7 +144,11 @@ export async function generateRemittanceAdvice(ctx: CallerContext, mandateId: st
 }
 
 export async function listRemittancesForMandate(ctx: CallerContext, mandateId: string) {
-  const [mandate] = await db.select().from(propertyMandates).where(eq(propertyMandates.id, mandateId)).limit(1);
+  const [mandate] = await db
+    .select()
+    .from(propertyMandates)
+    .where(eq(propertyMandates.id, mandateId))
+    .limit(1);
   if (!mandate) throw new NotFoundError("Mandate not found");
 
   await authorize(ctx, "finance.transaction.read", mandate.entityId);
@@ -123,10 +160,18 @@ export async function listRemittancesForMandate(ctx: CallerContext, mandateId: s
     .orderBy(desc(remittanceAdvices.periodEnd));
 }
 
-export async function decideRemittanceAdvice(ctx: CallerContext, remittanceId: string, rawInput: unknown) {
+export async function decideRemittanceAdvice(
+  ctx: CallerContext,
+  remittanceId: string,
+  rawInput: unknown
+) {
   const input = parseInput(decideRemittanceSchema, rawInput);
 
-  const [existing] = await db.select().from(remittanceAdvices).where(eq(remittanceAdvices.id, remittanceId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(remittanceAdvices)
+    .where(eq(remittanceAdvices.id, remittanceId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Remittance advice not found");
 
   await authorize(ctx, "finance.transaction.write", existing.entityId);
@@ -143,8 +188,13 @@ export async function decideRemittanceAdvice(ctx: CallerContext, remittanceId: s
       .update(remittanceAdvices)
       .set(
         input.action === "release"
-          ? { status: "released", releasedById: ctx.user.id, releasedAt: new Date(), updatedAt: new Date() }
-          : { status: "flagged", flagReason: input.reason!.trim(), updatedAt: new Date() },
+          ? {
+              status: "released",
+              releasedById: ctx.user.id,
+              releasedAt: new Date(),
+              updatedAt: new Date(),
+            }
+          : { status: "flagged", flagReason: input.reason!.trim(), updatedAt: new Date() }
       )
       .where(eq(remittanceAdvices.id, remittanceId))
       .returning();

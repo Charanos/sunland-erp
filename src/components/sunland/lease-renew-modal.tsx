@@ -53,7 +53,11 @@ export function LeaseRenewModal({
 
   const handleSubmit = async () => {
     if (!endsAt) {
-      pushToast({ tone: "warning", title: "Missing end date", body: "Set the new lease's end date." });
+      pushToast({
+        tone: "warning",
+        title: "Missing end date",
+        body: "Set the new lease's end date.",
+      });
       return;
     }
     setIsSubmitting(true);
@@ -89,18 +93,25 @@ export function LeaseRenewModal({
 
   const currentRent = parseFloat(lease.monthlyRentKes) || 0;
   const newRent = parseFloat(monthlyRentKes) || 0;
-  const rentDiffPct = currentRent > 0 ? (((newRent - currentRent) / currentRent) * 100).toFixed(1) : "0.0";
+  const rentDiffPct =
+    currentRent > 0 ? (((newRent - currentRent) / currentRent) * 100).toFixed(1) : "0.0";
   const annualRentPool = newRent * 12;
 
   return (
     <Modal
       open={open}
-      onClose={isSubmitting ? () => { } : onClose}
+      onClose={isSubmitting ? () => {} : onClose}
       title="Renew Tenancy Agreement"
       description={`Extend tenancy for ${lease.tenantName} at ${lease.propertyName}. The new term begins immediately after current expiry.`}
       size="lg"
     >
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-6 pt-1">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+        className="space-y-6 pt-1"
+      >
         {/* Current Tenancy Summary Card */}
         <div className="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
           <div className="flex items-center gap-3.5 min-w-0">
@@ -108,11 +119,17 @@ export function LeaseRenewModal({
               <IconRefresh size={22} />
             </div>
             <div className="flex flex-col min-w-0">
-              <p className="text-xs font-medium text-slate-900 truncate">
-                {lease.propertyName}
-              </p>
+              <p className="text-xs font-medium text-slate-900 truncate">{lease.propertyName}</p>
               <p className="text-xxs text-slate-500 truncate mt-0.5 font-mono">
-                Tenant: <span className="font-medium text-slate-700">{lease.tenantName}</span> · Expiry: <span className="font-medium text-slate-700">{new Date(lease.endsAt).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" })}</span>
+                Tenant: <span className="font-medium text-slate-700">{lease.tenantName}</span> ·
+                Expiry:{" "}
+                <span className="font-medium text-slate-700">
+                  {new Date(lease.endsAt).toLocaleDateString("en-KE", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
               </p>
             </div>
           </div>
@@ -172,9 +189,14 @@ export function LeaseRenewModal({
             <div className="flex items-center gap-2">
               <IconBuildingBank size={16} className="text-[#151936] shrink-0" />
               <span className="text-slate-600 font-medium">New Annual Cashflow:</span>
-              <span className="font-mono font-medium text-slate-900">{formatCompactKES(annualRentPool)}</span>
+              <span className="font-mono font-medium text-slate-900">
+                {formatCompactKES(annualRentPool)}
+              </span>
             </div>
-            <Badge tone={parseFloat(rentDiffPct) > 0 ? "warning" : "neutral"} className="text-xxs font-mono shrink-0">
+            <Badge
+              tone={parseFloat(rentDiffPct) > 0 ? "warning" : "neutral"}
+              className="text-xxs font-mono shrink-0"
+            >
               {parseFloat(rentDiffPct) > 0 ? `+${rentDiffPct}% Escalation` : "Rate Maintained"}
             </Badge>
           </div>
@@ -184,7 +206,8 @@ export function LeaseRenewModal({
         <div className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50 p-3.5 text-xs text-slate-600 leading-relaxed shadow-2xs">
           <IconShieldCheck size={16} className="text-[#151936] shrink-0 mt-0.5" />
           <p>
-            Lease renewal creates an immediate consecutive tenancy term starting on the day following current expiry. Tenancy history and payment audit trails remain attached.
+            Lease renewal creates an immediate consecutive tenancy term starting on the day
+            following current expiry. Tenancy history and payment audit trails remain attached.
           </p>
         </div>
 
@@ -218,4 +241,3 @@ export function LeaseRenewModal({
     </Modal>
   );
 }
-

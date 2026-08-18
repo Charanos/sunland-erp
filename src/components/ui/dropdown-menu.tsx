@@ -19,7 +19,12 @@ export function DropdownMenu({
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [coords, setCoords] = useState<{ top?: number; bottom?: number; left?: number; right?: number }>({ top: 0 });
+  const [coords, setCoords] = useState<{
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+  }>({ top: 0 });
 
   // Anchors the menu below the trigger, unless it would run off the bottom
   // of the viewport - a real risk for rows near the end of a long table or
@@ -30,14 +35,10 @@ export function DropdownMenu({
     const menuHeight = menuRef.current?.getBoundingClientRect().height ?? 0;
     const opensUpward = rect.bottom + 6 + menuHeight > window.innerHeight;
     setCoords({
-      ...(opensUpward
-        ? { bottom: window.innerHeight - rect.top + 6 }
-        : { top: rect.bottom + 6 }),
+      ...(opensUpward ? { bottom: window.innerHeight - rect.top + 6 } : { top: rect.bottom + 6 }),
       // align right: anchor the menu's right edge to the trigger's right edge
       // align left:  anchor the menu's left edge to the trigger's left edge
-      ...(align === "right"
-        ? { right: window.innerWidth - rect.right }
-        : { left: rect.left }),
+      ...(align === "right" ? { right: window.innerWidth - rect.right } : { left: rect.left }),
     });
   };
 
@@ -147,7 +148,7 @@ export function DropdownItem({
           ? "text-slate-300 cursor-not-allowed"
           : variant === "danger"
             ? "text-rose-600 hover:bg-rose-50"
-            : "text-[var(--on-surface)] hover:bg-[var(--surface-muted)]",
+            : "text-[var(--on-surface)] hover:bg-[var(--surface-muted)]"
       )}
       onClick={disabled ? (e) => e.stopPropagation() : onClick}
       disabled={disabled}
@@ -155,7 +156,18 @@ export function DropdownItem({
       role="menuitem"
       type="button"
     >
-      {Icon && <Icon size={15} className={disabled ? "text-slate-300 shrink-0" : variant === "danger" ? "text-rose-500 shrink-0" : "text-slate-400 shrink-0"} />}
+      {Icon && (
+        <Icon
+          size={15}
+          className={
+            disabled
+              ? "text-slate-300 shrink-0"
+              : variant === "danger"
+                ? "text-rose-500 shrink-0"
+                : "text-slate-400 shrink-0"
+          }
+        />
+      )}
       {children}
     </button>
   );

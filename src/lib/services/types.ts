@@ -9,7 +9,7 @@ export type { CallerContext };
 export function buildCallerContext(
   user: SessionUser,
   entityId: string | null,
-  request?: Request,
+  request?: Request
 ): CallerContext {
   return {
     user,
@@ -29,7 +29,7 @@ export function buildCallerContext(
  */
 export async function requireCallerContext(
   entityId: string | null = null,
-  request?: Request,
+  request?: Request
 ): Promise<CallerContext> {
   const user = await getCurrentUser();
   if (!user) throw new UnauthorizedError();

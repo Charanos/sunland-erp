@@ -89,7 +89,10 @@ export default function RadialProgress({
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center animate-fade-in group-hover:scale-105 transition-transform duration-300">
-          <span className="text-slate-800 font-mono font-medium">{displayValue}<span className="text-body-primary text-slate-400">%</span></span>
+          <span className="text-slate-800 font-mono font-medium">
+            {displayValue}
+            <span className="text-body-primary text-slate-400">%</span>
+          </span>
         </div>
       </div>
       <div className="mt-5 text-center animate-fade-in-up stagger-2 w-full px-2">

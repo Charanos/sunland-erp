@@ -14,4 +14,3 @@ export * from "@/db/schema/messaging";
 export * from "@/db/schema/valuations";
 export * from "@/db/schema/mandates";
 export * from "@/db/schema/payments";
-

@@ -21,11 +21,7 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils/cn";
 import { useUIStore } from "@/store/ui";
-import {
-  findSectionByPath,
-  getActiveNavItem,
-  navSections,
-} from "@/components/layout/nav-model";
+import { findSectionByPath, getActiveNavItem, navSections } from "@/components/layout/nav-model";
 import { canAccess } from "@/lib/auth/roles";
 import type { UserRole } from "@/types";
 import { Avatar } from "@/components/ui/avatar";
@@ -66,7 +62,7 @@ function NavTooltip({ label, children }: { label: string; children: React.ReactN
           "whitespace-nowrap rounded-lg border border-white/[0.06] bg-[var(--surface-highest)]",
           "px-2.5 py-1.5 text-base font-medium text-white/90 shadow-xl backdrop-blur-2xl",
           "opacity-0 translate-x-[-4px] group-hover/tip:opacity-100 group-hover/tip:translate-x-0",
-          "transition-all duration-150",
+          "transition-all duration-150"
         )}
       >
         {label}
@@ -93,25 +89,19 @@ function CollapsedFlyout({
         "shadow-2xl backdrop-blur-2xl",
         "opacity-0 pointer-events-none scale-95 origin-top-left",
         "group-hover/collapsed:opacity-100 group-hover/collapsed:pointer-events-auto group-hover/collapsed:scale-100",
-        "transition-all duration-150",
+        "transition-all duration-150"
       )}
       role="menu"
       aria-label={section.label}
     >
-      <p className="px-2 pb-1.5 pt-1 text-white/30 label-caps">
-        {section.label}
-      </p>
+      <p className="px-2 pb-1.5 pt-1 text-white/30 label-caps">{section.label}</p>
       {section.items.map((item, index) => {
         const isActive = activeHref === item.href;
         const ItemIcon = item.icon;
         const showGroup = item.group && item.group !== section.items[index - 1]?.group;
         return (
           <div key={item.href}>
-            {showGroup && (
-              <p className="px-2 pb-1 pt-2 text-white/25 label-caps">
-                {item.group}
-              </p>
-            )}
+            {showGroup && <p className="px-2 pb-1 pt-2 text-white/25 label-caps">{item.group}</p>}
             <Link
               href={item.href}
               role="menuitem"
@@ -119,7 +109,7 @@ function CollapsedFlyout({
                 "flex items-center gap-2 rounded-md px-2.5 py-1.5 text-base transition-colors",
                 isActive
                   ? "bg-white/[0.08] text-white"
-                  : "text-white/65 hover:bg-white/[0.05] hover:text-white/90",
+                  : "text-white/65 hover:bg-white/[0.05] hover:text-white/90"
               )}
             >
               <ItemIcon size={14} stroke={1.5} className="shrink-0 opacity-65" aria-hidden />
@@ -152,7 +142,8 @@ export function SunlandNav() {
     name: "Paul Amos",
     email: "ceo@sunlandre.co.ke",
     role: "ceo",
-    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
   });
 
   useEffect(() => {
@@ -164,11 +155,13 @@ export function SunlandNav() {
             name: data.user.name,
             email: data.user.email,
             role: data.user.role,
-            avatarUrl: data.user.avatarUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+            avatarUrl:
+              data.user.avatarUrl ||
+              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
           });
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   const isSwitcherEnabled = currentUser.role === "ceo" || currentUser.role === "general_manager";
@@ -176,7 +169,7 @@ export function SunlandNav() {
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-    } catch { }
+    } catch {}
     window.location.href = "/login";
   };
 
@@ -222,7 +215,7 @@ export function SunlandNav() {
         "fixed inset-y-0 left-0 z-30 hidden flex-col",
         "border-r border-white/[0.04] bg-[var(--sidebar)] text-white",
         "transition-[width] duration-300 ease-out lg:flex",
-        sidebarCollapsed ? "w-[72px]" : "w-[272px]",
+        sidebarCollapsed ? "w-[72px]" : "w-[272px]"
       )}
     >
       {/* ── Floating Collapse Toggle ─────────────────────────── */}
@@ -234,12 +227,14 @@ export function SunlandNav() {
           "focus-ring absolute -right-3 top-[54px] z-40",
           "flex size-[22px] items-center justify-center rounded-full",
           "border border-[var(--primary)] bg-[var(--primary)] text-[var(--on-primary)] shadow-[0_4px_12px_rgba(0,0,0,0.4)]",
-          "transition hover:scale-110 hover:bg-[var(--primary-container)] hover:border-[var(--primary-container)]",
+          "transition hover:scale-110 hover:bg-[var(--primary-container)] hover:border-[var(--primary-container)]"
         )}
       >
-        {sidebarCollapsed
-          ? <IconChevronRight aria-hidden size={12} stroke={2.5} />
-          : <IconChevronLeft aria-hidden size={12} stroke={2.5} />}
+        {sidebarCollapsed ? (
+          <IconChevronRight aria-hidden size={12} stroke={2.5} />
+        ) : (
+          <IconChevronLeft aria-hidden size={12} stroke={2.5} />
+        )}
       </button>
 
       {/* ── Brand + Entity Switcher ──────────────────────────── */}
@@ -274,16 +269,33 @@ export function SunlandNav() {
         {/* Entity Switcher */}
         <div className="hidden relative mt-2" ref={switcherRef}>
           {sidebarCollapsed ? (
-            <NavTooltip label={isSwitcherEnabled ? `Switch Workspace (${activeEntity.name})` : `Active Workspace (${activeEntity.name})`}>
+            <NavTooltip
+              label={
+                isSwitcherEnabled
+                  ? `Switch Workspace (${activeEntity.name})`
+                  : `Active Workspace (${activeEntity.name})`
+              }
+            >
               <button
                 type="button"
                 aria-haspopup={isSwitcherEnabled ? "listbox" : undefined}
                 aria-expanded={isSwitcherEnabled ? isSwitcherOpen : undefined}
                 aria-label={isSwitcherEnabled ? "Switch entity" : "Active entity"}
-                onClick={isSwitcherEnabled ? () => { setIsSwitcherOpen((v) => !v); setIsProfileOpen(false); } : undefined}
+                onClick={
+                  isSwitcherEnabled
+                    ? () => {
+                        setIsSwitcherOpen((v) => !v);
+                        setIsProfileOpen(false);
+                      }
+                    : undefined
+                }
                 className={cn(
                   "focus-ring flex w-full items-center gap-2.5 rounded-xl px-2 py-2 transition-colors",
-                  isSwitcherOpen ? "bg-white/[0.06]" : isSwitcherEnabled ? "hover:bg-white/[0.03] justify-center" : "justify-center",
+                  isSwitcherOpen
+                    ? "bg-white/[0.06]"
+                    : isSwitcherEnabled
+                      ? "hover:bg-white/[0.03] justify-center"
+                      : "justify-center"
                 )}
               >
                 <Avatar
@@ -300,10 +312,21 @@ export function SunlandNav() {
               aria-haspopup={isSwitcherEnabled ? "listbox" : undefined}
               aria-expanded={isSwitcherEnabled ? isSwitcherOpen : undefined}
               aria-label={isSwitcherEnabled ? "Switch entity" : "Active entity"}
-              onClick={isSwitcherEnabled ? () => { setIsSwitcherOpen((v) => !v); setIsProfileOpen(false); } : undefined}
+              onClick={
+                isSwitcherEnabled
+                  ? () => {
+                      setIsSwitcherOpen((v) => !v);
+                      setIsProfileOpen(false);
+                    }
+                  : undefined
+              }
               className={cn(
                 "focus-ring flex w-full items-center gap-2.5 rounded-xl px-2 py-2 text-left transition-colors",
-                isSwitcherOpen ? "bg-white/[0.06]" : isSwitcherEnabled ? "hover:bg-white/[0.03]" : "",
+                isSwitcherOpen
+                  ? "bg-white/[0.06]"
+                  : isSwitcherEnabled
+                    ? "hover:bg-white/[0.03]"
+                    : ""
               )}
             >
               <Avatar
@@ -321,13 +344,18 @@ export function SunlandNav() {
                   className="flex flex-1 items-center justify-between min-w-0"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-white/85 text-base">{activeEntity.name}</p>
+                    <p className="truncate font-medium text-white/85 text-base">
+                      {activeEntity.name}
+                    </p>
                     <p className="truncate text-sm text-white/35">{activeEntity.subtitle}</p>
                   </div>
                   {isSwitcherEnabled && (
                     <IconChevronDown
                       size={13}
-                      className={cn("shrink-0 text-white/25 transition-transform duration-200", isSwitcherOpen && "rotate-180")}
+                      className={cn(
+                        "shrink-0 text-white/25 transition-transform duration-200",
+                        isSwitcherOpen && "rotate-180"
+                      )}
                       aria-hidden
                     />
                   )}
@@ -349,13 +377,11 @@ export function SunlandNav() {
                 className={cn(
                   "absolute left-0 top-full z-[60] mt-2 w-full overflow-hidden",
                   "rounded-xl border border-white/[0.07] bg-[var(--surface-highest)]",
-                  "shadow-[0_24px_48px_rgba(0,0,0,0.5)] backdrop-blur-2xl",
+                  "shadow-[0_24px_48px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
                 )}
               >
                 <div className="p-1.5">
-                  <p className="px-2 pb-1 pt-1 text-white/30 label-caps">
-                    Entities
-                  </p>
+                  <p className="px-2 pb-1 pt-1 text-white/30 label-caps">Entities</p>
                   {ENTITIES.map((entity) => {
                     const isActive = entity.id === activeEntity.id;
                     return (
@@ -364,10 +390,13 @@ export function SunlandNav() {
                         role="option"
                         aria-selected={isActive}
                         type="button"
-                        onClick={() => { setSwitchingToEntityId(entity.id); setIsSwitcherOpen(false); }}
+                        onClick={() => {
+                          setSwitchingToEntityId(entity.id);
+                          setIsSwitcherOpen(false);
+                        }}
                         className={cn(
                           "flex w-full items-center gap-2.5 rounded-lg p-2 text-left transition-colors",
-                          isActive ? "bg-white/[0.07]" : "hover:bg-white/[0.04]",
+                          isActive ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"
                         )}
                       >
                         <Avatar
@@ -377,12 +406,19 @@ export function SunlandNav() {
                           className="size-7 shrink-0"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className={cn("truncate text-ms", isActive ? "font-medium text-white" : "text-white/75")}>
+                          <p
+                            className={cn(
+                              "truncate text-ms",
+                              isActive ? "font-medium text-white" : "text-white/75"
+                            )}
+                          >
                             {entity.name}
                           </p>
                           <p className="truncate text-sm text-white/35">{entity.subtitle}</p>
                         </div>
-                        {isActive && <IconCheck size={13} className="shrink-0 text-white/40" aria-hidden />}
+                        {isActive && (
+                          <IconCheck size={13} className="shrink-0 text-white/40" aria-hidden />
+                        )}
                       </button>
                     );
                   })}
@@ -402,13 +438,12 @@ export function SunlandNav() {
         </div>
       </div>
 
-
       {/* ── Main Navigation ──────────────────────────────────── */}
       <nav
         aria-label="Primary navigation"
         className={cn(
           "flex-1 overflow-y-auto py-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
-          sidebarCollapsed ? "px-2.5" : "px-4",
+          sidebarCollapsed ? "px-2.5" : "px-4"
         )}
       >
         <div className="space-y-0.5 pt-6">
@@ -423,8 +458,9 @@ export function SunlandNav() {
             .map((section) => {
               // Filter items the current user can actually access (action-level gating
               // is in the service layer; this is coarse portal-nav visibility only).
-              const items = section.items
-                .filter((item) => canAccess(currentUser.role as UserRole, item.href));
+              const items = section.items.filter((item) =>
+                canAccess(currentUser.role as UserRole, item.href)
+              );
               return { ...section, items };
             })
             .filter((section) => section.items.length > 0)
@@ -445,7 +481,7 @@ export function SunlandNav() {
                         "focus-ring flex size-10 items-center justify-center rounded-xl transition-colors",
                         activeNavItem?.href === section.items[0].href
                           ? "bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                          : "text-white/40 hover:bg-white/[0.04] hover:text-white/80",
+                          : "text-white/40 hover:bg-white/[0.04] hover:text-white/80"
                       )}
                     >
                       <SectionIcon size={19} stroke={1.5} aria-hidden />
@@ -462,7 +498,7 @@ export function SunlandNav() {
                           "focus-ring flex size-10 items-center justify-center rounded-xl transition-colors",
                           section.items.some((i) => i.href === activeNavItem?.href)
                             ? "bg-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                            : "text-white/40 hover:bg-white/[0.04] hover:text-white/80",
+                            : "text-white/40 hover:bg-white/[0.04] hover:text-white/80"
                         )}
                       >
                         <SectionIcon size={19} stroke={1.5} aria-hidden />
@@ -485,7 +521,7 @@ export function SunlandNav() {
                       "focus-ring group relative flex h-9 w-full items-center gap-3 rounded-xl px-3 transition-colors",
                       isActive
                         ? "text-white"
-                        : "text-white/55 hover:text-white/90 hover:bg-white/[0.02]",
+                        : "text-white/55 hover:text-white/90 hover:bg-white/[0.02]"
                     )}
                   >
                     {isActive && (
@@ -500,7 +536,10 @@ export function SunlandNav() {
                       size={18}
                       stroke={1.5}
                       aria-hidden
-                      className={cn("relative z-10 transition-colors", isActive ? "text-white" : "opacity-60 group-hover:opacity-100")}
+                      className={cn(
+                        "relative z-10 transition-colors",
+                        isActive ? "text-white" : "opacity-60 group-hover:opacity-100"
+                      )}
                     />
                     <span className="relative z-10 text-sm font-medium">{section.label}</span>
                   </Link>
@@ -517,20 +556,28 @@ export function SunlandNav() {
                     onClick={() => setActiveSidebarSection(open ? "" : section.id)}
                     className={cn(
                       "focus-ring group relative flex h-9 w-full items-center gap-3 rounded-xl px-3 text-left transition-colors",
-                      open ? "text-white/90" : "text-white/55 hover:text-white/90 hover:bg-white/[0.02]",
+                      open
+                        ? "text-white/90"
+                        : "text-white/55 hover:text-white/90 hover:bg-white/[0.02]"
                     )}
                   >
                     <SectionIcon
                       size={18}
                       stroke={1.5}
                       aria-hidden
-                      className={cn("transition-colors", open ? "text-white/80" : "opacity-60 group-hover:opacity-100")}
+                      className={cn(
+                        "transition-colors",
+                        open ? "text-white/80" : "opacity-60 group-hover:opacity-100"
+                      )}
                     />
                     <span className="flex-1 text-sm font-medium">{section.label}</span>
                     <IconChevronDown
                       size={13}
                       aria-hidden
-                      className={cn("transition-transform text-white/30 group-hover:text-white/60", open && "rotate-180")}
+                      className={cn(
+                        "transition-transform text-white/30 group-hover:text-white/60",
+                        open && "rotate-180"
+                      )}
                     />
                   </button>
 
@@ -551,7 +598,8 @@ export function SunlandNav() {
 
                           {section.items.map((item, index) => {
                             const isActive = activeNavItem?.href === item.href;
-                            const showGroup = item.group && item.group !== section.items[index - 1]?.group;
+                            const showGroup =
+                              item.group && item.group !== section.items[index - 1]?.group;
                             return (
                               <div key={item.href}>
                                 {showGroup && (
@@ -565,14 +613,16 @@ export function SunlandNav() {
                                     "focus-ring group/item relative flex h-9 items-center rounded-lg pl-5 pr-3 transition-colors",
                                     isActive
                                       ? "text-white"
-                                      : "text-white/60 hover:text-white/95 hover:bg-white/[0.02]",
+                                      : "text-white/60 hover:text-white/95 hover:bg-white/[0.02]"
                                   )}
                                 >
                                   {/* Horizontal connector */}
-                                  <span className={cn(
-                                    "absolute left-0 top-1/2 -translate-y-1/2 h-px w-3",
-                                    isActive ? "bg-[#f3df27]" : "bg-[#f3df27]/35"
-                                  )} />
+                                  <span
+                                    className={cn(
+                                      "absolute left-0 top-1/2 -translate-y-1/2 h-px w-3",
+                                      isActive ? "bg-[#f3df27]" : "bg-[#f3df27]/35"
+                                    )}
+                                  />
 
                                   {isActive && (
                                     <motion.div
@@ -583,7 +633,9 @@ export function SunlandNav() {
                                     />
                                   )}
 
-                                  <span className="relative z-10 text-sm font-medium truncate transition-colors">{item.label}</span>
+                                  <span className="relative z-10 text-sm font-medium truncate transition-colors">
+                                    {item.label}
+                                  </span>
 
                                   {item.badge && (
                                     <span className="relative z-10 ml-auto rounded-md bg-[#f3df27]/10 px-1.5 py-0.5 text-xxs font-medium tracking-widest uppercase text-[#f3df27]/90 ring-1 ring-[#f3df27]/20 shrink-0">
@@ -610,26 +662,34 @@ export function SunlandNav() {
 
         {/* ── Team / Messages ─────────────────────────────────── */}
         <div>
-          <div className={cn("flex items-center mb-2", sidebarCollapsed ? "justify-center" : "justify-between pl-2 pr-1")}>
-            {!sidebarCollapsed && (
-              <p className="label-caps text-white/25 tracking-widest">Team</p>
+          <div
+            className={cn(
+              "flex items-center mb-2",
+              sidebarCollapsed ? "justify-center" : "justify-between pl-2 pr-1"
             )}
+          >
+            {!sidebarCollapsed && <p className="label-caps text-white/25 tracking-widest">Team</p>}
             <button
               type="button"
               aria-label="Start new conversation"
               className={cn(
                 "flex items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.05] hover:text-white/70",
-                sidebarCollapsed ? "size-10" : "size-6",
+                sidebarCollapsed ? "size-10" : "size-6"
               )}
             >
               <IconPlus size={14} stroke={2} aria-hidden />
             </button>
           </div>
 
-          <div className={cn("space-y-0.5", sidebarCollapsed && "flex flex-col items-center gap-0.5")}>
+          <div
+            className={cn("space-y-0.5", sidebarCollapsed && "flex flex-col items-center gap-0.5")}
+          >
             {teamMembers.map((member) =>
               sidebarCollapsed ? (
-                <NavTooltip key={member.id} label={`${member.name} · ${member.role.replace("_", " ")}`}>
+                <NavTooltip
+                  key={member.id}
+                  label={`${member.name} · ${member.role.replace("_", " ")}`}
+                >
                   <button
                     type="button"
                     aria-label={member.name}
@@ -678,7 +738,7 @@ export function SunlandNav() {
         ref={profileRef}
         className={cn(
           "relative shrink-0 border-t border-white/[0.04]",
-          sidebarCollapsed ? "p-2.5" : "p-3",
+          sidebarCollapsed ? "p-2.5" : "p-3"
         )}
       >
         {/* Profile popup */}
@@ -694,7 +754,7 @@ export function SunlandNav() {
               className={cn(
                 "absolute bottom-full left-3 right-3 mb-2 z-[60] overflow-hidden",
                 "rounded-xl border border-white/[0.07] bg-[var(--surface-highest)]",
-                "shadow-[0_24px_48px_rgba(0,0,0,0.55)] backdrop-blur-2xl",
+                "shadow-[0_24px_48px_rgba(0,0,0,0.55)] backdrop-blur-2xl"
               )}
             >
               {/* Profile header */}
@@ -712,7 +772,9 @@ export function SunlandNav() {
                       {currentUser.role.replace(/_/g, " ")}
                     </span>
                   </div>
-                  <p className="truncate text-ms font-mono text-white/40 mt-1">{currentUser.email}</p>
+                  <p className="truncate text-ms font-mono text-white/40 mt-1">
+                    {currentUser.email}
+                  </p>
                 </div>
               </div>
 
@@ -723,39 +785,69 @@ export function SunlandNav() {
                   onClick={() => setIsProfileOpen(false)}
                   className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-white/[0.06]"
                 >
-                  <IconUserCircle size={15} aria-hidden className="shrink-0 text-white/40 transition-colors group-hover:text-white/90" />
-                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">My Profile</span>
+                  <IconUserCircle
+                    size={15}
+                    aria-hidden
+                    className="shrink-0 text-white/40 transition-colors group-hover:text-white/90"
+                  />
+                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">
+                    My Profile
+                  </span>
                 </Link>
                 <Link
                   href={`${portalPrefix}/settings`}
                   onClick={() => setIsProfileOpen(false)}
                   className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-white/[0.06]"
                 >
-                  <IconSettings size={15} aria-hidden className="shrink-0 text-white/40 transition-colors group-hover:text-white/90" />
-                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">Settings & Preferences</span>
+                  <IconSettings
+                    size={15}
+                    aria-hidden
+                    className="shrink-0 text-white/40 transition-colors group-hover:text-white/90"
+                  />
+                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">
+                    Settings & Preferences
+                  </span>
                 </Link>
                 <Link
                   href={`${portalPrefix}/messages`}
                   onClick={() => setIsProfileOpen(false)}
                   className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-white/[0.06]"
                 >
-                  <IconUsersGroup size={15} aria-hidden className="shrink-0 text-white/40 transition-colors group-hover:text-white/90" />
-                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">Team Messages</span>
+                  <IconUsersGroup
+                    size={15}
+                    aria-hidden
+                    className="shrink-0 text-white/40 transition-colors group-hover:text-white/90"
+                  />
+                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">
+                    Team Messages
+                  </span>
                 </Link>
                 <Link
                   href={`${portalPrefix}/security`}
                   onClick={() => setIsProfileOpen(false)}
                   className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-white/[0.06]"
                 >
-                  <IconShield size={15} aria-hidden className="shrink-0 text-white/40 transition-colors group-hover:text-white/90" />
-                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">Security & Access</span>
+                  <IconShield
+                    size={15}
+                    aria-hidden
+                    className="shrink-0 text-white/40 transition-colors group-hover:text-white/90"
+                  />
+                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">
+                    Security & Access
+                  </span>
                 </Link>
                 <a
                   href="mailto:support@sunland.co.ke"
                   className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-white/[0.06]"
                 >
-                  <IconHelp size={15} aria-hidden className="shrink-0 text-white/40 transition-colors group-hover:text-white/90" />
-                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">Help & Support</span>
+                  <IconHelp
+                    size={15}
+                    aria-hidden
+                    className="shrink-0 text-white/40 transition-colors group-hover:text-white/90"
+                  />
+                  <span className="text-sm font-medium text-white/70 transition-colors group-hover:text-white/95">
+                    Help & Support
+                  </span>
                 </a>
               </div>
 
@@ -766,8 +858,14 @@ export function SunlandNav() {
                   onClick={handleLogout}
                   className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all hover:bg-red-500/10"
                 >
-                  <IconLogout size={15} aria-hidden className="text-red-400/60 transition-colors group-hover:text-red-400" />
-                  <span className="text-sm font-medium text-red-400/80 transition-colors group-hover:text-red-400">Log out of Sunland ERP</span>
+                  <IconLogout
+                    size={15}
+                    aria-hidden
+                    className="text-red-400/60 transition-colors group-hover:text-red-400"
+                  />
+                  <span className="text-sm font-medium text-red-400/80 transition-colors group-hover:text-red-400">
+                    Log out of Sunland ERP
+                  </span>
                 </button>
               </div>
             </motion.div>
@@ -782,7 +880,10 @@ export function SunlandNav() {
               aria-haspopup="dialog"
               aria-expanded={isProfileOpen}
               aria-label="Open account menu"
-              onClick={() => { setIsProfileOpen((v) => !v); setIsSwitcherOpen(false); }}
+              onClick={() => {
+                setIsProfileOpen((v) => !v);
+                setIsSwitcherOpen(false);
+              }}
               className={cn(
                 "focus-ring flex w-full items-center justify-center rounded-xl p-1.5 transition-colors hover:bg-white/[0.04]",
                 isProfileOpen && "bg-white/[0.05]"
@@ -802,7 +903,10 @@ export function SunlandNav() {
             aria-haspopup="dialog"
             aria-expanded={isProfileOpen}
             aria-label="Open account menu"
-            onClick={() => { setIsProfileOpen((v) => !v); setIsSwitcherOpen(false); }}
+            onClick={() => {
+              setIsProfileOpen((v) => !v);
+              setIsSwitcherOpen(false);
+            }}
             className={cn(
               "focus-ring flex w-full items-center gap-3 rounded-xl p-2 transition-colors hover:bg-white/[0.04]",
               isProfileOpen && "bg-white/[0.05]"
@@ -823,13 +927,20 @@ export function SunlandNav() {
                 className="flex flex-1 items-start justify-between min-w-0"
               >
                 <div className="min-w-0 text-left">
-                  <p className="truncate text-sm font-medium text-white/95 group-hover:text-white transition-colors">{currentUser.name}</p>
-                  <p className="truncate text-xs font-mono text-white/40 leading-none mt-1.5">{currentUser.email}</p>
+                  <p className="truncate text-sm font-medium text-white/95 group-hover:text-white transition-colors">
+                    {currentUser.name}
+                  </p>
+                  <p className="truncate text-xs font-mono text-white/40 leading-none mt-1.5">
+                    {currentUser.email}
+                  </p>
                 </div>
                 <IconChevronDown
                   size={13}
                   aria-hidden
-                  className={cn("shrink-0 text-white/25 transition-transform duration-200 mt-0.5", isProfileOpen && "rotate-180")}
+                  className={cn(
+                    "shrink-0 text-white/25 transition-transform duration-200 mt-0.5",
+                    isProfileOpen && "rotate-180"
+                  )}
                 />
               </motion.div>
             </AnimatePresence>
@@ -839,5 +950,3 @@ export function SunlandNav() {
     </aside>
   );
 }
-
-

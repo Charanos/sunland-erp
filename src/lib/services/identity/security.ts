@@ -17,7 +17,11 @@ const TOTP_ISSUER = "Sunland ERP";
  * Mirrors the design's own weighting: 2FA is the biggest lever, a fresh
  * password helps, too many live sessions is a small risk.
  */
-export function computeSecurityScore(input: { twofaEnabled: boolean; passwordAgeDays: number | null; activeSessionCount: number }): {
+export function computeSecurityScore(input: {
+  twofaEnabled: boolean;
+  passwordAgeDays: number | null;
+  activeSessionCount: number;
+}): {
   pct: number;
   label: "Strong" | "Fair" | "At risk";
 } {
@@ -41,7 +45,13 @@ function daysSince(date: Date | null): number | null {
 /** Everything the Security section needs in one call: posture, 2FA/password state, access log. */
 export async function getSecurityOverview(ctx: CallerContext) {
   const [user] = await db
-    .select({ id: users.id, name: users.name, passwordChangedAt: users.passwordChangedAt, totpEnabledAt: users.totpEnabledAt, createdAt: users.createdAt })
+    .select({
+      id: users.id,
+      name: users.name,
+      passwordChangedAt: users.passwordChangedAt,
+      totpEnabledAt: users.totpEnabledAt,
+      createdAt: users.createdAt,
+    })
     .from(users)
     .where(eq(users.id, ctx.user.id))
     .limit(1);
@@ -56,7 +66,11 @@ export async function getSecurityOverview(ctx: CallerContext) {
   // Fall back to account-creation date as the "password age" baseline when the
   // user has never explicitly changed it (honest, not a fabricated recency).
   const passwordAgeDays = daysSince(user.passwordChangedAt ?? user.createdAt ?? null);
-  const score = computeSecurityScore({ twofaEnabled, passwordAgeDays, activeSessionCount: liveSessions.length });
+  const score = computeSecurityScore({
+    twofaEnabled,
+    passwordAgeDays,
+    activeSessionCount: liveSessions.length,
+  });
 
   // Real access log: this user's own security-relevant audit rows. Queried
   // directly by actorId (not via the entity-scoped listAuditLog) because auth
@@ -72,9 +86,16 @@ export async function getSecurityOverview(ctx: CallerContext) {
     "identity.user.update_profile",
   ];
   const accessLog = await db
-    .select({ id: activityLogs.id, action: activityLogs.action, summary: activityLogs.summary, createdAt: activityLogs.createdAt })
+    .select({
+      id: activityLogs.id,
+      action: activityLogs.action,
+      summary: activityLogs.summary,
+      createdAt: activityLogs.createdAt,
+    })
     .from(activityLogs)
-    .where(and(eq(activityLogs.actorId, ctx.user.id), inArray(activityLogs.action, SECURITY_ACTIONS)))
+    .where(
+      and(eq(activityLogs.actorId, ctx.user.id), inArray(activityLogs.action, SECURITY_ACTIONS))
+    )
     .orderBy(desc(activityLogs.createdAt))
     .limit(8);
 
@@ -90,7 +111,11 @@ export async function getSecurityOverview(ctx: CallerContext) {
 }
 
 /** Real self-service password change: verify current → rehash → stamp age → sign out other devices. */
-export async function changePassword(ctx: CallerContext, currentSessionId: string | null, rawInput: unknown) {
+export async function changePassword(
+  ctx: CallerContext,
+  currentSessionId: string | null,
+  rawInput: unknown
+) {
   const input = parseInput(changePasswordSchema, rawInput);
   if (input.currentPassword === input.newPassword) {
     throw new DomainValidationError("New password must differ from the current one.");
@@ -105,7 +130,10 @@ export async function changePassword(ctx: CallerContext, currentSessionId: strin
   const newHash = await hashPassword(input.newPassword);
 
   return db.transaction(async (tx) => {
-    await tx.update(users).set({ passwordHash: newHash, passwordChangedAt: new Date() }).where(eq(users.id, ctx.user.id));
+    await tx
+      .update(users)
+      .set({ passwordHash: newHash, passwordChangedAt: new Date() })
+      .where(eq(users.id, ctx.user.id));
 
     // Rotating the password ends every other live session (a real security
     // property, not a nicety) - keep only the device making the change.
@@ -140,7 +168,11 @@ export async function changePassword(ctx: CallerContext, currentSessionId: strin
  * pending secret.
  */
 export async function enrollTotp(ctx: CallerContext) {
-  const [user] = await db.select({ email: users.email, totpEnabledAt: users.totpEnabledAt }).from(users).where(eq(users.id, ctx.user.id)).limit(1);
+  const [user] = await db
+    .select({ email: users.email, totpEnabledAt: users.totpEnabledAt })
+    .from(users)
+    .where(eq(users.id, ctx.user.id))
+    .limit(1);
   if (!user) throw new NotFoundError("User not found");
   if (user.totpEnabledAt) throw new ConflictError("Two-factor authentication is already enabled.");
 
@@ -153,14 +185,21 @@ export async function enrollTotp(ctx: CallerContext) {
 /** TOTP enrollment step 2: confirm the 6-digit code, then flip on totpEnabledAt. */
 export async function verifyTotpEnrollment(ctx: CallerContext, rawInput: unknown) {
   const input = parseInput(totpVerifySchema, rawInput);
-  const [user] = await db.select({ totpSecret: users.totpSecret, totpEnabledAt: users.totpEnabledAt }).from(users).where(eq(users.id, ctx.user.id)).limit(1);
+  const [user] = await db
+    .select({ totpSecret: users.totpSecret, totpEnabledAt: users.totpEnabledAt })
+    .from(users)
+    .where(eq(users.id, ctx.user.id))
+    .limit(1);
   if (!user) throw new NotFoundError("User not found");
   if (user.totpEnabledAt) throw new ConflictError("Two-factor authentication is already enabled.");
-  if (!user.totpSecret) throw new DomainValidationError("Start enrollment before verifying a code.");
+  if (!user.totpSecret)
+    throw new DomainValidationError("Start enrollment before verifying a code.");
 
   const { valid } = await verifyTotp({ secret: user.totpSecret, token: input.code });
   if (!valid) {
-    throw new DomainValidationError("That code didn't match. Check your authenticator app and try again.");
+    throw new DomainValidationError(
+      "That code didn't match. Check your authenticator app and try again."
+    );
   }
 
   return db.transaction(async (tx) => {
@@ -179,16 +218,24 @@ export async function verifyTotpEnrollment(ctx: CallerContext, rawInput: unknown
 /** Disable 2FA - requires a current valid TOTP code to prevent a hijacked session turning it off. */
 export async function disableTotp(ctx: CallerContext, rawInput: unknown) {
   const input = parseInput(totpVerifySchema, rawInput);
-  const [user] = await db.select({ totpSecret: users.totpSecret, totpEnabledAt: users.totpEnabledAt }).from(users).where(eq(users.id, ctx.user.id)).limit(1);
+  const [user] = await db
+    .select({ totpSecret: users.totpSecret, totpEnabledAt: users.totpEnabledAt })
+    .from(users)
+    .where(eq(users.id, ctx.user.id))
+    .limit(1);
   if (!user) throw new NotFoundError("User not found");
-  if (!user.totpEnabledAt || !user.totpSecret) throw new ConflictError("Two-factor authentication is not enabled.");
+  if (!user.totpEnabledAt || !user.totpSecret)
+    throw new ConflictError("Two-factor authentication is not enabled.");
   const { valid } = await verifyTotp({ secret: user.totpSecret, token: input.code });
   if (!valid) {
     throw new DomainValidationError("That code didn't match. Enter a current code to disable 2FA.");
   }
 
   return db.transaction(async (tx) => {
-    await tx.update(users).set({ totpSecret: null, totpEnabledAt: null }).where(eq(users.id, ctx.user.id));
+    await tx
+      .update(users)
+      .set({ totpSecret: null, totpEnabledAt: null })
+      .where(eq(users.id, ctx.user.id));
     await writeAudit(tx, ctx, {
       action: "identity.security.2fa_disabled",
       associatedType: "user",

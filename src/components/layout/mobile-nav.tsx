@@ -15,11 +15,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { IconButton } from "@/components/ui/icon-button";
 import { cn } from "@/lib/utils/cn";
 import { useUIStore } from "@/store/ui";
-import {
-  getActiveNavItem,
-  findSectionByPath,
-  navSections,
-} from "@/components/layout/nav-model";
+import { getActiveNavItem, findSectionByPath, navSections } from "@/components/layout/nav-model";
 import { useTeamMembers, getOrCreateDmConversationId } from "@/hooks/use-team-members";
 
 import {
@@ -40,26 +36,26 @@ export function MobileBottomNav() {
   const { openMobileNav } = useUIStore();
   const isFinRoute = pathname.startsWith("/fin");
 
-  const centerItem = { href: isFinRoute ? "/fin" : "/admin", label: "Overview", icon: IconHomeStats };
+  const centerItem = {
+    href: isFinRoute ? "/fin" : "/admin",
+    label: "Overview",
+    icon: IconHomeStats,
+  };
   const CenterIcon = centerItem.icon;
 
   const leftItems = isFinRoute
     ? [
-      { href: "/fin/rentals/collections", label: "Rentals", icon: IconHomeDollar },
-      { href: "/fin/ledger/journal-entries", label: "Ledger", icon: IconWallet },
-    ]
+        { href: "/fin/rentals/collections", label: "Rentals", icon: IconHomeDollar },
+        { href: "/fin/ledger/journal-entries", label: "Ledger", icon: IconWallet },
+      ]
     : [
-      { href: "/admin/properties", label: "Properties", icon: IconBuildingCommunity },
-      { href: "/admin/contacts", label: "Contacts", icon: IconUsersGroup },
-    ];
+        { href: "/admin/properties", label: "Properties", icon: IconBuildingCommunity },
+        { href: "/admin/contacts", label: "Contacts", icon: IconUsersGroup },
+      ];
 
   const rightItems = isFinRoute
-    ? [
-      { href: "/fin/reports/generate", label: "Reports", icon: IconReportAnalytics },
-    ]
-    : [
-      { href: "/admin/pipeline", label: "Pipeline", icon: IconChartBar },
-    ];
+    ? [{ href: "/fin/reports/generate", label: "Reports", icon: IconReportAnalytics }]
+    : [{ href: "/admin/pipeline", label: "Pipeline", icon: IconChartBar }];
 
   return (
     <nav
@@ -77,7 +73,8 @@ export function MobileBottomNav() {
         {/* Left items */}
         <div className="flex flex-1 justify-around pr-8">
           {leftItems.map((item) => {
-            const isActive = pathname.startsWith(item.href) && item.href !== "/admin" && item.href !== "/fin";
+            const isActive =
+              pathname.startsWith(item.href) && item.href !== "/admin" && item.href !== "/fin";
             const Icon = item.icon;
             return (
               <Link
@@ -155,7 +152,8 @@ export function MobileNavigationDrawer() {
     name: "Paul Amos",
     email: "ceo@sunlandre.co.ke",
     role: "ceo",
-    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
   });
 
   useEffect(() => {
@@ -167,11 +165,13 @@ export function MobileNavigationDrawer() {
             name: data.user.name,
             email: data.user.email,
             role: data.user.role,
-            avatarUrl: data.user.avatarUrl || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
+            avatarUrl:
+              data.user.avatarUrl ||
+              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
           });
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   const isFinRoute = pathname.startsWith("/fin");
@@ -284,7 +284,7 @@ export function MobileNavigationDrawer() {
                     className={cn(
                       "focus-ring relative flex h-10 items-center gap-3 rounded-xl px-3 text-white/80 transition",
                       "hover:bg-white/[0.06] hover:text-white",
-                      isActive && "bg-white/[0.1] text-white",
+                      isActive && "bg-white/[0.1] text-white"
                     )}
                   >
                     {isActive && (
@@ -316,7 +316,12 @@ export function MobileNavigationDrawer() {
                     onClick={() => toggleSection(section.id)}
                     className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-white/[0.04]"
                   >
-                    <SectionIcon aria-hidden size={16} stroke={1.8} className="shrink-0 text-white/50" />
+                    <SectionIcon
+                      aria-hidden
+                      size={16}
+                      stroke={1.8}
+                      className="shrink-0 text-white/50"
+                    />
                     <span className="label-caps flex-1 text-white/50">{section.label}</span>
                     <motion.div
                       animate={{ rotate: isOpen ? 180 : 0 }}
@@ -350,7 +355,7 @@ export function MobileNavigationDrawer() {
                                 className={cn(
                                   "focus-ring relative flex h-9 items-center gap-3 rounded-xl px-3 text-white/70 transition",
                                   "hover:bg-white/[0.06] hover:text-white",
-                                  isActive && "bg-white/[0.1] text-white",
+                                  isActive && "bg-white/[0.1] text-white"
                                 )}
                               >
                                 {isActive && (
@@ -436,7 +441,9 @@ export function MobileNavigationDrawer() {
               />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-white/95">{currentUser.name}</p>
-                <p className="truncate text-xxs font-medium uppercase tracking-widest text-white/40 mt-0.5">{currentUser.role.replace(/_/g, " ")}</p>
+                <p className="truncate text-xxs font-medium uppercase tracking-widest text-white/40 mt-0.5">
+                  {currentUser.role.replace(/_/g, " ")}
+                </p>
               </div>
             </Link>
             <div className="flex items-center gap-1">
@@ -461,7 +468,7 @@ export function MobileNavigationDrawer() {
                 aria-label="Logout"
                 onClick={async () => {
                   closeMobileNav();
-                  await fetch("/api/auth/logout", { method: "POST" }).catch(() => { });
+                  await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
                   router.push("/login");
                 }}
                 className="flex size-8 items-center justify-center rounded-lg text-white/40 transition hover:bg-rose-500/10 hover:text-rose-400"

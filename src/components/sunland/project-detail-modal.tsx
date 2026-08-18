@@ -89,22 +89,33 @@ export function ProjectDetailModal({
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-slate-100">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Badge tone={
-                project.department === "sales" ? "primary" :
-                  project.department === "finance" ? "success" :
-                    project.department === "legal" ? "neutral" :
-                      "warning"
-              } className="px-2.5 py-0.5 text-xxs tracking-widest uppercase shadow-sm">
+              <Badge
+                tone={
+                  project.department === "sales"
+                    ? "primary"
+                    : project.department === "finance"
+                      ? "success"
+                      : project.department === "legal"
+                        ? "neutral"
+                        : "warning"
+                }
+                className="px-2.5 py-0.5 text-xxs tracking-widest uppercase shadow-sm"
+              >
                 {project.department.replace("_", " ")}
               </Badge>
-              <Badge tone="neutral" className="px-2.5 py-0.5 text-xxs tracking-widest uppercase shadow-sm bg-white">
+              <Badge
+                tone="neutral"
+                className="px-2.5 py-0.5 text-xxs tracking-widest uppercase shadow-sm bg-white"
+              >
                 {PROJECT_STATUS_LABEL[project.status]}
               </Badge>
             </div>
             <div>
               <h2 className="text-xl font-medium text-slate-900">{project.title}</h2>
               {project.description && (
-                <p className="text-sm text-slate-500 mt-1 max-w-xl leading-relaxed">{project.description}</p>
+                <p className="text-sm text-slate-500 mt-1 max-w-xl leading-relaxed">
+                  {project.description}
+                </p>
               )}
             </div>
           </div>
@@ -136,7 +147,14 @@ export function ProjectDetailModal({
             <div className="flex items-center gap-2">
               <div className="flex -space-x-1.5">
                 {project.assigneeIds.slice(0, 3).map((id) => (
-                  <Image key={id} src={`https://i.pravatar.cc/150?u=${id}`} alt="assignee" width={24} height={24} className="size-6 rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover" />
+                  <Image
+                    key={id}
+                    src={`https://i.pravatar.cc/150?u=${id}`}
+                    alt="assignee"
+                    width={24}
+                    height={24}
+                    className="size-6 rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover"
+                  />
                 ))}
                 {project.assigneeIds.length > 3 && (
                   <div className="size-6 rounded-full ring-2 ring-white bg-slate-50 flex items-center justify-center text-xxs font-medium text-slate-600 shadow-sm z-10">
@@ -155,7 +173,11 @@ export function ProjectDetailModal({
             </span>
             <span className="text-lg text-slate-800 mono-data font-medium">
               {project.dueDate
-                ? new Date(project.dueDate).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })
+                ? new Date(project.dueDate).toLocaleDateString("en-KE", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
                 : "TBD"}
             </span>
           </div>
@@ -182,7 +204,10 @@ export function ProjectDetailModal({
             ) : (
               <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-px before:bg-slate-200">
                 {logs.map((log) => (
-                  <div key={log.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                  <div
+                    key={log.id}
+                    className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
+                  >
                     {/* Icon marker */}
                     <div className="flex items-center justify-center size-5 rounded-full border border-white bg-slate-200 text-slate-400 shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                       <div className="size-1.5 rounded-full bg-slate-400" />
@@ -194,7 +219,12 @@ export function ProjectDetailModal({
                           {log.action.split(".").pop()}
                         </span>
                         <span className="text-xs text-slate-400 mono-data">
-                          {new Date(log.createdAt).toLocaleDateString("en-KE", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          {new Date(log.createdAt).toLocaleDateString("en-KE", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </span>
                       </div>
                       <p className="text-sm text-slate-600 leading-relaxed">{log.summary}</p>

@@ -66,7 +66,12 @@ interface MaintenanceDetail {
   maintenanceAuthorityKes: number | null;
   propertyManagerName: string | null;
   pendingApproval: { id: string; requiredApproverRole: string; amountKes: string | null } | null;
-  sla: { state: "ok" | "at_risk" | "breached"; hoursElapsed: number; hoursRemaining: number; targetHours: number };
+  sla: {
+    state: "ok" | "at_risk" | "breached";
+    hoursElapsed: number;
+    hoursRemaining: number;
+    targetHours: number;
+  };
 }
 
 interface AuditEntry {
@@ -79,19 +84,30 @@ interface AuditEntry {
 // Only the safe, direct bare-status transitions - "scheduled" always goes
 // through the real scheduleMaintenanceVisit endpoint (Schedule Visit action)
 // since it requires a real calendar_events row, not a free status jump.
-const NEXT_STAGE: Partial<Record<MaintenanceStatus, { status: MaintenanceStatus; label: string }>> = {
-  reported: { status: "in_progress", label: "Start Progress" },
-  scheduled: { status: "in_progress", label: "Start Progress" },
-  in_progress: { status: "done", label: "Mark Complete" },
-};
+const NEXT_STAGE: Partial<Record<MaintenanceStatus, { status: MaintenanceStatus; label: string }>> =
+  {
+    reported: { status: "in_progress", label: "Start Progress" },
+    scheduled: { status: "in_progress", label: "Start Progress" },
+    in_progress: { status: "done", label: "Mark Complete" },
+  };
 
 function fmtDate(iso: string | null): string {
   if (!iso) return "-";
-  return new Date(iso).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-KE", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function fmtDateTime(iso: string): string {
-  return new Date(iso).toLocaleString("en-KE", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleString("en-KE", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function relativeTime(iso: string): string {
@@ -132,7 +148,13 @@ const VITAL_TONE_ARTWORK: Record<VitalTone, string> = {
   neutral: "text-slate-600",
 };
 
-export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: string; requestId: string }) {
+export function MaintenanceFullViewBoard({
+  entityId,
+  requestId,
+}: {
+  entityId: string;
+  requestId: string;
+}) {
   const { pushToast } = useToast();
   const [request, setRequest] = useState<MaintenanceDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -160,7 +182,11 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
       if (!res.ok) throw new Error(data.error || "Failed to load maintenance request");
       setRequest(data.maintenanceRequest);
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to load request." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to load request.",
+      });
     } finally {
       setLoading(false);
     }
@@ -174,16 +200,26 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
     if (!entityId) return;
     fetch(`/api/contacts?entityId=${entityId}&type=contractor`)
       .then((r) => r.json())
-      .then((d) => { if (Array.isArray(d.contacts)) setContractors(d.contacts); })
+      .then((d) => {
+        if (Array.isArray(d.contacts)) setContractors(d.contacts);
+      })
       .catch(() => {});
   }, [entityId]);
 
   useEffect(() => {
     if (activeTab !== "activity" || activityLoaded) return;
-    fetch(`/api/audit?entityId=${entityId}&associatedType=maintenance_request&associatedId=${requestId}&limit=100`)
+    fetch(
+      `/api/audit?entityId=${entityId}&associatedType=maintenance_request&associatedId=${requestId}&limit=100`
+    )
       .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((d) => { setActivity(d.entries ?? []); setActivityLoaded(true); })
-      .catch(() => { setActivity([]); setActivityLoaded(true); });
+      .then((d) => {
+        setActivity(d.entries ?? []);
+        setActivityLoaded(true);
+      })
+      .catch(() => {
+        setActivity([]);
+        setActivityLoaded(true);
+      });
   }, [activeTab, activityLoaded, entityId, requestId]);
 
   const advanceStatus = async () => {
@@ -196,11 +232,20 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: next.status }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to update status");
-      pushToast({ tone: "success", title: "Updated", body: `Request moved to ${STATUS_META[next.status].label}.` });
+      if (!res.ok)
+        throw new Error((await res.json().catch(() => null))?.error ?? "Failed to update status");
+      pushToast({
+        tone: "success",
+        title: "Updated",
+        body: `Request moved to ${STATUS_META[next.status].label}.`,
+      });
       load();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -211,12 +256,19 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ assignedContractorId: reassignId || null }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to reassign contractor");
+      if (!res.ok)
+        throw new Error(
+          (await res.json().catch(() => null))?.error ?? "Failed to reassign contractor"
+        );
       pushToast({ tone: "success", title: "Updated", body: "Contractor assignment saved." });
       setReassignOpen(false);
       load();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     }
   };
 
@@ -227,17 +279,29 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
       const res = await fetch(`/api/maintenance-requests/${requestId}/schedule-visit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entityId, startsAt: new Date(scheduleStart).toISOString(), endsAt: new Date(scheduleEnd).toISOString() }),
+        body: JSON.stringify({
+          entityId,
+          startsAt: new Date(scheduleStart).toISOString(),
+          endsAt: new Date(scheduleEnd).toISOString(),
+        }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to schedule visit");
-      pushToast({ tone: "success", title: "Scheduler event created", body: "Visit booked — crew and tenant notified." });
+      pushToast({
+        tone: "success",
+        title: "Scheduler event created",
+        body: "Visit booked — crew and tenant notified.",
+      });
       setScheduleOpen(false);
       setScheduleStart("");
       setScheduleEnd("");
       load();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setIsScheduling(false);
     }
@@ -246,7 +310,11 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
   const submitCost = async () => {
     const costKes = parseFloat(costInput);
     if (!costKes || costKes <= 0) {
-      pushToast({ tone: "warning", title: "Invalid amount", body: "Enter a cost greater than zero." });
+      pushToast({
+        tone: "warning",
+        title: "Invalid amount",
+        body: "Enter a cost greater than zero.",
+      });
       return;
     }
     setSubmittingCost(true);
@@ -261,13 +329,19 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
       pushToast({
         tone: "success",
         title: data.selfApproved ? "Cost approved" : "Submitted for approval",
-        body: data.selfApproved ? "Within authority - approved and recorded immediately." : `Routed to ${data.approvalRequest?.requiredApproverRole?.toUpperCase()} for a decision.`,
+        body: data.selfApproved
+          ? "Within authority - approved and recorded immediately."
+          : `Routed to ${data.approvalRequest?.requiredApproverRole?.toUpperCase()} for a decision.`,
       });
       setCostOpen(false);
       setCostInput("");
       load();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Try again." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Try again.",
+      });
     } finally {
       setSubmittingCost(false);
     }
@@ -294,17 +368,22 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
   const statusMeta = STATUS_META[request.status] ?? STATUS_META.reported;
   const priorityMeta = PRIORITY_META[request.priority] ?? PRIORITY_META.routine;
   const slaMeta = SLA_STATE_META[request.sla.state] ?? SLA_STATE_META.ok;
-  const heroImg = request.propertyMedia?.find((m) => m.isPrimary)?.url ?? request.propertyMedia?.[0]?.url ?? null;
+  const heroImg =
+    request.propertyMedia?.find((m) => m.isPrimary)?.url ?? request.propertyMedia?.[0]?.url ?? null;
   const next = NEXT_STAGE[request.status];
-  const costVsAuthority = request.maintenanceAuthorityKes != null && (request.estimatedCostKes ?? request.actualCostKes)
-    ? (request.actualCostKes ?? request.estimatedCostKes ?? 0) / request.maintenanceAuthorityKes
-    : null;
+  const costVsAuthority =
+    request.maintenanceAuthorityKes != null && (request.estimatedCostKes ?? request.actualCostKes)
+      ? (request.actualCostKes ?? request.estimatedCostKes ?? 0) / request.maintenanceAuthorityKes
+      : null;
 
   return (
     <PageTransition className="board-shell mx-auto flex max-w-[98rem] flex-col gap-6 pb-12">
       {/* Breadcrumb */}
       <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-        <Link href="/admin/maintenance" className="hover:text-slate-900 transition-colors flex items-center gap-1">
+        <Link
+          href="/admin/maintenance"
+          className="hover:text-slate-900 transition-colors flex items-center gap-1"
+        >
           <IconChevronLeft size={14} /> Maintenance
         </Link>
         <span className="text-slate-300">/</span>
@@ -316,17 +395,30 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="title-serif text-slate-900 truncate">{request.title}</h1>
-            <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", statusMeta.pill)}>
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+                statusMeta.pill
+              )}
+            >
               <span className={cn("size-1.5 rounded-full", statusMeta.dot)} /> {statusMeta.label}
             </span>
-            <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", priorityMeta.pill)}>
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+                priorityMeta.pill
+              )}
+            >
               {priorityMeta.label}
             </span>
           </div>
           <div className="flex items-center gap-3 text-slate-500 text-sm min-w-0 font-medium">
             <span className="flex items-center gap-1.5 min-w-0">
               <IconMapPin size={15} className="shrink-0 text-slate-600" aria-hidden="true" />
-              <Link href={`/admin/properties/${request.propertyId}`} className="truncate hover:text-slate-900 hover:underline">
+              <Link
+                href={`/admin/properties/${request.propertyId}`}
+                className="truncate hover:text-slate-900 hover:underline"
+              >
                 {request.propertyName}
               </Link>
             </span>
@@ -349,7 +441,8 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
               onClick={() => setScheduleOpen((v) => !v)}
               className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
             >
-              <IconCalendarPlus size={15} /> {request.status === "scheduled" ? "Reschedule Visit" : "Schedule Visit"}
+              <IconCalendarPlus size={15} />{" "}
+              {request.status === "scheduled" ? "Reschedule Visit" : "Schedule Visit"}
             </button>
           )}
           <button
@@ -370,11 +463,25 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-[44px] z-20 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl p-1.5">
-                <button onClick={() => { setReassignId(request.assignedContractorId ?? ""); setReassignOpen(true); setMenuOpen(false); }} className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                  <IconTool size={15} className="text-slate-400" /> {request.assignedContractorId ? "Reassign contractor" : "Assign contractor"}
+                <button
+                  onClick={() => {
+                    setReassignId(request.assignedContractorId ?? "");
+                    setReassignOpen(true);
+                    setMenuOpen(false);
+                  }}
+                  className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  <IconTool size={15} className="text-slate-400" />{" "}
+                  {request.assignedContractorId ? "Reassign contractor" : "Assign contractor"}
                 </button>
                 <div className="h-px bg-slate-100 my-1" />
-                <button onClick={() => { setDeleteOpen(true); setMenuOpen(false); }} className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-rose-600 hover:bg-rose-50">
+                <button
+                  onClick={() => {
+                    setDeleteOpen(true);
+                    setMenuOpen(false);
+                  }}
+                  className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-rose-600 hover:bg-rose-50"
+                >
                   <IconTrash size={15} /> Delete request
                 </button>
               </div>
@@ -385,20 +492,43 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
 
       {scheduleOpen && (
         <div className="rounded-2xl p-4 flex flex-col gap-3 border border-amber-200 bg-amber-500/[0.04] shadow-sm">
-          <p className="text-sm font-medium text-slate-900">{request.status === "scheduled" ? "Reschedule visit" : "Schedule visit"}</p>
+          <p className="text-sm font-medium text-slate-900">
+            {request.status === "scheduled" ? "Reschedule visit" : "Schedule visit"}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-slate-400 block mb-1">Starts</label>
-              <input type="datetime-local" value={scheduleStart} onChange={(e) => setScheduleStart(e.target.value)} className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:border-[#151936]/40" />
+              <input
+                type="datetime-local"
+                value={scheduleStart}
+                onChange={(e) => setScheduleStart(e.target.value)}
+                className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:border-[#151936]/40"
+              />
             </div>
             <div>
               <label className="text-xs text-slate-400 block mb-1">Ends</label>
-              <input type="datetime-local" value={scheduleEnd} onChange={(e) => setScheduleEnd(e.target.value)} className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:border-[#151936]/40" />
+              <input
+                type="datetime-local"
+                value={scheduleEnd}
+                onChange={(e) => setScheduleEnd(e.target.value)}
+                className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:border-[#151936]/40"
+              />
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setScheduleOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-white rounded-xl">Cancel</button>
-            <button type="button" disabled={isScheduling || !scheduleStart || !scheduleEnd} onClick={submitSchedule} className="px-4 py-2 text-sm font-medium bg-[#151936] text-white hover:bg-[#1a1f42] rounded-xl disabled:opacity-50">
+            <button
+              type="button"
+              onClick={() => setScheduleOpen(false)}
+              className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-white rounded-xl"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={isScheduling || !scheduleStart || !scheduleEnd}
+              onClick={submitSchedule}
+              className="px-4 py-2 text-sm font-medium bg-[#151936] text-white hover:bg-[#1a1f42] rounded-xl disabled:opacity-50"
+            >
               {isScheduling ? "Saving..." : "Confirm"}
             </button>
           </div>
@@ -409,16 +539,28 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
       <div className="relative rounded-[28px] overflow-hidden min-h-[220px] lg:min-h-[260px] bg-[#1e2336] flex flex-col animate-fade-in-up">
         {heroImg ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={heroImg} alt={request.propertyName} className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={heroImg}
+            alt={request.propertyName}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#151936] via-[#1e2336] to-[#0c1f24]" />
         )}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(12,15,32,0.38) 0%, rgba(12,15,32,0.08) 34%, rgba(10,13,28,0.55) 68%, rgba(8,10,22,0.9) 100%)" }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(12,15,32,0.38) 0%, rgba(12,15,32,0.08) 34%, rgba(10,13,28,0.55) 68%, rgba(8,10,22,0.9) 100%)",
+          }}
+        />
 
         {/* Floating SLA glass card */}
         <div className="hidden sm:block absolute top-6 right-6 w-[180px] bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl">
           <p className="label-caps text-slate-400 mb-1.5">SLA Status</p>
-          <p className="text-lg font-medium leading-none" style={{ color: slaMeta.color }}>{slaMeta.label}</p>
+          <p className="text-lg font-medium leading-none" style={{ color: slaMeta.color }}>
+            {slaMeta.label}
+          </p>
           <div className="h-px bg-slate-100 my-2.5" />
           <div className="flex justify-between text-xs">
             <span className="text-slate-400">Target</span>
@@ -426,12 +568,17 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
           </div>
           <div className="flex justify-between text-xs mt-1">
             <span className="text-slate-400">Elapsed</span>
-            <span className="font-mono text-slate-700">{Math.round(request.sla.hoursElapsed)}h</span>
+            <span className="font-mono text-slate-700">
+              {Math.round(request.sla.hoursElapsed)}h
+            </span>
           </div>
         </div>
 
         <div className="relative z-10 p-6 mt-auto flex flex-col gap-1">
-          <p className="font-mono text-xs text-white/60">Reported {fmtDate(request.createdAt)}{request.reportedByName ? ` by ${request.reportedByName}` : ""}</p>
+          <p className="font-mono text-xs text-white/60">
+            Reported {fmtDate(request.createdAt)}
+            {request.reportedByName ? ` by ${request.reportedByName}` : ""}
+          </p>
           <p className="title-serif text-white text-2xl">{request.propertyName}</p>
           <p className="text-xs text-white/60">{request.propertyLocation}</p>
         </div>
@@ -441,53 +588,139 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
       {request.pendingApproval && (
         <div className="rounded-2xl p-4 flex items-center justify-between gap-4 border border-amber-200 bg-amber-500/[0.04] shadow-sm">
           <div className="flex items-start gap-3 min-w-0">
-            <span className="size-9 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shrink-0"><IconClock size={18} /></span>
+            <span className="size-9 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shrink-0">
+              <IconClock size={18} />
+            </span>
             <div className="min-w-0">
               <p className="text-sm font-medium text-slate-950">
                 Awaiting {request.pendingApproval.requiredApproverRole.toUpperCase()} approval
-                {request.pendingApproval.amountKes ? ` for ${formatCompactKES(parseFloat(request.pendingApproval.amountKes))}` : ""}
+                {request.pendingApproval.amountKes
+                  ? ` for ${formatCompactKES(parseFloat(request.pendingApproval.amountKes))}`
+                  : ""}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5">Review this in the Approvals Queue to decide.</p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Review this in the Approvals Queue to decide.
+              </p>
             </div>
           </div>
-          <Link href="/admin/approvals" className="rounded-xl px-4 py-1.5 text-xs font-medium whitespace-nowrap bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] shadow-sm">
+          <Link
+            href="/admin/approvals"
+            className="rounded-xl px-4 py-1.5 text-xs font-medium whitespace-nowrap bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] shadow-sm"
+          >
             Review
           </Link>
         </div>
       )}
-      {!request.pendingApproval && request.sla.state === "breached" && request.status !== "done" && (
-        <div className="rounded-2xl p-4 flex items-center gap-3 border border-rose-200 bg-rose-500/[0.04] shadow-sm">
-          <span className="size-9 rounded-xl bg-rose-100/80 text-rose-700 flex items-center justify-center shrink-0"><IconFlame size={18} /></span>
-          <p className="text-sm font-medium text-slate-950">SLA breached - {Math.round(request.sla.hoursElapsed)}h elapsed against a {request.sla.targetHours}h target.</p>
-        </div>
-      )}
+      {!request.pendingApproval &&
+        request.sla.state === "breached" &&
+        request.status !== "done" && (
+          <div className="rounded-2xl p-4 flex items-center gap-3 border border-rose-200 bg-rose-500/[0.04] shadow-sm">
+            <span className="size-9 rounded-xl bg-rose-100/80 text-rose-700 flex items-center justify-center shrink-0">
+              <IconFlame size={18} />
+            </span>
+            <p className="text-sm font-medium text-slate-950">
+              SLA breached - {Math.round(request.sla.hoursElapsed)}h elapsed against a{" "}
+              {request.sla.targetHours}h target.
+            </p>
+          </div>
+        )}
 
       {/* Vitals */}
       <div className="gsap-stagger grid grid-cols-1 sm:grid-cols-2 @board-lg:grid-cols-4 gap-3.5">
         {(() => {
-          const statusTone: VitalTone = request.status === "done" ? "emerald" : request.status === "awaiting_approval" ? "amber" : "neutral";
-          const priorityTone: VitalTone = request.priority === "critical" ? "rose" : request.priority === "urgent" ? "amber" : "neutral";
-          const slaTone: VitalTone = request.sla.state === "breached" ? "rose" : request.sla.state === "at_risk" ? "amber" : "emerald";
+          const statusTone: VitalTone =
+            request.status === "done"
+              ? "emerald"
+              : request.status === "awaiting_approval"
+                ? "amber"
+                : "neutral";
+          const priorityTone: VitalTone =
+            request.priority === "critical"
+              ? "rose"
+              : request.priority === "urgent"
+                ? "amber"
+                : "neutral";
+          const slaTone: VitalTone =
+            request.sla.state === "breached"
+              ? "rose"
+              : request.sla.state === "at_risk"
+                ? "amber"
+                : "emerald";
           const costTone: VitalTone = costVsAuthority && costVsAuthority > 1 ? "amber" : "neutral";
-          const vitals: Array<{ label: string; value: string; sub?: string; icon: typeof IconTool; tone: VitalTone }> = [
+          const vitals: Array<{
+            label: string;
+            value: string;
+            sub?: string;
+            icon: typeof IconTool;
+            tone: VitalTone;
+          }> = [
             { label: "Status", value: statusMeta.label, icon: IconTool, tone: statusTone },
-            { label: "Severity", value: priorityMeta.label, icon: IconAlertTriangle, tone: priorityTone },
-            { label: "SLA", value: slaMeta.label, sub: `${request.sla.targetHours}h target`, icon: IconClock, tone: slaTone },
+            {
+              label: "Severity",
+              value: priorityMeta.label,
+              icon: IconAlertTriangle,
+              tone: priorityTone,
+            },
+            {
+              label: "SLA",
+              value: slaMeta.label,
+              sub: `${request.sla.targetHours}h target`,
+              icon: IconClock,
+              tone: slaTone,
+            },
             {
               label: "Cost",
-              value: request.actualCostKes != null ? formatCompactKES(request.actualCostKes) : request.estimatedCostKes != null ? formatCompactKES(request.estimatedCostKes) : "—",
-              sub: request.maintenanceAuthorityKes != null ? `of ${formatCompactKES(request.maintenanceAuthorityKes)} authority` : undefined,
+              value:
+                request.actualCostKes != null
+                  ? formatCompactKES(request.actualCostKes)
+                  : request.estimatedCostKes != null
+                    ? formatCompactKES(request.estimatedCostKes)
+                    : "—",
+              sub:
+                request.maintenanceAuthorityKes != null
+                  ? `of ${formatCompactKES(request.maintenanceAuthorityKes)} authority`
+                  : undefined,
               icon: IconCash,
               tone: costTone,
             },
           ];
           return vitals.map((v) => (
-            <div key={v.label} className={cn("relative overflow-hidden rounded-2xl border p-5 shadow-sm h-[120px] flex flex-col justify-between group", VITAL_TONE_BG[v.tone])}>
-              <v.icon size={140} stroke={1} className={cn("absolute -right-6 -bottom-6 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none", VITAL_TONE_ARTWORK[v.tone])} aria-hidden="true" />
+            <div
+              key={v.label}
+              className={cn(
+                "relative overflow-hidden rounded-2xl border p-5 shadow-sm h-[120px] flex flex-col justify-between group",
+                VITAL_TONE_BG[v.tone]
+              )}
+            >
+              <v.icon
+                size={140}
+                stroke={1}
+                className={cn(
+                  "absolute -right-6 -bottom-6 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none",
+                  VITAL_TONE_ARTWORK[v.tone]
+                )}
+                aria-hidden="true"
+              />
               <span className="text-xs text-slate-400 font-medium relative z-10">{v.label}</span>
               <div className="relative z-10 flex flex-col gap-1.5">
-                <span className={cn("font-mono font-medium text-xl leading-none", VITAL_TONE_VALUE[v.tone])}>{v.value}</span>
-                {v.sub && <span className={cn("mono-data text-xxs font-medium inline-flex items-center px-1.5 py-0.5 rounded-md w-fit", VITAL_TONE_BADGE_BG[v.tone])}>{v.sub}</span>}
+                <span
+                  className={cn(
+                    "font-mono font-medium text-xl leading-none",
+                    VITAL_TONE_VALUE[v.tone]
+                  )}
+                >
+                  {v.value}
+                </span>
+                {v.sub && (
+                  <span
+                    className={cn(
+                      "mono-data text-xxs font-medium inline-flex items-center px-1.5 py-0.5 rounded-md w-fit",
+                      VITAL_TONE_BADGE_BG[v.tone]
+                    )}
+                  >
+                    {v.sub}
+                  </span>
+                )}
               </div>
             </div>
           ));
@@ -498,14 +731,21 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
       <RailLayout gap="gap-6">
         <div className="min-w-0 flex flex-col gap-4">
           <div className="flex items-center gap-1 border-b border-slate-100 pb-px overflow-x-auto">
-            {([{ key: "overview", label: "Overview", icon: IconFileText }, { key: "activity", label: "Activity", icon: IconHistory }] as const).map((tab) => (
+            {(
+              [
+                { key: "overview", label: "Overview", icon: IconFileText },
+                { key: "activity", label: "Activity", icon: IconHistory },
+              ] as const
+            ).map((tab) => (
               <button
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
                 className={cn(
                   "flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap",
-                  activeTab === tab.key ? "border-[#151936] text-[#151936]" : "border-transparent text-slate-400 hover:text-slate-700"
+                  activeTab === tab.key
+                    ? "border-[#151936] text-[#151936]"
+                    : "border-transparent text-slate-400 hover:text-slate-700"
                 )}
               >
                 <tab.icon size={15} /> {tab.label}
@@ -516,12 +756,15 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
           {activeTab === "overview" && (
             <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col gap-4">
               <div>
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-1.5 font-mono block">Description</span>
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-1.5 font-mono block">
+                  Description
+                </span>
                 <p className="text-desc-secondary whitespace-pre-wrap">{request.description}</p>
               </div>
               {request.dueAt && (
                 <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <IconCalendarClock size={15} className="text-slate-400" /> Due {fmtDate(request.dueAt)}
+                  <IconCalendarClock size={15} className="text-slate-400" /> Due{" "}
+                  {fmtDate(request.dueAt)}
                 </div>
               )}
               {request.resolvedAt && (
@@ -536,7 +779,10 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
             <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               {activity !== null && activity.length > 0 && (
                 <div className="relative mb-5">
-                  <IconSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <IconSearch
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     placeholder="Search activity logs..."
@@ -547,48 +793,81 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
                 </div>
               )}
               {activity === null ? (
-                <div className="flex items-center justify-center py-12"><LoadingSpinner /></div>
+                <div className="flex items-center justify-center py-12">
+                  <LoadingSpinner />
+                </div>
               ) : activity.length === 0 ? (
                 <div className="flex flex-col items-center py-12 text-center gap-3">
                   <IconMoodEmpty size={28} className="text-slate-300" />
                   <p className="text-desc-secondary">No activity recorded yet.</p>
                 </div>
-              ) : (() => {
-                const q = activityQuery.trim().toLowerCase();
-                const filtered = q ? activity.filter((a) => a.summary.toLowerCase().includes(q) || a.actorName?.toLowerCase().includes(q)) : activity;
-                if (filtered.length === 0) {
+              ) : (
+                (() => {
+                  const q = activityQuery.trim().toLowerCase();
+                  const filtered = q
+                    ? activity.filter(
+                        (a) =>
+                          a.summary.toLowerCase().includes(q) ||
+                          a.actorName?.toLowerCase().includes(q)
+                      )
+                    : activity;
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="flex flex-col items-center py-10 text-center gap-2">
+                        <IconSearch size={20} className="text-slate-300" />
+                        <p className="text-sm font-medium text-slate-700">
+                          No logs match your search
+                        </p>
+                      </div>
+                    );
+                  }
+                  const toneFor = (summary: string) => {
+                    const lower = summary.toLowerCase();
+                    if (lower.includes("delet") || lower.includes("cancel"))
+                      return "bg-rose-300 ring-rose-50";
+                    if (lower.includes("approv") || lower.includes("complet"))
+                      return "bg-emerald-300 ring-emerald-50";
+                    if (
+                      lower.includes("updat") ||
+                      lower.includes("mov") ||
+                      lower.includes("schedul")
+                    )
+                      return "bg-indigo-300 ring-indigo-50";
+                    return "bg-slate-200 ring-white";
+                  };
                   return (
-                    <div className="flex flex-col items-center py-10 text-center gap-2">
-                      <IconSearch size={20} className="text-slate-300" />
-                      <p className="text-sm font-medium text-slate-700">No logs match your search</p>
+                    <div className="flex flex-col gap-4 relative ml-1">
+                      <div className="absolute left-[3.5px] top-2 bottom-6 w-px bg-slate-200 z-0" />
+                      {filtered.map((entry) => (
+                        <div key={entry.id} className="relative flex items-start gap-3 z-10">
+                          <span
+                            className={cn(
+                              "size-[8px] rounded-full mt-1.5 shrink-0 ring-4",
+                              toneFor(entry.summary)
+                            )}
+                          />
+                          <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 bg-slate-50/50 -my-1 -mx-2 p-2 rounded-xl">
+                            <p className="text-sm text-slate-600 leading-snug flex-1 min-w-0">
+                              {entry.actorName && (
+                                <span className="font-medium text-slate-800">
+                                  {entry.actorName}{" "}
+                                </span>
+                              )}
+                              {entry.summary
+                                .replace(entry.actorName ?? "", "")
+                                .replace(/^ - |^ — /, "")
+                                .trim()}
+                            </p>
+                            <Badge tone="neutral" className="shrink-0 whitespace-nowrap w-fit">
+                              {relativeTime(entry.createdAt)}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   );
-                }
-                const toneFor = (summary: string) => {
-                  const lower = summary.toLowerCase();
-                  if (lower.includes("delet") || lower.includes("cancel")) return "bg-rose-300 ring-rose-50";
-                  if (lower.includes("approv") || lower.includes("complet")) return "bg-emerald-300 ring-emerald-50";
-                  if (lower.includes("updat") || lower.includes("mov") || lower.includes("schedul")) return "bg-indigo-300 ring-indigo-50";
-                  return "bg-slate-200 ring-white";
-                };
-                return (
-                  <div className="flex flex-col gap-4 relative ml-1">
-                    <div className="absolute left-[3.5px] top-2 bottom-6 w-px bg-slate-200 z-0" />
-                    {filtered.map((entry) => (
-                      <div key={entry.id} className="relative flex items-start gap-3 z-10">
-                        <span className={cn("size-[8px] rounded-full mt-1.5 shrink-0 ring-4", toneFor(entry.summary))} />
-                        <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 bg-slate-50/50 -my-1 -mx-2 p-2 rounded-xl">
-                          <p className="text-sm text-slate-600 leading-snug flex-1 min-w-0">
-                            {entry.actorName && <span className="font-medium text-slate-800">{entry.actorName} </span>}
-                            {entry.summary.replace(entry.actorName ?? "", "").replace(/^ - |^ — /, "").trim()}
-                          </p>
-                          <Badge tone="neutral" className="shrink-0 whitespace-nowrap w-fit">{relativeTime(entry.createdAt)}</Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })()}
+                })()
+              )}
             </div>
           )}
         </div>
@@ -596,13 +875,26 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
         {/* Rail */}
         <div className="gsap-stagger flex flex-col gap-4">
           <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-3 font-mono block">Reported By</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-3 font-mono block">
+              Reported By
+            </span>
             {request.reportedByName ? (
               <div className="flex items-center gap-3">
-                <span className="size-10 rounded-full bg-slate-100 text-slate-700 text-sm font-medium flex items-center justify-center shrink-0"><IconUser size={16} /></span>
+                <span className="size-10 rounded-full bg-slate-100 text-slate-700 text-sm font-medium flex items-center justify-center shrink-0">
+                  <IconUser size={16} />
+                </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-900 truncate">{request.reportedByName}</p>
-                  {request.reportedByPhone && <a href={`tel:${request.reportedByPhone}`} className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 mt-0.5"><IconPhone size={11} /> {request.reportedByPhone}</a>}
+                  <p className="text-sm font-medium text-slate-900 truncate">
+                    {request.reportedByName}
+                  </p>
+                  {request.reportedByPhone && (
+                    <a
+                      href={`tel:${request.reportedByPhone}`}
+                      className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 mt-0.5"
+                    >
+                      <IconPhone size={11} /> {request.reportedByPhone}
+                    </a>
+                  )}
                 </div>
               </div>
             ) : (
@@ -612,18 +904,42 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
 
           <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-medium uppercase tracking-wider text-slate-400 font-mono block">Contractor</span>
-              <button type="button" onClick={() => { setReassignId(request.assignedContractorId ?? ""); setReassignOpen(true); }} className="label-caps text-slate-400 hover:text-[#122a20] transition-colors">
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-400 font-mono block">
+                Contractor
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setReassignId(request.assignedContractorId ?? "");
+                  setReassignOpen(true);
+                }}
+                className="label-caps text-slate-400 hover:text-[#122a20] transition-colors"
+              >
                 {request.assignedContractorId ? "Reassign" : "Assign"}
               </button>
             </div>
             {request.assignedContractorName ? (
               <div className="flex items-center gap-3">
-                <span className="size-10 rounded-full bg-[#151936]/10 text-[#151936] text-sm font-medium flex items-center justify-center shrink-0"><IconTool size={16} /></span>
+                <span className="size-10 rounded-full bg-[#151936]/10 text-[#151936] text-sm font-medium flex items-center justify-center shrink-0">
+                  <IconTool size={16} />
+                </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-900 truncate">{request.assignedContractorName}</p>
-                  {request.contractorSpecialty && <p className="text-xs text-slate-500 truncate">{String(request.contractorSpecialty)}</p>}
-                  {request.assignedContractorPhone && <a href={`tel:${request.assignedContractorPhone}`} className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 mt-0.5"><IconPhone size={11} /> {request.assignedContractorPhone}</a>}
+                  <p className="text-sm font-medium text-slate-900 truncate">
+                    {request.assignedContractorName}
+                  </p>
+                  {request.contractorSpecialty && (
+                    <p className="text-xs text-slate-500 truncate">
+                      {String(request.contractorSpecialty)}
+                    </p>
+                  )}
+                  {request.assignedContractorPhone && (
+                    <a
+                      href={`tel:${request.assignedContractorPhone}`}
+                      className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 mt-0.5"
+                    >
+                      <IconPhone size={11} /> {request.assignedContractorPhone}
+                    </a>
+                  )}
                 </div>
               </div>
             ) : (
@@ -632,12 +948,23 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
           </div>
 
           <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-3 font-mono block">Property</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-3 font-mono block">
+              Property
+            </span>
             <div className="flex items-center gap-3">
-              <span className="size-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center shrink-0"><IconBuildingCommunity size={16} /></span>
+              <span className="size-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                <IconBuildingCommunity size={16} />
+              </span>
               <div className="min-w-0 flex-1">
-                <Link href={`/admin/properties/${request.propertyId}`} className="text-sm font-medium text-slate-900 truncate hover:underline block">{request.propertyName}</Link>
-                <p className="text-xs text-slate-500 truncate">{request.propertyManagerName ?? "No manager assigned"}</p>
+                <Link
+                  href={`/admin/properties/${request.propertyId}`}
+                  className="text-sm font-medium text-slate-900 truncate hover:underline block"
+                >
+                  {request.propertyName}
+                </Link>
+                <p className="text-xs text-slate-500 truncate">
+                  {request.propertyManagerName ?? "No manager assigned"}
+                </p>
               </div>
             </div>
           </div>
@@ -646,11 +973,20 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
 
       {/* Reassign contractor modal */}
       {reassignOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={(e) => e.target === e.currentTarget && setReassignOpen(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          onClick={(e) => e.target === e.currentTarget && setReassignOpen(false)}
+        >
           <div className="w-full max-w-sm rounded-2xl bg-white shadow-2xl border border-slate-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-heading-primary">Assign Contractor</h2>
-              <button type="button" onClick={() => setReassignOpen(false)} className="text-slate-400 hover:text-slate-700"><IconX size={16} /></button>
+              <button
+                type="button"
+                onClick={() => setReassignOpen(false)}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <IconX size={16} />
+              </button>
             </div>
             <select
               value={reassignId}
@@ -658,11 +994,27 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
               className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-body-primary focus:outline-none focus:border-[#151936]/40 mb-4"
             >
               <option value="">Unassigned</option>
-              {contractors.map((c) => <option key={c.id} value={c.id}>{c.displayName}</option>)}
+              {contractors.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.displayName}
+                </option>
+              ))}
             </select>
             <div className="flex justify-end gap-2">
-              <button type="button" onClick={() => setReassignOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Cancel</button>
-              <button type="button" onClick={submitReassign} className="px-4 py-2 text-sm font-medium bg-[#151936] text-white hover:bg-[#1a1f42] rounded-xl">Save</button>
+              <button
+                type="button"
+                onClick={() => setReassignOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={submitReassign}
+                className="px-4 py-2 text-sm font-medium bg-[#151936] text-white hover:bg-[#1a1f42] rounded-xl"
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>
@@ -670,11 +1022,20 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
 
       {/* Submit cost modal */}
       {costOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={(e) => e.target === e.currentTarget && setCostOpen(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          onClick={(e) => e.target === e.currentTarget && setCostOpen(false)}
+        >
           <div className="w-full max-w-sm rounded-2xl bg-white shadow-2xl border border-slate-200 p-5">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-heading-primary">Submit Cost</h2>
-              <button type="button" onClick={() => setCostOpen(false)} className="text-slate-400 hover:text-slate-700"><IconX size={16} /></button>
+              <button
+                type="button"
+                onClick={() => setCostOpen(false)}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <IconX size={16} />
+              </button>
             </div>
             <p className="text-desc-secondary mb-4">
               {request.maintenanceAuthorityKes != null
@@ -689,8 +1050,19 @@ export function MaintenanceFullViewBoard({ entityId, requestId }: { entityId: st
               className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-body-primary focus:outline-none focus:border-[#151936]/40 mb-4 mono-data"
             />
             <div className="flex justify-end gap-2">
-              <button type="button" onClick={() => setCostOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Cancel</button>
-              <button type="button" disabled={submittingCost} onClick={submitCost} className="px-4 py-2 text-sm font-medium bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] rounded-xl disabled:opacity-50">
+              <button
+                type="button"
+                onClick={() => setCostOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={submittingCost}
+                onClick={submitCost}
+                className="px-4 py-2 text-sm font-medium bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] rounded-xl disabled:opacity-50"
+              >
                 {submittingCost ? "Submitting..." : "Submit"}
               </button>
             </div>

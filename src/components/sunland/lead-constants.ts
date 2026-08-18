@@ -40,7 +40,10 @@ export const STAGE_META: Record<PipelineStage, { label: string; color: string }>
 };
 
 // Exact colors from the design's prioCfg() (rose/amber/slate).
-export const PRIORITY_META: Record<PipelineLeadPriority, { label: string; pill: string; dot: string }> = {
+export const PRIORITY_META: Record<
+  PipelineLeadPriority,
+  { label: string; pill: string; dot: string }
+> = {
   high: { label: "High", pill: "bg-[rgba(244,63,94,0.1)] text-[#be123c]", dot: "bg-[#be123c]" },
   medium: { label: "Med", pill: "bg-[rgba(245,158,11,0.12)] text-[#b45309]", dot: "bg-[#b45309]" },
   low: { label: "Low", pill: "bg-[#f1f5f9] text-[#64748b]", dot: "bg-[#64748b]" },

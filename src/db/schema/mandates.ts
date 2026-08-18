@@ -1,4 +1,14 @@
-import { index, integer, numeric, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  integer,
+  numeric,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { entities, timestamps, users } from "@/db/schema/platform";
 import { contacts } from "@/db/schema/crm";
@@ -19,9 +29,15 @@ export const propertyMandates = pgTable(
   "property_mandates",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    propertyId: uuid("property_id").references(() => properties.id).notNull(),
-    landlordContactId: uuid("landlord_contact_id").references(() => contacts.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    propertyId: uuid("property_id")
+      .references(() => properties.id)
+      .notNull(),
+    landlordContactId: uuid("landlord_contact_id")
+      .references(() => contacts.id)
+      .notNull(),
     // Assignment, not ownership - the mandate stays landlord/property owned;
     // this just routes day-to-day management to one Property Manager user.
     assignedPmId: uuid("assigned_pm_id").references(() => users.id),
@@ -54,5 +70,5 @@ export const propertyMandates = pgTable(
     activePerPropertyIdx: uniqueIndex("property_mandates_active_unique_idx")
       .on(table.propertyId)
       .where(sql`${table.status} in ('pending_approval', 'active')`),
-  }),
+  })
 );

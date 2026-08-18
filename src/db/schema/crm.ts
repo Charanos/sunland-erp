@@ -35,17 +35,15 @@ export const pipelineStage = pgEnum("pipeline_stage", [
 // Sales Pipeline design's own 3-tier deal-priority selector (Sales Pipeline
 // board precision rebuild) - column name deliberately not "severity" (that
 // vocabulary is maintenance's), matching the design's "Priority" label.
-export const pipelineLeadPriority = pgEnum("pipeline_lead_priority", [
-  "low",
-  "medium",
-  "high",
-]);
+export const pipelineLeadPriority = pgEnum("pipeline_lead_priority", ["low", "medium", "high"]);
 
 export const contacts = pgTable(
   "contacts",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
     type: contactType("type").notNull(),
     displayName: text("display_name").notNull(),
     companyName: text("company_name"),
@@ -67,14 +65,16 @@ export const contacts = pgTable(
     displayNameIdx: index("contacts_display_name_idx").on(table.displayName),
     entityIdx: index("contacts_entity_idx").on(table.entityId),
     assignedToIdx: index("contacts_assigned_to_idx").on(table.assignedToId),
-  }),
+  })
 );
 
 export const leads = pgTable(
   "leads",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
     title: text("title").notNull(),
     stage: pipelineStage("stage").default("inquiry").notNull(),
     priority: pipelineLeadPriority("priority").default("medium").notNull(),
@@ -97,7 +97,7 @@ export const leads = pgTable(
     stageIdx: index("leads_stage_idx").on(table.stage),
     entityIdx: index("leads_entity_idx").on(table.entityId),
     assignedToIdx: index("leads_assigned_to_idx").on(table.assignedToId),
-  }),
+  })
 );
 
 // Real, persisted, multi-entry interaction log for a lead - the Sales
@@ -110,14 +110,20 @@ export const leadNotes = pgTable(
   "lead_notes",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    leadId: uuid("lead_id").references(() => leads.id).notNull(),
-    authorId: uuid("author_id").references(() => users.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    leadId: uuid("lead_id")
+      .references(() => leads.id)
+      .notNull(),
+    authorId: uuid("author_id")
+      .references(() => users.id)
+      .notNull(),
     text: text("text").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
     leadIdx: index("lead_notes_lead_idx").on(table.leadId),
     entityIdx: index("lead_notes_entity_idx").on(table.entityId),
-  }),
+  })
 );

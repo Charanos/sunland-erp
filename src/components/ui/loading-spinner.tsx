@@ -4,7 +4,10 @@ import { cn } from "@/lib/utils/cn";
 
 type SpinnerSize = "sm" | "md" | "lg" | "xl";
 
-const sizes: Record<SpinnerSize, { container: string; outer: string; inner: string; stroke: number }> = {
+const sizes: Record<
+  SpinnerSize,
+  { container: string; outer: string; inner: string; stroke: number }
+> = {
   sm: { container: "size-4", outer: "size-4", inner: "size-1.5", stroke: 3 },
   md: { container: "size-5", outer: "size-5", inner: "size-2", stroke: 2.5 },
   lg: { container: "size-7", outer: "size-7", inner: "size-2.5", stroke: 2.5 },
@@ -24,14 +27,14 @@ export function LoadingSpinner({
     <div
       aria-label="Loading"
       role="status"
-      className={cn("relative inline-flex items-center justify-center shrink-0", s.container, className)}
+      className={cn(
+        "relative inline-flex items-center justify-center shrink-0",
+        s.container,
+        className
+      )}
     >
       {/* Outer spinning gradient ring */}
-      <svg
-        className={cn("animate-spin", s.outer)}
-        fill="none"
-        viewBox="0 0 24 24"
-      >
+      <svg className={cn("animate-spin", s.outer)} fill="none" viewBox="0 0 24 24">
         <circle
           className="opacity-15"
           cx="12"
@@ -51,4 +54,3 @@ export function LoadingSpinner({
     </div>
   );
 }
-

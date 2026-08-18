@@ -37,7 +37,9 @@ export const valuations = pgTable(
   "valuations",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
     valuationCode: text("valuation_code").notNull(),
     // Either a portfolio property or an external (prospect, not yet onboarded)
     // subject. Exactly one of the two is required, enforced in the service
@@ -71,9 +73,15 @@ export const valuations = pgTable(
     // User-entered comparable evidence (name, pricePerSqft, adjustmentPct,
     // adjustedValueKes) - captured by whoever submits the valuation, never
     // synthesized/derived automatically.
-    comparables: jsonb("comparables").$type<
-      Array<{ name: string; pricePerSqft: number; adjustmentPct: number; adjustedValueKes: number }>
-    >(),
+    comparables:
+      jsonb("comparables").$type<
+        Array<{
+          name: string;
+          pricePerSqft: number;
+          adjustmentPct: number;
+          adjustedValueKes: number;
+        }>
+      >(),
     siteVisitAt: timestamp("site_visit_at", { withTimezone: true }),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     validUntil: timestamp("valid_until", { withTimezone: true }),
@@ -105,5 +113,5 @@ export const valuations = pgTable(
     stageIdx: index("valuations_stage_idx").on(table.stage),
     propertyIdx: index("valuations_property_idx").on(table.propertyId),
     archivedIdx: index("valuations_archived_idx").on(table.archivedAt),
-  }),
+  })
 );

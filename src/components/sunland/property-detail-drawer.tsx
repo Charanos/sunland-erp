@@ -184,13 +184,21 @@ export function PropertyDetailDrawer({
               </Button>
             )}
             <Link href={`/admin/properties/${property.id}`} className="flex-1">
-              <Button size="sm" className="w-full bg-[#151936] text-white hover:bg-[#151936]/90 shadow-none border-transparent transition-colors">
+              <Button
+                size="sm"
+                className="w-full bg-[#151936] text-white hover:bg-[#151936]/90 shadow-none border-transparent transition-colors"
+              >
                 <IconEye size={14} className="mr-1.5" />
                 Full View
               </Button>
             </Link>
             {canManage && (
-              <Button variant="danger" size="sm" onClick={() => onDelete(property.id)} className="px-4 border-transparent shadow-none bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => onDelete(property.id)}
+                className="px-4 border-transparent shadow-none bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
+              >
                 <IconTrash size={14} />
               </Button>
             )}
@@ -223,7 +231,13 @@ export function PropertyDetailDrawer({
               )}
               {canManage ? (
                 <div className="relative inline-flex items-center rounded-full px-3 py-1.5 backdrop-blur-md bg-white/90 border border-white/60 shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all hover:bg-white hover:shadow-[0_4px_24px_rgba(0,0,0,0.1)] group cursor-pointer">
-                  <span className={cn("size-2 rounded-full shrink-0 shadow-sm absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none", statusConfig.dot)} aria-hidden="true" />
+                  <span
+                    className={cn(
+                      "size-2 rounded-full shrink-0 shadow-sm absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none",
+                      statusConfig.dot
+                    )}
+                    aria-hidden="true"
+                  />
                   <select
                     value={property.status}
                     disabled={updating}
@@ -237,12 +251,21 @@ export function PropertyDetailDrawer({
                       </option>
                     ))}
                   </select>
-                  <IconChevronDown size={14} stroke={2.5} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none transition-all group-hover:text-slate-900 z-10" />
+                  <IconChevronDown
+                    size={14}
+                    stroke={2.5}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none transition-all group-hover:text-slate-900 z-10"
+                  />
                 </div>
               ) : (
                 <span className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 backdrop-blur-md bg-white/70 border border-white/40 shadow-sm">
-                  <span className={cn("size-2 rounded-full shrink-0", statusConfig.dot)} aria-hidden="true" />
-                  <span className="label-caps text-slate-800 tracking-widest">{statusConfig.label}</span>
+                  <span
+                    className={cn("size-2 rounded-full shrink-0", statusConfig.dot)}
+                    aria-hidden="true"
+                  />
+                  <span className="label-caps text-slate-800 tracking-widest">
+                    {statusConfig.label}
+                  </span>
                 </span>
               )}
             </div>
@@ -250,8 +273,12 @@ export function PropertyDetailDrawer({
             {/* Subtle bottom gradient */}
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
             <div className="absolute bottom-0 inset-x-0 p-5 pt-8">
-              <p className="text-white/80 mb-1 label-caps tracking-widest">{property.propertyType}</p>
-              <h3 className="headline-md text-white tracking-tight leading-tight">{property.name}</h3>
+              <p className="text-white/80 mb-1 label-caps tracking-widest">
+                {property.propertyType}
+              </p>
+              <h3 className="headline-md text-white tracking-tight leading-tight">
+                {property.name}
+              </h3>
             </div>
           </div>
 
@@ -259,14 +286,23 @@ export function PropertyDetailDrawer({
           <div className="flex flex-col gap-5 border-b border-slate-100 pb-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <p className="text-slate-600 label-caps mb-1.5 tracking-widest">{isForSale ? "Asking Price" : "Monthly Rent"}</p>
+                <p className="text-slate-600 label-caps mb-1.5 tracking-widest">
+                  {isForSale ? "Asking Price" : "Monthly Rent"}
+                </p>
                 <div className="flex items-baseline gap-1.5 text-slate-900">
-                  <span className="font-mono text-3xl sm:text-4xl font-normal tracking-tight">{priceVal.replace("KES ", "").replace("/mo", "")}</span>
-                  <span className="text-slate-600 label-caps font-normal">{priceVal.includes("KES") ? "KES" : ""}{priceVal.includes("/mo") ? " / mo" : ""}</span>
+                  <span className="font-mono text-3xl sm:text-4xl font-normal tracking-tight">
+                    {priceVal.replace("KES ", "").replace("/mo", "")}
+                  </span>
+                  <span className="text-slate-600 label-caps font-normal">
+                    {priceVal.includes("KES") ? "KES" : ""}
+                    {priceVal.includes("/mo") ? " / mo" : ""}
+                  </span>
                 </div>
               </div>
               <div className="text-left sm:text-right">
-                <span className="font-mono font-medium text-2xl font-normal text-slate-900">N/A</span>
+                <span className="font-mono font-medium text-2xl font-normal text-slate-900">
+                  N/A
+                </span>
                 <p className="label-caps text-slate-600 mt-0.5 tracking-widest">Annual ROI</p>
               </div>
             </div>
@@ -278,17 +314,52 @@ export function PropertyDetailDrawer({
 
           {/* ── Key Specs (Sleek Grid) ── */}
           <div>
-            <p className="label-caps text-slate-600 mb-5 tracking-widest">Property Specifications</p>
+            <p className="label-caps text-slate-600 mb-5 tracking-widest">
+              Property Specifications
+            </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
               {[
-                { icon: IconBed, label: "Bedrooms", value: property.bedrooms != null ? String(property.bedrooms) : "—" },
-                { icon: IconBath, label: "Bathrooms", value: property.bathrooms != null ? String(property.bathrooms) : "—" },
-                { icon: IconUsers, label: "Tenants", value: (property as Record<string, unknown>).leases ? `${((property as Record<string, unknown>).leases as Array<{ status: string }>).filter((l) => l.status === "active").length} Active` : "1 Active" },
-                { icon: IconRuler, label: "Size (sqft)", value: property.sizeSqft != null ? property.sizeSqft.toLocaleString() : "—" },
-                { icon: IconCar, label: "Parking", value: property.parkingSpaces != null ? String(property.parkingSpaces) : "—" },
-                { icon: IconTag, label: "Listing", value: LISTING_TYPE_LABEL[property.listingType as keyof typeof LISTING_TYPE_LABEL] ?? (property.listingType?.toLowerCase() === "sale" ? "For Sale" : property.listingType || "—") },
+                {
+                  icon: IconBed,
+                  label: "Bedrooms",
+                  value: property.bedrooms != null ? String(property.bedrooms) : "—",
+                },
+                {
+                  icon: IconBath,
+                  label: "Bathrooms",
+                  value: property.bathrooms != null ? String(property.bathrooms) : "—",
+                },
+                {
+                  icon: IconUsers,
+                  label: "Tenants",
+                  value: (property as Record<string, unknown>).leases
+                    ? `${((property as Record<string, unknown>).leases as Array<{ status: string }>).filter((l) => l.status === "active").length} Active`
+                    : "1 Active",
+                },
+                {
+                  icon: IconRuler,
+                  label: "Size (sqft)",
+                  value: property.sizeSqft != null ? property.sizeSqft.toLocaleString() : "—",
+                },
+                {
+                  icon: IconCar,
+                  label: "Parking",
+                  value: property.parkingSpaces != null ? String(property.parkingSpaces) : "—",
+                },
+                {
+                  icon: IconTag,
+                  label: "Listing",
+                  value:
+                    LISTING_TYPE_LABEL[property.listingType as keyof typeof LISTING_TYPE_LABEL] ??
+                    (property.listingType?.toLowerCase() === "sale"
+                      ? "For Sale"
+                      : property.listingType || "—"),
+                },
               ].map((tile, idx) => (
-                <div key={tile.label + idx} className="flex flex-col gap-1.5 border-l border-slate-100 pl-4">
+                <div
+                  key={tile.label + idx}
+                  className="flex flex-col gap-1.5 border-l border-slate-100 pl-4"
+                >
                   <div className="flex items-center gap-1.5 text-slate-600">
                     <tile.icon size={14} stroke={1.5} />
                     <span className="label-caps tracking-widest">{tile.label}</span>
@@ -367,9 +438,7 @@ export function PropertyDetailDrawer({
                     <div className="size-[6px] rounded-full bg-slate-300 shrink-0 mt-[6px] z-10" />
                     <div className="flex-1 min-w-0">
                       <p className="body-sm text-slate-700 leading-snug">{entry.summary}</p>
-                      <p className="text-xs text-slate-600 mt-1">
-                        {relativeTime(entry.createdAt)}
-                      </p>
+                      <p className="text-xs text-slate-600 mt-1">{relativeTime(entry.createdAt)}</p>
                     </div>
                   </div>
                 ))}

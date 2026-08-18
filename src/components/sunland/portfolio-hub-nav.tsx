@@ -42,7 +42,9 @@ export function PortfolioHubNav({
         </div>
         <div>
           <h3 className="text-title-primary">Property Portfolio Hub</h3>
-          <p className="text-desc-secondary mt-1">Manage property inventory, tenancies, maintenance requests, and valuations.</p>
+          <p className="text-desc-secondary mt-1">
+            Manage property inventory, tenancies, maintenance requests, and valuations.
+          </p>
         </div>
       </div>
 
@@ -50,7 +52,13 @@ export function PortfolioHubNav({
         {NAV_ITEMS.map((item) => {
           const isActive = item.key === active;
 
-          if (isActive && modeOptions && modeOptions.length > 0 && mode !== undefined && onModeChange) {
+          if (
+            isActive &&
+            modeOptions &&
+            modeOptions.length > 0 &&
+            mode !== undefined &&
+            onModeChange
+          ) {
             return (
               <div
                 key={item.key}
@@ -58,7 +66,9 @@ export function PortfolioHubNav({
               >
                 <div className="flex items-center pl-3 pr-2 gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-                  <span className="text-xxs font-medium text-slate-300 uppercase tracking-widest">{item.label}</span>
+                  <span className="text-xxs font-medium text-slate-300 uppercase tracking-widest">
+                    {item.label}
+                  </span>
                 </div>
 
                 <div className="w-px h-4 bg-white/10 mx-1" />
@@ -89,7 +99,9 @@ export function PortfolioHubNav({
               href={item.href}
               className={cn(
                 "body-sm px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5",
-                isActive ? "bg-[#151936] text-white shadow-sm" : "text-slate-400 hover:text-slate-900 hover:bg-white/45",
+                isActive
+                  ? "bg-[#151936] text-white shadow-sm"
+                  : "text-slate-400 hover:text-slate-900 hover:bg-white/45"
               )}
             >
               <span>{item.label}</span>

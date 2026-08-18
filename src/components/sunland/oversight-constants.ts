@@ -29,9 +29,18 @@ import { slaStateFor, type SlaState } from "./maintenance-constants";
 
 export type OversightSection = "approvals" | "complaints" | "tickets" | "reports" | "system";
 
-export const OVERSIGHT_SECTIONS: OversightSection[] = ["approvals", "complaints", "tickets", "reports", "system"];
+export const OVERSIGHT_SECTIONS: OversightSection[] = [
+  "approvals",
+  "complaints",
+  "tickets",
+  "reports",
+  "system",
+];
 
-export const SECTION_META: Record<OversightSection, { label: string; icon: Icon; title: string; sub: string; divider: string }> = {
+export const SECTION_META: Record<
+  OversightSection,
+  { label: string; icon: Icon; title: string; sub: string; divider: string }
+> = {
   approvals: {
     label: "Approvals",
     icon: IconChecklist,
@@ -106,11 +115,30 @@ export function oversightRouteFor(section: OversightSection): string {
 
 export type ApprovalStatus = "pending" | "approved" | "rejected" | "escalated";
 
-export const APPROVAL_STATUS_META: Record<ApprovalStatus, { label: string; pill: string; dot: string }> = {
-  pending: { label: "Pending", pill: "bg-[rgba(243,223,39,0.22)] text-[#151936]", dot: "bg-[#f3df27]" },
-  approved: { label: "Approved", pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]", dot: "bg-[#10b981]" },
-  rejected: { label: "Rejected", pill: "bg-[rgba(244,63,94,0.12)] text-[#be123c]", dot: "bg-[#f43f5e]" },
-  escalated: { label: "Escalated", pill: "bg-[rgba(129,140,248,0.14)] text-[#4338ca]", dot: "bg-[#818cf8]" },
+export const APPROVAL_STATUS_META: Record<
+  ApprovalStatus,
+  { label: string; pill: string; dot: string }
+> = {
+  pending: {
+    label: "Pending",
+    pill: "bg-[rgba(243,223,39,0.22)] text-[#151936]",
+    dot: "bg-[#f3df27]",
+  },
+  approved: {
+    label: "Approved",
+    pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]",
+    dot: "bg-[#10b981]",
+  },
+  rejected: {
+    label: "Rejected",
+    pill: "bg-[rgba(244,63,94,0.12)] text-[#be123c]",
+    dot: "bg-[#f43f5e]",
+  },
+  escalated: {
+    label: "Escalated",
+    pill: "bg-[rgba(129,140,248,0.14)] text-[#4338ca]",
+    dot: "bg-[#818cf8]",
+  },
 };
 
 export const APPROVER_ROLE_LABEL: Record<string, string> = {
@@ -129,12 +157,18 @@ export const CEO_APPROVAL_THRESHOLD_KEY = "property_petty_cash_ceo_threshold_kes
 /** Deep link for an approval's underlying record, from the real relatedTable/relatedId. */
 export function approvalRecordHref(relatedTable: string, relatedId: string): string | null {
   switch (relatedTable) {
-    case "property_mandates": return `/admin/leases`;
-    case "maintenance_requests": return `/admin/maintenance/${relatedId}`;
-    case "leases": return `/admin/leases/${relatedId}`;
-    case "properties": return `/admin/properties/${relatedId}`;
-    case "remittance_advices": return `/admin/leases`;
-    default: return null;
+    case "property_mandates":
+      return `/admin/leases`;
+    case "maintenance_requests":
+      return `/admin/maintenance/${relatedId}`;
+    case "leases":
+      return `/admin/leases/${relatedId}`;
+    case "properties":
+      return `/admin/properties/${relatedId}`;
+    case "remittance_advices":
+      return `/admin/leases`;
+    default:
+      return null;
   }
 }
 
@@ -151,10 +185,21 @@ export const COMPLAINT_CATEGORY_META: Record<ComplaintCategory, { label: string;
   other: { label: "Other", pill: "bg-[#f1f5f9] text-[#64748b]" },
 };
 
-export const COMPLAINT_STATUS_META: Record<ComplaintStatus, { label: string; pill: string; dot: string }> = {
+export const COMPLAINT_STATUS_META: Record<
+  ComplaintStatus,
+  { label: string; pill: string; dot: string }
+> = {
   open: { label: "Open", pill: "bg-[rgba(243,223,39,0.22)] text-[#151936]", dot: "bg-[#f3df27]" },
-  escalated: { label: "Escalated", pill: "bg-[rgba(244,63,94,0.1)] text-[#be123c]", dot: "bg-[#f43f5e]" },
-  resolved: { label: "Resolved", pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]", dot: "bg-[#10b981]" },
+  escalated: {
+    label: "Escalated",
+    pill: "bg-[rgba(244,63,94,0.1)] text-[#be123c]",
+    dot: "bg-[#f43f5e]",
+  },
+  resolved: {
+    label: "Resolved",
+    pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]",
+    dot: "bg-[#10b981]",
+  },
 };
 
 export const COMPLAINT_OWNER_LABEL: Record<string, string> = {
@@ -176,10 +221,21 @@ export const TICKET_PRIORITY_META: Record<TicketPriority, { label: string; pill:
   critical: { label: "Critical", pill: "bg-[rgba(244,63,94,0.12)] text-[#be123c]" },
 };
 
-export const TICKET_STATUS_META: Record<TicketStatus, { label: string; pill: string; dot: string }> = {
+export const TICKET_STATUS_META: Record<
+  TicketStatus,
+  { label: string; pill: string; dot: string }
+> = {
   open: { label: "Open", pill: "bg-[rgba(243,223,39,0.22)] text-[#151936]", dot: "bg-[#f3df27]" },
-  in_progress: { label: "In Progress", pill: "bg-[rgba(129,140,248,0.14)] text-[#4338ca]", dot: "bg-[#818cf8]" },
-  resolved: { label: "Resolved", pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]", dot: "bg-[#10b981]" },
+  in_progress: {
+    label: "In Progress",
+    pill: "bg-[rgba(129,140,248,0.14)] text-[#4338ca]",
+    dot: "bg-[#818cf8]",
+  },
+  resolved: {
+    label: "Resolved",
+    pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]",
+    dot: "bg-[#10b981]",
+  },
   closed: { label: "Closed", pill: "bg-[#f1f5f9] text-[#64748b]", dot: "bg-[#94a3b8]" },
 };
 
@@ -251,7 +307,13 @@ export const CADENCE_LABEL: Record<ReportCadence, string> = {
  * anything without a real generator is deliberately absent rather than shown
  * as a disabled tease.
  */
-export const REPORT_CATALOG: Array<{ key: string; name: string; desc: string; icon: Icon; generator: "pnl" }> = [
+export const REPORT_CATALOG: Array<{
+  key: string;
+  name: string;
+  desc: string;
+  icon: Icon;
+  generator: "pnl";
+}> = [
   {
     key: "pnl",
     name: "Profit & Loss",
@@ -268,11 +330,26 @@ export const MAINTENANCE_MESSAGE_KEY = "ops.maintenance_message";
 
 export type ServiceHealthStatus = "healthy" | "degraded" | "down" | "not_configured";
 
-export const HEALTH_STATUS_META: Record<ServiceHealthStatus, { label: string; color: string; pill: string }> = {
-  healthy: { label: "Healthy", color: "#10b981", pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]" },
-  degraded: { label: "Degraded", color: "#f59e0b", pill: "bg-[rgba(245,158,11,0.14)] text-[#b45309]" },
+export const HEALTH_STATUS_META: Record<
+  ServiceHealthStatus,
+  { label: string; color: string; pill: string }
+> = {
+  healthy: {
+    label: "Healthy",
+    color: "#10b981",
+    pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]",
+  },
+  degraded: {
+    label: "Degraded",
+    color: "#f59e0b",
+    pill: "bg-[rgba(245,158,11,0.14)] text-[#b45309]",
+  },
   down: { label: "Down", color: "#f43f5e", pill: "bg-[rgba(244,63,94,0.12)] text-[#be123c]" },
-  not_configured: { label: "Not configured", color: "#94a3b8", pill: "bg-[#f1f5f9] text-[#64748b]" },
+  not_configured: {
+    label: "Not configured",
+    color: "#94a3b8",
+    pill: "bg-[#f1f5f9] text-[#64748b]",
+  },
 };
 
 /** The services the probe actually measures. Adding a row here means writing a real check. */

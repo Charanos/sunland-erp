@@ -10,11 +10,11 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const entityId = searchParams.get("entityId") ?? null;
-    
+
     // Support both Next 14 and Next 15 params API
     const params = await context.params;
     const id = params.id;
-    
+
     const ctx = await requireCallerContext(entityId, request);
     const property = await getPropertyWithDetails(ctx, id);
 

@@ -141,26 +141,18 @@
         "activity_logs_entity_id_entities_id_fk": {
           "name": "activity_logs_entity_id_entities_id_fk",
           "tableFrom": "activity_logs",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "activity_logs_actor_id_users_id_fk": {
           "name": "activity_logs_actor_id_users_id_fk",
           "tableFrom": "activity_logs",
-          "columnsFrom": [
-            "actor_id"
-          ],
+          "columnsFrom": ["actor_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -361,52 +353,36 @@
         "approval_requests_entity_id_entities_id_fk": {
           "name": "approval_requests_entity_id_entities_id_fk",
           "tableFrom": "approval_requests",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "approval_requests_requested_by_users_id_fk": {
           "name": "approval_requests_requested_by_users_id_fk",
           "tableFrom": "approval_requests",
-          "columnsFrom": [
-            "requested_by"
-          ],
+          "columnsFrom": ["requested_by"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "approval_requests_decided_by_users_id_fk": {
           "name": "approval_requests_decided_by_users_id_fk",
           "tableFrom": "approval_requests",
-          "columnsFrom": [
-            "decided_by"
-          ],
+          "columnsFrom": ["decided_by"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "approval_requests_escalated_from_approval_requests_id_fk": {
           "name": "approval_requests_escalated_from_approval_requests_id_fk",
           "tableFrom": "approval_requests",
-          "columnsFrom": [
-            "escalated_from"
-          ],
+          "columnsFrom": ["escalated_from"],
           "tableTo": "approval_requests",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -629,26 +605,18 @@
         "notifications_entity_id_entities_id_fk": {
           "name": "notifications_entity_id_entities_id_fk",
           "tableFrom": "notifications",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "notifications_user_id_users_id_fk": {
           "name": "notifications_user_id_users_id_fk",
           "tableFrom": "notifications",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -834,26 +802,18 @@
         "role_permissions_role_id_roles_id_fk": {
           "name": "role_permissions_role_id_roles_id_fk",
           "tableFrom": "role_permissions",
-          "columnsFrom": [
-            "role_id"
-          ],
+          "columnsFrom": ["role_id"],
           "tableTo": "roles",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "role_permissions_permission_id_permissions_id_fk": {
           "name": "role_permissions_permission_id_permissions_id_fk",
           "tableFrom": "role_permissions",
-          "columnsFrom": [
-            "permission_id"
-          ],
+          "columnsFrom": ["permission_id"],
           "tableTo": "permissions",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -1039,13 +999,9 @@
         "sessions_user_id_users_id_fk": {
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -1133,13 +1089,9 @@
         "settings_entity_id_entities_id_fk": {
           "name": "settings_entity_id_entities_id_fk",
           "tableFrom": "settings",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -1257,39 +1209,27 @@
         "user_roles_user_id_users_id_fk": {
           "name": "user_roles_user_id_users_id_fk",
           "tableFrom": "user_roles",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "user_roles_role_id_roles_id_fk": {
           "name": "user_roles_role_id_roles_id_fk",
           "tableFrom": "user_roles",
-          "columnsFrom": [
-            "role_id"
-          ],
+          "columnsFrom": ["role_id"],
           "tableTo": "roles",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "user_roles_entity_id_entities_id_fk": {
           "name": "user_roles_entity_id_entities_id_fk",
           "tableFrom": "user_roles",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -1433,13 +1373,9 @@
         "users_primary_entity_id_entities_id_fk": {
           "name": "users_primary_entity_id_entities_id_fk",
           "tableFrom": "users",
-          "columnsFrom": [
-            "primary_entity_id"
-          ],
+          "columnsFrom": ["primary_entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -1607,39 +1543,27 @@
         "contacts_entity_id_entities_id_fk": {
           "name": "contacts_entity_id_entities_id_fk",
           "tableFrom": "contacts",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "contacts_assigned_to_id_users_id_fk": {
           "name": "contacts_assigned_to_id_users_id_fk",
           "tableFrom": "contacts",
-          "columnsFrom": [
-            "assigned_to_id"
-          ],
+          "columnsFrom": ["assigned_to_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "contacts_verified_by_id_users_id_fk": {
           "name": "contacts_verified_by_id_users_id_fk",
           "tableFrom": "contacts",
-          "columnsFrom": [
-            "verified_by_id"
-          ],
+          "columnsFrom": ["verified_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -1796,52 +1720,36 @@
         "leads_entity_id_entities_id_fk": {
           "name": "leads_entity_id_entities_id_fk",
           "tableFrom": "leads",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "leads_contact_id_contacts_id_fk": {
           "name": "leads_contact_id_contacts_id_fk",
           "tableFrom": "leads",
-          "columnsFrom": [
-            "contact_id"
-          ],
+          "columnsFrom": ["contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "leads_property_id_properties_id_fk": {
           "name": "leads_property_id_properties_id_fk",
           "tableFrom": "leads",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "leads_assigned_to_id_users_id_fk": {
           "name": "leads_assigned_to_id_users_id_fk",
           "tableFrom": "leads",
-          "columnsFrom": [
-            "assigned_to_id"
-          ],
+          "columnsFrom": ["assigned_to_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -2005,52 +1913,36 @@
         "leases_entity_id_entities_id_fk": {
           "name": "leases_entity_id_entities_id_fk",
           "tableFrom": "leases",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "leases_property_id_properties_id_fk": {
           "name": "leases_property_id_properties_id_fk",
           "tableFrom": "leases",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "leases_tenant_contact_id_contacts_id_fk": {
           "name": "leases_tenant_contact_id_contacts_id_fk",
           "tableFrom": "leases",
-          "columnsFrom": [
-            "tenant_contact_id"
-          ],
+          "columnsFrom": ["tenant_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "leases_unit_id_property_units_id_fk": {
           "name": "leases_unit_id_property_units_id_fk",
           "tableFrom": "leases",
-          "columnsFrom": [
-            "unit_id"
-          ],
+          "columnsFrom": ["unit_id"],
           "tableTo": "property_units",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -2202,52 +2094,36 @@
         "maintenance_requests_entity_id_entities_id_fk": {
           "name": "maintenance_requests_entity_id_entities_id_fk",
           "tableFrom": "maintenance_requests",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "maintenance_requests_property_id_properties_id_fk": {
           "name": "maintenance_requests_property_id_properties_id_fk",
           "tableFrom": "maintenance_requests",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "maintenance_requests_reported_by_contact_id_contacts_id_fk": {
           "name": "maintenance_requests_reported_by_contact_id_contacts_id_fk",
           "tableFrom": "maintenance_requests",
-          "columnsFrom": [
-            "reported_by_contact_id"
-          ],
+          "columnsFrom": ["reported_by_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "maintenance_requests_assigned_contractor_id_contacts_id_fk": {
           "name": "maintenance_requests_assigned_contractor_id_contacts_id_fk",
           "tableFrom": "maintenance_requests",
-          "columnsFrom": [
-            "assigned_contractor_id"
-          ],
+          "columnsFrom": ["assigned_contractor_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -2467,26 +2343,18 @@
         "properties_entity_id_entities_id_fk": {
           "name": "properties_entity_id_entities_id_fk",
           "tableFrom": "properties",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "properties_owner_contact_id_contacts_id_fk": {
           "name": "properties_owner_contact_id_contacts_id_fk",
           "tableFrom": "properties",
-          "columnsFrom": [
-            "owner_contact_id"
-          ],
+          "columnsFrom": ["owner_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -2609,39 +2477,27 @@
         "property_units_entity_id_entities_id_fk": {
           "name": "property_units_entity_id_entities_id_fk",
           "tableFrom": "property_units",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "property_units_property_id_properties_id_fk": {
           "name": "property_units_property_id_properties_id_fk",
           "tableFrom": "property_units",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "property_units_current_lease_id_leases_id_fk": {
           "name": "property_units_current_lease_id_leases_id_fk",
           "tableFrom": "property_units",
-          "columnsFrom": [
-            "current_lease_id"
-          ],
+          "columnsFrom": ["current_lease_id"],
           "tableTo": "leases",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -2830,52 +2686,36 @@
         "remittance_advices_entity_id_entities_id_fk": {
           "name": "remittance_advices_entity_id_entities_id_fk",
           "tableFrom": "remittance_advices",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "remittance_advices_mandate_id_property_mandates_id_fk": {
           "name": "remittance_advices_mandate_id_property_mandates_id_fk",
           "tableFrom": "remittance_advices",
-          "columnsFrom": [
-            "mandate_id"
-          ],
+          "columnsFrom": ["mandate_id"],
           "tableTo": "property_mandates",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "remittance_advices_generated_by_id_users_id_fk": {
           "name": "remittance_advices_generated_by_id_users_id_fk",
           "tableFrom": "remittance_advices",
-          "columnsFrom": [
-            "generated_by_id"
-          ],
+          "columnsFrom": ["generated_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "remittance_advices_released_by_id_users_id_fk": {
           "name": "remittance_advices_released_by_id_users_id_fk",
           "tableFrom": "remittance_advices",
-          "columnsFrom": [
-            "released_by_id"
-          ],
+          "columnsFrom": ["released_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -2884,9 +2724,7 @@
       "uniqueConstraints": {
         "remittance_advices_verification_token_unique": {
           "name": "remittance_advices_verification_token_unique",
-          "columns": [
-            "verification_token"
-          ],
+          "columns": ["verification_token"],
           "nullsNotDistinct": false
         }
       },
@@ -3048,65 +2886,45 @@
         "transactions_entity_id_entities_id_fk": {
           "name": "transactions_entity_id_entities_id_fk",
           "tableFrom": "transactions",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "transactions_contact_id_contacts_id_fk": {
           "name": "transactions_contact_id_contacts_id_fk",
           "tableFrom": "transactions",
-          "columnsFrom": [
-            "contact_id"
-          ],
+          "columnsFrom": ["contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "transactions_property_id_properties_id_fk": {
           "name": "transactions_property_id_properties_id_fk",
           "tableFrom": "transactions",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "transactions_lease_id_leases_id_fk": {
           "name": "transactions_lease_id_leases_id_fk",
           "tableFrom": "transactions",
-          "columnsFrom": [
-            "lease_id"
-          ],
+          "columnsFrom": ["lease_id"],
           "tableTo": "leases",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "transactions_recorded_by_id_users_id_fk": {
           "name": "transactions_recorded_by_id_users_id_fk",
           "tableFrom": "transactions",
-          "columnsFrom": [
-            "recorded_by_id"
-          ],
+          "columnsFrom": ["recorded_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -3286,65 +3104,45 @@
         "documents_entity_id_entities_id_fk": {
           "name": "documents_entity_id_entities_id_fk",
           "tableFrom": "documents",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "documents_uploaded_by_id_users_id_fk": {
           "name": "documents_uploaded_by_id_users_id_fk",
           "tableFrom": "documents",
-          "columnsFrom": [
-            "uploaded_by_id"
-          ],
+          "columnsFrom": ["uploaded_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "documents_owner_contact_id_contacts_id_fk": {
           "name": "documents_owner_contact_id_contacts_id_fk",
           "tableFrom": "documents",
-          "columnsFrom": [
-            "owner_contact_id"
-          ],
+          "columnsFrom": ["owner_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "documents_property_id_properties_id_fk": {
           "name": "documents_property_id_properties_id_fk",
           "tableFrom": "documents",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "documents_lease_id_leases_id_fk": {
           "name": "documents_lease_id_leases_id_fk",
           "tableFrom": "documents",
-          "columnsFrom": [
-            "lease_id"
-          ],
+          "columnsFrom": ["lease_id"],
           "tableTo": "leases",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -3453,26 +3251,18 @@
         "report_exports_entity_id_entities_id_fk": {
           "name": "report_exports_entity_id_entities_id_fk",
           "tableFrom": "report_exports",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "report_exports_generated_by_id_users_id_fk": {
           "name": "report_exports_generated_by_id_users_id_fk",
           "tableFrom": "report_exports",
-          "columnsFrom": [
-            "generated_by_id"
-          ],
+          "columnsFrom": ["generated_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -3481,9 +3271,7 @@
       "uniqueConstraints": {
         "report_exports_verification_token_unique": {
           "name": "report_exports_verification_token_unique",
-          "columns": [
-            "verification_token"
-          ],
+          "columns": ["verification_token"],
           "nullsNotDistinct": false
         }
       },
@@ -3626,26 +3414,18 @@
         "projects_entity_id_entities_id_fk": {
           "name": "projects_entity_id_entities_id_fk",
           "tableFrom": "projects",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "projects_created_by_id_users_id_fk": {
           "name": "projects_created_by_id_users_id_fk",
           "tableFrom": "projects",
-          "columnsFrom": [
-            "created_by_id"
-          ],
+          "columnsFrom": ["created_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -3819,39 +3599,27 @@
         "calendar_events_entity_id_entities_id_fk": {
           "name": "calendar_events_entity_id_entities_id_fk",
           "tableFrom": "calendar_events",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "calendar_events_organizer_id_users_id_fk": {
           "name": "calendar_events_organizer_id_users_id_fk",
           "tableFrom": "calendar_events",
-          "columnsFrom": [
-            "organizer_id"
-          ],
+          "columnsFrom": ["organizer_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "calendar_events_project_id_projects_id_fk": {
           "name": "calendar_events_project_id_projects_id_fk",
           "tableFrom": "calendar_events",
-          "columnsFrom": [
-            "project_id"
-          ],
+          "columnsFrom": ["project_id"],
           "tableTo": "projects",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -4011,52 +3779,36 @@
         "support_tickets_entity_id_entities_id_fk": {
           "name": "support_tickets_entity_id_entities_id_fk",
           "tableFrom": "support_tickets",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "support_tickets_raised_by_id_users_id_fk": {
           "name": "support_tickets_raised_by_id_users_id_fk",
           "tableFrom": "support_tickets",
-          "columnsFrom": [
-            "raised_by_id"
-          ],
+          "columnsFrom": ["raised_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "support_tickets_assigned_to_id_users_id_fk": {
           "name": "support_tickets_assigned_to_id_users_id_fk",
           "tableFrom": "support_tickets",
-          "columnsFrom": [
-            "assigned_to_id"
-          ],
+          "columnsFrom": ["assigned_to_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "support_tickets_resolved_by_id_users_id_fk": {
           "name": "support_tickets_resolved_by_id_users_id_fk",
           "tableFrom": "support_tickets",
-          "columnsFrom": [
-            "resolved_by_id"
-          ],
+          "columnsFrom": ["resolved_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -4262,65 +4014,45 @@
         "complaints_entity_id_entities_id_fk": {
           "name": "complaints_entity_id_entities_id_fk",
           "tableFrom": "complaints",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "complaints_filed_by_id_users_id_fk": {
           "name": "complaints_filed_by_id_users_id_fk",
           "tableFrom": "complaints",
-          "columnsFrom": [
-            "filed_by_id"
-          ],
+          "columnsFrom": ["filed_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "complaints_named_person_id_users_id_fk": {
           "name": "complaints_named_person_id_users_id_fk",
           "tableFrom": "complaints",
-          "columnsFrom": [
-            "named_person_id"
-          ],
+          "columnsFrom": ["named_person_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "complaints_escalated_by_id_users_id_fk": {
           "name": "complaints_escalated_by_id_users_id_fk",
           "tableFrom": "complaints",
-          "columnsFrom": [
-            "escalated_by_id"
-          ],
+          "columnsFrom": ["escalated_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "complaints_resolved_by_id_users_id_fk": {
           "name": "complaints_resolved_by_id_users_id_fk",
           "tableFrom": "complaints",
-          "columnsFrom": [
-            "resolved_by_id"
-          ],
+          "columnsFrom": ["resolved_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -4416,26 +4148,18 @@
         "conversation_participants_conversation_id_conversations_id_fk": {
           "name": "conversation_participants_conversation_id_conversations_id_fk",
           "tableFrom": "conversation_participants",
-          "columnsFrom": [
-            "conversation_id"
-          ],
+          "columnsFrom": ["conversation_id"],
           "tableTo": "conversations",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "conversation_participants_user_id_users_id_fk": {
           "name": "conversation_participants_user_id_users_id_fk",
           "tableFrom": "conversation_participants",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -4530,26 +4254,18 @@
         "conversations_entity_id_entities_id_fk": {
           "name": "conversations_entity_id_entities_id_fk",
           "tableFrom": "conversations",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "conversations_created_by_id_users_id_fk": {
           "name": "conversations_created_by_id_users_id_fk",
           "tableFrom": "conversations",
-          "columnsFrom": [
-            "created_by_id"
-          ],
+          "columnsFrom": ["created_by_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -4647,26 +4363,18 @@
         "messages_conversation_id_conversations_id_fk": {
           "name": "messages_conversation_id_conversations_id_fk",
           "tableFrom": "messages",
-          "columnsFrom": [
-            "conversation_id"
-          ],
+          "columnsFrom": ["conversation_id"],
           "tableTo": "conversations",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "messages_sender_id_users_id_fk": {
           "name": "messages_sender_id_users_id_fk",
           "tableFrom": "messages",
-          "columnsFrom": [
-            "sender_id"
-          ],
+          "columnsFrom": ["sender_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -4894,52 +4602,36 @@
         "valuations_entity_id_entities_id_fk": {
           "name": "valuations_entity_id_entities_id_fk",
           "tableFrom": "valuations",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "valuations_property_id_properties_id_fk": {
           "name": "valuations_property_id_properties_id_fk",
           "tableFrom": "valuations",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "valuations_client_contact_id_contacts_id_fk": {
           "name": "valuations_client_contact_id_contacts_id_fk",
           "tableFrom": "valuations",
-          "columnsFrom": [
-            "client_contact_id"
-          ],
+          "columnsFrom": ["client_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "valuations_valuer_id_users_id_fk": {
           "name": "valuations_valuer_id_users_id_fk",
           "tableFrom": "valuations",
-          "columnsFrom": [
-            "valuer_id"
-          ],
+          "columnsFrom": ["valuer_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -5146,52 +4838,36 @@
         "property_mandates_entity_id_entities_id_fk": {
           "name": "property_mandates_entity_id_entities_id_fk",
           "tableFrom": "property_mandates",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "property_mandates_property_id_properties_id_fk": {
           "name": "property_mandates_property_id_properties_id_fk",
           "tableFrom": "property_mandates",
-          "columnsFrom": [
-            "property_id"
-          ],
+          "columnsFrom": ["property_id"],
           "tableTo": "properties",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "property_mandates_landlord_contact_id_contacts_id_fk": {
           "name": "property_mandates_landlord_contact_id_contacts_id_fk",
           "tableFrom": "property_mandates",
-          "columnsFrom": [
-            "landlord_contact_id"
-          ],
+          "columnsFrom": ["landlord_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "property_mandates_assigned_pm_id_users_id_fk": {
           "name": "property_mandates_assigned_pm_id_users_id_fk",
           "tableFrom": "property_mandates",
-          "columnsFrom": [
-            "assigned_pm_id"
-          ],
+          "columnsFrom": ["assigned_pm_id"],
           "tableTo": "users",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -5391,52 +5067,36 @@
         "tenant_payments_entity_id_entities_id_fk": {
           "name": "tenant_payments_entity_id_entities_id_fk",
           "tableFrom": "tenant_payments",
-          "columnsFrom": [
-            "entity_id"
-          ],
+          "columnsFrom": ["entity_id"],
           "tableTo": "entities",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "tenant_payments_lease_id_leases_id_fk": {
           "name": "tenant_payments_lease_id_leases_id_fk",
           "tableFrom": "tenant_payments",
-          "columnsFrom": [
-            "lease_id"
-          ],
+          "columnsFrom": ["lease_id"],
           "tableTo": "leases",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "tenant_payments_tenant_contact_id_contacts_id_fk": {
           "name": "tenant_payments_tenant_contact_id_contacts_id_fk",
           "tableFrom": "tenant_payments",
-          "columnsFrom": [
-            "tenant_contact_id"
-          ],
+          "columnsFrom": ["tenant_contact_id"],
           "tableTo": "contacts",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "tenant_payments_reconciled_transaction_id_transactions_id_fk": {
           "name": "tenant_payments_reconciled_transaction_id_transactions_id_fk",
           "tableFrom": "tenant_payments",
-          "columnsFrom": [
-            "reconciled_transaction_id"
-          ],
+          "columnsFrom": ["reconciled_transaction_id"],
           "tableTo": "transactions",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -5445,9 +5105,7 @@
       "uniqueConstraints": {
         "tenant_payments_checkout_request_id_unique": {
           "name": "tenant_payments_checkout_request_id_unique",
-          "columns": [
-            "checkout_request_id"
-          ],
+          "columns": ["checkout_request_id"],
           "nullsNotDistinct": false
         }
       },
@@ -5460,40 +5118,22 @@
     "public.approval_approver_role": {
       "name": "approval_approver_role",
       "schema": "public",
-      "values": [
-        "gm",
-        "ceo",
-        "department_head"
-      ]
+      "values": ["gm", "ceo", "department_head"]
     },
     "public.approval_status": {
       "name": "approval_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "rejected",
-        "escalated"
-      ]
+      "values": ["pending", "approved", "rejected", "escalated"]
     },
     "public.entity_slug": {
       "name": "entity_slug",
       "schema": "public",
-      "values": [
-        "group",
-        "commercial",
-        "residential",
-        "valuers"
-      ]
+      "values": ["group", "commercial", "residential", "valuers"]
     },
     "public.role_scope_type": {
       "name": "role_scope_type",
       "schema": "public",
-      "values": [
-        "global",
-        "entity",
-        "self"
-      ]
+      "values": ["global", "entity", "self"]
     },
     "public.user_role": {
       "name": "user_role",
@@ -5528,15 +5168,7 @@
     "public.contact_type": {
       "name": "contact_type",
       "schema": "public",
-      "values": [
-        "landlord",
-        "tenant",
-        "buyer",
-        "seller",
-        "contractor",
-        "company",
-        "other"
-      ]
+      "values": ["landlord", "tenant", "buyer", "seller", "contractor", "company", "other"]
     },
     "public.pipeline_stage": {
       "name": "pipeline_stage",
@@ -5554,53 +5186,27 @@
     "public.maintenance_priority": {
       "name": "maintenance_priority",
       "schema": "public",
-      "values": [
-        "low",
-        "normal",
-        "high",
-        "critical"
-      ]
+      "values": ["low", "normal", "high", "critical"]
     },
     "public.maintenance_status": {
       "name": "maintenance_status",
       "schema": "public",
-      "values": [
-        "open",
-        "assigned",
-        "in_progress",
-        "resolved",
-        "closed"
-      ]
+      "values": ["open", "assigned", "in_progress", "resolved", "closed"]
     },
     "public.property_status": {
       "name": "property_status",
       "schema": "public",
-      "values": [
-        "available",
-        "occupied",
-        "under_offer",
-        "off_market",
-        "maintenance"
-      ]
+      "values": ["available", "occupied", "under_offer", "off_market", "maintenance"]
     },
     "public.unit_status": {
       "name": "unit_status",
       "schema": "public",
-      "values": [
-        "vacant",
-        "occupied",
-        "reserved",
-        "maintenance"
-      ]
+      "values": ["vacant", "occupied", "reserved", "maintenance"]
     },
     "public.remittance_status": {
       "name": "remittance_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "released",
-        "flagged"
-      ]
+      "values": ["pending", "released", "flagged"]
     },
     "public.transaction_type": {
       "name": "transaction_type",
@@ -5632,174 +5238,87 @@
     "public.project_department": {
       "name": "project_department",
       "schema": "public",
-      "values": [
-        "sales",
-        "ops",
-        "legal",
-        "finance",
-        "hr",
-        "front_office"
-      ]
+      "values": ["sales", "ops", "legal", "finance", "hr", "front_office"]
     },
     "public.project_status": {
       "name": "project_status",
       "schema": "public",
-      "values": [
-        "planning",
-        "in_progress",
-        "awaiting_review",
-        "on_hold",
-        "completed"
-      ]
+      "values": ["planning", "in_progress", "awaiting_review", "on_hold", "completed"]
     },
     "public.calendar_event_outcome": {
       "name": "calendar_event_outcome",
       "schema": "public",
-      "values": [
-        "pending",
-        "completed",
-        "deferred",
-        "cancelled",
-        "no_show"
-      ]
+      "values": ["pending", "completed", "deferred", "cancelled", "no_show"]
     },
     "public.calendar_event_type": {
       "name": "calendar_event_type",
       "schema": "public",
-      "values": [
-        "internal",
-        "external",
-        "legal",
-        "maintenance"
-      ]
+      "values": ["internal", "external", "legal", "maintenance"]
     },
     "public.support_ticket_category": {
       "name": "support_ticket_category",
       "schema": "public",
-      "values": [
-        "technical",
-        "access",
-        "data",
-        "other"
-      ]
+      "values": ["technical", "access", "data", "other"]
     },
     "public.support_ticket_priority": {
       "name": "support_ticket_priority",
       "schema": "public",
-      "values": [
-        "low",
-        "normal",
-        "high",
-        "critical"
-      ]
+      "values": ["low", "normal", "high", "critical"]
     },
     "public.support_ticket_status": {
       "name": "support_ticket_status",
       "schema": "public",
-      "values": [
-        "open",
-        "in_progress",
-        "resolved",
-        "closed"
-      ]
+      "values": ["open", "in_progress", "resolved", "closed"]
     },
     "public.complaint_category": {
       "name": "complaint_category",
       "schema": "public",
-      "values": [
-        "conduct",
-        "harassment",
-        "policy",
-        "safety",
-        "other"
-      ]
+      "values": ["conduct", "harassment", "policy", "safety", "other"]
     },
     "public.complaint_owner_role": {
       "name": "complaint_owner_role",
       "schema": "public",
-      "values": [
-        "hr_head",
-        "gm",
-        "ceo"
-      ]
+      "values": ["hr_head", "gm", "ceo"]
     },
     "public.complaint_status": {
       "name": "complaint_status",
       "schema": "public",
-      "values": [
-        "open",
-        "escalated",
-        "resolved"
-      ]
+      "values": ["open", "escalated", "resolved"]
     },
     "public.conversation_type": {
       "name": "conversation_type",
       "schema": "public",
-      "values": [
-        "dm",
-        "channel"
-      ]
+      "values": ["dm", "channel"]
     },
     "public.message_type": {
       "name": "message_type",
       "schema": "public",
-      "values": [
-        "text",
-        "system"
-      ]
+      "values": ["text", "system"]
     },
     "public.valuation_status": {
       "name": "valuation_status",
       "schema": "public",
-      "values": [
-        "requested",
-        "scheduled",
-        "in_progress",
-        "report_draft",
-        "completed",
-        "cancelled"
-      ]
+      "values": ["requested", "scheduled", "in_progress", "report_draft", "completed", "cancelled"]
     },
     "public.valuation_type": {
       "name": "valuation_type",
       "schema": "public",
-      "values": [
-        "market",
-        "mortgage_security",
-        "insurance",
-        "rental_assessment",
-        "land"
-      ]
+      "values": ["market", "mortgage_security", "insurance", "rental_assessment", "land"]
     },
     "public.mandate_status": {
       "name": "mandate_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "pending_approval",
-        "active",
-        "terminated"
-      ]
+      "values": ["draft", "pending_approval", "active", "terminated"]
     },
     "public.tenant_payment_method": {
       "name": "tenant_payment_method",
       "schema": "public",
-      "values": [
-        "mpesa",
-        "bank",
-        "cash",
-        "cheque"
-      ]
+      "values": ["mpesa", "bank", "cash", "cheque"]
     },
     "public.tenant_payment_status": {
       "name": "tenant_payment_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "confirmed",
-        "failed",
-        "reversed"
-      ]
+      "values": ["pending", "confirmed", "failed", "reversed"]
     }
   },
   "schemas": {},

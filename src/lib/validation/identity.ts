@@ -33,7 +33,7 @@ export const updateNotificationPrefsSchema = z.object({
         inApp: z.boolean(),
         email: z.boolean(),
         sms: z.boolean(),
-      }),
+      })
     )
     .min(1),
 });

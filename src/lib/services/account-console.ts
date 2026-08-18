@@ -40,7 +40,14 @@ export async function getDirectoryOverview(ctx: CallerContext) {
     })
     .from(users);
 
-  const tierCounts: Record<RoleTier, number> = { superadmin: 0, admin: 0, manager: 0, finance: 0, agent: 0, viewer: 0 };
+  const tierCounts: Record<RoleTier, number> = {
+    superadmin: 0,
+    admin: 0,
+    manager: 0,
+    finance: 0,
+    agent: 0,
+    viewer: 0,
+  };
   let pending = 0;
   const members = rows.map((u) => {
     const tier = roleTierFor(u.role);
@@ -87,7 +94,8 @@ export async function getOrgPolicies(ctx: CallerContext): Promise<OrgPolicies> {
   await authorize(ctx, "settings.entity.read", entityId);
   const rows = await db.select().from(settings).where(eq(settings.entityId, entityId));
   const byKey = new Map(rows.map((r) => [r.key, r.value]));
-  const read = <T>(key: string, fallback: T): T => (byKey.has(key) ? (byKey.get(key) as T) : fallback);
+  const read = <T>(key: string, fallback: T): T =>
+    byKey.has(key) ? (byKey.get(key) as T) : fallback;
   return {
     enforce2fa: read(ORG_POLICY_KEYS.enforce2fa, POLICY_DEFAULTS.enforce2fa),
     sso: read(ORG_POLICY_KEYS.sso, POLICY_DEFAULTS.sso),
@@ -100,7 +108,10 @@ export async function getOrgPolicies(ctx: CallerContext): Promise<OrgPolicies> {
 }
 
 /** Derived org-security score from the stored policy values (real data, honest weighting). */
-export function computeOrgSecurityScore(p: OrgPolicies): { pct: number; label: "Hardened" | "Fair" | "Exposed" } {
+export function computeOrgSecurityScore(p: OrgPolicies): {
+  pct: number;
+  label: "Hardened" | "Fair" | "Exposed";
+} {
   let score = 40;
   if (p.enforce2fa) score += 22;
   if (p.sso) score += 12;
@@ -134,7 +145,10 @@ export async function updateOrgPolicies(ctx: CallerContext, input: Partial<OrgPo
       await tx
         .insert(settings)
         .values({ entityId, key, value: input[field] as unknown })
-        .onConflictDoUpdate({ target: [settings.entityId, settings.key], set: { value: input[field] as unknown } });
+        .onConflictDoUpdate({
+          target: [settings.entityId, settings.key],
+          set: { value: input[field] as unknown },
+        });
     }
     await writeAudit(tx, ctx, {
       action: "settings.policy.update",
@@ -177,7 +191,10 @@ export function getIntegrationHealth() {
       key: "ratelimit",
       name: "Upstash Redis",
       kind: "Rate limiting",
-      status: has(process.env.UPSTASH_REDIS_REST_URL) && has(process.env.UPSTASH_REDIS_REST_TOKEN) ? "healthy" : "inactive",
+      status:
+        has(process.env.UPSTASH_REDIS_REST_URL) && has(process.env.UPSTASH_REDIS_REST_TOKEN)
+          ? "healthy"
+          : "inactive",
       meta: has(process.env.UPSTASH_REDIS_REST_URL) ? "Enforcing limits" : "Fail-open (no limiter)",
     },
     {
@@ -185,7 +202,9 @@ export function getIntegrationHealth() {
       name: "M-Pesa Daraja",
       kind: "Tenant payments",
       status:
-        has(process.env.MPESA_CONSUMER_KEY) && has(process.env.MPESA_SHORTCODE) && has(process.env.MPESA_PASSKEY)
+        has(process.env.MPESA_CONSUMER_KEY) &&
+        has(process.env.MPESA_SHORTCODE) &&
+        has(process.env.MPESA_PASSKEY)
           ? "healthy"
           : "inactive",
       meta:
@@ -223,8 +242,16 @@ export async function getAccountConsolePulse(ctx: CallerContext, scope: ConsoleS
     const [pendingApprovals] = await db
       .select({ n: count() })
       .from(approvalRequests)
-      .where(and(eq(approvalRequests.status, "pending"), eq(approvalRequests.requiredApproverRole, "ceo")));
-    const [activeUsers] = await db.select({ n: count() }).from(users).where(eq(users.isActive, true));
+      .where(
+        and(
+          eq(approvalRequests.status, "pending"),
+          eq(approvalRequests.requiredApproverRole, "ceo")
+        )
+      );
+    const [activeUsers] = await db
+      .select({ n: count() })
+      .from(users)
+      .where(eq(users.isActive, true));
     const seatCap = await readGroupSettingNumber(ORG_DEFAULT_KEYS.seatCap, 32);
     return {
       scope,
@@ -246,7 +273,13 @@ export async function getAccountConsolePulse(ctx: CallerContext, scope: ConsoleS
   const [spendRow] = await db
     .select({ total: sql<string>`coalesce(sum(${transactions.amountKes}), 0)` })
     .from(transactions)
-    .where(and(eq(transactions.entityId, entityId), eq(transactions.type, "expense"), gte(transactions.occurredAt, monthStart)));
+    .where(
+      and(
+        eq(transactions.entityId, entityId),
+        eq(transactions.type, "expense"),
+        gte(transactions.occurredAt, monthStart)
+      )
+    );
   const monthlySpendKes = spendRow?.total ? Math.round(parseFloat(spendRow.total)) : 0;
 
   return {
@@ -261,7 +294,11 @@ export async function getAccountConsolePulse(ctx: CallerContext, scope: ConsoleS
 
 async function readGroupSettingNumber(key: string, fallback: number): Promise<number> {
   const groupEntityId = await resolveEntityId("group");
-  const [row] = await db.select().from(settings).where(and(eq(settings.entityId, groupEntityId), eq(settings.key, key))).limit(1);
+  const [row] = await db
+    .select()
+    .from(settings)
+    .where(and(eq(settings.entityId, groupEntityId), eq(settings.key, key)))
+    .limit(1);
   if (!row) return fallback;
   const n = typeof row.value === "number" ? row.value : parseFloat(String(row.value));
   return Number.isFinite(n) ? n : fallback;

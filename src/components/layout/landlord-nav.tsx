@@ -62,7 +62,9 @@ export function LandlordNav() {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
 
   const handleLogout = async () => {
-    try { await fetch("/api/auth/logout", { method: "POST" }); } catch { }
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
     window.location.href = "/login";
   };
 
@@ -77,7 +79,10 @@ export function LandlordNav() {
               <IconHomeDollar size={20} stroke={1.75} />
             </div>
             <div>
-              <p className="text-sm text-slate-900" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
+              <p
+                className="text-sm text-slate-900"
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}
+              >
                 Sunland ERP
               </p>
               <p className="text-xs text-slate-400">Landlord Portal</p>
@@ -107,7 +112,7 @@ export function LandlordNav() {
                     "flex h-10 items-center gap-3 rounded-xl px-3 text-base transition-colors",
                     isActive
                       ? "bg-[#151936] text-white"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   )}
                 >
                   <ItemIcon
@@ -152,10 +157,15 @@ export function LandlordNav() {
                         "flex h-9 items-center gap-2.5 rounded-lg px-3 text-base transition-colors",
                         isActive
                           ? "bg-slate-100 text-slate-900"
-                          : "text-slate-400 hover:bg-slate-50 hover:text-slate-800",
+                          : "text-slate-400 hover:bg-slate-50 hover:text-slate-800"
                       )}
                     >
-                      <ItemIcon size={15} stroke={1.5} className="shrink-0 opacity-60" aria-hidden />
+                      <ItemIcon
+                        size={15}
+                        stroke={1.5}
+                        className="shrink-0 opacity-60"
+                        aria-hidden
+                      />
                       {item.label}
                     </Link>
                   );
@@ -193,7 +203,10 @@ export function LandlordNav() {
           <div className="flex size-8 items-center justify-center rounded-lg bg-[#f3df27]/15">
             <IconHomeDollar size={18} stroke={1.75} className="text-[#151936]" />
           </div>
-          <span className="text-base text-slate-900" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <span
+            className="text-base text-slate-900"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
             Landlord Portal
           </span>
         </div>

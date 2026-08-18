@@ -5,10 +5,7 @@ import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { ConflictError, NotFoundError } from "@/lib/authz/errors";
 import type { CallerContext } from "@/lib/services/types";
-import {
-  createRoleSchema,
-  updateRolePermissionsSchema,
-} from "@/lib/validation/identity";
+import { createRoleSchema, updateRolePermissionsSchema } from "@/lib/validation/identity";
 import { parseInput } from "@/lib/validation/parse";
 
 /** Roles/permissions are global catalog data, not entity-scoped rows - `null`
@@ -75,7 +72,9 @@ async function loadEditableRole(roleId: string) {
     // seedPermissionCatalog() fully replaces role_permissions for system
     // roles on every reseed - an API-side edit here would silently vanish
     // on the next deploy, so it's rejected outright rather than pretending to work.
-    throw new ConflictError("System roles are managed by the seeded permission catalog, not the API");
+    throw new ConflictError(
+      "System roles are managed by the seeded permission catalog, not the API"
+    );
   }
   return role;
 }
@@ -122,7 +121,9 @@ export async function deleteRole(ctx: CallerContext, roleId: string) {
   // stripping the role from everyone still holding it.
   const grants = await db.select().from(userRoles).where(eq(userRoles.roleId, roleId));
   if (grants.length > 0) {
-    throw new ConflictError(`Role is still assigned to ${grants.length} user(s); revoke it from them first`);
+    throw new ConflictError(
+      `Role is still assigned to ${grants.length} user(s); revoke it from them first`
+    );
   }
 
   return db.transaction(async (tx) => {

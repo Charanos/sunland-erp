@@ -34,15 +34,23 @@ function describeProjectUpdate(before: ProjectRow, after: ProjectRow): string[] 
   const changes: string[] = [];
   if (before.title !== after.title) changes.push(`renamed to "${after.title}"`);
   if (before.status !== after.status) {
-    changes.push(`moved from ${STATUS_LABEL[before.status] ?? before.status} to ${STATUS_LABEL[after.status] ?? after.status}`);
+    changes.push(
+      `moved from ${STATUS_LABEL[before.status] ?? before.status} to ${STATUS_LABEL[after.status] ?? after.status}`
+    );
   }
-  if (before.atRisk !== after.atRisk) changes.push(after.atRisk ? "flagged at risk" : "cleared the at-risk flag");
-  if (before.progressPercent !== after.progressPercent) changes.push(`progress ${before.progressPercent ?? 0}% → ${after.progressPercent ?? 0}%`);
+  if (before.atRisk !== after.atRisk)
+    changes.push(after.atRisk ? "flagged at risk" : "cleared the at-risk flag");
+  if (before.progressPercent !== after.progressPercent)
+    changes.push(`progress ${before.progressPercent ?? 0}% → ${after.progressPercent ?? 0}%`);
   if (before.department !== after.department) changes.push(`reassigned to ${after.department}`);
-  if (String(before.dueDate ?? "") !== String(after.dueDate ?? "")) changes.push(`due date set to ${after.dueDate ?? "none"}`);
-  if (String(before.startDate ?? "") !== String(after.startDate ?? "")) changes.push(`start date set to ${after.startDate ?? "none"}`);
-  if (String(before.budgetKes ?? "") !== String(after.budgetKes ?? "")) changes.push(`budget set to ${after.budgetKes ?? "none"}`);
-  if ((before.assigneeIds ?? []).length !== (after.assigneeIds ?? []).length) changes.push("changed assignees");
+  if (String(before.dueDate ?? "") !== String(after.dueDate ?? ""))
+    changes.push(`due date set to ${after.dueDate ?? "none"}`);
+  if (String(before.startDate ?? "") !== String(after.startDate ?? ""))
+    changes.push(`start date set to ${after.startDate ?? "none"}`);
+  if (String(before.budgetKes ?? "") !== String(after.budgetKes ?? ""))
+    changes.push(`budget set to ${after.budgetKes ?? "none"}`);
+  if ((before.assigneeIds ?? []).length !== (after.assigneeIds ?? []).length)
+    changes.push("changed assignees");
   return changes;
 }
 
@@ -52,7 +60,7 @@ type ProjectStatus = (typeof projectStatus.enumValues)[number];
 /** Projects are a shared, cross-department artifact, not personal data - no self-scoped "mine" split. */
 export async function listProjects(
   ctx: CallerContext,
-  filters: { entityId?: string; department?: string; status?: string } = {},
+  filters: { entityId?: string; department?: string; status?: string } = {}
 ) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) throw new DomainValidationError("entityId is required");
@@ -60,7 +68,10 @@ export async function listProjects(
   await authorize(ctx, "operations.project.read", entityId);
 
   const conditions = [eq(projects.entityId, entityId)];
-  if (filters.department && (projectDepartment.enumValues as readonly string[]).includes(filters.department)) {
+  if (
+    filters.department &&
+    (projectDepartment.enumValues as readonly string[]).includes(filters.department)
+  ) {
     conditions.push(eq(projects.department, filters.department as ProjectDepartment));
   }
   if (filters.status && (projectStatus.enumValues as readonly string[]).includes(filters.status)) {
@@ -135,15 +146,23 @@ export async function updateProject(ctx: CallerContext, projectId: string, rawIn
         description: input.description !== undefined ? input.description : existing.description,
         department: input.department ?? existing.department,
         status: input.status ?? existing.status,
-        progressPercent: input.progressPercent !== undefined ? input.progressPercent : existing.progressPercent,
+        progressPercent:
+          input.progressPercent !== undefined ? input.progressPercent : existing.progressPercent,
         assigneeIds: input.assigneeIds ?? existing.assigneeIds,
         dueDate: input.dueDate !== undefined ? input.dueDate : existing.dueDate,
         startDate: input.startDate !== undefined ? input.startDate : existing.startDate,
         milestones: input.milestones ?? existing.milestones,
         atRisk: input.atRisk !== undefined ? input.atRisk : existing.atRisk,
-        budgetKes: input.budgetKes !== undefined ? (input.budgetKes === null ? null : String(input.budgetKes)) : existing.budgetKes,
-        linkedRecordType: input.linkedRecordType !== undefined ? input.linkedRecordType : existing.linkedRecordType,
-        linkedRecordId: input.linkedRecordId !== undefined ? input.linkedRecordId : existing.linkedRecordId,
+        budgetKes:
+          input.budgetKes !== undefined
+            ? input.budgetKes === null
+              ? null
+              : String(input.budgetKes)
+            : existing.budgetKes,
+        linkedRecordType:
+          input.linkedRecordType !== undefined ? input.linkedRecordType : existing.linkedRecordType,
+        linkedRecordId:
+          input.linkedRecordId !== undefined ? input.linkedRecordId : existing.linkedRecordId,
         updatedAt: new Date(),
       })
       .where(eq(projects.id, projectId))
@@ -211,7 +230,11 @@ export async function toggleMilestone(ctx: CallerContext, projectId: string, raw
  * that is still genuinely in progress. So a drag writes (status, atRisk)
  * together rather than pushing a 6th value into the status enum.
  */
-export async function setProjectBoardState(ctx: CallerContext, projectId: string, rawInput: unknown) {
+export async function setProjectBoardState(
+  ctx: CallerContext,
+  projectId: string,
+  rawInput: unknown
+) {
   const input = parseInput(setProjectBoardStateSchema, rawInput);
   const [existing] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
   if (!existing) throw new NotFoundError("Project not found");
@@ -256,10 +279,13 @@ export async function deleteProject(ctx: CallerContext, projectId: string) {
   if (!existing) throw new NotFoundError("Project not found");
   await authorize(ctx, "operations.project.write", existing.entityId);
 
-  const linkedEvents = await db.select().from(calendarEvents).where(eq(calendarEvents.projectId, projectId));
+  const linkedEvents = await db
+    .select()
+    .from(calendarEvents)
+    .where(eq(calendarEvents.projectId, projectId));
   if (linkedEvents.length > 0) {
     throw new ConflictError(
-      `Cannot delete project with ${linkedEvents.length} linked calendar event(s) - unlink or delete them first`,
+      `Cannot delete project with ${linkedEvents.length} linked calendar event(s) - unlink or delete them first`
     );
   }
 

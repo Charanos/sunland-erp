@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  IconCash,
-} from "@tabler/icons-react";
+import { IconCash } from "@tabler/icons-react";
 import { ModulePage } from "@/components/sunland/module-page";
 import { useRouter } from "next/navigation";
 

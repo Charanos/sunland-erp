@@ -26,7 +26,10 @@ export const PERMISSION_CATALOG: PermissionDefinition[] = [
   perm("identity.user.read", "View staff user accounts"),
   perm("identity.user.write", "Create/deactivate/reassign staff user accounts"),
   perm("identity.role.read", "View roles and the permission catalog"),
-  perm("identity.role.write", "Grant/revoke roles, edit role-permission mappings (CEO-only in practice)"),
+  perm(
+    "identity.role.write",
+    "Grant/revoke roles, edit role-permission mappings (CEO-only in practice)"
+  ),
   perm("identity.session.read", "List active sessions"),
   perm("identity.session.revoke", "Revoke a session"),
 
@@ -66,7 +69,10 @@ export const PERMISSION_CATALOG: PermissionDefinition[] = [
   // Support - anyone can file their own ticket with no grant at all (same
   // self-scoped pattern as scheduling); this is the literal "admin is the
   // main support endpoint" permission, restricted to CEO/GM only.
-  perm("support.ticket.manage", "View and manage every support ticket across the org, not just your own"),
+  perm(
+    "support.ticket.manage",
+    "View and manage every support ticket across the org, not just your own"
+  ),
 
   // HR Complaints - HR Head's working-queue grant. GM/CEO visibility into
   // escalated complaints is role-tier-based (see src/lib/services/complaints.ts),

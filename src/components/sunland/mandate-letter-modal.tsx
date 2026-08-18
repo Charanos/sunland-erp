@@ -65,13 +65,21 @@ export function MandateLetterModal({
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to attach mandate letter");
 
-      pushToast({ tone: "success", title: "Mandate letter attached", body: `Saved against ${propertyName}'s mandate record.` });
+      pushToast({
+        tone: "success",
+        title: "Mandate letter attached",
+        body: `Saved against ${propertyName}'s mandate record.`,
+      });
       onAttached();
       onClose();
       setUrl("");
       setStagedSizeBytes(null);
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not attach mandate letter." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not attach mandate letter.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -80,7 +88,7 @@ export function MandateLetterModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title={`${hasExistingLetter ? "Replace" : "Upload"} Mandate Letter`}
       description={`${propertyName} · ${landlordName}`}
       size="sm"
@@ -93,10 +101,16 @@ export function MandateLetterModal({
             ) : (
               <IconPhoto size={20} className="text-[#122a20] shrink-0" aria-hidden="true" />
             )}
-            <span className="flex-1 min-w-0 body-sm text-slate-800 truncate">{stagedName ?? url}</span>
+            <span className="flex-1 min-w-0 body-sm text-slate-800 truncate">
+              {stagedName ?? url}
+            </span>
             <button
               type="button"
-              onClick={() => { setUrl(""); setStagedName(null); setStagedSizeBytes(null); }}
+              onClick={() => {
+                setUrl("");
+                setStagedName(null);
+                setStagedSizeBytes(null);
+              }}
               aria-label="Remove selected file"
               className="text-slate-300 hover:text-rose-500 shrink-0"
             >
@@ -112,13 +126,17 @@ export function MandateLetterModal({
               if (info && typeof info === "object" && "secure_url" in info) {
                 setUrl(info.secure_url as string);
                 setStagedName("original_filename" in info ? String(info.original_filename) : null);
-                setStagedSizeBytes("bytes" in info && typeof info.bytes === "number" ? info.bytes : null);
+                setStagedSizeBytes(
+                  "bytes" in info && typeof info.bytes === "number" ? info.bytes : null
+                );
               }
             }}
             className="flex flex-col items-center justify-center gap-2 w-full rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 py-8 text-center cursor-pointer hover:border-[#f3df27] hover:bg-[#fffdf0] transition-colors"
           >
             <IconCloudUpload size={26} className="text-slate-400" aria-hidden="true" />
-            <span className="body-sm text-slate-700 font-medium">Drag the mandate letter here, or click to browse</span>
+            <span className="body-sm text-slate-700 font-medium">
+              Drag the mandate letter here, or click to browse
+            </span>
             <span className="text-meta-muted">PDF or image · up to 10MB</span>
           </CldUploadButton>
         ) : (
@@ -141,8 +159,8 @@ export function MandateLetterModal({
           </div>
         )}
         <p className="body-sm text-slate-400">
-          Saved against this property&apos;s mandate - the signed instrument authorizing Sunland to manage{" "}
-          {propertyName} specifically, on {landlordName}&apos;s behalf.
+          Saved against this property&apos;s mandate - the signed instrument authorizing Sunland to
+          manage {propertyName} specifically, on {landlordName}&apos;s behalf.
         </p>
 
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">

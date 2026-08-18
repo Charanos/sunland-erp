@@ -5,7 +5,9 @@ import { DomainValidationError } from "@/lib/authz/errors";
 export function parseInput<T extends z.ZodType>(schema: T, input: unknown): z.infer<T> {
   const result = schema.safeParse(input);
   if (!result.success) {
-    const message = result.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ");
+    const message = result.error.issues
+      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+      .join("; ");
     throw new DomainValidationError(message);
   }
   return result.data;

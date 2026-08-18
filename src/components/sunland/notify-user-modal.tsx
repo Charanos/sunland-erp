@@ -38,17 +38,33 @@ export function NotifyUserModal({
       const res = await fetch("/api/notifications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entityId, userId, title: title.trim(), body: body.trim(), associatedType, associatedId, href }),
+        body: JSON.stringify({
+          entityId,
+          userId,
+          title: title.trim(),
+          body: body.trim(),
+          associatedType,
+          associatedId,
+          href,
+        }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to send notification");
 
-      pushToast({ tone: "success", title: "Notification sent", body: `${recipientName} will see this in their notification centre.` });
+      pushToast({
+        tone: "success",
+        title: "Notification sent",
+        body: `${recipientName} will see this in their notification centre.`,
+      });
       setTitle("");
       setBody("");
       onClose();
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Could not send this notification." });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not send this notification.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +73,7 @@ export function NotifyUserModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title={`Notify ${recipientName}`}
       description="Sends a real, in-app notification to their notification centre."
       size="sm"

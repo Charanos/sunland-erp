@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconWallet, IconClipboardList, IconUsersGroup, IconReportAnalytics } from "@tabler/icons-react";
+import {
+  IconWallet,
+  IconClipboardList,
+  IconUsersGroup,
+  IconReportAnalytics,
+} from "@tabler/icons-react";
 import { cn } from "@/lib/utils/cn";
 
 const GROUPS = {
@@ -14,7 +19,7 @@ const GROUPS = {
     tabs: [
       { href: "/fin/ledger", label: "General Ledger", badge: "Core" },
       { href: "/fin/rentals", label: "Rentals Ledger", badge: "Properties" },
-    ]
+    ],
   },
   accounts: {
     title: "Accounts Control Hub",
@@ -26,16 +31,14 @@ const GROUPS = {
       { href: "/fin/receivables", label: "Receivables", badge: "In" },
       { href: "/fin/fees", label: "Service Fees", badge: "Ops" },
       { href: "/fin/mandates", label: "Property Mandates", badge: "Legal" },
-    ]
+    ],
   },
   payroll: {
     title: "Payroll Control Hub",
     description: "Manage employee compensations and benefits.",
     icon: IconUsersGroup,
     colorClass: "bg-amber-50 text-amber-650",
-    tabs: [
-      { href: "/fin/payroll", label: "Payroll", badge: "Active" },
-    ]
+    tabs: [{ href: "/fin/payroll", label: "Payroll", badge: "Active" }],
   },
   reports: {
     title: "Reports Control Hub",
@@ -46,8 +49,8 @@ const GROUPS = {
       { href: "/fin/reports", label: "Financial Reports", badge: "Metrics" },
       { href: "/fin/balance-sheet", label: "Balance Sheet", badge: "Assets" },
       { href: "/fin/cash-flow", label: "Cash Flow", badge: "Liquidity" },
-    ]
-  }
+    ],
+  },
 };
 
 export function FinanceSubNav() {
@@ -55,11 +58,20 @@ export function FinanceSubNav() {
 
   // Determine current group
   let currentGroup = GROUPS.ledgers;
-  if (pathname.includes("/payables") || pathname.includes("/receivables") || pathname.includes("/fees") || pathname.includes("/mandates")) {
+  if (
+    pathname.includes("/payables") ||
+    pathname.includes("/receivables") ||
+    pathname.includes("/fees") ||
+    pathname.includes("/mandates")
+  ) {
     currentGroup = GROUPS.accounts;
   } else if (pathname.includes("/payroll")) {
     currentGroup = GROUPS.payroll;
-  } else if (pathname.includes("/reports") || pathname.includes("/balance-sheet") || pathname.includes("/cash-flow")) {
+  } else if (
+    pathname.includes("/reports") ||
+    pathname.includes("/balance-sheet") ||
+    pathname.includes("/cash-flow")
+  ) {
     currentGroup = GROUPS.reports;
   }
 
@@ -67,11 +79,18 @@ export function FinanceSubNav() {
     <div className="mb-6">
       <div className="flex items-center justify-between flex-wrap gap-4 bg-white border border-slate-100 p-4 rounded-[20px] shadow-sm">
         <div className="flex items-center gap-2">
-          <div className={cn("size-8 rounded-lg flex items-center justify-center", currentGroup.colorClass)}>
+          <div
+            className={cn(
+              "size-8 rounded-lg flex items-center justify-center",
+              currentGroup.colorClass
+            )}
+          >
             <currentGroup.icon size={16} />
           </div>
           <div>
-            <h3 className="text-base font-medium text-slate-800 leading-none">{currentGroup.title}</h3>
+            <h3 className="text-base font-medium text-slate-800 leading-none">
+              {currentGroup.title}
+            </h3>
             <p className="text-sm text-slate-400 mt-1">{currentGroup.description}</p>
           </div>
         </div>
@@ -91,10 +110,12 @@ export function FinanceSubNav() {
                 )}
               >
                 <span>{tab.label}</span>
-                <span className={cn(
-                  "text-xs  px-1.5 py-0.5 rounded-full font-medium",
-                  isActive ? "bg-[#f3df27] text-[#151936]" : "bg-slate-200 text-slate-600"
-                )}>
+                <span
+                  className={cn(
+                    "text-xs  px-1.5 py-0.5 rounded-full font-medium",
+                    isActive ? "bg-[#f3df27] text-[#151936]" : "bg-slate-200 text-slate-600"
+                  )}
+                >
                   {tab.badge}
                 </span>
               </Link>

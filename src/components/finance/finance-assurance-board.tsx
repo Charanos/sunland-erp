@@ -8,14 +8,19 @@ import {
   IconFolder,
   IconDownload,
   IconAlertTriangle,
-  IconCircleX
+  IconCircleX,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast-provider";
 import { Drawer } from "@/components/ui/drawer";
 import { FinanceModuleNav } from "@/components/finance/finance-module-nav";
 import { FinanceQrProof } from "@/components/finance/finance-qr-proof";
-import { BoardHeader, BoardPanel, Button, PaginationControls } from "@/components/ui/erp-primitives";
+import {
+  BoardHeader,
+  BoardPanel,
+  Button,
+  PaginationControls,
+} from "@/components/ui/erp-primitives";
 import { cn } from "@/lib/utils/cn";
 import { formatCompactKES } from "@/lib/utils/format";
 
@@ -24,7 +29,12 @@ import { formatCompactKES } from "@/lib/utils/format";
 interface GeneratedReport {
   id: string;
   reportCode: string;
-  reportType: "Balance Sheet" | "Cash Flow Statement" | "Trial Balance Validation" | "Profit & Loss Statement" | "Payroll Outlay Summary";
+  reportType:
+    | "Balance Sheet"
+    | "Cash Flow Statement"
+    | "Trial Balance Validation"
+    | "Profit & Loss Statement"
+    | "Payroll Outlay Summary";
   entityName: string;
   period: string;
   hash: string;
@@ -53,13 +63,13 @@ const INITIAL_REPORTS: GeneratedReport[] = [
     metrics: [
       { label: "Assets", value: 14200000 },
       { label: "Liabilities", value: 6800000 },
-      { label: "Equity", value: 7400000 }
+      { label: "Equity", value: 7400000 },
     ],
     activityLog: [
       "Ledger balances verified · 2026-06-20",
       "Cryptographic signature applied by Finance Head Dennis Munge",
-      "QR token registered under SHA-256 394a8f"
-    ]
+      "QR token registered under SHA-256 394a8f",
+    ],
   },
   {
     id: "rpt-03",
@@ -75,14 +85,14 @@ const INITIAL_REPORTS: GeneratedReport[] = [
     metrics: [
       { label: "Total Gross Pay", value: 2800000 },
       { label: "Deductions Accrued", value: 820000 },
-      { label: "Net Disbursed", value: 1980000 }
+      { label: "Net Disbursed", value: 1980000 },
     ],
     activityLog: [
       "Payroll audit sheet reconciled · 2026-06-18",
       "Signed by HR Head Cody Fisher",
-      "QR token registered under SHA-256 22fa1b"
-    ]
-  }
+      "QR token registered under SHA-256 22fa1b",
+    ],
+  },
 ];
 
 const ENTITY_SLUG_BY_LABEL: Record<string, string> = {
@@ -114,13 +124,15 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
   const [compiledToken, setCompiledToken] = useState("");
 
   // Search & Pagination: Library
-  const [libraryQuery,] = useState("");
+  const [libraryQuery] = useState("");
   const [page, setPage] = useState(1);
 
   // Verification tab state
   const [verificationInput, setVerificationInput] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
-  const [verificationResult, setVerificationResult] = useState<GeneratedReport | "Tampered" | null>(null);
+  const [verificationResult, setVerificationResult] = useState<GeneratedReport | "Tampered" | null>(
+    null
+  );
 
   // Selected state for details
   const [selectedReport, setSelectedReport] = useState<GeneratedReport | null>(null);
@@ -143,7 +155,7 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
       `> Checking double-entry balance alignment...`,
       `> Verifying signing key authority for Head of Finance Dennis Munge...`,
       `> Hashing payload using SHA-256 algorithm...`,
-      `> Binding QR proof verification token...`
+      `> Binding QR proof verification token...`,
     ];
 
     for (let i = 0; i < steps.length; i++) {
@@ -181,7 +193,11 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
         };
         const token: string = data.report.verificationToken;
 
-        setCompilerLines((prev) => [...prev, `> Output token: ${token}`, `> COMPILATION SUCCESSFUL. PDF exported to vault.`]);
+        setCompilerLines((prev) => [
+          ...prev,
+          `> Output token: ${token}`,
+          `> COMPILATION SUCCESSFUL. PDF exported to vault.`,
+        ]);
         setCompiledToken(token);
         setCompilationSuccess(true);
         setIsCompiling(false);
@@ -221,7 +237,10 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
         pushToast({
           tone: "error",
           title: "P&L Generation Failed",
-          body: error instanceof Error ? error.message : "Could not compile the Profit & Loss statement.",
+          body:
+            error instanceof Error
+              ? error.message
+              : "Could not compile the Profit & Loss statement.",
         });
       }
       return;
@@ -229,7 +248,11 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
 
     const randomHash = `sunland_gen_${Math.random().toString(16).substring(2, 8)}`;
     await new Promise((resolve) => setTimeout(resolve, 500));
-    setCompilerLines((prev) => [...prev, `> Output token: ${randomHash}`, `> COMPILATION SUCCESSFUL. PDF exported to vault.`]);
+    setCompilerLines((prev) => [
+      ...prev,
+      `> Output token: ${randomHash}`,
+      `> COMPILATION SUCCESSFUL. PDF exported to vault.`,
+    ]);
     setCompiledToken(randomHash);
     setCompilationSuccess(true);
     setIsCompiling(false);
@@ -249,26 +272,26 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
       metrics:
         reportType === "Balance Sheet"
           ? [
-            { label: "Assets", value: 14200000 },
-            { label: "Liabilities", value: 6800000 },
-            { label: "Equity", value: 7400000 }
-          ]
+              { label: "Assets", value: 14200000 },
+              { label: "Liabilities", value: 6800000 },
+              { label: "Equity", value: 7400000 },
+            ]
           : reportType === "Payroll Outlay Summary"
             ? [
-              { label: "Total Gross Pay", value: 2800000 },
-              { label: "Deductions Accrued", value: 820000 },
-              { label: "Net Disbursed", value: 1980000 }
-            ]
+                { label: "Total Gross Pay", value: 2800000 },
+                { label: "Deductions Accrued", value: 820000 },
+                { label: "Net Disbursed", value: 1980000 },
+              ]
             : [
-              { label: "Debit Balances", value: 18400000 },
-              { label: "Credit Balances", value: 18400000 },
-              { label: "Variance", value: 0 }
-            ],
+                { label: "Debit Balances", value: 18400000 },
+                { label: "Credit Balances", value: 18400000 },
+                { label: "Variance", value: 0 },
+              ],
       activityLog: [
         `Ledger metrics compiled for period · ${new Date().toISOString().split("T")[0]}`,
         `Cryptographic signature key verified for Dennis Munge`,
-        `QR token registered under SHA-256 ${randomHash.replace("sunland_gen_", "")}`
-      ]
+        `QR token registered under SHA-256 ${randomHash.replace("sunland_gen_", "")}`,
+      ],
     };
 
     setReports([newReport, ...reports]);
@@ -276,7 +299,7 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
     pushToast({
       tone: "success",
       title: "Assurance Report Generated",
-      body: `Cryptographic verification code ${newReport.hash} added to vault archive.`
+      body: `Cryptographic verification code ${newReport.hash} added to vault archive.`,
     });
   };
 
@@ -290,21 +313,23 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
 
     await new Promise((resolve) => setTimeout(resolve, 900));
 
-    const matched = reports.find((r) => r.hash.toLowerCase() === verificationInput.toLowerCase().trim());
+    const matched = reports.find(
+      (r) => r.hash.toLowerCase() === verificationInput.toLowerCase().trim()
+    );
 
     if (matched) {
       setVerificationResult(matched);
       pushToast({
         tone: "success",
         title: "Integrity Verified Genuine",
-        body: `Report matched. Cryptographic hash certified authentic.`
+        body: `Report matched. Cryptographic hash certified authentic.`,
       });
     } else {
       setVerificationResult("Tampered");
       pushToast({
         tone: "error",
         title: "Integrity Breach Flagged",
-        body: `No matching record found in Central Audit Vault registry.`
+        body: `No matching record found in Central Audit Vault registry.`,
       });
     }
 
@@ -367,7 +392,7 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                       "Cash Flow Statement",
                       "Trial Balance Validation",
                       "Profit & Loss Statement",
-                      "Payroll Outlay Summary"
+                      "Payroll Outlay Summary",
                     ].map((type) => {
                       const isActive = reportType === type;
                       return (
@@ -397,7 +422,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                   <div>
-                    <label htmlFor="entityScope" className="block text-slate-450 mb-2 label-caps">Scope Entity Context</label>
+                    <label htmlFor="entityScope" className="block text-slate-450 mb-2 label-caps">
+                      Scope Entity Context
+                    </label>
                     <select
                       id="entityScope"
                       value={entityTarget}
@@ -412,7 +439,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label htmlFor="startD" className="block text-slate-450 mb-2 label-caps">Filing Start</label>
+                      <label htmlFor="startD" className="block text-slate-450 mb-2 label-caps">
+                        Filing Start
+                      </label>
                       <input
                         id="startD"
                         type="date"
@@ -422,7 +451,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                       />
                     </div>
                     <div>
-                      <label htmlFor="endD" className="block text-slate-450 mb-2 label-caps">Filing End</label>
+                      <label htmlFor="endD" className="block text-slate-450 mb-2 label-caps">
+                        Filing End
+                      </label>
                       <input
                         id="endD"
                         type="date"
@@ -465,11 +496,20 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 <div className="text-slate-600 flex flex-col items-center justify-center h-full text-center p-4">
                   <IconTerminal2 size={32} className="mb-2 opacity-50" />
                   <p>Compiler Idle</p>
-                  <p className="mt-1 text-sm">Awaiting build request parameters from drafting desk.</p>
+                  <p className="mt-1 text-sm">
+                    Awaiting build request parameters from drafting desk.
+                  </p>
                 </div>
               ) : (
                 compilerLines.map((line, idx) => (
-                  <p key={idx} className={cn(line.startsWith("> COMPILE") ? "text-emerald-300 font-medium" : "text-emerald-500")}>
+                  <p
+                    key={idx}
+                    className={cn(
+                      line.startsWith("> COMPILE")
+                        ? "text-emerald-300 font-medium"
+                        : "text-emerald-500"
+                    )}
+                  >
                     {line}
                   </p>
                 ))
@@ -485,7 +525,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                   </p>
                   <p className="text-slate-400 mt-1.5 label-caps">TOKEN: {compiledToken}</p>
                 </div>
-                <Badge tone="success" className="h-5 px-2">SIGNED</Badge>
+                <Badge tone="success" className="h-5 px-2">
+                  SIGNED
+                </Badge>
               </div>
             )}
           </div>
@@ -511,7 +553,12 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                     <div className="size-10 rounded-xl bg-slate-50 group-hover:bg-slate-100 border border-slate-100 flex items-center justify-center text-slate-400 transition-colors">
                       <IconFolder size={20} />
                     </div>
-                    <Badge tone="success" className="tracking-wide uppercase px-2 font-mono h-5 text-xxs">Verified</Badge>
+                    <Badge
+                      tone="success"
+                      className="tracking-wide uppercase px-2 font-mono h-5 text-xxs"
+                    >
+                      Verified
+                    </Badge>
                   </div>
 
                   <div>
@@ -525,7 +572,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 </div>
 
                 <div className="border-t border-slate-100 pt-3 mt-4 flex justify-between items-center text-slate-400 font-mono text-sm">
-                  <span className="truncate max-w-[160px]" title={report.hash}>{report.hash}</span>
+                  <span className="truncate max-w-[160px]" title={report.hash}>
+                    {report.hash}
+                  </span>
                   <div className="flex gap-2.5">
                     <button
                       type="button"
@@ -534,7 +583,7 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                         pushToast({
                           tone: "success",
                           title: "PDF Download Initiated",
-                          body: `Document ${report.reportCode} (${report.reportType}) has been saved to your workspace download folder.`
+                          body: `Document ${report.reportCode} (${report.reportType}) has been saved to your workspace download folder.`,
                         });
                       }}
                       className="text-slate-400 hover:text-slate-800 transition"
@@ -559,7 +608,8 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 </div>
                 <h4 className="font-sans text-body-primary">Audit Vault Empty</h4>
                 <p className="text-slate-450 leading-relaxed font-sans text-base">
-                  No generated statements are cataloged under this entity namespace. Switch to Generate to compile files.
+                  No generated statements are cataloged under this entity namespace. Switch to
+                  Generate to compile files.
                 </p>
               </div>
             </div>
@@ -581,7 +631,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
           <BoardPanel className="p-6 border-slate-200 flex flex-col justify-between h-full">
             <div className="space-y-6">
               <div>
-                <h3 className="title-serif font-normal text-slate-900">Cryptographic authenticator</h3>
+                <h3 className="title-serif font-normal text-slate-900">
+                  Cryptographic authenticator
+                </h3>
                 <p className="text-desc-secondary mt-1">
                   Validate the integrity hash of a printed statement against central registers.
                 </p>
@@ -589,7 +641,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
 
               <form onSubmit={handleVerifySubmit} className="space-y-4 font-sans text-sm">
                 <div>
-                  <label htmlFor="tokenVerify" className="block text-slate-450 mb-2 label-caps">Input Cryptographic Token Hash</label>
+                  <label htmlFor="tokenVerify" className="block text-slate-450 mb-2 label-caps">
+                    Input Cryptographic Token Hash
+                  </label>
                   <div className="relative flex h-10 items-center rounded-lg border border-slate-200 bg-white px-3 focus-within:border-indigo-400">
                     <input
                       id="tokenVerify"
@@ -604,7 +658,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 </div>
 
                 <div>
-                  <span className="block text-slate-450 mb-2 label-caps">Or select from Audit Vault Archive</span>
+                  <span className="block text-slate-450 mb-2 label-caps">
+                    Or select from Audit Vault Archive
+                  </span>
                   <div className="flex flex-wrap gap-2">
                     {reports.slice(0, 3).map((r) => (
                       <button
@@ -652,7 +708,9 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 </div>
                 <div>
                   <h4 className="font-sans text-body-primary">Decrypting Hash Credentials</h4>
-                  <p className="text-slate-550 mt-1 font-sans text-sm">Comparing SHA-256 signatures against secure database ledger arrays...</p>
+                  <p className="text-slate-550 mt-1 font-sans text-sm">
+                    Comparing SHA-256 signatures against secure database ledger arrays...
+                  </p>
                 </div>
               </div>
             ) : verificationResult === null ? (
@@ -660,7 +718,8 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 <IconShieldCheck size={36} className="mb-2 opacity-50 text-indigo-400" />
                 <p className="font-medium text-slate-700">Verification Terminal Standby</p>
                 <p className="mt-1.5 max-w-xs leading-relaxed text-sm">
-                  Enter a validation token ID above and run authentication to check statement genuine ledger status.
+                  Enter a validation token ID above and run authentication to check statement
+                  genuine ledger status.
                 </p>
               </div>
             ) : verificationResult === "Tampered" ? (
@@ -668,18 +727,24 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 <div className="rounded-xl border border-rose-200 bg-rose-50/30 p-4 leading-relaxed text-rose-800 flex gap-2.5 items-start font-sans body-sm">
                   <IconCircleX size={20} className="shrink-0 text-rose-600 mt-0.5 animate-pulse" />
                   <div>
-                    <span className="font-medium text-rose-900 text-sm">INTEGRITY BREACH FLAGGED</span>
+                    <span className="font-medium text-rose-900 text-sm">
+                      INTEGRITY BREACH FLAGGED
+                    </span>
                     <p className="mt-1 text-rose-700/90 leading-relaxed font-sans text-sm">
-                      This token hash could not be located in the central audit registry list. This document is not certified genuine and may represent tampered figures.
+                      This token hash could not be located in the central audit registry list. This
+                      document is not certified genuine and may represent tampered figures.
                     </p>
                   </div>
                 </div>
 
                 <div className="rounded-xl bg-slate-50 border border-slate-100 p-5 space-y-3 flex-1 flex flex-col justify-center text-center text-slate-400">
                   <IconAlertTriangle size={24} className="mx-auto opacity-40 text-amber-500" />
-                  <p className="text-slate-700 font-medium font-sans body-sm">Audit Checksum Failure</p>
+                  <p className="text-slate-700 font-medium font-sans body-sm">
+                    Audit Checksum Failure
+                  </p>
                   <p className="leading-normal font-sans text-sm">
-                    The SHA-256 key mismatch suggests the statement is either fabricated or manually edited outside standard ERP ledger channels.
+                    The SHA-256 key mismatch suggests the statement is either fabricated or manually
+                    edited outside standard ERP ledger channels.
                   </p>
                 </div>
               </div>
@@ -689,9 +754,12 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 <div className="rounded-xl border border-emerald-250 bg-emerald-50/30 p-4 leading-relaxed text-emerald-800 flex gap-2.5 items-start font-sans body-sm">
                   <IconShieldCheck size={20} className="shrink-0 text-emerald-600 mt-0.5" />
                   <div>
-                    <span className="font-medium text-emerald-900 text-sm">VERIFIED GENUINE DOCUMENT</span>
+                    <span className="font-medium text-emerald-900 text-sm">
+                      VERIFIED GENUINE DOCUMENT
+                    </span>
                     <p className="mt-1 text-emerald-700/90 font-sans text-sm">
-                      This report statement is certified authentic. It matches identical double-entry ledger lines recorded in the central database.
+                      This report statement is certified authentic. It matches identical
+                      double-entry ledger lines recorded in the central database.
                     </p>
                   </div>
                 </div>
@@ -700,37 +768,59 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-5 space-y-4 flex-1">
                   <div className="border-b border-slate-200/60 pb-3 flex justify-between items-start font-mono">
                     <div>
-                      <p className="font-sans font-medium text-slate-800">SUNLAND AUDIT REGISTRY STATEMENT</p>
-                      <p className="text-slate-400 mt-1 uppercase font-sans text-sm">Certified Copy Registry Code: {verificationResult.reportCode}</p>
+                      <p className="font-sans font-medium text-slate-800">
+                        SUNLAND AUDIT REGISTRY STATEMENT
+                      </p>
+                      <p className="text-slate-400 mt-1 uppercase font-sans text-sm">
+                        Certified Copy Registry Code: {verificationResult.reportCode}
+                      </p>
                     </div>
-                    <Badge tone="success" className="h-5">CERTIFIED</Badge>
+                    <Badge tone="success" className="h-5">
+                      CERTIFIED
+                    </Badge>
                   </div>
 
                   <div className="space-y-2.5 font-sans body-sm">
                     <div className="flex justify-between items-center text-slate-700">
                       <span>Statement Title</span>
-                      <span className="font-medium text-slate-800">{verificationResult.reportType}</span>
+                      <span className="font-medium text-slate-800">
+                        {verificationResult.reportType}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-slate-700">
                       <span>Filing Entity Context</span>
-                      <span className="font-medium text-slate-800">{verificationResult.entityName}</span>
+                      <span className="font-medium text-slate-800">
+                        {verificationResult.entityName}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-slate-700">
                       <span>Export Period Date</span>
-                      <span className="font-mono text-slate-700">{verificationResult.generatedAt}</span>
+                      <span className="font-mono text-slate-700">
+                        {verificationResult.generatedAt}
+                      </span>
                     </div>
                     <div className="h-px bg-slate-200/60 my-1" />
                     {/* Render specific certified metrics totals */}
                     {verificationResult.metrics.map((m) => (
-                      <div key={m.label} className="flex justify-between items-center font-medium text-slate-900">
+                      <div
+                        key={m.label}
+                        className="flex justify-between items-center font-medium text-slate-900"
+                      >
                         <span>Certified Total: {m.label}</span>
-                        <span className="font-mono">{m.label.toLowerCase().includes("count") || m.label.toLowerCase().includes("mandates") ? m.value : formatMoney(m.value)}</span>
+                        <span className="font-mono">
+                          {m.label.toLowerCase().includes("count") ||
+                          m.label.toLowerCase().includes("mandates")
+                            ? m.value
+                            : formatMoney(m.value)}
+                        </span>
                       </div>
                     ))}
                   </div>
 
                   <div className="border-t border-slate-200/60 pt-3 mt-1 flex items-center justify-between text-slate-450 font-mono text-sm">
-                    <span className="truncate max-w-[170px]" title={verificationResult.hash}>SHA-HASH: {verificationResult.hash}</span>
+                    <span className="truncate max-w-[170px]" title={verificationResult.hash}>
+                      SHA-HASH: {verificationResult.hash}
+                    </span>
                     <span className="font-sans">Signed: {verificationResult.generatedBy}</span>
                   </div>
                 </div>
@@ -749,7 +839,11 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
         footer={
           selectedReport && (
             <div className="flex gap-2 w-full">
-              <Button onClick={() => setSelectedReport(null)} variant="secondary" className="flex-1">
+              <Button
+                onClick={() => setSelectedReport(null)}
+                variant="secondary"
+                className="flex-1"
+              >
                 Close Dossier
               </Button>
               <Button
@@ -757,7 +851,7 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                   pushToast({
                     tone: "success",
                     title: "PDF Saved",
-                    body: `Statement ${selectedReport.reportCode} PDF exported to disk.`
+                    body: `Statement ${selectedReport.reportCode} PDF exported to disk.`,
                   });
                   setSelectedReport(null);
                 }}
@@ -776,8 +870,12 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 <IconFolder size={20} />
               </div>
               <div>
-                <h4 className="font-medium text-slate-900 leading-snug body-md">{selectedReport.reportType}</h4>
-                <p className="text-slate-400 mt-0.5 text-sm">{selectedReport.reportCode} · Scope: {selectedReport.entityName}</p>
+                <h4 className="font-medium text-slate-900 leading-snug body-md">
+                  {selectedReport.reportType}
+                </h4>
+                <p className="text-slate-400 mt-0.5 text-sm">
+                  {selectedReport.reportCode} · Scope: {selectedReport.entityName}
+                </p>
               </div>
             </div>
 
@@ -786,10 +884,16 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
               <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-5 space-y-4">
                 <div className="border-b border-slate-200 pb-3 flex justify-between items-start font-mono">
                   <div>
-                    <p className="font-sans font-medium text-slate-800">SUNLAND STATEMENT TRANSCRIPT</p>
-                    <p className="text-slate-400 mt-1 uppercase font-sans text-sm">Vault Code: {selectedReport.reportCode}</p>
+                    <p className="font-sans font-medium text-slate-800">
+                      SUNLAND STATEMENT TRANSCRIPT
+                    </p>
+                    <p className="text-slate-400 mt-1 uppercase font-sans text-sm">
+                      Vault Code: {selectedReport.reportCode}
+                    </p>
                   </div>
-                  <Badge tone="success" className="h-5">VERIFIED</Badge>
+                  <Badge tone="success" className="h-5">
+                    VERIFIED
+                  </Badge>
                 </div>
 
                 <div className="space-y-2 font-sans body-sm">
@@ -807,9 +911,17 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                   </div>
                   <div className="h-px bg-slate-200 my-1" />
                   {selectedReport.metrics.map((m) => (
-                    <div key={m.label} className="flex justify-between items-center font-medium text-slate-900">
+                    <div
+                      key={m.label}
+                      className="flex justify-between items-center font-medium text-slate-900"
+                    >
                       <span>Certified: {m.label}</span>
-                      <span className="font-mono">{m.label.toLowerCase().includes("count") || m.label.toLowerCase().includes("mandates") ? m.value : formatMoney(m.value)}</span>
+                      <span className="font-mono">
+                        {m.label.toLowerCase().includes("count") ||
+                        m.label.toLowerCase().includes("mandates")
+                          ? m.value
+                          : formatMoney(m.value)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -822,7 +934,14 @@ export function FinanceAssuranceBoard({ tabId = "generate" }: { tabId: string })
                 entityName={selectedReport.entityName}
                 generatedAt={selectedReport.generatedAt}
                 token={selectedReport.hash}
-                amount={selectedReport.metrics.find((m) => m.label === "Assets" || m.label === "Gross Collectible" || m.label === "Net Disbursed")?.value}
+                amount={
+                  selectedReport.metrics.find(
+                    (m) =>
+                      m.label === "Assets" ||
+                      m.label === "Gross Collectible" ||
+                      m.label === "Net Disbursed"
+                  )?.value
+                }
               />
 
               {/* Audit history */}

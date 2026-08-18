@@ -87,7 +87,8 @@ const STAKEHOLDER_AVATARS: Record<string, string> = {
   "Kariuki Holdings": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
   "David Omondi": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
   "Jane Wanjiru": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80",
-  "Knight & Kale Valuers": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80",
+  "Knight & Kale Valuers":
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80",
   "Tysons Ltd": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80",
   "Sunland Valuers Ltd": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80",
   "Kevin Mbugua": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
@@ -113,26 +114,40 @@ function getAvatarForName(name?: string | null, directUrl?: string | null): stri
 
 function priceDisplay(property: Property): string {
   if (isSale(property)) {
-    return property.askingPriceKes ? formatCompactKES(parseFloat(property.askingPriceKes)) : "On Request";
+    return property.askingPriceKes
+      ? formatCompactKES(parseFloat(property.askingPriceKes))
+      : "On Request";
   }
-  return property.monthlyRentKes ? `${formatCompactKES(parseFloat(property.monthlyRentKes))}/mo` : "On Request";
+  return property.monthlyRentKes
+    ? `${formatCompactKES(parseFloat(property.monthlyRentKes))}/mo`
+    : "On Request";
 }
-
-
 
 function featuredPriceDisplay(property: Property): { label: string; value: string } {
   if (property.askingPriceKes) {
     return { label: "Asking Price", value: formatCompactKES(parseFloat(property.askingPriceKes)) };
   }
   if (property.monthlyRentKes) {
-    return { label: "Monthly Rent", value: `${formatCompactKES(parseFloat(property.monthlyRentKes))}/mo` };
+    return {
+      label: "Monthly Rent",
+      value: `${formatCompactKES(parseFloat(property.monthlyRentKes))}/mo`,
+    };
   }
   return { label: "Price", value: "On Request" };
 }
 
 /** Icon look-up that gracefully falls back to the generic building icon */
-function PropertyTypeIcon({ type, size = 16, className }: { type: string; size?: number; className?: string }) {
-  const Icon = (PROPERTY_TYPE_ICON as Record<string, React.ElementType>)[type] ?? IconBuildingCommunity;
+function PropertyTypeIcon({
+  type,
+  size = 16,
+  className,
+}: {
+  type: string;
+  size?: number;
+  className?: string;
+}) {
+  const Icon =
+    (PROPERTY_TYPE_ICON as Record<string, React.ElementType>)[type] ?? IconBuildingCommunity;
   return <Icon size={size} stroke={1.5} className={className} />;
 }
 
@@ -140,13 +155,17 @@ function ownerInitials(property: Property): string {
   const name = property.owner?.name || property.ownerName;
   if (!name) return "-";
   const parts = name.trim().split(/\s+/);
-  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
+  return parts.length >= 2
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase();
 }
 
 function managerInitials(name?: string | null): string {
   if (!name) return "-";
   const parts = name.trim().split(/\s+/);
-  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
+  return parts.length >= 2
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase();
 }
 
 /**
@@ -164,11 +183,7 @@ const STATUS_BADGE_TONE: Record<PropertyStatus, "success" | "neutral" | "warning
 
 function StatusPill({ status }: { status: PropertyStatus }) {
   const sc = STATUS_CONFIG[status] || STATUS_CONFIG.available;
-  return (
-    <Badge tone={STATUS_BADGE_TONE[status] ?? "neutral"}>
-      {sc.label}
-    </Badge>
-  );
+  return <Badge tone={STATUS_BADGE_TONE[status] ?? "neutral"}>{sc.label}</Badge>;
 }
 
 /**
@@ -218,17 +233,26 @@ function PropertyGridCard({
   // Build icon-driven spec chips
   const specItems: { icon: React.ElementType; value: string }[] = [];
   const activeLeasesCount = (property as Record<string, unknown>).leases
-    ? ((property as Record<string, unknown>).leases as Array<{ status: string }>).filter((l) => l.status === "active").length
-    : ((property as Record<string, unknown>).activeLeasesCount as number) ?? ((property as Record<string, unknown>).tenantCount as number);
+    ? ((property as Record<string, unknown>).leases as Array<{ status: string }>).filter(
+        (l) => l.status === "active"
+      ).length
+    : (((property as Record<string, unknown>).activeLeasesCount as number) ??
+      ((property as Record<string, unknown>).tenantCount as number));
 
   if (activeLeasesCount != null && activeLeasesCount > 0) {
-    specItems.push({ icon: IconUsers, value: `${activeLeasesCount} ${activeLeasesCount === 1 ? "tenant" : "tenants"}` });
+    specItems.push({
+      icon: IconUsers,
+      value: `${activeLeasesCount} ${activeLeasesCount === 1 ? "tenant" : "tenants"}`,
+    });
   }
   const unitTotal = property.unitBreakdown?.reduce((sum, u) => sum + u.count, 0);
   if (unitTotal) specItems.push({ icon: IconBuildingCommunity, value: `${unitTotal} units` });
-  if (!isLand && property.bedrooms != null) specItems.push({ icon: IconBed, value: `${property.bedrooms} beds` });
-  if (property.sizeSqft != null) specItems.push({ icon: IconRuler, value: `${property.sizeSqft.toLocaleString()} sqft` });
-  if (property.landAreaSqft != null) specItems.push({ icon: IconRuler, value: `${(property.landAreaSqft / 43560).toFixed(2)} ac` });
+  if (!isLand && property.bedrooms != null)
+    specItems.push({ icon: IconBed, value: `${property.bedrooms} beds` });
+  if (property.sizeSqft != null)
+    specItems.push({ icon: IconRuler, value: `${property.sizeSqft.toLocaleString()} sqft` });
+  if (property.landAreaSqft != null)
+    specItems.push({ icon: IconRuler, value: `${(property.landAreaSqft / 43560).toFixed(2)} ac` });
   const visibleSpecs = specItems.slice(0, 3);
 
   return (
@@ -237,7 +261,10 @@ function PropertyGridCard({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen(); }
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
       }}
       aria-label={`Open ${property.name}`}
       className="group bg-white border border-slate-100 rounded-[22px] shadow-[0_4px_20px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:shadow-[0_12px_40px_rgb(0,0,0,0.10)] hover:-translate-y-1"
@@ -262,7 +289,10 @@ function PropertyGridCard({
 
         {/* Top-left: property type chip */}
         <div className="absolute top-3 left-3">
-          <span className="badge-pill badge-tone-neutral backdrop-blur-sm shadow-sm" style={{ background: "rgba(255,255,255,0.82)" }}>
+          <span
+            className="badge-pill badge-tone-neutral backdrop-blur-sm shadow-sm"
+            style={{ background: "rgba(255,255,255,0.82)" }}
+          >
             {property.propertyType}
           </span>
         </div>
@@ -271,7 +301,10 @@ function PropertyGridCard({
         {canManage && (
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onToggleFeature(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFeature();
+            }}
             aria-label={property.isFeatured ? "Remove from featured" : "Add to featured"}
             aria-pressed={!!property.isFeatured}
             className={cn(
@@ -287,7 +320,9 @@ function PropertyGridCard({
 
         {/* Bottom-left: price */}
         <div className="absolute bottom-3 left-3">
-          <p className="text-white font-mono font-medium text-base leading-none drop-shadow-sm">{priceDisplay(property)}</p>
+          <p className="text-white font-mono font-medium text-base leading-none drop-shadow-sm">
+            {priceDisplay(property)}
+          </p>
           <p className="text-white/70 text-xs mt-0.5">
             {isSale(property) ? "asking" : "per month"}
           </p>
@@ -304,8 +339,12 @@ function PropertyGridCard({
         {/* Property name + code */}
         <div>
           <div className="flex items-start justify-between gap-2 mb-0.5">
-            <p className="body-sm text-slate-900 leading-snug line-clamp-1 flex-1">{property.name}</p>
-            <span className="mono-data text-slate-300 text-xs shrink-0 mt-px">{property.propertyCode}</span>
+            <p className="body-sm text-slate-900 leading-snug line-clamp-1 flex-1">
+              {property.name}
+            </p>
+            <span className="mono-data text-slate-300 text-xs shrink-0 mt-px">
+              {property.propertyCode}
+            </span>
           </div>
           <p className="text-xs text-slate-600 flex items-center gap-1">
             <IconMapPin size={11} stroke={2} className="shrink-0" />
@@ -333,7 +372,10 @@ function PropertyGridCard({
             {ownerName ? (
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); onOwnerClick(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOwnerClick();
+                }}
                 aria-label={`View owner ${ownerName}`}
                 className="inline-flex items-center gap-2 rounded-full hover:bg-slate-50 transition-colors pr-1 py-0.5 min-w-0"
               >
@@ -354,7 +396,10 @@ function PropertyGridCard({
           {property.manager?.name ? (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onManagerClick(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onManagerClick();
+              }}
               aria-label={`View manager ${property.manager.name}`}
               className="inline-flex items-center gap-2 rounded-full hover:bg-slate-50 transition-colors pr-1 py-0.5 min-w-0 self-start"
             >
@@ -363,7 +408,9 @@ function PropertyGridCard({
                 fallback={managerInitials(property.manager.name)}
                 className="size-6 text-xxs bg-emerald-700 text-white"
               />
-              <span className="text-xs text-slate-500 truncate max-w-[100px]">{property.manager.name}</span>
+              <span className="text-xs text-slate-500 truncate max-w-[100px]">
+                {property.manager.name}
+              </span>
             </button>
           ) : (
             <span className="text-xs text-slate-300 italic">No manager assigned</span>
@@ -373,7 +420,6 @@ function PropertyGridCard({
     </div>
   );
 }
-
 
 export function PropertiesBoard({
   entityId,
@@ -413,7 +459,13 @@ export function PropertiesBoard({
   const [managerDrawerId, setManagerDrawerId] = useState<string | null>(null);
 
   // ── Property Activity Feed ──────────────────────────────────────────────────
-  interface AuditEntry { id: string; summary: string; createdAt: string; actorName?: string | null; associatedId?: string | null; }
+  interface AuditEntry {
+    id: string;
+    summary: string;
+    createdAt: string;
+    actorName?: string | null;
+    associatedId?: string | null;
+  }
   const [propertyActivity, setPropertyActivity] = useState<AuditEntry[]>([]);
   const [propertyActivityLoading, setPropertyActivityLoading] = useState(true);
   const [propertyActivityLoaded, setPropertyActivityLoaded] = useState(false);
@@ -442,16 +494,26 @@ export function PropertiesBoard({
     let result = propertyActivity;
     if (activitySearchQuery) {
       const q = activitySearchQuery.toLowerCase();
-      result = result.filter((e) =>
-        e.summary.toLowerCase().includes(q) || e.actorName?.toLowerCase().includes(q)
+      result = result.filter(
+        (e) => e.summary.toLowerCase().includes(q) || e.actorName?.toLowerCase().includes(q)
       );
     }
     if (activityFilter !== "all") {
       result = result.filter((e) => {
         const lower = e.summary.toLowerCase();
-        if (activityFilter === "status") return lower.includes("status") || lower.includes("available") || lower.includes("occupied") || lower.includes("offer") || lower.includes("maintenance") || lower.includes("market");
-        if (activityFilter === "edits") return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
-        if (activityFilter === "mandates") return lower.includes("mandat") || lower.includes("assign") || lower.includes("manager");
+        if (activityFilter === "status")
+          return (
+            lower.includes("status") ||
+            lower.includes("available") ||
+            lower.includes("occupied") ||
+            lower.includes("offer") ||
+            lower.includes("maintenance") ||
+            lower.includes("market")
+          );
+        if (activityFilter === "edits")
+          return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
+        if (activityFilter === "mandates")
+          return lower.includes("mandat") || lower.includes("assign") || lower.includes("manager");
         if (activityFilter === "system") return lower.includes("system") || lower.includes("auto");
         return true;
       });
@@ -459,19 +521,29 @@ export function PropertiesBoard({
     return result;
   }, [propertyActivity, activitySearchQuery, activityFilter]);
 
-  const activityTotalPages = Math.max(1, Math.ceil(filteredPropertyActivity.length / ACTIVITY_PER_PAGE));
+  const activityTotalPages = Math.max(
+    1,
+    Math.ceil(filteredPropertyActivity.length / ACTIVITY_PER_PAGE)
+  );
   const safeActivityPage = Math.min(activityPage, activityTotalPages);
   const paginatedPropertyActivity = filteredPropertyActivity.slice(
     (safeActivityPage - 1) * ACTIVITY_PER_PAGE,
-    safeActivityPage * ACTIVITY_PER_PAGE,
+    safeActivityPage * ACTIVITY_PER_PAGE
   );
 
   const getActivityTone = (summary: string) => {
     const lower = summary.toLowerCase();
     if (lower.includes("delet") || lower.includes("remov")) return "bg-rose-300 ring-rose-50";
     if (lower.includes("feature") || lower.includes("star")) return "bg-[#f3df27] ring-amber-50";
-    if (lower.includes("available") || lower.includes("register") || lower.includes("creat")) return "bg-emerald-400 ring-emerald-50";
-    if (lower.includes("updat") || lower.includes("chang") || lower.includes("edit") || lower.includes("status")) return "bg-indigo-300 ring-indigo-50";
+    if (lower.includes("available") || lower.includes("register") || lower.includes("creat"))
+      return "bg-emerald-400 ring-emerald-50";
+    if (
+      lower.includes("updat") ||
+      lower.includes("chang") ||
+      lower.includes("edit") ||
+      lower.includes("status")
+    )
+      return "bg-indigo-300 ring-indigo-50";
     return "bg-slate-200 ring-white";
   };
 
@@ -511,7 +583,11 @@ export function PropertiesBoard({
     } catch (err) {
       if (requestIdRef.current !== requestId) return;
       console.error("Failed to load properties:", err);
-      pushToast({ title: "Couldn't load properties", body: "Check your connection and try again.", tone: "warning" });
+      pushToast({
+        title: "Couldn't load properties",
+        body: "Check your connection and try again.",
+        tone: "warning",
+      });
     } finally {
       if (requestIdRef.current === requestId) setLoading(false);
     }
@@ -591,8 +667,8 @@ export function PropertiesBoard({
       if (typeFilter !== "all" && p.propertyType !== typeFilter) return false;
       if (listingFilter !== "all" && p.listingType !== listingFilter) return false;
       if (!q) return true;
-      return [p.name, p.propertyCode, p.location, p.propertyType, ownerDisplayName(p)].some(
-        (v) => v?.toLowerCase().includes(q)
+      return [p.name, p.propertyCode, p.location, p.propertyType, ownerDisplayName(p)].some((v) =>
+        v?.toLowerCase().includes(q)
       );
     });
   }, [properties, query, statusFilter, typeFilter, listingFilter]);
@@ -615,7 +691,9 @@ export function PropertiesBoard({
         return 0;
       });
     } else {
-      arr.sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
+      arr.sort(
+        (a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
+      );
     }
     return arr;
   }, [filtered, sortConfig]);
@@ -665,7 +743,11 @@ export function PropertiesBoard({
           setProperties((prev) => prev.map((p) => (p.id === id ? { ...p, status: reverted } : p)));
           setDrawerProperty((prev) => (prev?.id === id ? { ...prev, status: reverted } : prev));
         }
-        pushToast({ title: "Couldn't update status", body: "Change was reverted - try again.", tone: "warning" });
+        pushToast({
+          title: "Couldn't update status",
+          body: "Change was reverted - try again.",
+          tone: "warning",
+        });
       }
     },
     [pushToast, entityId]
@@ -689,7 +771,9 @@ export function PropertiesBoard({
         tone: "success",
       });
     } catch {
-      setProperties((prev) => prev.map((p) => (p.id === id ? { ...p, isFeatured: currentlyFeatured } : p)));
+      setProperties((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, isFeatured: currentlyFeatured } : p))
+      );
       pushToast({ title: "Error", body: "Could not update featured status.", tone: "warning" });
     }
   };
@@ -698,10 +782,16 @@ export function PropertiesBoard({
     if (!deleteConfirmId) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/properties?id=${deleteConfirmId}&entityId=${entityId}`, { method: "DELETE" });
+      const res = await fetch(`/api/properties?id=${deleteConfirmId}&entityId=${entityId}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Failed to delete property");
       setProperties((prev) => prev.filter((p) => p.id !== deleteConfirmId));
-      pushToast({ title: "Deleted", body: "Property successfully removed from portfolio.", tone: "success" });
+      pushToast({
+        title: "Deleted",
+        body: "Property successfully removed from portfolio.",
+        tone: "success",
+      });
       if (drawerProperty?.id === deleteConfirmId) setDrawerProperty(null);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Could not delete property.";
@@ -746,11 +836,16 @@ export function PropertiesBoard({
 
       <PortfolioHubNav
         active="properties"
-        modeOptions={[{ value: "managed", label: "Managed" }, { value: "intake", label: "Intake & Archive" }]}
+        modeOptions={[
+          { value: "managed", label: "Managed" },
+          { value: "intake", label: "Intake & Archive" },
+        ]}
         mode={portfolioView}
-        onModeChange={(v) => { setPortfolioView(v as "managed" | "intake"); setPage(1); }}
+        onModeChange={(v) => {
+          setPortfolioView(v as "managed" | "intake");
+          setPage(1);
+        }}
       />
-
 
       <div className="flex items-center gap-4 my-6">
         <hr className="flex-1 border-slate-200/60" />
@@ -767,9 +862,13 @@ export function PropertiesBoard({
               <IconBuildingCommunity size={140} stroke={1} />
             </div>
 
-            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Total Estate Portfolio</span>
+            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+              Total Estate Portfolio
+            </span>
             <div className="relative z-10 mt-4">
-              <span className="font-mono mono-stat text-4xl font-normal text-white">{kpis.total}</span>
+              <span className="font-mono mono-stat text-4xl font-normal text-white">
+                {kpis.total}
+              </span>
               {kpis.total > 0 && (
                 <>
                   <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full bg-white/10">
@@ -818,18 +917,42 @@ export function PropertiesBoard({
             <div className="absolute -bottom-10 -right-10 opacity-5 text-indigo-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
               <IconBuildingSkyscraper size={140} stroke={1} />
             </div>
-            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Occupancy & Inventory</span>
+            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+              Occupancy & Inventory
+            </span>
             <div className="relative z-10 mt-4 flex items-center gap-4">
-              <svg width="52" height="52" viewBox="0 0 64 64" role="img" aria-label={`Occupancy ${kpis.rate.toFixed(0)}%`} className="shrink-0">
-                <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
+              <svg
+                width="52"
+                height="52"
+                viewBox="0 0 64 64"
+                role="img"
+                aria-label={`Occupancy ${kpis.rate.toFixed(0)}%`}
+                className="shrink-0"
+              >
                 <circle
-                  cx="32" cy="32" r="26" fill="none" stroke="#f3df27" strokeWidth="7" strokeLinecap="round"
+                  cx="32"
+                  cy="32"
+                  r="26"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeWidth="7"
+                />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="26"
+                  fill="none"
+                  stroke="#f3df27"
+                  strokeWidth="7"
+                  strokeLinecap="round"
                   strokeDasharray={`${((kpis.rate / 100) * 163.4).toFixed(1)} 163.4`}
                   transform="rotate(-90 32 32)"
                 />
               </svg>
               <div className="flex flex-col min-w-0">
-                <span className="font-mono mono-stat text-3xl font-normal text-white">{kpis.rate.toFixed(0)}%</span>
+                <span className="font-mono mono-stat text-3xl font-normal text-white">
+                  {kpis.rate.toFixed(0)}%
+                </span>
                 <p className="text-xxs font-medium uppercase tracking-widest text-emerald-400 flex items-center gap-1 mt-0.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                   {kpis.occupied} OCCUPIED OF {kpis.total} UNITS
@@ -843,23 +966,33 @@ export function PropertiesBoard({
             <div className="absolute -bottom-10 -right-10 opacity-5 text-amber-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
               <IconKey size={140} stroke={1} />
             </div>
-            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Vacant & Pipeline Opportunity</span>
+            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+              Vacant & Pipeline Opportunity
+            </span>
             <div className="relative z-10 mt-4">
               <div className="flex items-baseline justify-between">
-                <span className="font-mono mono-stat text-4xl font-normal text-white">{kpis.available}</span>
-                <span className="text-xxs font-medium uppercase tracking-widest text-amber-400">UNITS AVAILABLE</span>
+                <span className="font-mono mono-stat text-4xl font-normal text-white">
+                  {kpis.available}
+                </span>
+                <span className="text-xxs font-medium uppercase tracking-widest text-amber-400">
+                  UNITS AVAILABLE
+                </span>
               </div>
 
               <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10">
                 <div className="flex flex-col min-w-0">
-                  <span className="font-mono mono-stat text-sm font-medium text-white">{formatCompactKES(kpis.vacantRentRoll)}</span>
+                  <span className="font-mono mono-stat text-sm font-medium text-white">
+                    {formatCompactKES(kpis.vacantRentRoll)}
+                  </span>
                   <span className="text-xxs font-medium uppercase tracking-widest text-emerald-400 mt-0.5">
                     POTENTIAL MONTHLY RENT
                   </span>
                 </div>
                 {statusCounts.under_offer > 0 && (
                   <div className="text-right min-w-0">
-                    <span className="font-mono mono-stat text-sm font-medium text-amber-300">{statusCounts.under_offer}</span>
+                    <span className="font-mono mono-stat text-sm font-medium text-amber-300">
+                      {statusCounts.under_offer}
+                    </span>
                     <span className="text-xxs font-medium uppercase tracking-widest text-slate-300 block mt-0.5">
                       UNDER OFFER
                     </span>
@@ -874,12 +1007,16 @@ export function PropertiesBoard({
             <div className="absolute -bottom-10 -right-10 opacity-5 text-emerald-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
               <IconCash size={140} stroke={1} />
             </div>
-            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Monthly Rent Pool</span>
+            <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+              Monthly Rent Pool
+            </span>
             <div className="flex flex-col relative z-10 mt-4">
               <span className="font-mono mono-stat text-3xl font-normal text-white">
                 {formatCompactKES(kpis.rentPool)}
               </span>
-              <p className="text-xxs font-medium uppercase tracking-widest text-slate-300 mt-2">CONTRACTED ACTIVE CASHFLOW</p>
+              <p className="text-xxs font-medium uppercase tracking-widest text-slate-300 mt-2">
+                CONTRACTED ACTIVE CASHFLOW
+              </p>
             </div>
           </div>
         </div>
@@ -917,7 +1054,11 @@ export function PropertiesBoard({
                 ) : (
                   <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
                     <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]" />
-                    <PropertyTypeIcon type={featuredProperties[safeFeaturedIndex].propertyType} size={56} className="text-slate-600" />
+                    <PropertyTypeIcon
+                      type={featuredProperties[safeFeaturedIndex].propertyType}
+                      size={56}
+                      className="text-slate-600"
+                    />
                   </div>
                 )}
                 {/* Gradient scrim for readability */}
@@ -939,7 +1080,9 @@ export function PropertiesBoard({
                     <div className="flex items-center gap-1.5 bg-slate-100/80 px-2 py-1 rounded-xl border border-slate-200/60">
                       <button
                         type="button"
-                        onClick={() => setFeaturedIndex((i) => (i === 0 ? featuredProperties.length - 1 : i - 1))}
+                        onClick={() =>
+                          setFeaturedIndex((i) => (i === 0 ? featuredProperties.length - 1 : i - 1))
+                        }
                         aria-label="Previous featured property"
                         className="size-6 rounded-lg text-slate-600 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all cursor-pointer"
                       >
@@ -950,7 +1093,9 @@ export function PropertiesBoard({
                       </span>
                       <button
                         type="button"
-                        onClick={() => setFeaturedIndex((i) => (i === featuredProperties.length - 1 ? 0 : i + 1))}
+                        onClick={() =>
+                          setFeaturedIndex((i) => (i === featuredProperties.length - 1 ? 0 : i + 1))
+                        }
                         aria-label="Next featured property"
                         className="size-6 rounded-lg text-slate-600 flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all cursor-pointer"
                       >
@@ -963,8 +1108,10 @@ export function PropertiesBoard({
                 {/* Listing type + Property Title + Location */}
                 <div className="mb-4">
                   <span className="inline-flex bg-slate-100 border border-slate-200/80 rounded-xl px-2.5 py-0.5 font-mono text-xxs font-medium uppercase tracking-wider text-slate-600 mb-2">
-                    {LISTING_TYPE_LABEL[featuredProperties[safeFeaturedIndex].listingType as keyof typeof LISTING_TYPE_LABEL]
-                      ?? (isSale(featuredProperties[safeFeaturedIndex]) ? "For Sale" : "To Let")}
+                    {LISTING_TYPE_LABEL[
+                      featuredProperties[safeFeaturedIndex]
+                        .listingType as keyof typeof LISTING_TYPE_LABEL
+                    ] ?? (isSale(featuredProperties[safeFeaturedIndex]) ? "For Sale" : "To Let")}
                   </span>
                   <h4 className="text-xl sm:text-2xl font-medium text-slate-900 leading-snug tracking-tight mb-1">
                     {featuredProperties[safeFeaturedIndex].name}
@@ -981,38 +1128,48 @@ export function PropertiesBoard({
                   featuredProperties[safeFeaturedIndex].sizeSqft != null ||
                   featuredProperties[safeFeaturedIndex].landAreaSqft != null ||
                   featuredProperties[safeFeaturedIndex].parkingSpaces != null) && (
-                    <div className="flex items-center gap-2 mb-4 flex-wrap">
-                      {featuredProperties[safeFeaturedIndex].bedrooms != null && (
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
-                          <IconBed size={14} className="text-slate-500 shrink-0" />
-                          <span className="font-mono text-xs font-medium">{featuredProperties[safeFeaturedIndex].bedrooms} beds</span>
-                        </div>
-                      )}
-                      {featuredProperties[safeFeaturedIndex].bathrooms != null && (
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
-                          <IconRuler size={14} className="text-slate-500 shrink-0" />
-                          <span className="font-mono text-xs font-medium">{featuredProperties[safeFeaturedIndex].bathrooms} baths</span>
-                        </div>
-                      )}
-                      {featuredProperties[safeFeaturedIndex].sizeSqft != null && (
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
-                          <IconRuler size={14} className="text-slate-500 shrink-0" />
-                          <span className="font-mono text-xs font-medium">{featuredProperties[safeFeaturedIndex].sizeSqft?.toLocaleString()} sqft</span>
-                        </div>
-                      )}
-                      {featuredProperties[safeFeaturedIndex].parkingSpaces != null && (
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
-                          <IconBuildingCommunity size={14} className="text-slate-500 shrink-0" />
-                          <span className="font-mono text-xs font-medium">{featuredProperties[safeFeaturedIndex].parkingSpaces} parking</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    {featuredProperties[safeFeaturedIndex].bedrooms != null && (
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
+                        <IconBed size={14} className="text-slate-500 shrink-0" />
+                        <span className="font-mono text-xs font-medium">
+                          {featuredProperties[safeFeaturedIndex].bedrooms} beds
+                        </span>
+                      </div>
+                    )}
+                    {featuredProperties[safeFeaturedIndex].bathrooms != null && (
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
+                        <IconRuler size={14} className="text-slate-500 shrink-0" />
+                        <span className="font-mono text-xs font-medium">
+                          {featuredProperties[safeFeaturedIndex].bathrooms} baths
+                        </span>
+                      </div>
+                    )}
+                    {featuredProperties[safeFeaturedIndex].sizeSqft != null && (
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
+                        <IconRuler size={14} className="text-slate-500 shrink-0" />
+                        <span className="font-mono text-xs font-medium">
+                          {featuredProperties[safeFeaturedIndex].sizeSqft?.toLocaleString()} sqft
+                        </span>
+                      </div>
+                    )}
+                    {featuredProperties[safeFeaturedIndex].parkingSpaces != null && (
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/70 rounded-xl px-2.5 py-1 text-slate-700">
+                        <IconBuildingCommunity size={14} className="text-slate-500 shrink-0" />
+                        <span className="font-mono text-xs font-medium">
+                          {featuredProperties[safeFeaturedIndex].parkingSpaces} parking
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Amenities & Features (Un-carded Text-SM) */}
                 {(featuredProperties[safeFeaturedIndex].amenities?.length ?? 0) > 0 && (
                   <div className="mb-4">
-                    <p className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-500 my-3">Amenities & Features</p>
+                    <p className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-500 my-3">
+                      Amenities & Features
+                    </p>
                     <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2 text-sm font-medium text-slate-700">
                       {featuredProperties[safeFeaturedIndex].amenities!.map((amenity) => (
                         <div key={amenity} className="flex items-center gap-1.5">
@@ -1026,7 +1183,8 @@ export function PropertiesBoard({
 
                 {/* Stakeholder Identity Cards (Landlord & Property Manager) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-                  {(featuredProperties[safeFeaturedIndex].owner?.name || featuredProperties[safeFeaturedIndex].ownerName) && (
+                  {(featuredProperties[safeFeaturedIndex].owner?.name ||
+                    featuredProperties[safeFeaturedIndex].ownerName) && (
                     <button
                       type="button"
                       onClick={() => {
@@ -1037,7 +1195,8 @@ export function PropertiesBoard({
                     >
                       <Avatar
                         src={getAvatarForName(
-                          featuredProperties[safeFeaturedIndex].owner?.name || featuredProperties[safeFeaturedIndex].ownerName,
+                          featuredProperties[safeFeaturedIndex].owner?.name ||
+                            featuredProperties[safeFeaturedIndex].ownerName,
                           featuredProperties[safeFeaturedIndex].owner?.avatarUrl
                         )}
                         fallback={ownerInitials(featuredProperties[safeFeaturedIndex])}
@@ -1046,7 +1205,8 @@ export function PropertiesBoard({
                       />
                       <div className="min-w-0 flex-1">
                         <span className="block text-xs font-medium text-slate-900 truncate group-hover/card:text-[#151936]">
-                          {featuredProperties[safeFeaturedIndex].owner?.name || featuredProperties[safeFeaturedIndex].ownerName}
+                          {featuredProperties[safeFeaturedIndex].owner?.name ||
+                            featuredProperties[safeFeaturedIndex].ownerName}
                         </span>
                         <span className="block font-mono text-xxs font-medium uppercase tracking-wider text-slate-500">
                           Landlord
@@ -1069,7 +1229,9 @@ export function PropertiesBoard({
                           featuredProperties[safeFeaturedIndex].manager?.name,
                           featuredProperties[safeFeaturedIndex].manager?.avatarUrl
                         )}
-                        fallback={managerInitials(featuredProperties[safeFeaturedIndex].manager?.name)}
+                        fallback={managerInitials(
+                          featuredProperties[safeFeaturedIndex].manager?.name
+                        )}
                         alt="Property Manager"
                         className="size-9 shrink-0 border border-slate-200/80"
                       />
@@ -1091,7 +1253,9 @@ export function PropertiesBoard({
                         className="size-9 shrink-0 border border-slate-200/60 opacity-60"
                       />
                       <div className="min-w-0 flex-1">
-                        <span className="block text-xs font-medium text-slate-500 truncate">Unassigned</span>
+                        <span className="block text-xs font-medium text-slate-500 truncate">
+                          Unassigned
+                        </span>
                         <span className="block font-mono text-xxs font-medium uppercase tracking-wider text-slate-600">
                           Property Manager
                         </span>
@@ -1135,7 +1299,9 @@ export function PropertiesBoard({
                 <IconStar size={24} className="text-slate-600" />
               </div>
               <p className="text-xs font-medium text-slate-700">No featured listings currently.</p>
-              <p className="font-mono text-xxs text-slate-600 mt-1">Star a property to feature it here.</p>
+              <p className="font-mono text-xxs text-slate-600 mt-1">
+                Star a property to feature it here.
+              </p>
             </div>
           )}
         </div>
@@ -1162,7 +1328,9 @@ export function PropertiesBoard({
                   />
                 ) : null
               )}
-              {properties.length === 0 && <div className="h-full flex-1 bg-slate-100 rounded-full" />}
+              {properties.length === 0 && (
+                <div className="h-full flex-1 bg-slate-100 rounded-full" />
+              )}
             </div>
 
             {/* All Status Rows */}
@@ -1174,11 +1342,16 @@ export function PropertiesBoard({
                   <div className="flex items-center gap-3">
                     <div className="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className={cn("h-full rounded-full transition-all duration-700", config.dot)}
+                        className={cn(
+                          "h-full rounded-full transition-all duration-700",
+                          config.dot
+                        )}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
-                    <span className="font-mono font-medium text-slate-900 w-6 text-right text-xs">{count}</span>
+                    <span className="font-mono font-medium text-slate-900 w-6 text-right text-xs">
+                      {count}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -1244,10 +1417,15 @@ export function PropertiesBoard({
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
             <div className="flex bg-slate-100 p-1 rounded-xl shrink-0">
               <button
-                onClick={() => { setStatusFilter("all"); setPage(1); }}
+                onClick={() => {
+                  setStatusFilter("all");
+                  setPage(1);
+                }}
                 className={cn(
                   "px-3 py-1.5 body-sm rounded-lg transition-colors",
-                  statusFilter === "all" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700"
+                  statusFilter === "all"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-700"
                 )}
               >
                 All
@@ -1255,7 +1433,10 @@ export function PropertiesBoard({
               {STATUS_ORDER.map((status) => (
                 <button
                   key={status}
-                  onClick={() => { setStatusFilter(status); setPage(1); }}
+                  onClick={() => {
+                    setStatusFilter(status);
+                    setPage(1);
+                  }}
                   className={cn(
                     "px-3 py-1.5 body-sm rounded-lg transition-colors flex items-center gap-1.5",
                     statusFilter === status
@@ -1285,7 +1466,11 @@ export function PropertiesBoard({
                 </span>
               )}
             </button>
-            <div className="hidden sm:flex bg-slate-100 p-1 rounded-xl gap-0.5 shrink-0 sm:ml-auto" role="group" aria-label="View mode">
+            <div
+              className="hidden sm:flex bg-slate-100 p-1 rounded-xl gap-0.5 shrink-0 sm:ml-auto"
+              role="group"
+              aria-label="View mode"
+            >
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
@@ -1293,7 +1478,9 @@ export function PropertiesBoard({
                 aria-pressed={viewMode === "grid"}
                 className={cn(
                   "size-8 rounded-lg flex items-center justify-center transition-colors",
-                  viewMode === "grid" ? "bg-[#151936] text-white" : "text-slate-600 hover:text-slate-800"
+                  viewMode === "grid"
+                    ? "bg-[#151936] text-white"
+                    : "text-slate-600 hover:text-slate-800"
                 )}
               >
                 <IconLayoutGrid size={15} />
@@ -1305,7 +1492,9 @@ export function PropertiesBoard({
                 aria-pressed={viewMode === "list"}
                 className={cn(
                   "size-8 rounded-lg flex items-center justify-center transition-colors",
-                  viewMode === "list" ? "bg-[#151936] text-white" : "text-slate-600 hover:text-slate-800"
+                  viewMode === "list"
+                    ? "bg-[#151936] text-white"
+                    : "text-slate-600 hover:text-slate-800"
                 )}
               >
                 <IconList size={15} />
@@ -1324,12 +1513,17 @@ export function PropertiesBoard({
               <select
                 id="prop-type-filter"
                 value={typeFilter}
-                onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setTypeFilter(e.target.value);
+                  setPage(1);
+                }}
                 className="bg-white border border-slate-200 rounded-xl px-3 py-2 body-sm outline-none focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30"
               >
                 <option value="all">All types</option>
                 {PROPERTY_TYPES.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </select>
             </div>
@@ -1340,7 +1534,10 @@ export function PropertiesBoard({
               <select
                 id="prop-listing-filter"
                 value={listingFilter}
-                onChange={(e) => { setListingFilter(e.target.value as ListingFilter); setPage(1); }}
+                onChange={(e) => {
+                  setListingFilter(e.target.value as ListingFilter);
+                  setPage(1);
+                }}
                 className="bg-white border border-slate-200 rounded-xl px-3 py-2 body-sm outline-none focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30"
               >
                 <option value="all">For sale &amp; to let</option>
@@ -1352,7 +1549,13 @@ export function PropertiesBoard({
               <div className="sm:col-span-2 flex justify-end">
                 <button
                   type="button"
-                  onClick={() => { setQuery(""); setStatusFilter("all"); setTypeFilter("all"); setListingFilter("all"); setPage(1); }}
+                  onClick={() => {
+                    setQuery("");
+                    setStatusFilter("all");
+                    setTypeFilter("all");
+                    setListingFilter("all");
+                    setPage(1);
+                  }}
                   className="inline-flex items-center gap-1 px-3 py-1.5 body-sm text-slate-600 hover:text-rose-600 transition-colors"
                 >
                   <IconX size={14} /> Clear All Filters
@@ -1394,7 +1597,12 @@ export function PropertiesBoard({
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => { setQuery(""); setStatusFilter("all"); setTypeFilter("all"); setListingFilter("all"); }}
+              onClick={() => {
+                setQuery("");
+                setStatusFilter("all");
+                setTypeFilter("all");
+                setListingFilter("all");
+              }}
             >
               Clear filters
             </Button>
@@ -1446,9 +1654,16 @@ export function PropertiesBoard({
                         <div className="flex items-center gap-1.5">
                           Property
                           {sortConfig?.key === "name" ? (
-                            sortConfig.direction === "asc" ? <IconSortAscending size={13} /> : <IconSortDescending size={13} />
+                            sortConfig.direction === "asc" ? (
+                              <IconSortAscending size={13} />
+                            ) : (
+                              <IconSortDescending size={13} />
+                            )
                           ) : (
-                            <IconArrowsSort size={13} className="opacity-0 group-hover:opacity-60" />
+                            <IconArrowsSort
+                              size={13}
+                              className="opacity-0 group-hover:opacity-60"
+                            />
                           )}
                         </div>
                       </th>
@@ -1466,9 +1681,16 @@ export function PropertiesBoard({
                         <div className="flex items-center justify-end gap-1.5">
                           Price
                           {sortConfig?.key === "monthlyRentKes" ? (
-                            sortConfig.direction === "asc" ? <IconSortAscending size={13} /> : <IconSortDescending size={13} />
+                            sortConfig.direction === "asc" ? (
+                              <IconSortAscending size={13} />
+                            ) : (
+                              <IconSortDescending size={13} />
+                            )
                           ) : (
-                            <IconArrowsSort size={13} className="opacity-0 group-hover:opacity-60" />
+                            <IconArrowsSort
+                              size={13}
+                              className="opacity-0 group-hover:opacity-60"
+                            />
                           )}
                         </div>
                       </th>
@@ -1490,14 +1712,28 @@ export function PropertiesBoard({
                     {visible.map((p, rowIdx) => {
                       const rowSpecs: { icon: React.ElementType; value: string }[] = [];
                       const unitTotal = p.unitBreakdown?.reduce((s, u) => s + u.count, 0);
-                      if (unitTotal) rowSpecs.push({ icon: IconBuildingCommunity, value: `${unitTotal} units` });
-                      if (p.bedrooms != null) rowSpecs.push({ icon: IconBed, value: `${p.bedrooms} bd` });
-                      if (p.sizeSqft != null) rowSpecs.push({ icon: IconRuler, value: `${p.sizeSqft.toLocaleString()} sqft` });
-                      if (p.landAreaSqft != null) rowSpecs.push({ icon: IconRuler, value: `${(p.landAreaSqft / 43560).toFixed(2)} ac` });
+                      if (unitTotal)
+                        rowSpecs.push({ icon: IconBuildingCommunity, value: `${unitTotal} units` });
+                      if (p.bedrooms != null)
+                        rowSpecs.push({ icon: IconBed, value: `${p.bedrooms} bd` });
+                      if (p.sizeSqft != null)
+                        rowSpecs.push({
+                          icon: IconRuler,
+                          value: `${p.sizeSqft.toLocaleString()} sqft`,
+                        });
+                      if (p.landAreaSqft != null)
+                        rowSpecs.push({
+                          icon: IconRuler,
+                          value: `${(p.landAreaSqft / 43560).toFixed(2)} ac`,
+                        });
 
                       const priceVal = isSale(p)
-                        ? p.askingPriceKes ? formatCompactKES(parseFloat(p.askingPriceKes)) : "—"
-                        : p.monthlyRentKes ? formatCompactKES(parseFloat(p.monthlyRentKes)) : "—";
+                        ? p.askingPriceKes
+                          ? formatCompactKES(parseFloat(p.askingPriceKes))
+                          : "—"
+                        : p.monthlyRentKes
+                          ? formatCompactKES(parseFloat(p.monthlyRentKes))
+                          : "—";
                       const priceLabel = isSale(p) ? "Asking" : "/mo";
 
                       return (
@@ -1535,17 +1771,31 @@ export function PropertiesBoard({
                             <div className="flex items-center gap-3">
                               <div className="relative size-11 shrink-0 rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
                                 {primaryImageUrl(p) ? (
-                                  <Image src={primaryImageUrl(p)!} alt={p.name} fill sizes="44px" className="object-cover" />
+                                  <Image
+                                    src={primaryImageUrl(p)!}
+                                    alt={p.name}
+                                    fill
+                                    sizes="44px"
+                                    className="object-cover"
+                                  />
                                 ) : (
                                   <div className="absolute inset-0 flex items-center justify-center">
-                                    <PropertyTypeIcon type={p.propertyType} size={20} className="text-slate-300" />
+                                    <PropertyTypeIcon
+                                      type={p.propertyType}
+                                      size={20}
+                                      className="text-slate-300"
+                                    />
                                   </div>
                                 )}
                               </div>
                               <div className="flex flex-col min-w-0">
-                                <span className="body-sm text-slate-900 truncate leading-snug">{p.name}</span>
+                                <span className="body-sm text-slate-900 truncate leading-snug">
+                                  {p.name}
+                                </span>
                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                  <span className="mono-data text-slate-300 text-xs">{p.propertyCode}</span>
+                                  <span className="mono-data text-slate-300 text-xs">
+                                    {p.propertyCode}
+                                  </span>
                                   {(p.owner?.name || p.ownerName) && (
                                     <>
                                       <span className="text-slate-200">·</span>
@@ -1573,9 +1823,18 @@ export function PropertiesBoard({
                                 <PropertyTypeIcon type={p.propertyType} size={14} />
                               </div>
                               <div>
-                                <p className="text-xs text-slate-700 leading-none">{p.propertyType}</p>
-                                <p className={cn("label-caps mt-0.5", isSale(p) ? "text-indigo-400" : "text-slate-600")}>
-                                  {LISTING_TYPE_LABEL[p.listingType as keyof typeof LISTING_TYPE_LABEL] ?? (isSale(p) ? "For Sale" : "To Let")}
+                                <p className="text-xs text-slate-700 leading-none">
+                                  {p.propertyType}
+                                </p>
+                                <p
+                                  className={cn(
+                                    "label-caps mt-0.5",
+                                    isSale(p) ? "text-indigo-400" : "text-slate-600"
+                                  )}
+                                >
+                                  {LISTING_TYPE_LABEL[
+                                    p.listingType as keyof typeof LISTING_TYPE_LABEL
+                                  ] ?? (isSale(p) ? "For Sale" : "To Let")}
                                 </p>
                               </div>
                             </div>
@@ -1586,7 +1845,10 @@ export function PropertiesBoard({
                             {rowSpecs.length > 0 ? (
                               <div className="flex flex-wrap gap-1">
                                 {rowSpecs.slice(0, 2).map((s, i) => (
-                                  <span key={i} className="inline-flex items-center gap-1 bg-slate-50 border border-slate-100 rounded-md px-1.5 py-0.5 label-caps text-slate-600">
+                                  <span
+                                    key={i}
+                                    className="inline-flex items-center gap-1 bg-slate-50 border border-slate-100 rounded-md px-1.5 py-0.5 label-caps text-slate-600"
+                                  >
                                     <s.icon size={10} stroke={2} />
                                     {s.value}
                                   </span>
@@ -1609,8 +1871,12 @@ export function PropertiesBoard({
 
                           {/* Price */}
                           <td className="px-3 py-3.5 text-right">
-                            <p className="mono-amount text-slate-900 text-sm leading-none">{priceVal}</p>
-                            <p className="label-caps text-slate-300 mt-0.5 text-right">{priceLabel}</p>
+                            <p className="mono-amount text-slate-900 text-sm leading-none">
+                              {priceVal}
+                            </p>
+                            <p className="label-caps text-slate-300 mt-0.5 text-right">
+                              {priceLabel}
+                            </p>
                           </td>
 
                           {/* Mandate + manager */}
@@ -1626,7 +1892,12 @@ export function PropertiesBoard({
                                         : "neutral"
                                   }
                                 >
-                                  {(MANDATE_STATUS_CONFIG[p.mandateStatus] ?? MANDATE_STATUS_CONFIG.draft).label}
+                                  {
+                                    (
+                                      MANDATE_STATUS_CONFIG[p.mandateStatus] ??
+                                      MANDATE_STATUS_CONFIG.draft
+                                    ).label
+                                  }
                                 </Badge>
                                 {p.manager?.name ? (
                                   <button
@@ -1655,7 +1926,10 @@ export function PropertiesBoard({
 
                           {/* Actions */}
                           {canManage && (
-                            <td className="px-3 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
+                            <td
+                              className="px-3 py-3.5 text-right"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <DropdownMenu
                                 label="Row Actions"
                                 trigger={
@@ -1680,7 +1954,11 @@ export function PropertiesBoard({
                                 >
                                   {p.isFeatured ? "Remove from Featured" : "Add to Featured"}
                                 </DropdownItem>
-                                <DropdownItem icon={IconTrash} variant="danger" onClick={() => setDeleteConfirmId(p.id)}>
+                                <DropdownItem
+                                  icon={IconTrash}
+                                  variant="danger"
+                                  onClick={() => setDeleteConfirmId(p.id)}
+                                >
                                   Delete Property
                                 </DropdownItem>
                               </DropdownMenu>
@@ -1724,20 +2002,32 @@ export function PropertiesBoard({
           {/* Search & Filter bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div className="relative flex-1">
-              <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+              <IconSearch
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+              />
               <input
                 type="text"
                 placeholder="Search activity logs..."
                 value={activitySearchQuery}
-                onChange={(e) => { setActivitySearchQuery(e.target.value); setActivityPage(1); }}
+                onChange={(e) => {
+                  setActivitySearchQuery(e.target.value);
+                  setActivityPage(1);
+                }}
                 className="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all placeholder:text-slate-600"
               />
             </div>
             <div className="relative shrink-0">
-              <IconFilter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" />
+              <IconFilter
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none"
+              />
               <select
                 value={activityFilter}
-                onChange={(e) => { setActivityFilter(e.target.value); setActivityPage(1); }}
+                onChange={(e) => {
+                  setActivityFilter(e.target.value);
+                  setActivityPage(1);
+                }}
                 className="appearance-none bg-white border border-slate-200 text-sm font-medium text-slate-700 rounded-xl pl-8 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all cursor-pointer"
               >
                 <option value="all">All Events</option>
@@ -1763,13 +2053,17 @@ export function PropertiesBoard({
               <IconMoodEmpty size={32} className="text-slate-300" />
             </div>
             <h3 className="text-sm font-medium text-slate-700">No recorded activity yet.</h3>
-            <p className="text-slate-600 max-w-sm text-xs">Status changes, edits, mandate events, and registrations will safely log here.</p>
+            <p className="text-slate-600 max-w-sm text-xs">
+              Status changes, edits, mandate events, and registrations will safely log here.
+            </p>
           </div>
         ) : paginatedPropertyActivity.length === 0 ? (
           <div className="flex flex-col items-center py-12 text-center">
             <IconSearch size={24} className="text-slate-300 mb-3" />
             <p className="text-sm font-medium text-slate-700">No logs match your filter</p>
-            <p className="text-xs text-slate-600 mt-1">Try adjusting the search query or dropdown.</p>
+            <p className="text-xs text-slate-600 mt-1">
+              Try adjusting the search query or dropdown.
+            </p>
           </div>
         ) : (
           <div className="flex flex-col gap-6 relative ml-1">
@@ -1777,14 +2071,25 @@ export function PropertiesBoard({
             {paginatedPropertyActivity.map((entry) => {
               const toneColor = getActivityTone(entry.summary);
               return (
-                <div key={entry.id} className="relative flex items-start lg:items-center gap-4 z-10 group">
-                  <div className={cn("size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs", toneColor)} />
+                <div
+                  key={entry.id}
+                  className="relative flex items-start lg:items-center gap-4 z-10 group"
+                >
+                  <div
+                    className={cn(
+                      "size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs",
+                      toneColor
+                    )}
+                  />
                   <div className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 hover:bg-slate-50/50 -my-1.5 -mx-3 p-1.5 px-3 rounded-xl transition-colors">
                     <p className="text-sm text-slate-500 leading-snug group-hover:text-slate-700 transition-colors flex-1 min-w-0 pr-4">
                       {entry.actorName ? (
                         <>
                           <span className="font-medium text-slate-700">{entry.actorName}</span>{" "}
-                          {entry.summary.replace(entry.actorName, "").replace(/^ - |^ — /, "").trim()}
+                          {entry.summary
+                            .replace(entry.actorName, "")
+                            .replace(/^ - |^ — /, "")
+                            .trim()}
                         </>
                       ) : (
                         entry.summary
@@ -1792,8 +2097,16 @@ export function PropertiesBoard({
                     </p>
                     <div className="flex items-center gap-3 shrink-0">
                       <p className="text-xs text-slate-600 font-mono tracking-wider hidden lg:block">
-                        {new Date(entry.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })},{" "}
-                        {new Date(entry.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                        {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        ,{" "}
+                        {new Date(entry.createdAt).toLocaleTimeString("en-GB", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                       <Badge tone="neutral">{relativeTime(entry.createdAt)}</Badge>
                     </div>
@@ -1807,7 +2120,8 @@ export function PropertiesBoard({
         {activityTotalPages > 1 && (
           <div className="flex items-center justify-between pt-6 mt-6 border-t border-slate-100">
             <span className="text-xs font-medium text-slate-600 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
-              Page {safeActivityPage} of {activityTotalPages} · {filteredPropertyActivity.length} logs
+              Page {safeActivityPage} of {activityTotalPages} · {filteredPropertyActivity.length}{" "}
+              logs
             </span>
             <div className="flex items-center gap-1.5">
               <button
@@ -1832,7 +2146,11 @@ export function PropertiesBoard({
       </div>
 
       {isCreateOpen && (
-        <PropertyFormModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} onSubmit={handleCreateSuccess} />
+        <PropertyFormModal
+          open={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          onSubmit={handleCreateSuccess}
+        />
       )}
 
       {editingProperty && (

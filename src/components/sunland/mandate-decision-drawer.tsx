@@ -59,20 +59,31 @@ export function MandateDecisionDrawer({
       const res = await fetch("/api/finance/approvals/decide", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId: approvalRequestId, status, decisionNotes: notes.trim() || undefined }),
+        body: JSON.stringify({
+          requestId: approvalRequestId,
+          status,
+          decisionNotes: notes.trim() || undefined,
+        }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to record the decision");
       pushToast({
         tone: "success",
         title: status === "approved" ? "Mandate activated" : "Mandate rejected",
-        body: status === "approved" ? "Collections start against this mandate immediately." : "Returned to draft.",
+        body:
+          status === "approved"
+            ? "Collections start against this mandate immediately."
+            : "Returned to draft.",
       });
       setNotes("");
       onDecided();
       onClose();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not record the decision." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not record the decision.",
+      });
     } finally {
       setPending(null);
     }
@@ -88,23 +99,31 @@ export function MandateDecisionDrawer({
   return (
     <Drawer open={open} onClose={onClose} title="Review Mandate" width="28rem">
       <div className="flex flex-col gap-5">
-        <p className="text-desc-secondary -mt-2">{propertyName} · {landlordName}</p>
+        <p className="text-desc-secondary -mt-2">
+          {propertyName} · {landlordName}
+        </p>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-slate-100 bg-slate-50 px-3.5 py-3">
             <p className="label-caps text-slate-400 mb-1">Rate</p>
-            <p className="font-mono font-medium text-slate-900 text-lg">{(mandateRate * 100).toFixed(1)}%</p>
+            <p className="font-mono font-medium text-slate-900 text-lg">
+              {(mandateRate * 100).toFixed(1)}%
+            </p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50 px-3.5 py-3">
             <p className="label-caps text-slate-400 mb-1">Expected / mo</p>
-            <p className="font-mono font-medium text-slate-900 text-lg">{formatCompactKES(expectedMonthlyKes)}</p>
+            <p className="font-mono font-medium text-slate-900 text-lg">
+              {formatCompactKES(expectedMonthlyKes)}
+            </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-2.5">
           <FactRow label="Landlord" value={landlordName} />
           {submittedBy && <FactRow label="Submitted by" value={submittedBy} />}
-          {submittedAt && <FactRow label="Submitted" value={formatPropertyDate(submittedAt)} mono />}
+          {submittedAt && (
+            <FactRow label="Submitted" value={formatPropertyDate(submittedAt)} mono />
+          )}
           <FactRow label="Units under mandate" value={unitTotal} mono />
           <FactRow label="Approval route" value={approvalRoute} />
         </div>
@@ -134,18 +153,34 @@ export function MandateDecisionDrawer({
             id="decision-notes"
             rows={3}
             value={notes}
-            onChange={(e) => { setNotes(e.target.value); setNotesErr(false); }}
+            onChange={(e) => {
+              setNotes(e.target.value);
+              setNotesErr(false);
+            }}
             placeholder="Context for the approval record…"
             className="w-full px-3.5 py-2.5 text-slate-800 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#151936]/40 focus:ring-1 focus:ring-[#151936]/10 transition-colors shadow-sm resize-y"
           />
-          {notesErr && <p className="body-sm text-rose-600 mt-1.5">Rejection notes are mandatory — they go back to the submitter.</p>}
+          {notesErr && (
+            <p className="body-sm text-rose-600 mt-1.5">
+              Rejection notes are mandatory — they go back to the submitter.
+            </p>
+          )}
         </div>
 
         <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
-          <Button className="flex-1 justify-center bg-[#f3df27] text-[#151936] hover:bg-[#e6d220]" onClick={() => submit("approved")} disabled={!!pending}>
+          <Button
+            className="flex-1 justify-center bg-[#f3df27] text-[#151936] hover:bg-[#e6d220]"
+            onClick={() => submit("approved")}
+            disabled={!!pending}
+          >
             {pending === "approve" ? "Approving…" : "Approve & Activate"}
           </Button>
-          <Button variant="secondary" className="flex-1 justify-center text-rose-600 border-rose-200 hover:bg-rose-50" onClick={() => submit("rejected")} disabled={!!pending}>
+          <Button
+            variant="secondary"
+            className="flex-1 justify-center text-rose-600 border-rose-200 hover:bg-rose-50"
+            onClick={() => submit("rejected")}
+            disabled={!!pending}
+          >
             {pending === "reject" ? "Rejecting…" : "Reject"}
           </Button>
         </div>
@@ -158,7 +193,15 @@ function FactRow({ label, value, mono }: { label: string; value: string; mono?: 
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-desc-secondary shrink-0">{label}</span>
-      <span className={mono ? "mono-data text-slate-700 text-right truncate" : "text-body-regular text-slate-700 text-right truncate"}>{value}</span>
+      <span
+        className={
+          mono
+            ? "mono-data text-slate-700 text-right truncate"
+            : "text-body-regular text-slate-700 text-right truncate"
+        }
+      >
+        {value}
+      </span>
     </div>
   );
 }

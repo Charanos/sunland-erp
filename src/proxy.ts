@@ -52,12 +52,7 @@ async function getSessionUser(request: NextRequest): Promise<SessionUser | null>
 // ─── Path classification ──────────────────────────────────────────────────────
 
 /** Public paths that never require authentication */
-const PUBLIC_PATHS = [
-  "/login",
-  "/api/auth/login",
-  "/api/auth/logout",
-  "/api/auth/emulate",
-];
+const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/logout", "/api/auth/emulate"];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "?"));

@@ -4,7 +4,12 @@ import { db } from "@/db";
 import { userRole, users } from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
-import { ConflictError, DomainValidationError, ForbiddenError, NotFoundError } from "@/lib/authz/errors";
+import {
+  ConflictError,
+  DomainValidationError,
+  ForbiddenError,
+  NotFoundError,
+} from "@/lib/authz/errors";
 import { hashPassword } from "@/lib/auth/password";
 import { isLastSuperAdmin } from "@/lib/services/identity/access";
 import type { CallerContext } from "@/lib/services/types";
@@ -39,7 +44,10 @@ const PUBLIC_COLUMNS = {
  * group, so a role-scoped lookup needs to see the whole company, not just
  * one division.
  */
-export async function listUsers(ctx: CallerContext, filters: { entityId?: string; role?: string } = {}) {
+export async function listUsers(
+  ctx: CallerContext,
+  filters: { entityId?: string; role?: string } = {}
+) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(rawEntityId);
@@ -52,7 +60,12 @@ export async function listUsers(ctx: CallerContext, filters: { entityId?: string
     return db
       .select(PUBLIC_COLUMNS)
       .from(users)
-      .where(and(eq(users.role, filters.role as (typeof userRole.enumValues)[number]), eq(users.isActive, true)));
+      .where(
+        and(
+          eq(users.role, filters.role as (typeof userRole.enumValues)[number]),
+          eq(users.isActive, true)
+        )
+      );
   }
 
   return db.select(PUBLIC_COLUMNS).from(users).where(eq(users.primaryEntityId, entityId));
@@ -79,10 +92,18 @@ export async function updateUserProfile(ctx: CallerContext, userId: string, rawI
   const input = parseInput(updateUserProfileSchema, rawInput);
 
   return db.transaction(async (tx) => {
-    const [before] = await tx.select(PUBLIC_COLUMNS).from(users).where(eq(users.id, userId)).limit(1);
+    const [before] = await tx
+      .select(PUBLIC_COLUMNS)
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
     if (!before) throw new NotFoundError("User not found");
 
-    const [after] = await tx.update(users).set(input).where(eq(users.id, userId)).returning(PUBLIC_COLUMNS);
+    const [after] = await tx
+      .update(users)
+      .set(input)
+      .where(eq(users.id, userId))
+      .returning(PUBLIC_COLUMNS);
 
     await writeAudit(tx, ctx, {
       action: "identity.user.update_profile",

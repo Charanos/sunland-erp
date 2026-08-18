@@ -139,11 +139,12 @@ const VALUATION_COVER_POOL = [
 const VALUER_AVATAR_POOL: Record<string, string> = {
   "David Omondi": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
   "Jane Wanjiru": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80",
-  "Knight & Kale Valuers": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80",
+  "Knight & Kale Valuers":
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80",
   "Tysons Ltd": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80",
   "Sunland Valuers Ltd": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80",
   "Kevin Mbugua": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
-  "Unassigned": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
+  Unassigned: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
 };
 
 const DEFAULT_AVATARS = [
@@ -210,20 +211,23 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
     sharePct: number;
   } | null>(null);
 
-  const loadValuations = useCallback(async (silent = false) => {
-    if (!silent) Promise.resolve().then(() => setLoading(true));
-    try {
-      const res = await fetch(`/api/valuations?entityId=${entityId}&view=${registerView}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load valuations");
-      setValuations(data.valuations ?? []);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load valuations";
-      pushToast({ tone: "error", title: "Error", body: message });
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  }, [entityId, registerView, pushToast]);
+  const loadValuations = useCallback(
+    async (silent = false) => {
+      if (!silent) Promise.resolve().then(() => setLoading(true));
+      try {
+        const res = await fetch(`/api/valuations?entityId=${entityId}&view=${registerView}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to load valuations");
+        setValuations(data.valuations ?? []);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to load valuations";
+        pushToast({ tone: "error", title: "Error", body: message });
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    },
+    [entityId, registerView, pushToast]
+  );
 
   useEffect(() => {
     Promise.resolve().then(() => loadValuations());
@@ -246,7 +250,7 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       .then((data) => {
         if (data?.properties) setProperties(data.properties);
       })
-      .catch(() => { });
+      .catch(() => {});
   }, [entityId]);
 
   // User-curated star toggle, parity with properties-board.tsx's real
@@ -263,10 +267,19 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ entityId, isFeatured: nextVal }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Failed to update featured status");
-      pushToast({ tone: "success", title: "Updated", body: `Prospect is now ${nextVal ? "featured" : "unfeatured"}.` });
+      if (!res.ok)
+        throw new Error(
+          (await res.json().catch(() => null))?.error ?? "Failed to update featured status"
+        );
+      pushToast({
+        tone: "success",
+        title: "Updated",
+        body: `Prospect is now ${nextVal ? "featured" : "unfeatured"}.`,
+      });
     } catch {
-      setValuations((prev) => prev.map((v) => (v.id === id ? { ...v, isFeatured: currentlyFeatured } : v)));
+      setValuations((prev) =>
+        prev.map((v) => (v.id === id ? { ...v, isFeatured: currentlyFeatured } : v))
+      );
       pushToast({ tone: "warning", title: "Error", body: "Could not update featured status." });
     }
   };
@@ -280,7 +293,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
         if (active && data?.properties) setProperties(data.properties);
       })
       .catch((err) => console.error("Failed to load properties:", err));
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [entityId]);
 
   // ── Valuation Activity Feed ─────────────────────────────────────────────────
@@ -309,10 +324,22 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       });
   }, [entityId, valuationActivityLoaded]);
 
-  const subjectOf = useCallback((v: Valuation): { name: string; location: string; portfolio: boolean } => {
-    if (v.propertyId) return { name: v.propertyName ?? "Portfolio property", location: v.propertyLocation ?? "-", portfolio: true };
-    return { name: v.externalPropertyName ?? "Unknown subject", location: v.externalLocation ?? "-", portfolio: false };
-  }, []);
+  const subjectOf = useCallback(
+    (v: Valuation): { name: string; location: string; portfolio: boolean } => {
+      if (v.propertyId)
+        return {
+          name: v.propertyName ?? "Portfolio property",
+          location: v.propertyLocation ?? "-",
+          portfolio: true,
+        };
+      return {
+        name: v.externalPropertyName ?? "Unknown subject",
+        location: v.externalLocation ?? "-",
+        portfolio: false,
+      };
+    },
+    []
+  );
 
   const coverImageOf = useCallback((v: Valuation): string => {
     const primary = v.propertyMedia?.find((m) => m.isPrimary)?.url ?? v.propertyMedia?.[0]?.url;
@@ -330,27 +357,48 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
 
   const ageDaysOf = useCallback((v: Valuation) => daysSince(v.stageEnteredAt), []);
 
-  const scoreOf = useCallback((v: Valuation) => {
-    if (STAGE_ORDER.indexOf(v.stage) < STAGE_ORDER.indexOf("valued") || v.stage === "declined" || !v.marketValueKes || !v.proposedFeeRate) return null;
-    return scoreForValuation({
-      proposedFeeRatePct: Number(v.proposedFeeRate) * 100,
-      marketValueKes: Number(v.marketValueKes),
-      landlordVerified: !!v.landlordVerifiedAt,
-      ageDays: ageDaysOf(v),
-    });
-  }, [ageDaysOf]);
+  const scoreOf = useCallback(
+    (v: Valuation) => {
+      if (
+        STAGE_ORDER.indexOf(v.stage) < STAGE_ORDER.indexOf("valued") ||
+        v.stage === "declined" ||
+        !v.marketValueKes ||
+        !v.proposedFeeRate
+      )
+        return null;
+      return scoreForValuation({
+        proposedFeeRatePct: Number(v.proposedFeeRate) * 100,
+        marketValueKes: Number(v.marketValueKes),
+        landlordVerified: !!v.landlordVerifiedAt,
+        ageDays: ageDaysOf(v),
+      });
+    },
+    [ageDaysOf]
+  );
 
   // ── Derived analytics ────────────────────────────────────────────────────────
 
   const kpis = useMemo(() => {
     const active = valuations.filter((v) => v.stage !== "mandate_signed" && v.stage !== "declined");
     const awaitingDecision = valuations.filter((v) => v.stage === "valued").length;
-    const pipelineValue = active.reduce((sum, v) => sum + (v.marketValueKes ? Number(v.marketValueKes) : 0), 0);
-    const offersSentTotal = valuations.filter((v) => STAGE_ORDER.indexOf(v.stage) >= STAGE_ORDER.indexOf("offer_sent")).length;
+    const pipelineValue = active.reduce(
+      (sum, v) => sum + (v.marketValueKes ? Number(v.marketValueKes) : 0),
+      0
+    );
+    const offersSentTotal = valuations.filter(
+      (v) => STAGE_ORDER.indexOf(v.stage) >= STAGE_ORDER.indexOf("offer_sent")
+    ).length;
     const mandatesTotal = valuations.filter((v) => v.stage === "mandate_signed").length;
     const convPct = offersSentTotal > 0 ? (mandatesTotal / offersSentTotal) * 100 : 0;
     const stalled = valuations.filter((v) => v.stage === "offer_sent" && ageDaysOf(v) > 21).length;
-    return { inPipeline: active.length, awaitingDecision, pipelineValue, convPct, signedYtd: mandatesTotal, stalled };
+    return {
+      inPipeline: active.length,
+      awaitingDecision,
+      pipelineValue,
+      convPct,
+      signedYtd: mandatesTotal,
+      stalled,
+    };
   }, [valuations, ageDaysOf]);
 
   const pipelineBreakdown = useMemo(() => {
@@ -381,12 +429,23 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       .filter((v) => v.isFeatured && v.stage !== "mandate_signed" && v.stage !== "declined")
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [valuations]);
-  const safeFeaturedCarouselIndex = curatedFeatured.length === 0 ? 0 : Math.min(featuredCarouselIndex, curatedFeatured.length - 1);
-  const featuredProspect = curatedFeatured.length > 0 ? curatedFeatured[safeFeaturedCarouselIndex] : scoreBasedProspect;
+  const safeFeaturedCarouselIndex =
+    curatedFeatured.length === 0 ? 0 : Math.min(featuredCarouselIndex, curatedFeatured.length - 1);
+  const featuredProspect =
+    curatedFeatured.length > 0 ? curatedFeatured[safeFeaturedCarouselIndex] : scoreBasedProspect;
   const isCuratedFeatured = curatedFeatured.length > 0;
 
   const actionItems = useMemo(() => {
-    const items: Array<{ key: string; tone: "amber" | "rose"; icon: typeof IconFileCertificate; title: string; meta: string; cta: string; onClick: () => void; primary: boolean }> = [];
+    const items: Array<{
+      key: string;
+      tone: "amber" | "rose";
+      icon: typeof IconFileCertificate;
+      title: string;
+      meta: string;
+      cta: string;
+      onClick: () => void;
+      primary: boolean;
+    }> = [];
     const readyForOffer = valuations.find((v) => v.stage === "valued");
     if (readyForOffer) {
       items.push({
@@ -409,7 +468,10 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
         meta: "No landlord response yet - consider a follow-up call",
         cta: "View stalled",
         primary: false,
-        onClick: () => { setViewMode("list"); setQuery(""); },
+        onClick: () => {
+          setViewMode("list");
+          setQuery("");
+        },
       });
     }
     return items;
@@ -421,8 +483,13 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       .filter((v) => {
         if (!q) return true;
         const subject = subjectOf(v);
-        return [v.valuationCode, subject.name, subject.location, v.landlordName, valuerLabel(v)]
-          .some((s) => s?.toLowerCase().includes(q));
+        return [
+          v.valuationCode,
+          subject.name,
+          subject.location,
+          v.landlordName,
+          valuerLabel(v),
+        ].some((s) => s?.toLowerCase().includes(q));
       })
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [valuations, query, subjectOf, valuerLabel]);
@@ -435,16 +502,24 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
     let result = valuationActivity;
     if (activitySearchQuery) {
       const q = activitySearchQuery.toLowerCase();
-      result = result.filter((e) =>
-        e.summary.toLowerCase().includes(q) || e.actorName?.toLowerCase().includes(q)
+      result = result.filter(
+        (e) => e.summary.toLowerCase().includes(q) || e.actorName?.toLowerCase().includes(q)
       );
     }
     if (activityFilter !== "all") {
       result = result.filter((e) => {
         const lower = e.summary.toLowerCase();
-        if (activityFilter === "stage_changes") return lower.includes("stage") || lower.includes("advance") || lower.includes("transition") || lower.includes("sign");
-        if (activityFilter === "edits") return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
-        if (activityFilter === "valuations") return lower.includes("valuat") || lower.includes("assess") || lower.includes("report");
+        if (activityFilter === "stage_changes")
+          return (
+            lower.includes("stage") ||
+            lower.includes("advance") ||
+            lower.includes("transition") ||
+            lower.includes("sign")
+          );
+        if (activityFilter === "edits")
+          return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
+        if (activityFilter === "valuations")
+          return lower.includes("valuat") || lower.includes("assess") || lower.includes("report");
         if (activityFilter === "system") return lower.includes("system") || lower.includes("auto");
         return true;
       });
@@ -452,19 +527,30 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
     return result;
   }, [valuationActivity, activitySearchQuery, activityFilter]);
 
-  const activityTotalPages = Math.max(1, Math.ceil(filteredValuationActivity.length / ACTIVITY_PER_PAGE));
+  const activityTotalPages = Math.max(
+    1,
+    Math.ceil(filteredValuationActivity.length / ACTIVITY_PER_PAGE)
+  );
   const safeActivityPage = Math.min(activityPage, activityTotalPages);
   const paginatedValuationActivity = filteredValuationActivity.slice(
     (safeActivityPage - 1) * ACTIVITY_PER_PAGE,
-    safeActivityPage * ACTIVITY_PER_PAGE,
+    safeActivityPage * ACTIVITY_PER_PAGE
   );
 
   const getActivityTone = (summary: string) => {
     const lower = summary.toLowerCase();
-    if (lower.includes("decline") || lower.includes("delet") || lower.includes("reject")) return "bg-rose-300 ring-rose-50";
+    if (lower.includes("decline") || lower.includes("delet") || lower.includes("reject"))
+      return "bg-rose-300 ring-rose-50";
     if (lower.includes("sign") || lower.includes("mandate")) return "bg-[#f3df27] ring-amber-50";
-    if (lower.includes("offer") || lower.includes("accept")) return "bg-emerald-400 ring-emerald-50";
-    if (lower.includes("updat") || lower.includes("chang") || lower.includes("edit") || lower.includes("submit")) return "bg-indigo-300 ring-indigo-50";
+    if (lower.includes("offer") || lower.includes("accept"))
+      return "bg-emerald-400 ring-emerald-50";
+    if (
+      lower.includes("updat") ||
+      lower.includes("chang") ||
+      lower.includes("edit") ||
+      lower.includes("submit")
+    )
+      return "bg-indigo-300 ring-indigo-50";
     return "bg-slate-200 ring-white";
   };
 
@@ -485,10 +571,21 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
   const valuerPerformance = useMemo(() => {
     const byValuer = new Map<
       string,
-      { name: string; value: number; count: number; avatarUrl?: string | null; valuerId?: string | null }
+      {
+        name: string;
+        value: number;
+        count: number;
+        avatarUrl?: string | null;
+        valuerId?: string | null;
+      }
     >();
     for (const v of valuations) {
-      if (v.stage !== "mandate_signed" && v.stage !== "valued" && STAGE_ORDER.indexOf(v.stage) < STAGE_ORDER.indexOf("valued")) continue;
+      if (
+        v.stage !== "mandate_signed" &&
+        v.stage !== "valued" &&
+        STAGE_ORDER.indexOf(v.stage) < STAGE_ORDER.indexOf("valued")
+      )
+        continue;
       if (!v.marketValueKes) continue;
       const name = valuerLabel(v);
       const entry = byValuer.get(name) ?? {
@@ -503,7 +600,8 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       if (v.valuerAvatarUrl) entry.avatarUrl = v.valuerAvatarUrl;
       byValuer.set(name, entry);
     }
-    const totalVolume = Array.from(byValuer.values()).reduce((sum, item) => sum + item.value, 0) || 1;
+    const totalVolume =
+      Array.from(byValuer.values()).reduce((sum, item) => sum + item.value, 0) || 1;
     return Array.from(byValuer.values())
       .sort((a, b) => b.value - a.value)
       .map((entry) => ({
@@ -546,27 +644,50 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
   const valuerPageSize = 3;
   const valuerTotalPages = Math.max(1, Math.ceil(valuerPerformance.length / valuerPageSize));
   const safeValuerPage = Math.min(valuerPage, valuerTotalPages);
-  const paginatedValuers = valuerPerformance.slice((safeValuerPage - 1) * valuerPageSize, safeValuerPage * valuerPageSize);
+  const paginatedValuers = valuerPerformance.slice(
+    (safeValuerPage - 1) * valuerPageSize,
+    safeValuerPage * valuerPageSize
+  );
 
   const mgrPageSize = 3;
   const mgrTotalPages = Math.max(1, Math.ceil(mgrPipeline.length / mgrPageSize));
   const safeMgrPage = Math.min(mgrPage, mgrTotalPages);
-  const paginatedManagers = mgrPipeline.slice((safeMgrPage - 1) * mgrPageSize, safeMgrPage * mgrPageSize);
+  const paginatedManagers = mgrPipeline.slice(
+    (safeMgrPage - 1) * mgrPageSize,
+    safeMgrPage * mgrPageSize
+  );
 
   const completedThisMonth = useMemo(() => {
     const now = new Date();
-    return valuations.filter((v) => v.stage === "mandate_signed" && new Date(v.stageEnteredAt).getMonth() === now.getMonth() && new Date(v.stageEnteredAt).getFullYear() === now.getFullYear()).length;
+    return valuations.filter(
+      (v) =>
+        v.stage === "mandate_signed" &&
+        new Date(v.stageEnteredAt).getMonth() === now.getMonth() &&
+        new Date(v.stageEnteredAt).getFullYear() === now.getFullYear()
+    ).length;
   }, [valuations]);
 
   // ── Mutations ────────────────────────────────────────────────────────────────
 
-  const openCreate = () => { setEditingValuation(null); setFormOpen(true); };
-  const openEdit = (v: Valuation) => { setEditingValuation(v); setFormOpen(true); };
+  const openCreate = () => {
+    setEditingValuation(null);
+    setFormOpen(true);
+  };
+  const openEdit = (v: Valuation) => {
+    setEditingValuation(v);
+    setFormOpen(true);
+  };
 
   const transitionStage = async (v: Valuation, toStage: ValuationStage) => {
     if (!canMoveToStage(v.stage, toStage)) return;
-    if (toStage === "valued") { setSubmittingValuation(v); return; }
-    if (toStage === "mandate_signed") { setSignConfirmId(v.id); return; }
+    if (toStage === "valued") {
+      setSubmittingValuation(v);
+      return;
+    }
+    if (toStage === "mandate_signed") {
+      setSignConfirmId(v.id);
+      return;
+    }
 
     // Optimistic update, rolled back on failure.
     setValuations((prev) => prev.map((x) => (x.id === v.id ? { ...x, stage: toStage } : x)));
@@ -578,11 +699,19 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to move stage");
-      pushToast({ tone: toStage === "declined" ? "info" : "success", title: `${v.valuationCode} → ${STAGE_META[toStage].label}`, body: "" });
+      pushToast({
+        tone: toStage === "declined" ? "info" : "success",
+        title: `${v.valuationCode} → ${STAGE_META[toStage].label}`,
+        body: "",
+      });
       loadValuations(true);
     } catch (err) {
       loadValuations(true);
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Failed to move stage" });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to move stage",
+      });
     }
   };
 
@@ -597,10 +726,18 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to sign mandate");
-      pushToast({ tone: "success", title: "Mandate Created", body: "The prospect is now a real management mandate." });
+      pushToast({
+        tone: "success",
+        title: "Mandate Created",
+        body: "The prospect is now a real management mandate.",
+      });
       loadValuations(true);
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Failed to sign mandate" });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to sign mandate",
+      });
     } finally {
       setIsSigning(false);
       setSignConfirmId(null);
@@ -611,13 +748,23 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
     if (!deleteConfirmId) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/valuations/${deleteConfirmId}?entityId=${entityId}`, { method: "DELETE" });
+      const res = await fetch(`/api/valuations/${deleteConfirmId}?entityId=${entityId}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete valuation");
-      pushToast({ tone: "success", title: "Valuation Deleted", body: "The prospect has been removed." });
+      pushToast({
+        tone: "success",
+        title: "Valuation Deleted",
+        body: "The prospect has been removed.",
+      });
       loadValuations(true);
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Failed to delete valuation" });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to delete valuation",
+      });
     } finally {
       setIsDeleting(false);
       setDeleteConfirmId(null);
@@ -656,9 +803,15 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
 
       <PortfolioHubNav
         active="valuations"
-        modeOptions={[{ value: "pipeline", label: "Pipeline" }, { value: "archive", label: "Archive · Converted" }]}
+        modeOptions={[
+          { value: "pipeline", label: "Pipeline" },
+          { value: "archive", label: "Archive · Converted" },
+        ]}
         mode={registerView}
-        onModeChange={(v) => { setRegisterView(v as "pipeline" | "archive"); setPage(1); }}
+        onModeChange={(v) => {
+          setRegisterView(v as "pipeline" | "archive");
+          setPage(1);
+        }}
       />
 
       <div className="flex items-center gap-4 mt-2">
@@ -670,39 +823,61 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       {/* ── Executive 4-Card Dark KPI Tier ── */}
       <div className="gsap-stagger bg-tertiary-gradient text-white rounded-[28px] shadow-2xl relative overflow-hidden group mb-6 border border-slate-800/80">
         <div className="grid grid-cols-1 sm:grid-cols-2 @board-lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-white/10 relative z-10">
-
           {/* Card 1: In Pipeline */}
           <div className="py-6 px-6 lg:py-7 lg:px-7 flex flex-col justify-between relative overflow-hidden group/card">
             <div className="absolute -bottom-10 -right-10 opacity-5 text-emerald-400 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
               <IconTelescope size={140} stroke={1} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xxs font-mono font-medium text-slate-300 uppercase tracking-wider">In Pipeline</span>
+              <span className="text-xxs font-mono font-medium text-slate-300 uppercase tracking-wider">
+                In Pipeline
+              </span>
             </div>
             <div className="relative z-10 mt-4">
-              <span className="font-mono text-3xl font-medium text-white">{kpis.inPipeline} <span className="text-xs font-mono text-slate-300 font-normal">Prospects</span></span>
+              <span className="font-mono text-3xl font-medium text-white">
+                {kpis.inPipeline}{" "}
+                <span className="text-xs font-mono text-slate-300 font-normal">Prospects</span>
+              </span>
               {pipelineBreakdown.total > 0 && (
                 <div className="mt-3 flex flex-col gap-2">
                   <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                     {pipelineBreakdown.setup > 0 && (
-                      <div className="h-full bg-slate-300" style={{ width: `${(pipelineBreakdown.setup / pipelineBreakdown.total) * 100}%` }} />
+                      <div
+                        className="h-full bg-slate-300"
+                        style={{
+                          width: `${(pipelineBreakdown.setup / pipelineBreakdown.total) * 100}%`,
+                        }}
+                      />
                     )}
                     {pipelineBreakdown.offer > 0 && (
-                      <div className="h-full bg-amber-400" style={{ width: `${(pipelineBreakdown.offer / pipelineBreakdown.total) * 100}%` }} />
+                      <div
+                        className="h-full bg-amber-400"
+                        style={{
+                          width: `${(pipelineBreakdown.offer / pipelineBreakdown.total) * 100}%`,
+                        }}
+                      />
                     )}
                     {pipelineBreakdown.accepted > 0 && (
-                      <div className="h-full bg-emerald-400" style={{ width: `${(pipelineBreakdown.accepted / pipelineBreakdown.total) * 100}%` }} />
+                      <div
+                        className="h-full bg-emerald-400"
+                        style={{
+                          width: `${(pipelineBreakdown.accepted / pipelineBreakdown.total) * 100}%`,
+                        }}
+                      />
                     )}
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="flex items-center gap-1 text-xxs font-mono font-medium uppercase tracking-wider text-slate-300">
-                      <span className="size-1.5 rounded-full bg-slate-300" />{pipelineBreakdown.setup} prospecting
+                      <span className="size-1.5 rounded-full bg-slate-300" />
+                      {pipelineBreakdown.setup} prospecting
                     </span>
                     <span className="flex items-center gap-1 text-xxs font-mono font-medium uppercase tracking-wider text-amber-300">
-                      <span className="size-1.5 rounded-full bg-amber-400" />{pipelineBreakdown.offer} valuation
+                      <span className="size-1.5 rounded-full bg-amber-400" />
+                      {pipelineBreakdown.offer} valuation
                     </span>
                     <span className="flex items-center gap-1 text-xxs font-mono font-medium uppercase tracking-wider text-emerald-300">
-                      <span className="size-1.5 rounded-full bg-emerald-400" />{pipelineBreakdown.accepted} accepted
+                      <span className="size-1.5 rounded-full bg-emerald-400" />
+                      {pipelineBreakdown.accepted} accepted
                     </span>
                   </div>
                 </div>
@@ -713,10 +888,14 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
           {/* Card 2: Prospective Value */}
           <div className="py-6 px-6 lg:py-7 lg:px-7 flex flex-col justify-between relative overflow-hidden group/card">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">Prospective Value</span>
+              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
+                Prospective Value
+              </span>
             </div>
             <div className="relative z-10 mt-4">
-              <span className="font-mono text-3xl font-medium text-white">{formatCompactKES(kpis.pipelineValue)}</span>
+              <span className="font-mono text-3xl font-medium text-white">
+                {formatCompactKES(kpis.pipelineValue)}
+              </span>
               <p className="text-xxs text-slate-300 font-mono mt-2 uppercase tracking-wide">
                 Valued, not yet mandated
               </p>
@@ -731,17 +910,41 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
               </Badge>
             </div>
             <div className="relative z-10 mt-4 flex items-center gap-3.5">
-              <svg width="48" height="48" viewBox="0 0 64 64" role="img" aria-label={`Conversion rate ${Math.round(kpis.convPct)}%`} className="shrink-0">
-                <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="7" />
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 64 64"
+                role="img"
+                aria-label={`Conversion rate ${Math.round(kpis.convPct)}%`}
+                className="shrink-0"
+              >
                 <circle
-                  cx="32" cy="32" r="26" fill="none" stroke="#f3df27" strokeWidth="7" strokeLinecap="round"
+                  cx="32"
+                  cy="32"
+                  r="26"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.12)"
+                  strokeWidth="7"
+                />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="26"
+                  fill="none"
+                  stroke="#f3df27"
+                  strokeWidth="7"
+                  strokeLinecap="round"
                   strokeDasharray={`${(kpis.convPct / 100) * 163.4} 163.4`}
                   transform="rotate(-90 32 32)"
                 />
               </svg>
               <div>
-                <span className="font-mono font-medium text-white text-3xl leading-none">{Math.round(kpis.convPct)}%</span>
-                <p className="text-xs text-emerald-300 font-mono mt-1 uppercase tracking-wide">Last 12 Months</p>
+                <span className="font-mono font-medium text-white text-3xl leading-none">
+                  {Math.round(kpis.convPct)}%
+                </span>
+                <p className="text-xs text-emerald-300 font-mono mt-1 uppercase tracking-wide">
+                  Last 12 Months
+                </p>
               </div>
             </div>
           </div>
@@ -752,15 +955,18 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
               <IconFileCertificate size={140} stroke={1} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">Mandates Signed YTD</span>
+              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
+                Mandates Signed YTD
+              </span>
               <Badge tone="success">CONVERTED</Badge>
             </div>
             <div className="relative z-10 mt-4">
               <span className="font-mono text-3xl font-medium text-white">{kpis.signedYtd}</span>
-              <p className="text-xxs text-slate-300 font-mono mt-2 uppercase tracking-wide">From this pipeline</p>
+              <p className="text-xxs text-slate-300 font-mono mt-2 uppercase tracking-wide">
+                From this pipeline
+              </p>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -790,8 +996,13 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
                   <div className="flex items-center gap-2 min-w-0">
-                    <p className="text-xs font-medium text-slate-900 leading-snug truncate">{item.title}</p>
-                    <Badge tone={item.tone === "rose" ? "risk" : "warning"} className="shrink-0 text-xxs ">
+                    <p className="text-xs font-medium text-slate-900 leading-snug truncate">
+                      {item.title}
+                    </p>
+                    <Badge
+                      tone={item.tone === "rose" ? "risk" : "warning"}
+                      className="shrink-0 text-xxs "
+                    >
                       ACTION REQUIRED
                     </Badge>
                   </div>
@@ -804,7 +1015,11 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                 onClick={item.onClick}
                 className="bg-white hover:bg-slate-50 text-slate-900 border border-slate-200/90 rounded-xl px-3.5 py-1.5 text-xs font-medium transition-all shadow-2xs hover:shadow-xs shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                {item.cta} <IconArrowUpRight size={13} className="text-slate-600 group-hover:text-slate-900 transition-colors" />
+                {item.cta}{" "}
+                <IconArrowUpRight
+                  size={13}
+                  className="text-slate-600 group-hover:text-slate-900 transition-colors"
+                />
               </button>
             </div>
           ))}
@@ -822,12 +1037,12 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
 
           <div className="gsap-stagger mb-8 relative">
             <div className="bg-white border border-slate-200/80 rounded-[28px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col lg:flex-row group transition-all duration-500 hover:shadow-[0_16px_40px_rgb(0,0,0,0.06)] relative z-10">
-
               {/* Left Side: Property Image & Overlay */}
               <div className="lg:w-[36%] shrink-0 relative min-h-[300px] lg:min-h-0 bg-[#0d211a] overflow-hidden">
                 <div className="absolute top-5 left-5 z-20 flex items-center gap-2">
                   <span className="bg-[#151936]/90 backdrop-blur-md text-[#f3df27] flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-medium uppercase tracking-wider shadow-sm border border-slate-700/40">
-                    <IconStarFilled size={13} className="text-[#f3df27] shrink-0" /> {isCuratedFeatured ? "Featured Prospect" : "High-Value Prospect"}
+                    <IconStarFilled size={13} className="text-[#f3df27] shrink-0" />{" "}
+                    {isCuratedFeatured ? "Featured Prospect" : "High-Value Prospect"}
                   </span>
                 </div>
 
@@ -836,16 +1051,26 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                     <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2 py-1 rounded-xl border border-white/10">
                       <button
                         type="button"
-                        onClick={() => setFeaturedCarouselIndex((i) => (i === 0 ? curatedFeatured.length - 1 : i - 1))}
+                        onClick={() =>
+                          setFeaturedCarouselIndex((i) =>
+                            i === 0 ? curatedFeatured.length - 1 : i - 1
+                          )
+                        }
                         aria-label="Previous featured prospect"
                         className="size-6 rounded-lg text-white flex items-center justify-center hover:bg-white/20 transition-colors"
                       >
                         <IconChevronLeft size={14} />
                       </button>
-                      <span className="font-mono text-xs text-white/90 font-medium px-1">{safeFeaturedCarouselIndex + 1}/{curatedFeatured.length}</span>
+                      <span className="font-mono text-xs text-white/90 font-medium px-1">
+                        {safeFeaturedCarouselIndex + 1}/{curatedFeatured.length}
+                      </span>
                       <button
                         type="button"
-                        onClick={() => setFeaturedCarouselIndex((i) => (i === curatedFeatured.length - 1 ? 0 : i + 1))}
+                        onClick={() =>
+                          setFeaturedCarouselIndex((i) =>
+                            i === curatedFeatured.length - 1 ? 0 : i + 1
+                          )
+                        }
                         aria-label="Next featured prospect"
                         className="size-6 rounded-lg text-white flex items-center justify-center hover:bg-white/20 transition-colors"
                       >
@@ -855,15 +1080,25 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                   )}
                   <button
                     type="button"
-                    onClick={() => handleToggleFeature(featuredProspect.id, !!featuredProspect.isFeatured)}
-                    aria-label={featuredProspect.isFeatured ? "Remove from featured" : "Add to featured"}
+                    onClick={() =>
+                      handleToggleFeature(featuredProspect.id, !!featuredProspect.isFeatured)
+                    }
+                    aria-label={
+                      featuredProspect.isFeatured ? "Remove from featured" : "Add to featured"
+                    }
                     aria-pressed={!!featuredProspect.isFeatured}
                     className={cn(
                       "size-8 rounded-xl backdrop-blur-md flex items-center justify-center transition-all cursor-pointer shadow-2xs",
-                      featuredProspect.isFeatured ? "bg-amber-400 text-[#151936]" : "bg-black/40 text-white border border-white/15 hover:bg-amber-400 hover:text-[#151936]"
+                      featuredProspect.isFeatured
+                        ? "bg-amber-400 text-[#151936]"
+                        : "bg-black/40 text-white border border-white/15 hover:bg-amber-400 hover:text-[#151936]"
                     )}
                   >
-                    {featuredProspect.isFeatured ? <IconStarFilled size={14} /> : <IconStar size={14} />}
+                    {featuredProspect.isFeatured ? (
+                      <IconStarFilled size={14} />
+                    ) : (
+                      <IconStar size={14} />
+                    )}
                   </button>
                 </div>
 
@@ -915,7 +1150,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                       <>
                         <div className="flex items-center justify-between text-xs font-mono text-slate-600 font-medium">
                           <span>ACQUISITION FIT SCORE</span>
-                          <span className="font-mono text-sm font-medium text-slate-900">{scoreOf(featuredProspect)?.score}%</span>
+                          <span className="font-mono text-sm font-medium text-slate-900">
+                            {scoreOf(featuredProspect)?.score}%
+                          </span>
                         </div>
                         <div className="h-2.5 bg-slate-200/80 rounded-full overflow-hidden w-full">
                           <div
@@ -927,10 +1164,16 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                     ) : (
                       <div className="flex items-center justify-between gap-4">
                         <div>
-                          <p className="text-xs text-slate-500 font-mono uppercase tracking-wider font-medium">Acquisition Fit Pending</p>
-                          <p className="text-xs text-slate-600 mt-0.5">Fit score is determined upon assessed market value entry.</p>
+                          <p className="text-xs text-slate-500 font-mono uppercase tracking-wider font-medium">
+                            Acquisition Fit Pending
+                          </p>
+                          <p className="text-xs text-slate-600 mt-0.5">
+                            Fit score is determined upon assessed market value entry.
+                          </p>
                         </div>
-                        <Badge tone="neutral" className="font-mono text-xxs shrink-0">Stage: {featuredProspect.stage}</Badge>
+                        <Badge tone="neutral" className="font-mono text-xxs shrink-0">
+                          Stage: {featuredProspect.stage}
+                        </Badge>
                       </div>
                     )}
                   </div>
@@ -941,7 +1184,8 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                       <button
                         type="button"
                         onClick={() => {
-                          if (featuredProspect.landlordContactId) setOwnerContactId(featuredProspect.landlordContactId);
+                          if (featuredProspect.landlordContactId)
+                            setOwnerContactId(featuredProspect.landlordContactId);
                         }}
                         className="flex items-center gap-3 bg-slate-50/70 hover:bg-slate-100/80 transition-all p-2.5 rounded-2xl border border-slate-200/70 group/avatar shrink-0 text-left shadow-2xs"
                       >
@@ -951,8 +1195,12 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                           className="size-9 shrink-0 shadow-2xs"
                         />
                         <div className="min-w-0">
-                          <span className="block text-xs font-medium text-slate-900 group-hover/avatar:text-[#151936] transition-colors truncate">{featuredProspect.landlordName}</span>
-                          <span className="block text-xxs text-slate-500 tracking-wider font-mono uppercase mt-0.5">Landlord</span>
+                          <span className="block text-xs font-medium text-slate-900 group-hover/avatar:text-[#151936] transition-colors truncate">
+                            {featuredProspect.landlordName}
+                          </span>
+                          <span className="block text-xxs text-slate-500 tracking-wider font-mono uppercase mt-0.5">
+                            Landlord
+                          </span>
                         </div>
                       </button>
                     )}
@@ -961,18 +1209,27 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                       <button
                         type="button"
                         onClick={() => {
-                          if (featuredProspect.assignedManagerId) setManagerUserId(featuredProspect.assignedManagerId);
+                          if (featuredProspect.assignedManagerId)
+                            setManagerUserId(featuredProspect.assignedManagerId);
                         }}
                         className="flex items-center gap-3 bg-slate-50/70 hover:bg-slate-100/80 transition-all p-2.5 rounded-2xl border border-slate-200/70 group/avatar shrink-0 text-left shadow-2xs"
                       >
                         <Avatar
                           src={featuredProspect.managerAvatarUrl ?? undefined}
-                          fallback={featuredProspect.managerName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                          fallback={featuredProspect.managerName
+                            .split(" ")
+                            .map((w) => w[0])
+                            .slice(0, 2)
+                            .join("")}
                           className="size-9 shrink-0 shadow-2xs"
                         />
                         <div className="min-w-0">
-                          <span className="block text-xs font-medium text-slate-900 group-hover/avatar:text-[#151936] transition-colors truncate">{featuredProspect.managerName}</span>
-                          <span className="block text-xxs text-slate-500 tracking-wider font-mono uppercase mt-0.5">Manager</span>
+                          <span className="block text-xs font-medium text-slate-900 group-hover/avatar:text-[#151936] transition-colors truncate">
+                            {featuredProspect.managerName}
+                          </span>
+                          <span className="block text-xxs text-slate-500 tracking-wider font-mono uppercase mt-0.5">
+                            Manager
+                          </span>
                         </div>
                       </button>
                     )}
@@ -981,9 +1238,13 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                   {/* Financials & Action Buttons */}
                   <div className="border-t border-slate-200/70 pt-4 flex items-center justify-between gap-4 flex-wrap">
                     <div className="flex flex-col">
-                      <span className="text-xxs font-mono font-medium tracking-wider text-slate-500 uppercase">Prospective Market Value</span>
+                      <span className="text-xxs font-mono font-medium tracking-wider text-slate-500 uppercase">
+                        Prospective Market Value
+                      </span>
                       <span className="font-mono text-2xl font-medium text-[#151936] mt-0.5">
-                        {featuredProspect.marketValueKes ? formatCompactKES(Number(featuredProspect.marketValueKes)) : "—"}
+                        {featuredProspect.marketValueKes
+                          ? formatCompactKES(Number(featuredProspect.marketValueKes))
+                          : "—"}
                       </span>
                     </div>
 
@@ -1013,7 +1274,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                   <div className="bg-gradient-to-br from-slate-50 to-slate-100/60 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between items-center w-full min-h-[220px] shadow-2xs relative overflow-hidden text-center">
                     <div className="absolute top-0 right-0 size-16 bg-[#151936]/5 rounded-bl-full pointer-events-none" />
 
-                    <span className="text-xxs font-mono font-medium tracking-wider text-slate-500 uppercase">Methodology</span>
+                    <span className="text-xxs font-mono font-medium tracking-wider text-slate-500 uppercase">
+                      Methodology
+                    </span>
 
                     <div className="my-auto py-2">
                       <span className="text-xs font-medium text-slate-900 block leading-snug">
@@ -1021,14 +1284,15 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                       </span>
                     </div>
 
-                    <Badge tone="neutral" className="font-mono text-xxs uppercase tracking-widest shrink-0 mt-2">
+                    <Badge
+                      tone="neutral"
+                      className="font-mono text-xxs uppercase tracking-widest shrink-0 mt-2"
+                    >
                       {featuredProspect.isLand ? "Land Plot" : "Built Property"}
                     </Badge>
                   </div>
                 </div>
-
               </div>
-
             </div>
           </div>
         </>
@@ -1038,29 +1302,60 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
       <div className="bg-transparent lg:bg-white border-transparent lg:border-slate-100 p-0 lg:p-6 shadow-none lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] mt-1">
         <div className="flex items-center gap-2.5 flex-wrap mb-4">
           <div className="relative flex-1 min-w-[220px] max-w-sm">
-            <IconSearch size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600" />
+            <IconSearch
+              size={15}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600"
+            />
             <input
               value={query}
-              onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }}
               placeholder="Search property, landlord, valuer…"
               className="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-9 pr-3 py-2 body-sm text-slate-900 outline-none placeholder:text-slate-600 focus:bg-white focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30 transition-all shadow-sm"
             />
           </div>
           <div className="flex bg-slate-100 p-1 rounded-xl gap-1 ml-auto items-center">
             {registerView === "pipeline" && (
-              <button onClick={() => setViewMode("board")} className={cn("flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors", viewMode === "board" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700")}>
+              <button
+                onClick={() => setViewMode("board")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                  viewMode === "board"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-700"
+                )}
+              >
                 <IconLayoutKanban size={14} /> Pipeline
               </button>
             )}
-            <button onClick={() => setViewMode("grid")} className={cn("flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors", viewMode === "grid" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700")}>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                viewMode === "grid"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-600 hover:text-slate-700"
+              )}
+            >
               <IconLayoutGrid size={14} /> Grid
             </button>
             {viewMode === "board" && (
               <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 text-xxs font-mono uppercase tracking-wider text-slate-600 select-none border-l border-slate-200/80 my-1 shrink-0">
-                <IconArrowsMove size={12} className="text-slate-600 shrink-0" /> drag cards to advance
+                <IconArrowsMove size={12} className="text-slate-600 shrink-0" /> drag cards to
+                advance
               </span>
             )}
-            <button onClick={() => setViewMode("list")} className={cn("flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors", viewMode === "list" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700")}>
+            <button
+              onClick={() => setViewMode("list")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                viewMode === "list"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-600 hover:text-slate-700"
+              )}
+            >
               <IconList size={14} /> All Records
             </button>
           </div>
@@ -1095,7 +1390,10 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
               title="Nothing matches"
               description="No prospects match the current search."
               action="Clear Search"
-              onClick={() => { setQuery(""); setPage(1); }}
+              onClick={() => {
+                setQuery("");
+                setPage(1);
+              }}
             />
           </div>
         ) : viewMode === "board" ? (
@@ -1110,31 +1408,53 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                   <div
                     key={stage}
                     className="flex flex-col gap-3"
-                    onDragOver={(e) => { if (canDrop) { e.preventDefault(); if (dragOverStage !== stage) setDragOverStage(stage); } }}
-                    onDragLeave={() => { if (dragOverStage === stage) setDragOverStage(null); }}
+                    onDragOver={(e) => {
+                      if (canDrop) {
+                        e.preventDefault();
+                        if (dragOverStage !== stage) setDragOverStage(stage);
+                      }
+                    }}
+                    onDragLeave={() => {
+                      if (dragOverStage === stage) setDragOverStage(null);
+                    }}
                     onDrop={(e) => {
                       e.preventDefault();
                       const id = dragId;
                       setDragId(null);
                       setDragOverStage(null);
                       const card = id ? valuations.find((v) => v.id === id) : null;
-                      if (!card || card.stage === stage || !canMoveToStage(card.stage, stage)) return;
+                      if (!card || card.stage === stage || !canMoveToStage(card.stage, stage))
+                        return;
                       transitionStage(card, stage);
                     }}
                   >
                     {/* Header */}
-                    <div className={cn("flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl border transition-colors bg-slate-50/70 border-slate-200/70", isOver && "bg-slate-100 border-slate-300")}>
+                    <div
+                      className={cn(
+                        "flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl border transition-colors bg-slate-50/70 border-slate-200/70",
+                        isOver && "bg-slate-100 border-slate-300"
+                      )}
+                    >
                       <span className="flex items-center gap-2 text-xs font-mono font-medium text-slate-800 uppercase tracking-wider">
                         <span className={cn("size-2.5 rounded-full", cfg.dot)} /> {cfg.label}
                       </span>
-                      <span className="text-xxs font-mono font-medium text-slate-700 bg-white border border-slate-200/80 rounded-full px-2 py-0.5 shadow-2xs">{cards.length}</span>
+                      <span className="text-xxs font-mono font-medium text-slate-700 bg-white border border-slate-200/80 rounded-full px-2 py-0.5 shadow-2xs">
+                        {cards.length}
+                      </span>
                     </div>
 
                     {/* Drag Container */}
-                    <div className={cn(
-                      "flex flex-col gap-3 rounded-2xl p-1 transition-all",
-                      isOver ? "bg-slate-100/70 ring-2 ring-slate-300 ring-inset" : (draggedCard && canDrop ? "ring-1 ring-slate-200 ring-inset" : ""),
-                    )} style={{ minHeight: draggedCard && canDrop ? 80 : 8 }}>
+                    <div
+                      className={cn(
+                        "flex flex-col gap-3 rounded-2xl p-1 transition-all",
+                        isOver
+                          ? "bg-slate-100/70 ring-2 ring-slate-300 ring-inset"
+                          : draggedCard && canDrop
+                            ? "ring-1 ring-slate-200 ring-inset"
+                            : ""
+                      )}
+                      style={{ minHeight: draggedCard && canDrop ? 80 : 8 }}
+                    >
                       {cards.map((v) => {
                         const subject = subjectOf(v);
                         const score = scoreOf(v);
@@ -1145,13 +1465,18 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                             key={v.id}
                             draggable={stage !== "mandate_signed"}
                             onDragStart={() => setDragId(v.id)}
-                            onDragEnd={() => { setDragId(null); setDragOverStage(null); }}
+                            onDragEnd={() => {
+                              setDragId(null);
+                              setDragOverStage(null);
+                            }}
                             onClick={() => router.push(`/admin/valuations/${v.id}`)}
                             role="button"
                             tabIndex={0}
                             className={cn(
                               "text-left w-full bg-white border border-slate-200/80 rounded-2xl overflow-hidden hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] hover:border-slate-300 transition-all duration-300 cursor-grab group/card flex flex-col gap-0 shadow-2xs",
-                              dragId === v.id ? "opacity-50 border-[#f3df27] ring-2 ring-[#f3df27]" : "",
+                              dragId === v.id
+                                ? "opacity-50 border-[#f3df27] ring-2 ring-[#f3df27]"
+                                : ""
                             )}
                           >
                             {/* Property Media / Artwork Banner */}
@@ -1168,30 +1493,57 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                               {/* Floating Badges inside Banner */}
                               <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
                                 <div className="size-6 rounded-lg flex items-center justify-center bg-[#151936]/80 text-white backdrop-blur-md shadow-2xs border border-white/15">
-                                  {subject.portfolio ? <IconBuildingCommunity size={13} /> : <IconExternalLink size={13} />}
+                                  {subject.portfolio ? (
+                                    <IconBuildingCommunity size={13} />
+                                  ) : (
+                                    <IconExternalLink size={13} />
+                                  )}
                                 </div>
                                 {isStalled && (
-                                  <Badge tone="risk" className="text-xxs uppercase tracking-wider px-1.5 py-0.5">
+                                  <Badge
+                                    tone="risk"
+                                    className="text-xxs uppercase tracking-wider px-1.5 py-0.5"
+                                  >
                                     Stalled
                                   </Badge>
                                 )}
                                 <button
                                   type="button"
-                                  onClick={(e) => { e.stopPropagation(); handleToggleFeature(v.id, !!v.isFeatured); }}
-                                  aria-label={v.isFeatured ? "Remove from featured" : "Add to featured"}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleFeature(v.id, !!v.isFeatured);
+                                  }}
+                                  aria-label={
+                                    v.isFeatured ? "Remove from featured" : "Add to featured"
+                                  }
                                   aria-pressed={!!v.isFeatured}
                                   className={cn(
                                     "size-6 rounded-lg flex items-center justify-center backdrop-blur-md shadow-2xs border transition-colors cursor-pointer",
-                                    v.isFeatured ? "bg-amber-400 border-amber-300 text-[#151936]" : "bg-[#151936]/80 border-white/15 text-white hover:bg-amber-400 hover:text-[#151936]"
+                                    v.isFeatured
+                                      ? "bg-amber-400 border-amber-300 text-[#151936]"
+                                      : "bg-[#151936]/80 border-white/15 text-white hover:bg-amber-400 hover:text-[#151936]"
                                   )}
                                 >
-                                  {v.isFeatured ? <IconStarFilled size={12} /> : <IconStar size={12} />}
+                                  {v.isFeatured ? (
+                                    <IconStarFilled size={12} />
+                                  ) : (
+                                    <IconStar size={12} />
+                                  )}
                                 </button>
                               </div>
 
                               {score && (
-                                <span className="absolute top-2.5 right-2.5 bg-white/95 text-slate-900 rounded-lg px-2 py-0.5 text-xxs font-mono font-medium shadow-2xs border border-slate-200/80" title="Acquisition Fit Score">
-                                  <span style={{ color: score.color }} className="font-medium mr-0.5">{score.grade}</span> {score.score}%
+                                <span
+                                  className="absolute top-2.5 right-2.5 bg-white/95 text-slate-900 rounded-lg px-2 py-0.5 text-xxs font-mono font-medium shadow-2xs border border-slate-200/80"
+                                  title="Acquisition Fit Score"
+                                >
+                                  <span
+                                    style={{ color: score.color }}
+                                    className="font-medium mr-0.5"
+                                  >
+                                    {score.grade}
+                                  </span>{" "}
+                                  {score.score}%
                                 </span>
                               )}
 
@@ -1206,23 +1558,37 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
 
                             {/* Card Body */}
                             <div className="p-3.5 flex flex-col flex-1 gap-2.5">
-                              <p className="text-xs font-medium text-slate-900 leading-snug truncate group-hover/card:text-[#151936] transition-colors">{subject.name}</p>
+                              <p className="text-xs font-medium text-slate-900 leading-snug truncate group-hover/card:text-[#151936] transition-colors">
+                                {subject.name}
+                              </p>
 
                               {/* Landlord Row */}
                               <div className="flex items-center gap-2">
                                 <Avatar
-                                  src={getAvatarForName(v.landlordName || "Landlord", v.landlordAvatarUrl)}
+                                  src={getAvatarForName(
+                                    v.landlordName || "Landlord",
+                                    v.landlordAvatarUrl
+                                  )}
                                   fallback={v.landlordName ? v.landlordName.slice(0, 1) : "?"}
                                   className="size-5 rounded-full border border-slate-200 text-slate-700 text-xxs font-medium shrink-0"
                                 />
-                                <span className="text-xs text-slate-600 font-medium truncate">{v.landlordName || "No Landlord"}</span>
+                                <span className="text-xs text-slate-600 font-medium truncate">
+                                  {v.landlordName || "No Landlord"}
+                                </span>
                               </div>
 
                               <div className="h-px bg-slate-100/90" />
 
                               <div className="flex items-center justify-between mt-auto">
-                                <span className="font-mono text-xs text-[#151936] font-medium">{v.marketValueKes ? formatCompactKES(Number(v.marketValueKes)) : "—"}</span>
-                                <Badge tone="neutral" className="font-mono text-xxs px-2 py-0.5 shrink-0">
+                                <span className="font-mono text-xs text-[#151936] font-medium">
+                                  {v.marketValueKes
+                                    ? formatCompactKES(Number(v.marketValueKes))
+                                    : "—"}
+                                </span>
+                                <Badge
+                                  tone="neutral"
+                                  className="font-mono text-xxs px-2 py-0.5 shrink-0"
+                                >
                                   {ageDaysOf(v)}d
                                 </Badge>
                               </div>
@@ -1270,25 +1636,34 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
 
                       {/* Floating Badges inside Image */}
                       <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10">
-                        <Badge tone={stageTone(v.stage)}>
-                          {cfg.label}
-                        </Badge>
+                        <Badge tone={stageTone(v.stage)}>{cfg.label}</Badge>
                       </div>
 
                       <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
                         {score && (
-                          <span className="bg-white/95 text-slate-900 rounded-lg px-2 py-0.5 text-xxs font-mono font-medium shadow-2xs border border-slate-200/80" title="Acquisition Fit Score">
-                            <span style={{ color: score.color }} className="font-medium mr-0.5">{score.grade}</span> {score.score}%
+                          <span
+                            className="bg-white/95 text-slate-900 rounded-lg px-2 py-0.5 text-xxs font-mono font-medium shadow-2xs border border-slate-200/80"
+                            title="Acquisition Fit Score"
+                          >
+                            <span style={{ color: score.color }} className="font-medium mr-0.5">
+                              {score.grade}
+                            </span>{" "}
+                            {score.score}%
                           </span>
                         )}
                         <button
                           type="button"
-                          onClick={(e) => { e.stopPropagation(); handleToggleFeature(v.id, !!v.isFeatured); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleFeature(v.id, !!v.isFeatured);
+                          }}
                           aria-label={v.isFeatured ? "Remove from featured" : "Add to featured"}
                           aria-pressed={!!v.isFeatured}
                           className={cn(
                             "size-8 rounded-xl flex items-center justify-center backdrop-blur-md shadow-2xs transition-colors cursor-pointer",
-                            v.isFeatured ? "bg-amber-400 text-[#151936]" : "bg-black/40 text-white border border-white/15 hover:bg-amber-400 hover:text-[#151936]"
+                            v.isFeatured
+                              ? "bg-amber-400 text-[#151936]"
+                              : "bg-black/40 text-white border border-white/15 hover:bg-amber-400 hover:text-[#151936]"
                           )}
                         >
                           {v.isFeatured ? <IconStarFilled size={14} /> : <IconStar size={14} />}
@@ -1307,9 +1682,12 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                     {/* Info Area */}
                     <div className="p-5 flex-1 flex flex-col justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-base font-medium text-slate-900 truncate leading-snug group-hover/card:text-[#151936] transition-colors">{subject.name}</p>
+                        <p className="text-base font-medium text-slate-900 truncate leading-snug group-hover/card:text-[#151936] transition-colors">
+                          {subject.name}
+                        </p>
                         <p className="text-xs text-slate-500 truncate mt-1 flex items-center gap-1 font-mono">
-                          <IconMapPin size={13} className="text-amber-500 shrink-0" /> {subject.location}
+                          <IconMapPin size={13} className="text-amber-500 shrink-0" />{" "}
+                          {subject.location}
                         </p>
                       </div>
 
@@ -1332,14 +1710,20 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                               {v.landlordName}
                             </button>
                           ) : (
-                            <span className="block text-xs font-medium text-slate-600 leading-tight">No Landlord</span>
+                            <span className="block text-xs font-medium text-slate-600 leading-tight">
+                              No Landlord
+                            </span>
                           )}
-                          <span className="block text-xxs text-slate-500 font-mono uppercase tracking-wider mt-0.5">Landlord</span>
+                          <span className="block text-xxs text-slate-500 font-mono uppercase tracking-wider mt-0.5">
+                            Landlord
+                          </span>
                         </div>
                       </div>
 
                       <div className="border-t border-slate-100 pt-3 flex items-center justify-between mt-auto">
-                        <span className="font-mono text-base text-[#151936] font-medium">{v.marketValueKes ? formatCompactKES(Number(v.marketValueKes)) : "—"}</span>
+                        <span className="font-mono text-base text-[#151936] font-medium">
+                          {v.marketValueKes ? formatCompactKES(Number(v.marketValueKes)) : "—"}
+                        </span>
                         <Badge tone="neutral" className="font-mono text-xxs px-2.5 py-1 shrink-0">
                           {ageDaysOf(v)}d
                         </Badge>
@@ -1379,28 +1763,48 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                     className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs hover:shadow-xs cursor-pointer transition-all duration-200 space-y-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">{v.valuationCode}</span>
-                      <Badge tone={stageTone(v.stage)}>
-                        {cfg.label}
-                      </Badge>
+                      <span className="font-mono text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
+                        {v.valuationCode}
+                      </span>
+                      <Badge tone={stageTone(v.stage)}>{cfg.label}</Badge>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <div className={cn("size-10 rounded-xl border flex items-center justify-center shrink-0 shadow-2xs", subject.portfolio ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-slate-50 border-slate-200 text-slate-600")}>
-                        {subject.portfolio ? <IconBuildingCommunity size={18} /> : <IconExternalLink size={18} />}
+                      <div
+                        className={cn(
+                          "size-10 rounded-xl border flex items-center justify-center shrink-0 shadow-2xs",
+                          subject.portfolio
+                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                            : "bg-slate-50 border-slate-200 text-slate-600"
+                        )}
+                      >
+                        {subject.portfolio ? (
+                          <IconBuildingCommunity size={18} />
+                        ) : (
+                          <IconExternalLink size={18} />
+                        )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-slate-900 truncate">{subject.name}</p>
-                        <p className="text-xs text-slate-500 truncate font-mono mt-0.5">{subject.location}</p>
+                        <p className="text-sm font-medium text-slate-900 truncate">
+                          {subject.name}
+                        </p>
+                        <p className="text-xs text-slate-500 truncate font-mono mt-0.5">
+                          {subject.location}
+                        </p>
                       </div>
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); handleToggleFeature(v.id, !!v.isFeatured); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleFeature(v.id, !!v.isFeatured);
+                        }}
                         aria-label={v.isFeatured ? "Remove from featured" : "Add to featured"}
                         aria-pressed={!!v.isFeatured}
                         className={cn(
                           "size-8 rounded-xl flex items-center justify-center shrink-0 transition-colors cursor-pointer",
-                          v.isFeatured ? "bg-amber-400 text-[#151936]" : "bg-slate-50 border border-slate-200 text-slate-600 hover:text-amber-500 hover:bg-amber-50"
+                          v.isFeatured
+                            ? "bg-amber-400 text-[#151936]"
+                            : "bg-slate-50 border border-slate-200 text-slate-600 hover:text-amber-500 hover:bg-amber-50"
                         )}
                       >
                         {v.isFeatured ? <IconStarFilled size={14} /> : <IconStar size={14} />}
@@ -1432,7 +1836,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                     <div className="flex items-center justify-between border-t border-slate-100 pt-2.5 mt-2">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-slate-500">Valued by:</span>
-                        <span className="text-xs text-slate-800 font-medium truncate max-w-[140px]">{valuerLabel(v)}</span>
+                        <span className="text-xs text-slate-800 font-medium truncate max-w-[140px]">
+                          {valuerLabel(v)}
+                        </span>
                       </div>
                       {score && (
                         <span className="font-mono text-xs font-medium px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">
@@ -1481,15 +1887,22 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                           />
                         </span>
                         <div className="min-w-0">
-                          <span className="block text-xs font-medium text-slate-900 truncate leading-snug">{subject.name}</span>
-                          <span className="block font-mono text-xxs text-slate-500 truncate">{v.valuationCode}</span>
+                          <span className="block text-xs font-medium text-slate-900 truncate leading-snug">
+                            {subject.name}
+                          </span>
+                          <span className="block font-mono text-xxs text-slate-500 truncate">
+                            {v.valuationCode}
+                          </span>
                         </div>
                       </span>
 
                       <span className="truncate">
                         <div className="flex items-center gap-2 min-w-0">
                           <Avatar
-                            src={getAvatarForName(v.landlordName || "Landlord", v.landlordAvatarUrl)}
+                            src={getAvatarForName(
+                              v.landlordName || "Landlord",
+                              v.landlordAvatarUrl
+                            )}
                             fallback={v.landlordName ? v.landlordName.slice(0, 1) : "?"}
                             className="size-6 rounded-full border border-slate-200 text-slate-700 text-xxs font-medium shrink-0"
                           />
@@ -1520,7 +1933,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                       </span>
 
                       <span className="text-right">
-                        <span className="block font-mono text-xs text-[#151936] font-medium">{v.marketValueKes ? formatCompactKES(Number(v.marketValueKes)) : "—"}</span>
+                        <span className="block font-mono text-xs text-[#151936] font-medium">
+                          {v.marketValueKes ? formatCompactKES(Number(v.marketValueKes)) : "—"}
+                        </span>
                         {score && (
                           <span className="inline-block mt-0.5 font-mono text-xxs rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-1.5 py-0.5 leading-none">
                             {score.grade} · {score.score}%
@@ -1528,15 +1943,18 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                         )}
                       </span>
 
-                      <span className="font-mono text-xs text-slate-600">{fmtDate(v.createdAt)}</span>
-
-                      <span className="text-center">
-                        <Badge tone={stageTone(v.stage)}>
-                          {cfg.label}
-                        </Badge>
+                      <span className="font-mono text-xs text-slate-600">
+                        {fmtDate(v.createdAt)}
                       </span>
 
-                      <span onClick={(e) => e.stopPropagation()} className="flex justify-end items-center gap-1">
+                      <span className="text-center">
+                        <Badge tone={stageTone(v.stage)}>{cfg.label}</Badge>
+                      </span>
+
+                      <span
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex justify-end items-center gap-1"
+                      >
                         <button
                           type="button"
                           onClick={() => handleToggleFeature(v.id, !!v.isFeatured)}
@@ -1544,31 +1962,95 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                           aria-pressed={!!v.isFeatured}
                           className={cn(
                             "size-7 rounded-lg flex items-center justify-center transition-colors cursor-pointer",
-                            v.isFeatured ? "bg-amber-400 text-[#151936]" : "text-slate-600 hover:text-amber-500 hover:bg-amber-50"
+                            v.isFeatured
+                              ? "bg-amber-400 text-[#151936]"
+                              : "text-slate-600 hover:text-amber-500 hover:bg-amber-50"
                           )}
                         >
                           {v.isFeatured ? <IconStarFilled size={13} /> : <IconStar size={13} />}
                         </button>
                         <DropdownMenu
                           label="Valuation actions"
-                          trigger={<div className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer"><IconDotsVertical size={16} /></div>}
+                          trigger={
+                            <div className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer">
+                              <IconDotsVertical size={16} />
+                            </div>
+                          }
                           align="right"
                         >
-                          {v.stage === "requested" && <DropdownItem icon={IconChevronRight} onClick={() => transitionStage(v, "site_visit")}>Confirm Site Visit</DropdownItem>}
-                          {v.stage === "site_visit" && <DropdownItem icon={IconFileCertificate} onClick={() => setSubmittingValuation(v)}>Submit Valuation</DropdownItem>}
-                          {v.stage === "valued" && <DropdownItem icon={IconSend} onClick={() => transitionStage(v, "offer_sent")}>Send Offer Letter</DropdownItem>}
-                          {v.stage === "offer_sent" && <DropdownItem icon={IconShieldCheck} onClick={() => transitionStage(v, "accepted")}>Record Acceptance</DropdownItem>}
-                          {v.stage === "accepted" && <DropdownItem icon={IconFileCertificate} onClick={() => setSignConfirmId(v.id)}>Sign Mandate</DropdownItem>}
-                          {v.stage === "mandate_signed" && v.resultingMandateId && (
-                            <DropdownItem icon={IconExternalLink} onClick={() => router.push(`/admin/mandates/${v.resultingMandateId}`)}>Open Mandate File</DropdownItem>
+                          {v.stage === "requested" && (
+                            <DropdownItem
+                              icon={IconChevronRight}
+                              onClick={() => transitionStage(v, "site_visit")}
+                            >
+                              Confirm Site Visit
+                            </DropdownItem>
                           )}
-                          <DropdownItem icon={IconEye} onClick={() => router.push(`/admin/valuations/${v.id}`)}>View Full File</DropdownItem>
-                          <DropdownItem icon={IconEdit} onClick={() => openEdit(v)}>Edit Prospect</DropdownItem>
+                          {v.stage === "site_visit" && (
+                            <DropdownItem
+                              icon={IconFileCertificate}
+                              onClick={() => setSubmittingValuation(v)}
+                            >
+                              Submit Valuation
+                            </DropdownItem>
+                          )}
+                          {v.stage === "valued" && (
+                            <DropdownItem
+                              icon={IconSend}
+                              onClick={() => transitionStage(v, "offer_sent")}
+                            >
+                              Send Offer Letter
+                            </DropdownItem>
+                          )}
+                          {v.stage === "offer_sent" && (
+                            <DropdownItem
+                              icon={IconShieldCheck}
+                              onClick={() => transitionStage(v, "accepted")}
+                            >
+                              Record Acceptance
+                            </DropdownItem>
+                          )}
+                          {v.stage === "accepted" && (
+                            <DropdownItem
+                              icon={IconFileCertificate}
+                              onClick={() => setSignConfirmId(v.id)}
+                            >
+                              Sign Mandate
+                            </DropdownItem>
+                          )}
+                          {v.stage === "mandate_signed" && v.resultingMandateId && (
+                            <DropdownItem
+                              icon={IconExternalLink}
+                              onClick={() => router.push(`/admin/mandates/${v.resultingMandateId}`)}
+                            >
+                              Open Mandate File
+                            </DropdownItem>
+                          )}
+                          <DropdownItem
+                            icon={IconEye}
+                            onClick={() => router.push(`/admin/valuations/${v.id}`)}
+                          >
+                            View Full File
+                          </DropdownItem>
+                          <DropdownItem icon={IconEdit} onClick={() => openEdit(v)}>
+                            Edit Prospect
+                          </DropdownItem>
                           {v.stage !== "mandate_signed" && v.stage !== "declined" && (
-                            <DropdownItem icon={IconX} onClick={() => transitionStage(v, "declined")}>Decline Prospect</DropdownItem>
+                            <DropdownItem
+                              icon={IconX}
+                              onClick={() => transitionStage(v, "declined")}
+                            >
+                              Decline Prospect
+                            </DropdownItem>
                           )}
                           <div className="my-1 h-px bg-slate-100" />
-                          <DropdownItem icon={IconTrash} variant="danger" onClick={() => setDeleteConfirmId(v.id)}>Delete</DropdownItem>
+                          <DropdownItem
+                            icon={IconTrash}
+                            variant="danger"
+                            onClick={() => setDeleteConfirmId(v.id)}
+                          >
+                            Delete
+                          </DropdownItem>
                         </DropdownMenu>
                       </span>
                     </div>
@@ -1623,7 +2105,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                   <IconReportAnalytics size={18} />
                 </span>
                 <div>
-                  <h3 className="text-slate-900 text-sm font-medium leading-tight">Valuer Output & Volume</h3>
+                  <h3 className="text-slate-900 text-sm font-medium leading-tight">
+                    Valuer Output & Volume
+                  </h3>
                   <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mt-0.5">
                     Portfolio volume by assigned firm or valuer
                   </p>
@@ -1635,7 +2119,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
             </div>
 
             {valuerPerformance.length === 0 ? (
-              <p className="text-slate-400 py-8 text-center text-xs font-mono">No valued prospects recorded yet.</p>
+              <p className="text-slate-400 py-8 text-center text-xs font-mono">
+                No valued prospects recorded yet.
+              </p>
             ) : (
               <div className="flex flex-col gap-2.5">
                 {paginatedValuers.map((l) => {
@@ -1658,7 +2144,10 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-xs font-medium text-slate-900 group-hover/row:text-[#151936] transition-colors truncate flex items-center gap-1.5">
                             {l.name}
-                            <IconArrowUpRight size={12} className="text-slate-400 opacity-0 group-hover/row:opacity-100 transition-opacity shrink-0" />
+                            <IconArrowUpRight
+                              size={12}
+                              className="text-slate-400 opacity-0 group-hover/row:opacity-100 transition-opacity shrink-0"
+                            />
                           </p>
                           <span className="font-mono text-xs font-medium text-[#151936] shrink-0">
                             {formatCompactKES(l.value)}
@@ -1708,7 +2197,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                   <IconUserCog size={18} />
                 </span>
                 <div>
-                  <h3 className="text-slate-900 text-sm font-medium leading-tight">Property Manager Pipeline</h3>
+                  <h3 className="text-slate-900 text-sm font-medium leading-tight">
+                    Property Manager Pipeline
+                  </h3>
                   <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mt-0.5">
                     Active workload & assignment distribution
                   </p>
@@ -1720,7 +2211,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
             </div>
 
             {mgrPipeline.length === 0 ? (
-              <p className="text-slate-400 py-8 text-center text-xs font-mono">No active workload assigned.</p>
+              <p className="text-slate-400 py-8 text-center text-xs font-mono">
+                No active workload assigned.
+              </p>
             ) : (
               <div className="flex flex-col gap-2.5">
                 {paginatedManagers.map((m) => {
@@ -1732,7 +2225,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                         if (m.managerId) {
                           setManagerUserId(m.managerId);
                         } else {
-                          const matchedId = valuations.find((v) => v.managerName === m.name)?.assignedManagerId;
+                          const matchedId = valuations.find(
+                            (v) => v.managerName === m.name
+                          )?.assignedManagerId;
                           if (matchedId) setManagerUserId(matchedId);
                         }
                       }}
@@ -1750,10 +2245,15 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-medium text-slate-900 group-hover/row:text-[#151936] transition-colors truncate flex items-center gap-1.5">
                             {m.name}
-                            <IconArrowUpRight size={12} className="text-slate-400 opacity-0 group-hover/row:opacity-100 transition-opacity shrink-0" />
+                            <IconArrowUpRight
+                              size={12}
+                              className="text-slate-400 opacity-0 group-hover/row:opacity-100 transition-opacity shrink-0"
+                            />
                           </span>
                           <div className="flex items-center gap-1.5 shrink-0">
-                            <span className="font-mono text-xs font-medium text-slate-900">{m.count}</span>
+                            <span className="font-mono text-xs font-medium text-slate-900">
+                              {m.count}
+                            </span>
                             <span className="text-xxs text-slate-500 font-mono">active</span>
                           </div>
                         </div>
@@ -1814,8 +2314,12 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                 <IconClock size={19} />
               </span>
               <div>
-                <h3 className="text-slate-900 text-sm font-medium leading-tight">Recent Valuation Activity</h3>
-                <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mt-0.5">Audit log of transitions & modifications</p>
+                <h3 className="text-slate-900 text-sm font-medium leading-tight">
+                  Recent Valuation Activity
+                </h3>
+                <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mt-0.5">
+                  Audit log of transitions & modifications
+                </p>
               </div>
             </div>
             <Badge tone="neutral" className="font-mono text-xxs px-2.5 py-0.5">
@@ -1826,7 +2330,10 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
           {/* Search & Filter bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div className="relative flex-1">
-              <IconSearch size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <IconSearch
+                size={15}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 type="text"
                 placeholder="Search activity logs…"
@@ -1839,7 +2346,10 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
               />
             </div>
             <div className="relative shrink-0">
-              <IconFilter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <IconFilter
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+              />
               <select
                 value={activityFilter}
                 onChange={(e) => {
@@ -1870,14 +2380,22 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
             <div className="size-14 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center mb-1 shadow-2xs">
               <IconMoodEmpty size={28} className="text-slate-400" />
             </div>
-            <h3 className="text-xs font-mono font-medium text-slate-700 uppercase tracking-wider">No activity recorded yet</h3>
-            <p className="text-slate-500 max-w-sm text-xs">Stage transitions, edits, valuations, and decisions will safely log here.</p>
+            <h3 className="text-xs font-mono font-medium text-slate-700 uppercase tracking-wider">
+              No activity recorded yet
+            </h3>
+            <p className="text-slate-500 max-w-sm text-xs">
+              Stage transitions, edits, valuations, and decisions will safely log here.
+            </p>
           </div>
         ) : paginatedValuationActivity.length === 0 ? (
           <div className="flex flex-col items-center py-12 text-center">
             <IconSearch size={24} className="text-slate-300 mb-3" />
-            <p className="text-xs font-mono font-medium text-slate-700 uppercase tracking-wider">No logs match your filter</p>
-            <p className="text-xs text-slate-500 mt-1">Try adjusting the search query or dropdown filter.</p>
+            <p className="text-xs font-mono font-medium text-slate-700 uppercase tracking-wider">
+              No logs match your filter
+            </p>
+            <p className="text-xs text-slate-500 mt-1">
+              Try adjusting the search query or dropdown filter.
+            </p>
           </div>
         ) : (
           <div className="flex flex-col gap-4 relative ml-1">
@@ -1885,8 +2403,16 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
             {paginatedValuationActivity.map((entry) => {
               const toneColor = getActivityTone(entry.summary);
               return (
-                <div key={entry.id} className="relative flex items-start lg:items-center gap-4 z-10 group">
-                  <div className={cn("size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs", toneColor)} />
+                <div
+                  key={entry.id}
+                  className="relative flex items-start lg:items-center gap-4 z-10 group"
+                >
+                  <div
+                    className={cn(
+                      "size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs",
+                      toneColor
+                    )}
+                  />
                   <Link
                     href={entry.associatedId ? `/admin/valuations/${entry.associatedId}` : "#"}
                     className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 hover:bg-slate-50/80 -my-1.5 -mx-3 p-2 px-3 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-slate-200/60"
@@ -1895,7 +2421,10 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                       {entry.actorName ? (
                         <>
                           <span className="font-medium text-slate-900">{entry.actorName}</span>{" "}
-                          {entry.summary.replace(entry.actorName, "").replace(/^ - |^ — /, "").trim()}
+                          {entry.summary
+                            .replace(entry.actorName, "")
+                            .replace(/^ - |^ — /, "")
+                            .trim()}
                         </>
                       ) : (
                         entry.summary
@@ -1903,8 +2432,16 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                     </p>
                     <div className="flex items-center gap-3 shrink-0">
                       <p className="text-xs text-slate-500 font-mono tracking-wider hidden lg:block">
-                        {new Date(entry.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })},{" "}
-                        {new Date(entry.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                        {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        ,{" "}
+                        {new Date(entry.createdAt).toLocaleTimeString("en-GB", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                       <Badge tone="neutral" className="font-mono text-xxs px-2 py-0.5">
                         {relativeTime(entry.createdAt)}
@@ -1992,7 +2529,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-base font-medium text-slate-900 truncate">{selectedValuer.name}</h3>
+                  <h3 className="text-base font-medium text-slate-900 truncate">
+                    {selectedValuer.name}
+                  </h3>
                   <Badge tone="primary" className="font-mono text-xxs uppercase tracking-wider">
                     ACCREDITED VALUER
                   </Badge>
@@ -2002,7 +2541,9 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Total Volume</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Total Volume
+                </span>
                 <span className="font-mono text-lg font-medium text-[#151936] block mt-0.5">
                   {formatKES(selectedValuer.value)}
                 </span>
@@ -2012,19 +2553,33 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
             {/* Fact Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-3 shadow-2xs">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Assigned Output</span>
-                <span className="font-mono text-sm font-medium text-slate-900 block mt-1">{formatCompactKES(selectedValuer.value)}</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Assigned Output
+                </span>
+                <span className="font-mono text-sm font-medium text-slate-900 block mt-1">
+                  {formatCompactKES(selectedValuer.value)}
+                </span>
               </div>
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-3 shadow-2xs">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Volume Share</span>
-                <span className="font-mono text-sm font-medium text-emerald-700 block mt-1">{selectedValuer.sharePct}%</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Volume Share
+                </span>
+                <span className="font-mono text-sm font-medium text-emerald-700 block mt-1">
+                  {selectedValuer.sharePct}%
+                </span>
               </div>
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-3 shadow-2xs">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Valued Prospects</span>
-                <span className="font-mono text-sm font-medium text-slate-900 block mt-1">{selectedValuer.count} Properties</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Valued Prospects
+                </span>
+                <span className="font-mono text-sm font-medium text-slate-900 block mt-1">
+                  {selectedValuer.count} Properties
+                </span>
               </div>
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-3 shadow-2xs">
-                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">Licensing Status</span>
+                <span className="block text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                  Licensing Status
+                </span>
                 <span className="font-mono text-xs font-medium text-emerald-800 block mt-1 flex items-center gap-1">
                   <span className="size-1.5 rounded-full bg-emerald-500" /> Active VRB
                 </span>
@@ -2055,9 +2610,13 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
                             <span className="font-mono text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
                               {v.valuationCode}
                             </span>
-                            <span className="text-xs font-medium text-slate-900 truncate">{subject.name}</span>
+                            <span className="text-xs font-medium text-slate-900 truncate">
+                              {subject.name}
+                            </span>
                           </div>
-                          <p className="text-xxs text-slate-500 font-mono mt-1 truncate">{subject.location}</p>
+                          <p className="text-xxs text-slate-500 font-mono mt-1 truncate">
+                            {subject.location}
+                          </p>
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0">
@@ -2104,7 +2663,7 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
         entityId={entityId}
         ownerContactId={ownerContactId}
         properties={properties}
-        onOpenProperty={() => { }}
+        onOpenProperty={() => {}}
       />
 
       <PropertyManagerProfileDrawer
@@ -2113,7 +2672,7 @@ export function ValuationsBoard({ entityId = "group" }: { entityId?: string }) {
         entityId={entityId}
         managerId={managerUserId}
         properties={properties}
-        onOpenProperty={() => { }}
+        onOpenProperty={() => {}}
       />
 
       <ActionLoadingOverlay

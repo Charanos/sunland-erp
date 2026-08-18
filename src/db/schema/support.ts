@@ -39,8 +39,12 @@ export const supportTickets = pgTable(
   "support_tickets",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    raisedById: uuid("raised_by_id").references(() => users.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    raisedById: uuid("raised_by_id")
+      .references(() => users.id)
+      .notNull(),
     category: supportTicketCategory("category").default("technical").notNull(),
     subject: text("subject").notNull(),
     description: text("description").notNull(),
@@ -62,7 +66,7 @@ export const supportTickets = pgTable(
     entityIdx: index("support_tickets_entity_idx").on(table.entityId),
     statusIdx: index("support_tickets_status_idx").on(table.status),
     raisedByIdx: index("support_tickets_raised_by_idx").on(table.raisedById),
-  }),
+  })
 );
 
 // The real reply thread behind the console's Reply action. Immutable log, so
@@ -71,8 +75,12 @@ export const supportTicketMessages = pgTable(
   "support_ticket_messages",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    ticketId: uuid("ticket_id").references(() => supportTickets.id).notNull(),
-    authorId: uuid("author_id").references(() => users.id).notNull(),
+    ticketId: uuid("ticket_id")
+      .references(() => supportTickets.id)
+      .notNull(),
+    authorId: uuid("author_id")
+      .references(() => users.id)
+      .notNull(),
     body: text("body").notNull(),
     // Internal notes are staff-only working context; they never notify the
     // raiser and never count as the first response.
@@ -80,6 +88,9 @@ export const supportTicketMessages = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
-    ticketCreatedIdx: index("support_ticket_messages_ticket_created_idx").on(table.ticketId, table.createdAt),
-  }),
+    ticketCreatedIdx: index("support_ticket_messages_ticket_created_idx").on(
+      table.ticketId,
+      table.createdAt
+    ),
+  })
 );

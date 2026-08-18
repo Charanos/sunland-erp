@@ -28,40 +28,52 @@ export async function GET(request: Request) {
 
     // Fetch landlord contact details
     const landlordIds = activeLeases.map((l) => l.ownerContactId).filter(Boolean) as string[];
-    const landlords = landlordIds.length > 0
-      ? await db.select().from(contacts).where(eq(contacts.type, "landlord"))
-      : [];
+    const landlords =
+      landlordIds.length > 0
+        ? await db.select().from(contacts).where(eq(contacts.type, "landlord"))
+        : [];
 
-    const landlordMap = landlords.reduce((acc, l) => {
-      acc[l.id] = l.displayName;
-      return acc;
-    }, {} as Record<string, string>);
+    const landlordMap = landlords.reduce(
+      (acc, l) => {
+        acc[l.id] = l.displayName;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
 
     // Fetch rent and expense transactions
     const txs = await db.select().from(transactions);
 
-    const leasePayments = txs.reduce((acc, tx) => {
-      if (tx.type === "rent" && tx.leaseId) {
-        const amt = parseFloat(tx.amountKes.toString()) || 0;
-        acc[tx.leaseId] = (acc[tx.leaseId] || 0) + amt;
-      }
-      return acc;
-    }, {} as Record<string, number>);
+    const leasePayments = txs.reduce(
+      (acc, tx) => {
+        if (tx.type === "rent" && tx.leaseId) {
+          const amt = parseFloat(tx.amountKes.toString()) || 0;
+          acc[tx.leaseId] = (acc[tx.leaseId] || 0) + amt;
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const propertyExpenses = txs.reduce((acc, tx) => {
-      if (tx.type === "expense" && tx.propertyId) {
-        const amt = parseFloat(tx.amountKes.toString()) || 0;
-        acc[tx.propertyId] = (acc[tx.propertyId] || 0) + amt;
-      }
-      return acc;
-    }, {} as Record<string, number>);
+    const propertyExpenses = txs.reduce(
+      (acc, tx) => {
+        if (tx.type === "expense" && tx.propertyId) {
+          const amt = parseFloat(tx.amountKes.toString()) || 0;
+          acc[tx.propertyId] = (acc[tx.propertyId] || 0) + amt;
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     const remittances = activeLeases.map((lease) => {
-      const landlordName = lease.ownerContactId ? (landlordMap[lease.ownerContactId] || "Kariuki Holdings") : "Margaret Wambui";
+      const landlordName = lease.ownerContactId
+        ? landlordMap[lease.ownerContactId] || "Kariuki Holdings"
+        : "Margaret Wambui";
       const collected = leasePayments[lease.id] || 0;
       const expected = parseFloat(lease.monthlyRent.toString()) || 0;
-      const fee = collected * 0.10;
-      const expenses = lease.propertyId ? (propertyExpenses[lease.propertyId] || 0) : 0;
+      const fee = collected * 0.1;
+      const expenses = lease.propertyId ? propertyExpenses[lease.propertyId] || 0 : 0;
       const netRemittance = Math.max(0, collected - fee - expenses);
 
       return {
@@ -81,11 +93,27 @@ export async function GET(request: Request) {
 
     // Let's add other bills (like utilities or contractors)
     const bills = [
-      { ref: "PAY-048", payee: "Jambo Contractors", item: "Plumbing repair (Lavington)", amount: 18500, due: "2026-06-25", status: "Approved" },
-      { ref: "PAY-049", payee: "Nairobi Water Co.", item: "Water utility deposit", amount: 5000, due: "2026-06-28", status: "Awaiting Sign-off" },
+      {
+        ref: "PAY-048",
+        payee: "Jambo Contractors",
+        item: "Plumbing repair (Lavington)",
+        amount: 18500,
+        due: "2026-06-25",
+        status: "Approved",
+      },
+      {
+        ref: "PAY-049",
+        payee: "Nairobi Water Co.",
+        item: "Water utility deposit",
+        amount: 5000,
+        due: "2026-06-28",
+        status: "Awaiting Sign-off",
+      },
     ];
 
-    const totalAwaitingSignoff = bills.filter(b => b.status === "Awaiting Sign-off").reduce((sum, b) => sum + b.amount, 0);
+    const totalAwaitingSignoff = bills
+      .filter((b) => b.status === "Awaiting Sign-off")
+      .reduce((sum, b) => sum + b.amount, 0);
 
     return NextResponse.json({
       remittances,

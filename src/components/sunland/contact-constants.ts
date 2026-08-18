@@ -4,9 +4,24 @@
 // exist in Postgres; selecting any of them would throw a raw enum-violation
 // error. This is the one true vocabulary, mirroring lead-constants.ts's role
 // for the Sales Pipeline page.
-export type ContactType = "landlord" | "tenant" | "buyer" | "seller" | "contractor" | "company" | "other";
+export type ContactType =
+  | "landlord"
+  | "tenant"
+  | "buyer"
+  | "seller"
+  | "contractor"
+  | "company"
+  | "other";
 
-export const CONTACT_TYPE_OPTIONS: ContactType[] = ["landlord", "tenant", "buyer", "seller", "contractor", "company", "other"];
+export const CONTACT_TYPE_OPTIONS: ContactType[] = [
+  "landlord",
+  "tenant",
+  "buyer",
+  "seller",
+  "contractor",
+  "company",
+  "other",
+];
 
 export const TYPE_META: Record<ContactType, { label: string; pill: string }> = {
   landlord: { label: "Landlord", pill: "bg-indigo-50 text-indigo-700 border border-indigo-100" },

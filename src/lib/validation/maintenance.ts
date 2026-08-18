@@ -6,7 +6,9 @@ import { z } from "zod";
 // now a real, distinct value and passes through unchanged.
 const priorityInput = z
   .enum(["routine", "urgent", "critical", "low", "normal", "medium", "high"])
-  .transform((v) => (v === "low" || v === "normal" || v === "medium" ? "routine" : v === "high" ? "urgent" : v));
+  .transform((v) =>
+    v === "low" || v === "normal" || v === "medium" ? "routine" : v === "high" ? "urgent" : v
+  );
 
 const categoryInput = z.enum(["reactive", "planned", "compliance"]);
 
@@ -53,6 +55,12 @@ export const scheduleMaintenanceVisitSchema = z.object({
   startsAt: z.string().min(1),
   endsAt: z.string().min(1),
   attendees: z
-    .array(z.object({ name: z.string().min(1), email: z.string().email().optional(), userId: z.string().uuid().optional() }))
+    .array(
+      z.object({
+        name: z.string().min(1),
+        email: z.string().email().optional(),
+        userId: z.string().uuid().optional(),
+      })
+    )
     .optional(),
 });

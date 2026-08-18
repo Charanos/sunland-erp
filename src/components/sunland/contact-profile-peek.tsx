@@ -38,7 +38,11 @@ export function ContactProfilePeek({
           <div className="relative h-64 overflow-hidden shrink-0">
             {data.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={data.photo} alt={data.name} className="absolute inset-0 size-full object-cover" />
+              <img
+                src={data.photo}
+                alt={data.name}
+                className="absolute inset-0 size-full object-cover"
+              />
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-[#122a20] to-[#1e1b4b]" />
             )}
@@ -69,15 +73,22 @@ export function ContactProfilePeek({
           </div>
           <div className="px-5 flex flex-col gap-4">
             <div>
-              <p className="text-caption font-medium uppercase tracking-wide text-slate-400 mb-2">Main info</p>
+              <p className="text-caption font-medium uppercase tracking-wide text-slate-400 mb-2">
+                Main info
+              </p>
               <div className="flex flex-col gap-1.5">
                 {data.info.map((row) => (
-                  <div key={row.label} className="flex items-center gap-2.5 bg-white border border-slate-100 rounded-full px-4 py-2">
+                  <div
+                    key={row.label}
+                    className="flex items-center gap-2.5 bg-white border border-slate-100 rounded-full px-4 py-2"
+                  >
                     <span className="size-8 rounded-full bg-[#f4f6f0] flex items-center justify-center text-[#151936] shrink-0">
                       <row.icon size={15} />
                     </span>
                     <span className="flex-1 text-xs text-slate-500">{row.label}</span>
-                    <span className="text-xs font-medium text-slate-900 truncate max-w-[150px]">{row.value}</span>
+                    <span className="text-xs font-medium text-slate-900 truncate max-w-[150px]">
+                      {row.value}
+                    </span>
                   </div>
                 ))}
               </div>

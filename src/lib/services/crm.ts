@@ -1,7 +1,16 @@
 import { eq, and, or, ilike, desc, inArray, getTableColumns, SQL } from "drizzle-orm";
 import { db } from "@/db";
 import { contacts } from "@/db/schema/crm";
-import { properties, propertyMandates, leases, transactions, documents, remittanceAdvices, users, leads } from "@/db/schema";
+import {
+  properties,
+  propertyMandates,
+  leases,
+  transactions,
+  documents,
+  remittanceAdvices,
+  users,
+  leads,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { ConflictError, DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -14,7 +23,7 @@ import type { CallerContext } from "@/lib/services/types";
 
 export async function listContacts(
   ctx: CallerContext,
-  filters: { type?: typeof contacts.type.enumValues[number]; search?: string } = {}
+  filters: { type?: (typeof contacts.type.enumValues)[number]; search?: string } = {}
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -30,16 +39,16 @@ export async function listContacts(
     const q = `%${filters.search}%`;
     conditions = and(
       conditions,
-      or(
-        ilike(contacts.displayName, q),
-        ilike(contacts.email, q),
-        ilike(contacts.phone, q)
-      )
+      or(ilike(contacts.displayName, q), ilike(contacts.email, q), ilike(contacts.phone, q))
     );
   }
 
   const rows = await db
-    .select({ ...getTableColumns(contacts), assignedToName: users.name, assignedToAvatarUrl: users.avatarUrl })
+    .select({
+      ...getTableColumns(contacts),
+      assignedToName: users.name,
+      assignedToAvatarUrl: users.avatarUrl,
+    })
     .from(contacts)
     .leftJoin(users, eq(users.id, contacts.assignedToId))
     .where(conditions);
@@ -50,10 +59,24 @@ export async function listContacts(
   // real derived status without an N+1 query per row.
   const [activeLeaseRows, activeMandateRows, leadRows] = contactIds.length
     ? await Promise.all([
-      db.select({ id: leases.tenantContactId }).from(leases).where(and(inArray(leases.tenantContactId, contactIds), eq(leases.isActive, true))),
-      db.select({ id: propertyMandates.landlordContactId }).from(propertyMandates).where(and(inArray(propertyMandates.landlordContactId, contactIds), eq(propertyMandates.status, "active"))),
-      db.select({ id: leads.contactId, priority: leads.priority, stage: leads.stage }).from(leads).where(inArray(leads.contactId, contactIds)),
-    ])
+        db
+          .select({ id: leases.tenantContactId })
+          .from(leases)
+          .where(and(inArray(leases.tenantContactId, contactIds), eq(leases.isActive, true))),
+        db
+          .select({ id: propertyMandates.landlordContactId })
+          .from(propertyMandates)
+          .where(
+            and(
+              inArray(propertyMandates.landlordContactId, contactIds),
+              eq(propertyMandates.status, "active")
+            )
+          ),
+        db
+          .select({ id: leads.contactId, priority: leads.priority, stage: leads.stage })
+          .from(leads)
+          .where(inArray(leads.contactId, contactIds)),
+      ])
     : [[], [], []];
 
   const activeLeaseSet = new Set(activeLeaseRows.map((r) => r.id));
@@ -84,7 +107,7 @@ export async function createContact(
   ctx: CallerContext,
   input: {
     displayName: string;
-    type: typeof contacts.type.enumValues[number];
+    type: (typeof contacts.type.enumValues)[number];
     companyName?: string | null;
     email?: string | null;
     phone?: string | null;
@@ -154,14 +177,14 @@ export async function updateContact(
   contactId: string,
   input: {
     displayName?: string;
-    type?: typeof contacts.type.enumValues[number];
+    type?: (typeof contacts.type.enumValues)[number];
     companyName?: string | null;
     email?: string | null;
     phone?: string | null;
     source?: string | null;
     assignedToId?: string | null;
     metadata?: Record<string, unknown>;
-  },
+  }
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -224,26 +247,46 @@ export async function deleteContact(ctx: CallerContext, contactId: string) {
     .limit(1);
   if (!existing) throw new NotFoundError("Contact not found");
 
-  const [existingLead] = await db.select({ id: leads.id }).from(leads).where(eq(leads.contactId, contactId)).limit(1);
+  const [existingLead] = await db
+    .select({ id: leads.id })
+    .from(leads)
+    .where(eq(leads.contactId, contactId))
+    .limit(1);
   if (existingLead) {
-    throw new ConflictError("Contact has pipeline deals and cannot be deleted; reassign or close those first.");
+    throw new ConflictError(
+      "Contact has pipeline deals and cannot be deleted; reassign or close those first."
+    );
   }
-  const [existingMandate] = await db.select({ id: propertyMandates.id }).from(propertyMandates).where(eq(propertyMandates.landlordContactId, contactId)).limit(1);
+  const [existingMandate] = await db
+    .select({ id: propertyMandates.id })
+    .from(propertyMandates)
+    .where(eq(propertyMandates.landlordContactId, contactId))
+    .limit(1);
   if (existingMandate) {
     throw new ConflictError("Contact has landlord mandate history and cannot be deleted.");
   }
-  const [existingLease] = await db.select({ id: leases.id }).from(leases).where(eq(leases.tenantContactId, contactId)).limit(1);
+  const [existingLease] = await db
+    .select({ id: leases.id })
+    .from(leases)
+    .where(eq(leases.tenantContactId, contactId))
+    .limit(1);
   if (existingLease) {
     throw new ConflictError("Contact has lease history and cannot be deleted.");
   }
-  const [existingProperty] = await db.select({ id: properties.id }).from(properties).where(eq(properties.ownerContactId, contactId)).limit(1);
+  const [existingProperty] = await db
+    .select({ id: properties.id })
+    .from(properties)
+    .where(eq(properties.ownerContactId, contactId))
+    .limit(1);
   if (existingProperty) {
     throw new ConflictError("Contact owns properties in the portfolio and cannot be deleted.");
   }
 
   return db.transaction(async (tx) => {
     try {
-      await tx.delete(contacts).where(and(eq(contacts.id, contactId), eq(contacts.entityId, entityId)));
+      await tx
+        .delete(contacts)
+        .where(and(eq(contacts.id, contactId), eq(contacts.entityId, entityId)));
     } catch {
       throw new ConflictError("Contact is referenced by other records and cannot be deleted.");
     }
@@ -339,53 +382,64 @@ export async function getContactProfile(ctx: CallerContext, contactId: string) {
   const [ownedPropertyRows, mandateRows, leaseRows, paymentRows, ownerDocRows] = await Promise.all([
     isLandlord
       ? db
-        .select({
-          ...getTableColumns(properties),
-          managerName: users.name,
-          managerAvatarUrl: users.avatarUrl,
-        })
-        .from(properties)
-        .leftJoin(
-          propertyMandates,
-          and(eq(propertyMandates.propertyId, properties.id), inArray(propertyMandates.status, ["pending_approval", "active"])),
-        )
-        .leftJoin(users, eq(users.id, propertyMandates.assignedPmId))
-        .where(eq(properties.ownerContactId, contactId))
+          .select({
+            ...getTableColumns(properties),
+            managerName: users.name,
+            managerAvatarUrl: users.avatarUrl,
+          })
+          .from(properties)
+          .leftJoin(
+            propertyMandates,
+            and(
+              eq(propertyMandates.propertyId, properties.id),
+              inArray(propertyMandates.status, ["pending_approval", "active"])
+            )
+          )
+          .leftJoin(users, eq(users.id, propertyMandates.assignedPmId))
+          .where(eq(properties.ownerContactId, contactId))
       : Promise.resolve([]),
     isLandlord
       ? db
-        .select({ ...getTableColumns(propertyMandates), propertyName: properties.name })
-        .from(propertyMandates)
-        .innerJoin(properties, eq(propertyMandates.propertyId, properties.id))
-        .where(eq(propertyMandates.landlordContactId, contactId))
-        .orderBy(desc(propertyMandates.createdAt))
+          .select({ ...getTableColumns(propertyMandates), propertyName: properties.name })
+          .from(propertyMandates)
+          .innerJoin(properties, eq(propertyMandates.propertyId, properties.id))
+          .where(eq(propertyMandates.landlordContactId, contactId))
+          .orderBy(desc(propertyMandates.createdAt))
       : Promise.resolve([]),
     isTenant
       ? db
-        .select({
-          id: leases.id,
-          propertyId: leases.propertyId,
-          propertyName: properties.name,
-          propertyCode: properties.propertyCode,
-          startsAt: leases.startsAt,
-          endsAt: leases.endsAt,
-          monthlyRentKes: leases.monthlyRentKes,
-          depositKes: leases.depositKes,
-          isActive: leases.isActive,
-        })
-        .from(leases)
-        .innerJoin(properties, eq(leases.propertyId, properties.id))
-        .where(eq(leases.tenantContactId, contactId))
-        .orderBy(desc(leases.startsAt))
+          .select({
+            id: leases.id,
+            propertyId: leases.propertyId,
+            propertyName: properties.name,
+            propertyCode: properties.propertyCode,
+            startsAt: leases.startsAt,
+            endsAt: leases.endsAt,
+            monthlyRentKes: leases.monthlyRentKes,
+            depositKes: leases.depositKes,
+            isActive: leases.isActive,
+          })
+          .from(leases)
+          .innerJoin(properties, eq(leases.propertyId, properties.id))
+          .where(eq(leases.tenantContactId, contactId))
+          .orderBy(desc(leases.startsAt))
       : Promise.resolve([]),
     isTenant
       ? db
-        .select({ leaseId: transactions.leaseId, amountKes: transactions.amountKes, occurredAt: transactions.occurredAt })
-        .from(transactions)
-        .where(and(eq(transactions.contactId, contactId), eq(transactions.type, "rent")))
-        .orderBy(desc(transactions.occurredAt))
+          .select({
+            leaseId: transactions.leaseId,
+            amountKes: transactions.amountKes,
+            occurredAt: transactions.occurredAt,
+          })
+          .from(transactions)
+          .where(and(eq(transactions.contactId, contactId), eq(transactions.type, "rent")))
+          .orderBy(desc(transactions.occurredAt))
       : Promise.resolve([]),
-    db.select().from(documents).where(eq(documents.ownerContactId, contactId)).orderBy(desc(documents.createdAt)),
+    db
+      .select()
+      .from(documents)
+      .where(eq(documents.ownerContactId, contactId))
+      .orderBy(desc(documents.createdAt)),
   ]);
 
   // Second phase - depends on phase-1 ids, same two-step shape
@@ -395,10 +449,18 @@ export async function getContactProfile(ctx: CallerContext, contactId: string) {
   const leaseIds = leaseRows.map((l) => l.id);
 
   const [propertyDocRows, leaseDocRows, remittanceRows] = await Promise.all([
-    propertyIds.length ? db.select().from(documents).where(inArray(documents.propertyId, propertyIds)) : Promise.resolve([]),
-    leaseIds.length ? db.select().from(documents).where(inArray(documents.leaseId, leaseIds)) : Promise.resolve([]),
+    propertyIds.length
+      ? db.select().from(documents).where(inArray(documents.propertyId, propertyIds))
+      : Promise.resolve([]),
+    leaseIds.length
+      ? db.select().from(documents).where(inArray(documents.leaseId, leaseIds))
+      : Promise.resolve([]),
     mandateIds.length
-      ? db.select().from(remittanceAdvices).where(inArray(remittanceAdvices.mandateId, mandateIds)).orderBy(desc(remittanceAdvices.createdAt))
+      ? db
+          .select()
+          .from(remittanceAdvices)
+          .where(inArray(remittanceAdvices.mandateId, mandateIds))
+          .orderBy(desc(remittanceAdvices.createdAt))
       : Promise.resolve([]),
   ]);
 
@@ -408,10 +470,10 @@ export async function getContactProfile(ctx: CallerContext, contactId: string) {
   const relevantIds = isLandlord ? mandateIds : leaseIds;
   const activity = relevantIds.length
     ? await listAuditLog(ctx, {
-      entityId,
-      associatedGroups: [{ type: isLandlord ? "property_mandate" : "lease", ids: relevantIds }],
-      limit: 50,
-    })
+        entityId,
+        associatedGroups: [{ type: isLandlord ? "property_mandate" : "lease", ids: relevantIds }],
+        limit: 50,
+      })
     : [];
 
   // Current-month balance per active lease, same collected-vs-expected calc
@@ -433,7 +495,13 @@ export async function getContactProfile(ctx: CallerContext, contactId: string) {
 
   const documentSummaries = [...ownerDocRows, ...propertyDocRows, ...leaseDocRows]
     .filter((d, i, arr) => arr.findIndex((x) => x.id === d.id) === i)
-    .map((d) => ({ id: d.id, name: d.title, type: d.type, url: d.fileUrl, createdAt: toISOStringSafe(d.createdAt) }));
+    .map((d) => ({
+      id: d.id,
+      name: d.title,
+      type: d.type,
+      url: d.fileUrl,
+      createdAt: toISOStringSafe(d.createdAt),
+    }));
 
   return {
     ...contact,
@@ -500,7 +568,11 @@ const TOUCH_VERB_BY_CHANNEL: Record<ContactTouchChannel, string> = {
  * a real, timestamped touchpoint via the standing writeAudit choke point, so
  * the Contacts CRM "Quick Connects" feed has genuine activity to show.
  */
-export async function logContactTouch(ctx: CallerContext, contactId: string, channel: ContactTouchChannel) {
+export async function logContactTouch(
+  ctx: CallerContext,
+  contactId: string,
+  channel: ContactTouchChannel
+) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
   await authorize(ctx, "crm.contact.write", entityId);
@@ -564,7 +636,10 @@ export async function getContactsCrmOverview(ctx: CallerContext) {
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
   const [allContacts, allLeads, todaysViewings, recentTouchRows] = await Promise.all([
-    db.select({ id: contacts.id, createdAt: contacts.createdAt }).from(contacts).where(eq(contacts.entityId, entityId)),
+    db
+      .select({ id: contacts.id, createdAt: contacts.createdAt })
+      .from(contacts)
+      .where(eq(contacts.entityId, entityId)),
     listLeads(ctx, {}),
     listCalendarEvents(ctx, {
       entityId,
@@ -589,9 +664,17 @@ export async function getContactsCrmOverview(ctx: CallerContext) {
 
   // Featured Quick Connects card: today's first viewing if one exists, else
   // the nearest future one - never a fabricated property/attendee list.
-  const upcomingViewing = todaysViewings[0]
-    ?? (await listCalendarEvents(ctx, { entityId, startDate: now.toISOString(), scope: "all", type: "viewing" }))[0]
-    ?? null;
+  const upcomingViewing =
+    todaysViewings[0] ??
+    (
+      await listCalendarEvents(ctx, {
+        entityId,
+        startDate: now.toISOString(),
+        scope: "all",
+        type: "viewing",
+      })
+    )[0] ??
+    null;
 
   return {
     totalContacts,

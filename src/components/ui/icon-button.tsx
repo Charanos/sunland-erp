@@ -22,11 +22,10 @@ export function IconButton({
       className={cn(
         "focus-ring inline-flex items-center justify-center rounded-full border border-[var(--outline)] bg-white text-[var(--on-surface)] transition hover:bg-[var(--surface-muted)]",
         sizes[size],
-        className,
+        className
       )}
       type={type}
       {...props}
     />
   );
 }
-

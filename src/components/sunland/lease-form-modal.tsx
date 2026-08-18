@@ -65,7 +65,9 @@ export function LeaseFormModal({
   const isEdit = mode === "edit" && !!lease;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof LeaseFormData, string>>>({});
-  const [properties, setProperties] = useState<{ id: string; name: string; monthlyRentKes: string | null }[]>([]);
+  const [properties, setProperties] = useState<
+    { id: string; name: string; monthlyRentKes: string | null }[]
+  >([]);
   const [tenants, setTenants] = useState<{ id: string; name: string }[]>([]);
 
   const [form, setForm] = useState<LeaseFormData>({
@@ -119,16 +121,36 @@ export function LeaseFormModal({
 
         if (propData.properties) {
           const available = propData.properties
-            .filter((p: { id: string; name: string; status: string; monthlyRentKes: string | null }) => p.status === "available")
-            .map((p: { id: string; name: string; monthlyRentKes: string | null }) => ({ id: p.id, name: p.name, monthlyRentKes: p.monthlyRentKes }));
+            .filter(
+              (p: { id: string; name: string; status: string; monthlyRentKes: string | null }) =>
+                p.status === "available"
+            )
+            .map((p: { id: string; name: string; monthlyRentKes: string | null }) => ({
+              id: p.id,
+              name: p.name,
+              monthlyRentKes: p.monthlyRentKes,
+            }));
 
-          if (defaultPropertyId && defaultPropertyName && !available.some((p: { id: string }) => p.id === defaultPropertyId)) {
-            available.unshift({ id: defaultPropertyId, name: defaultPropertyName, monthlyRentKes: null });
+          if (
+            defaultPropertyId &&
+            defaultPropertyName &&
+            !available.some((p: { id: string }) => p.id === defaultPropertyId)
+          ) {
+            available.unshift({
+              id: defaultPropertyId,
+              name: defaultPropertyName,
+              monthlyRentKes: null,
+            });
           }
           setProperties(available);
         }
         if (tenantData.contacts) {
-          setTenants(tenantData.contacts.map((c: { id: string; displayName: string }) => ({ id: c.id, name: c.displayName })));
+          setTenants(
+            tenantData.contacts.map((c: { id: string; displayName: string }) => ({
+              id: c.id,
+              name: c.displayName,
+            }))
+          );
         }
       } catch (err) {
         console.error("Failed to load options:", err);
@@ -138,10 +160,7 @@ export function LeaseFormModal({
     loadOptions();
   }, [open, activeEntityId, isEdit, defaultPropertyId, defaultPropertyName]);
 
-  const updateField = <K extends keyof LeaseFormData>(
-    field: K,
-    value: LeaseFormData[K]
-  ) => {
+  const updateField = <K extends keyof LeaseFormData>(field: K, value: LeaseFormData[K]) => {
     setForm((prev) => {
       const next = { ...prev, [field]: value };
       if (field === "propertyId") {
@@ -161,7 +180,8 @@ export function LeaseFormModal({
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof LeaseFormData, string>> = {};
     if (!isEdit && !form.propertyId) newErrors.propertyId = "Property unit selection is required";
-    if (!isEdit && !form.tenantContactId) newErrors.tenantContactId = "Tenant contact selection is required";
+    if (!isEdit && !form.tenantContactId)
+      newErrors.tenantContactId = "Tenant contact selection is required";
     if (!form.startsAt) newErrors.startsAt = "Lease start date is required";
     if (!form.endsAt) newErrors.endsAt = "Lease end date is required";
     if (!form.monthlyRentKes.trim()) newErrors.monthlyRentKes = "Monthly Rent is required";
@@ -176,32 +196,32 @@ export function LeaseFormModal({
     try {
       const res = isEdit
         ? await fetch(`/api/leases/${lease!.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            entityId: activeEntityId,
-            action: "update",
-            startsAt: form.startsAt,
-            endsAt: form.endsAt,
-            monthlyRentKes: form.monthlyRentKes,
-            depositKes: form.depositKes || null,
-            notes: form.notes || null,
-          }),
-        })
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              entityId: activeEntityId,
+              action: "update",
+              startsAt: form.startsAt,
+              endsAt: form.endsAt,
+              monthlyRentKes: form.monthlyRentKes,
+              depositKes: form.depositKes || null,
+              notes: form.notes || null,
+            }),
+          })
         : await fetch("/api/leases", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            entityId: activeEntityId,
-            propertyId: form.propertyId,
-            unitId: defaultUnitId || undefined,
-            tenantContactId: form.tenantContactId,
-            startsAt: form.startsAt,
-            endsAt: form.endsAt,
-            monthlyRentKes: form.monthlyRentKes,
-            depositKes: form.depositKes || null,
-          }),
-        });
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              entityId: activeEntityId,
+              propertyId: form.propertyId,
+              unitId: defaultUnitId || undefined,
+              tenantContactId: form.tenantContactId,
+              startsAt: form.startsAt,
+              endsAt: form.endsAt,
+              monthlyRentKes: form.monthlyRentKes,
+              depositKes: form.depositKes || null,
+            }),
+          });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save lease agreement");
@@ -209,7 +229,9 @@ export function LeaseFormModal({
       pushToast({
         tone: "success",
         title: isEdit ? "Lease Updated" : "Lease Registered",
-        body: isEdit ? "Lease terms have been updated." : "Successfully finalized lease contract. Property unit updated to occupied.",
+        body: isEdit
+          ? "Lease terms have been updated."
+          : "Successfully finalized lease contract. Property unit updated to occupied.",
       });
       onSubmit();
       onClose();
@@ -233,12 +255,22 @@ export function LeaseFormModal({
   return (
     <Modal
       open={open}
-      onClose={isSubmitting ? () => { } : onClose}
+      onClose={isSubmitting ? () => {} : onClose}
       title={isEdit ? "Edit Lease Terms" : "Register Lease Agreement"}
-      description={isEdit ? "Adjust the term dates, rent, or deposit for this tenancy contract." : "Create a legal lease agreement binding a tenant contact to a property unit."}
+      description={
+        isEdit
+          ? "Adjust the term dates, rent, or deposit for this tenancy contract."
+          : "Create a legal lease agreement binding a tenant contact to a property unit."
+      }
       size="lg"
     >
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-6 pt-1">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+        className="space-y-6 pt-1"
+      >
         {/* Contracting Context Preview Card */}
         <div className="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
           <div className="flex items-center gap-3.5 min-w-0">
@@ -247,10 +279,15 @@ export function LeaseFormModal({
             </div>
             <div className="flex flex-col min-w-0">
               <p className="text-xs font-medium text-slate-900 truncate">
-                {isEdit ? lease?.propertyName : selectedProp?.name ?? (defaultPropertyName || "Select Property Unit")}
+                {isEdit
+                  ? lease?.propertyName
+                  : (selectedProp?.name ?? (defaultPropertyName || "Select Property Unit"))}
               </p>
               <p className="text-xxs text-slate-500 truncate mt-0.5 font-mono">
-                Tenant: <span className="font-medium text-slate-700">{isEdit ? lease?.tenantName : selectedTenant?.name ?? "Select Tenant"}</span>
+                Tenant:{" "}
+                <span className="font-medium text-slate-700">
+                  {isEdit ? lease?.tenantName : (selectedTenant?.name ?? "Select Tenant")}
+                </span>
               </p>
             </div>
           </div>
@@ -278,18 +315,24 @@ export function LeaseFormModal({
                     required
                     className={cn(
                       "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                      errors.propertyId ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                      errors.propertyId
+                        ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                        : "border-slate-200/90"
                     )}
                     value={form.propertyId}
                     onChange={(e) => updateField("propertyId", e.target.value)}
                   >
                     <option value="">-- Select Property Unit --</option>
                     {properties.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
                     ))}
                   </select>
                 )}
-                {errors.propertyId && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.propertyId}</p>}
+                {errors.propertyId && (
+                  <p className="text-xxs font-medium text-rose-600 mt-1">{errors.propertyId}</p>
+                )}
               </div>
 
               <div>
@@ -300,17 +343,25 @@ export function LeaseFormModal({
                   required
                   className={cn(
                     "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                    errors.tenantContactId ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                    errors.tenantContactId
+                      ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                      : "border-slate-200/90"
                   )}
                   value={form.tenantContactId}
                   onChange={(e) => updateField("tenantContactId", e.target.value)}
                 >
                   <option value="">-- Select Tenant Contact --</option>
                   {tenants.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
                   ))}
                 </select>
-                {errors.tenantContactId && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.tenantContactId}</p>}
+                {errors.tenantContactId && (
+                  <p className="text-xxs font-medium text-rose-600 mt-1">
+                    {errors.tenantContactId}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -328,10 +379,14 @@ export function LeaseFormModal({
                 onChange={(e) => updateField("startsAt", e.target.value)}
                 className={cn(
                   "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                  errors.startsAt ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                  errors.startsAt
+                    ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                    : "border-slate-200/90"
                 )}
               />
-              {errors.startsAt && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.startsAt}</p>}
+              {errors.startsAt && (
+                <p className="text-xxs font-medium text-rose-600 mt-1">{errors.startsAt}</p>
+              )}
             </div>
 
             <div>
@@ -345,10 +400,14 @@ export function LeaseFormModal({
                 onChange={(e) => updateField("endsAt", e.target.value)}
                 className={cn(
                   "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                  errors.endsAt ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                  errors.endsAt
+                    ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                    : "border-slate-200/90"
                 )}
               />
-              {errors.endsAt && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.endsAt}</p>}
+              {errors.endsAt && (
+                <p className="text-xxs font-medium text-rose-600 mt-1">{errors.endsAt}</p>
+              )}
             </div>
           </div>
 
@@ -368,10 +427,14 @@ export function LeaseFormModal({
                 onChange={(e) => updateField("monthlyRentKes", e.target.value)}
                 className={cn(
                   "w-full h-11 rounded-xl border bg-white px-3.5 font-mono text-xs font-medium text-slate-900 focus:outline-none focus:border-[#151936] focus:ring-1 focus:ring-[#151936] transition-all shadow-2xs",
-                  errors.monthlyRentKes ? "border-rose-300 bg-rose-50/30 text-rose-900" : "border-slate-200/90"
+                  errors.monthlyRentKes
+                    ? "border-rose-300 bg-rose-50/30 text-rose-900"
+                    : "border-slate-200/90"
                 )}
               />
-              {errors.monthlyRentKes && <p className="text-xxs font-medium text-rose-600 mt-1">{errors.monthlyRentKes}</p>}
+              {errors.monthlyRentKes && (
+                <p className="text-xxs font-medium text-rose-600 mt-1">{errors.monthlyRentKes}</p>
+              )}
             </div>
 
             <div>
@@ -395,7 +458,9 @@ export function LeaseFormModal({
             <div className="flex items-center gap-2">
               <IconBuildingBank size={16} className="text-[#151936] shrink-0" />
               <span className="text-slate-600 font-medium">Contracted Annual Cashflow:</span>
-              <span className="font-mono font-medium text-slate-900">{formatCompactKES(annualRentPool)}</span>
+              <span className="font-mono font-medium text-slate-900">
+                {formatCompactKES(annualRentPool)}
+              </span>
             </div>
             <Badge tone="success" className="text-xxs font-mono shrink-0">
               Active Tenancy Pool
@@ -423,7 +488,9 @@ export function LeaseFormModal({
         <div className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50 p-3.5 text-xs text-slate-600 leading-relaxed shadow-2xs">
           <IconShieldCheck size={16} className="text-[#151936] shrink-0 mt-0.5" />
           <p>
-            Tenancy agreements strictly comply with Kenyan Landlord & Tenant Act (Cap 301). Finalized lease agreements automatically update property status to <span className="font-medium text-slate-900">Occupied</span>.
+            Tenancy agreements strictly comply with Kenyan Landlord & Tenant Act (Cap 301).
+            Finalized lease agreements automatically update property status to{" "}
+            <span className="font-medium text-slate-900">Occupied</span>.
           </p>
         </div>
 

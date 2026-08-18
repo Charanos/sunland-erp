@@ -17,7 +17,7 @@ import {
   IconTrash,
   IconCheck,
   IconX,
-  IconArrowsMaximize
+  IconArrowsMaximize,
 } from "@tabler/icons-react";
 import { useToast } from "@/components/ui/toast-provider";
 import { BoardPanel } from "@/components/ui/erp-primitives";
@@ -55,13 +55,46 @@ interface Project {
   dueDate: string | null;
 }
 
-const PROJECT_DEPARTMENT_STYLES: Record<Project["department"], { dot: string; ring: string; bar: string; badge: string }> = {
-  sales: { dot: "bg-teal-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]", ring: "border-teal-200 text-teal-600", bar: "bg-teal-500", badge: "text-teal-700 bg-teal-50 border-teal-100" },
-  legal: { dot: "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]", ring: "border-indigo-200 text-indigo-600", bar: "bg-indigo-500", badge: "text-indigo-700 bg-indigo-50 border-indigo-100" },
-  ops: { dot: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]", ring: "border-amber-200 text-amber-600", bar: "bg-amber-500", badge: "text-amber-700 bg-amber-50 border-amber-100" },
-  finance: { dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]", ring: "border-emerald-200 text-emerald-600", bar: "bg-emerald-500", badge: "text-emerald-700 bg-emerald-50 border-emerald-100" },
-  hr: { dot: "bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]", ring: "border-purple-200 text-purple-600", bar: "bg-purple-500", badge: "text-purple-700 bg-purple-50 border-purple-100" },
-  front_office: { dot: "bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]", ring: "border-sky-200 text-sky-600", bar: "bg-sky-500", badge: "text-sky-700 bg-sky-50 border-sky-100" },
+const PROJECT_DEPARTMENT_STYLES: Record<
+  Project["department"],
+  { dot: string; ring: string; bar: string; badge: string }
+> = {
+  sales: {
+    dot: "bg-teal-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]",
+    ring: "border-teal-200 text-teal-600",
+    bar: "bg-teal-500",
+    badge: "text-teal-700 bg-teal-50 border-teal-100",
+  },
+  legal: {
+    dot: "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]",
+    ring: "border-indigo-200 text-indigo-600",
+    bar: "bg-indigo-500",
+    badge: "text-indigo-700 bg-indigo-50 border-indigo-100",
+  },
+  ops: {
+    dot: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+    ring: "border-amber-200 text-amber-600",
+    bar: "bg-amber-500",
+    badge: "text-amber-700 bg-amber-50 border-amber-100",
+  },
+  finance: {
+    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]",
+    ring: "border-emerald-200 text-emerald-600",
+    bar: "bg-emerald-500",
+    badge: "text-emerald-700 bg-emerald-50 border-emerald-100",
+  },
+  hr: {
+    dot: "bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]",
+    ring: "border-purple-200 text-purple-600",
+    bar: "bg-purple-500",
+    badge: "text-purple-700 bg-purple-50 border-purple-100",
+  },
+  front_office: {
+    dot: "bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]",
+    ring: "border-sky-200 text-sky-600",
+    bar: "bg-sky-500",
+    badge: "text-sky-700 bg-sky-50 border-sky-100",
+  },
 };
 
 const PROJECT_STATUS_LABEL: Record<Project["status"], string> = {
@@ -131,8 +164,10 @@ export function InternalOperationsBoard({
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
 
-  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  const prevMonth = () =>
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  const nextMonth = () =>
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
 
   const daysInMonth = getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
   const firstDay = getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth());
@@ -146,7 +181,12 @@ export function InternalOperationsBoard({
 
   const selectedDateEvents = events
     .filter((e) =>
-      isSameCalendarDay(e.startsAt, selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()),
+      isSameCalendarDay(
+        e.startsAt,
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate()
+      )
     )
     .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
 
@@ -165,18 +205,31 @@ export function InternalOperationsBoard({
   // pre-fills its actual length instead of silently defaulting to 1h and
   // truncating/extending it on save if the user doesn't touch the field.
   const DURATION_OPTIONS_MINUTES: Array<[string, number]> = [
-    ["30m", 30], ["1h", 60], ["1.5h", 90], ["2h", 120], ["3h", 180], ["4h", 240], ["All Day", 24 * 60],
+    ["30m", 30],
+    ["1h", 60],
+    ["1.5h", 90],
+    ["2h", 120],
+    ["3h", 180],
+    ["4h", 240],
+    ["All Day", 24 * 60],
   ];
   function computeDurationLabel(startsAt: string, endsAt: string): string {
     const actualMinutes = (new Date(endsAt).getTime() - new Date(startsAt).getTime()) / 60_000;
     if (!Number.isFinite(actualMinutes) || actualMinutes <= 0) return "1h";
     const [closest] = DURATION_OPTIONS_MINUTES.reduce((best, option) =>
-      Math.abs(option[1] - actualMinutes) < Math.abs(best[1] - actualMinutes) ? option : best,
+      Math.abs(option[1] - actualMinutes) < Math.abs(best[1] - actualMinutes) ? option : best
     );
     return closest;
   }
 
-  const handleCreateEvent = async (data: { title: string; date: string; time: string; duration: string; type: string; description: string }) => {
+  const handleCreateEvent = async (data: {
+    title: string;
+    date: string;
+    time: string;
+    duration: string;
+    type: string;
+    description: string;
+  }) => {
     try {
       const startsAt = new Date(`${data.date}T${data.time}:00`);
       const endsAt = new Date(startsAt.getTime() + parseDurationMinutes(data.duration) * 60_000);
@@ -200,7 +253,11 @@ export function InternalOperationsBoard({
       const { event: newEvent } = await res.json();
       setEvents((prev) => [...prev, newEvent]);
       setSelectedDate(startsAt);
-      pushToast({ tone: "success", title: "Event Scheduled", body: `"${data.title}" has been added to your itinerary.` });
+      pushToast({
+        tone: "success",
+        title: "Event Scheduled",
+        body: `"${data.title}" has been added to your itinerary.`,
+      });
       return true;
     } catch {
       pushToast({ tone: "warning", title: "Error", body: "Could not schedule event." });
@@ -208,7 +265,17 @@ export function InternalOperationsBoard({
     }
   };
 
-  const handleEditEvent = async (eventId: string, data: { title: string; date: string; time: string; duration: string; type: string; description: string }) => {
+  const handleEditEvent = async (
+    eventId: string,
+    data: {
+      title: string;
+      date: string;
+      time: string;
+      duration: string;
+      type: string;
+      description: string;
+    }
+  ) => {
     try {
       const startsAt = new Date(`${data.date}T${data.time}:00`);
       const endsAt = new Date(startsAt.getTime() + parseDurationMinutes(data.duration) * 60_000);
@@ -228,10 +295,14 @@ export function InternalOperationsBoard({
       if (!res.ok) throw new Error("Failed to update event");
 
       const { event: updatedEvent } = await res.json();
-      setEvents((prev) => prev.map((e) => e.id === eventId ? updatedEvent : e));
+      setEvents((prev) => prev.map((e) => (e.id === eventId ? updatedEvent : e)));
       setSelectedDate(startsAt);
       setEventForEdit(null);
-      pushToast({ tone: "success", title: "Event Updated", body: `"${data.title}" has been updated.` });
+      pushToast({
+        tone: "success",
+        title: "Event Updated",
+        body: `"${data.title}" has been updated.`,
+      });
       return true;
     } catch {
       pushToast({ tone: "warning", title: "Error", body: "Could not update event." });
@@ -247,11 +318,13 @@ export function InternalOperationsBoard({
       const res = await fetch(`/api/scheduling/events/${eventId}/outcome`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ outcome })
+        body: JSON.stringify({ outcome }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || `Failed to mark event as ${outcome}`);
-      setEvents((prev) => prev.map((e) => e.id === eventId ? { ...e, outcome, needsDisposition: false } : e));
+      setEvents((prev) =>
+        prev.map((e) => (e.id === eventId ? { ...e, outcome, needsDisposition: false } : e))
+      );
       pushToast({ tone: "success", title: "Event Updated", body: `Event marked as ${outcome}.` });
     } catch (err) {
       const message = err instanceof Error ? err.message : `Could not mark event as ${outcome}.`;
@@ -266,7 +339,11 @@ export function InternalOperationsBoard({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete event");
       setEvents((prev) => prev.filter((e) => e.id !== eventId));
-      pushToast({ tone: "success", title: "Event Cancelled", body: "The event has been removed from your itinerary." });
+      pushToast({
+        tone: "success",
+        title: "Event Cancelled",
+        body: "The event has been removed from your itinerary.",
+      });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not delete event.";
       pushToast({ tone: "warning", title: "Error", body: message });
@@ -280,7 +357,11 @@ export function InternalOperationsBoard({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete project");
       setProjects((prev) => prev.filter((p) => p.id !== projectId));
-      pushToast({ tone: "success", title: "Project Deleted", body: "The project has been removed." });
+      pushToast({
+        tone: "success",
+        title: "Project Deleted",
+        body: "The project has been removed.",
+      });
     } catch (err) {
       // Surfaces deleteProject's ConflictError message ("Cannot delete
       // project with N linked calendar event(s)...") instead of a generic toast.
@@ -290,10 +371,34 @@ export function InternalOperationsBoard({
   };
 
   const TYPE_STYLES = {
-    internal: { bg: "bg-emerald-50", text: "text-emerald-700", icon: IconVideo, accent: "bg-emerald-500", iconColor: "text-emerald-500" },
-    external: { bg: "bg-sky-50", text: "text-sky-700", icon: IconMapPin, accent: "bg-sky-500", iconColor: "text-sky-500" },
-    legal: { bg: "bg-indigo-50", text: "text-indigo-700", icon: IconGavel, accent: "bg-indigo-500", iconColor: "text-indigo-500" },
-    maintenance: { bg: "bg-amber-50", text: "text-amber-700", icon: IconTool, accent: "bg-amber-500", iconColor: "text-amber-500" },
+    internal: {
+      bg: "bg-emerald-50",
+      text: "text-emerald-700",
+      icon: IconVideo,
+      accent: "bg-emerald-500",
+      iconColor: "text-emerald-500",
+    },
+    external: {
+      bg: "bg-sky-50",
+      text: "text-sky-700",
+      icon: IconMapPin,
+      accent: "bg-sky-500",
+      iconColor: "text-sky-500",
+    },
+    legal: {
+      bg: "bg-indigo-50",
+      text: "text-indigo-700",
+      icon: IconGavel,
+      accent: "bg-indigo-500",
+      iconColor: "text-indigo-500",
+    },
+    maintenance: {
+      bg: "bg-amber-50",
+      text: "text-amber-700",
+      icon: IconTool,
+      accent: "bg-amber-500",
+      iconColor: "text-amber-500",
+    },
   };
 
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -303,10 +408,10 @@ export function InternalOperationsBoard({
       {/* ── Section Header ── */}
       <div className="py-6 border-t border-slate-200/60 flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-2">
         <div>
-          <h2 className="title-serif flex items-center gap-3">
-            Internal Structure & Scheduler
-          </h2>
-          <p className="text-meta-muted tracking-wide mt-1">High-level operations breakdown and executive itinerary.</p>
+          <h2 className="title-serif flex items-center gap-3">Internal Structure & Scheduler</h2>
+          <p className="text-meta-muted tracking-wide mt-1">
+            High-level operations breakdown and executive itinerary.
+          </p>
         </div>
 
         <button
@@ -319,14 +424,17 @@ export function InternalOperationsBoard({
       </div>
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch w-full">
-
         {/* ── Firm Operations (Left) ── */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           {/* Department Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/admin/pipeline" className="group">
               <div className="bg-gradient-to-br from-white to-teal-50/30 p-5 rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all relative overflow-hidden flex flex-col justify-between h-[155px] cursor-pointer">
-                <IconBriefcase size={120} stroke={1} className="absolute -right-4 -bottom-4 text-teal-600 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none" />
+                <IconBriefcase
+                  size={120}
+                  stroke={1}
+                  className="absolute -right-4 -bottom-4 text-teal-600 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none"
+                />
                 <div className="absolute -right-4 -top-4 size-20 bg-teal-50/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-2">
@@ -335,15 +443,22 @@ export function InternalOperationsBoard({
                     </div>
                     <span className="text-sm font-medium text-slate-700">Sales</span>
                   </div>
-                  <Badge tone="success" className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5">
+                  <Badge
+                    tone="success"
+                    className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5"
+                  >
                     <span className="size-1.5 rounded-full bg-teal-500 animate-pulse shadow-[0_0_8px_rgba(20,184,166,0.8)] mr-1.5 inline-block" />
                     Active
                   </Badge>
                 </div>
                 <div className="mt-auto flex items-end justify-between relative z-10">
                   <div>
-                    <h3 className="text-4xl leading-none font-mono font-medium text-slate-900 tracking-tight">{departmentStats.sales}</h3>
-                    <p className="text-ms font-medium text-slate-400 uppercase tracking-wider mt-2">Active Pipeline</p>
+                    <h3 className="text-4xl leading-none font-mono font-medium text-slate-900 tracking-tight">
+                      {departmentStats.sales}
+                    </h3>
+                    <p className="text-ms font-medium text-slate-400 uppercase tracking-wider mt-2">
+                      Active Pipeline
+                    </p>
                   </div>
                   <div className="text-right pb-1">
                     <span className="text-ms font-medium uppercase tracking-widest text-teal-600/70">
@@ -356,7 +471,11 @@ export function InternalOperationsBoard({
 
             <Link href="/admin/maintenance" className="group">
               <div className="bg-gradient-to-br from-white to-amber-50/30 p-5 rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all relative overflow-hidden flex flex-col justify-between h-[155px] cursor-pointer">
-                <IconUsers size={120} stroke={1} className="absolute -right-4 -bottom-4 text-amber-600 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none" />
+                <IconUsers
+                  size={120}
+                  stroke={1}
+                  className="absolute -right-4 -bottom-4 text-amber-600 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none"
+                />
                 <div className="absolute -right-4 -top-4 size-20 bg-amber-50/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-2">
@@ -365,15 +484,22 @@ export function InternalOperationsBoard({
                     </div>
                     <span className="text-sm font-medium text-slate-700">Ops</span>
                   </div>
-                  <Badge tone="warning" className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5">
+                  <Badge
+                    tone="warning"
+                    className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5"
+                  >
                     <span className="size-1.5 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)] mr-1.5 inline-block" />
                     Capacity
                   </Badge>
                 </div>
                 <div className="mt-auto flex items-end justify-between relative z-10">
                   <div>
-                    <h3 className="text-4xl leading-none font-mono font-medium text-slate-900 tracking-tight">{departmentStats.ops}</h3>
-                    <p className="text-ms font-medium text-slate-400 uppercase tracking-wider mt-2">Open Maintenance</p>
+                    <h3 className="text-4xl leading-none font-mono font-medium text-slate-900 tracking-tight">
+                      {departmentStats.ops}
+                    </h3>
+                    <p className="text-ms font-medium text-slate-400 uppercase tracking-wider mt-2">
+                      Open Maintenance
+                    </p>
                   </div>
                   <div className="text-right pb-1">
                     <span className="text-ms font-medium uppercase tracking-widest text-amber-600/70">
@@ -386,7 +512,11 @@ export function InternalOperationsBoard({
 
             <Link href="/admin/leases" className="group">
               <div className="bg-gradient-to-br from-white to-indigo-50/30 p-5 rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all relative overflow-hidden flex flex-col justify-between h-[155px] cursor-pointer">
-                <IconGavel size={120} stroke={1} className="absolute -right-4 -bottom-4 text-indigo-600 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none" />
+                <IconGavel
+                  size={120}
+                  stroke={1}
+                  className="absolute -right-4 -bottom-4 text-indigo-600 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none"
+                />
                 <div className="absolute -right-4 -top-4 size-20 bg-indigo-50/50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-2">
@@ -395,14 +525,21 @@ export function InternalOperationsBoard({
                     </div>
                     <span className="text-sm font-medium text-slate-700">Legal</span>
                   </div>
-                  <Badge tone="neutral" className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5">
+                  <Badge
+                    tone="neutral"
+                    className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5"
+                  >
                     Processing
                   </Badge>
                 </div>
                 <div className="mt-auto flex items-end justify-between relative z-10">
                   <div>
-                    <h3 className="text-4xl leading-none font-mono font-medium text-slate-900 tracking-tight">{departmentStats.legal}</h3>
-                    <p className="text-ms font-medium text-slate-400 uppercase tracking-wider mt-2">Active Leases</p>
+                    <h3 className="text-4xl leading-none font-mono font-medium text-slate-900 tracking-tight">
+                      {departmentStats.legal}
+                    </h3>
+                    <p className="text-ms font-medium text-slate-400 uppercase tracking-wider mt-2">
+                      Active Leases
+                    </p>
                   </div>
                   <div className="text-right pb-1">
                     <span className="text-ms font-medium uppercase tracking-widest text-indigo-600/70">
@@ -435,26 +572,43 @@ export function InternalOperationsBoard({
                     <IconBriefcase size={22} stroke={1.5} />
                   </div>
                   <p className="text-body-primary text-slate-600">No active projects yet.</p>
-                  <p className="text-meta-muted mt-1">Create one from the Projects page to track it here.</p>
+                  <p className="text-meta-muted mt-1">
+                    Create one from the Projects page to track it here.
+                  </p>
                 </div>
               ) : (
                 projects.slice(0, 3).map((project) => {
-                  const style = PROJECT_DEPARTMENT_STYLES[project.department] ?? PROJECT_DEPARTMENT_STYLES.ops;
+                  const style =
+                    PROJECT_DEPARTMENT_STYLES[project.department] ?? PROJECT_DEPARTMENT_STYLES.ops;
                   return (
-                    <div key={project.id} className="relative group cursor-pointer" onClick={() => setSelectedProject(project)}>
+                    <div
+                      key={project.id}
+                      className="relative group cursor-pointer"
+                      onClick={() => setSelectedProject(project)}
+                    >
                       <div className="flex-1 bg-white hover:bg-slate-50 p-5 rounded-[20px] border border-slate-100 shadow-[0_2px_12px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all">
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex gap-3 items-start">
-                            <div className={cn("mt-1.5 size-2.5 rounded-full shadow-sm group-hover:scale-125 transition-transform", style.dot)} />
+                            <div
+                              className={cn(
+                                "mt-1.5 size-2.5 rounded-full shadow-sm group-hover:scale-125 transition-transform",
+                                style.dot
+                              )}
+                            />
                             <div>
-                              <h4 className="text-body-primary text-slate-900 font-medium tracking-tight">{project.title}</h4>
+                              <h4 className="text-body-primary text-slate-900 font-medium tracking-tight">
+                                {project.title}
+                              </h4>
                               {project.description && (
                                 <p className="text-sm text-slate-500 mt-1">{project.description}</p>
                               )}
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-3 mt-0.5 shrink-0 ml-4">
-                            <Badge tone="neutral" className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5 capitalize">
+                            <Badge
+                              tone="neutral"
+                              className="text-xxs font-medium uppercase tracking-widest px-2 py-0.5 capitalize"
+                            >
                               {project.department.replace("_", " ")}
                             </Badge>
                           </div>
@@ -465,7 +619,14 @@ export function InternalOperationsBoard({
                             <div className="flex items-center justify-between">
                               <div className="flex -space-x-1.5">
                                 {project.assigneeIds.slice(0, 3).map((id) => (
-                                  <Image key={id} src={`https://i.pravatar.cc/150?u=${id}`} alt="assignee" width={26} height={26} className="w-[26px] h-[26px] rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover" />
+                                  <Image
+                                    key={id}
+                                    src={`https://i.pravatar.cc/150?u=${id}`}
+                                    alt="assignee"
+                                    width={26}
+                                    height={26}
+                                    className="w-[26px] h-[26px] rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover"
+                                  />
                                 ))}
                                 {project.assigneeIds.length > 3 && (
                                   <div className="w-[26px] h-[26px] rounded-full ring-2 ring-white bg-slate-50 flex items-center justify-center text-xxs font-medium text-slate-600 shadow-sm z-10">
@@ -473,12 +634,23 @@ export function InternalOperationsBoard({
                                   </div>
                                 )}
                               </div>
-                              <span className={cn("mono-data whitespace-nowrap px-2.5 py-1 rounded-md text-ms font-medium shadow-sm border bg-white", style.badge)}>
+                              <span
+                                className={cn(
+                                  "mono-data whitespace-nowrap px-2.5 py-1 rounded-md text-ms font-medium shadow-sm border bg-white",
+                                  style.badge
+                                )}
+                              >
                                 {project.progressPercent}% Complete
                               </span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-200/60 rounded-full overflow-hidden shadow-inner">
-                              <div className={cn("h-full rounded-full transition-all duration-1000", style.bar)} style={{ width: `${project.progressPercent}%` }} />
+                              <div
+                                className={cn(
+                                  "h-full rounded-full transition-all duration-1000",
+                                  style.bar
+                                )}
+                                style={{ width: `${project.progressPercent}%` }}
+                              />
                             </div>
                           </div>
                         ) : (
@@ -486,13 +658,24 @@ export function InternalOperationsBoard({
                             {project.dueDate ? (
                               <span className="text-sm font-medium text-slate-500 flex items-center gap-2">
                                 <IconClock size={16} stroke={2} className="text-slate-400" />
-                                {new Date(project.dueDate).toLocaleDateString("en-KE", { month: "long", day: "numeric", year: "numeric" })}
+                                {new Date(project.dueDate).toLocaleDateString("en-KE", {
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })}
                               </span>
                             ) : (
                               <div className="flex items-center gap-3">
                                 <div className="flex -space-x-1.5">
                                   {project.assigneeIds.slice(0, 3).map((id) => (
-                                    <Image key={id} src={`https://i.pravatar.cc/150?u=${id}`} alt="assignee" width={26} height={26} className="w-[26px] h-[26px] rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover" />
+                                    <Image
+                                      key={id}
+                                      src={`https://i.pravatar.cc/150?u=${id}`}
+                                      alt="assignee"
+                                      width={26}
+                                      height={26}
+                                      className="w-[26px] h-[26px] rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover"
+                                    />
                                   ))}
                                   {project.assigneeIds.length > 3 && (
                                     <div className="w-[26px] h-[26px] rounded-full ring-2 ring-white bg-slate-50 flex items-center justify-center text-xxs font-medium text-slate-600 shadow-sm z-10">
@@ -500,20 +683,34 @@ export function InternalOperationsBoard({
                                     </div>
                                   )}
                                 </div>
-                                <span className="text-xs font-medium text-slate-400">{project.assigneeIds.length} Assignees</span>
+                                <span className="text-xs font-medium text-slate-400">
+                                  {project.assigneeIds.length} Assignees
+                                </span>
                               </div>
                             )}
-                            <span className={cn("mono-data px-2.5 py-1 rounded-md text-ms font-medium shadow-sm border bg-white", style.badge)}>
+                            <span
+                              className={cn(
+                                "mono-data px-2.5 py-1 rounded-md text-ms font-medium shadow-sm border bg-white",
+                                style.badge
+                              )}
+                            >
                               {PROJECT_STATUS_LABEL[project.status]}
                             </span>
                           </div>
                         )}
                         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                          <Link href={`/admin/projects`} className="p-1.5 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-50 shadow-sm transition-colors" title="Edit">
+                          <Link
+                            href={`/admin/projects`}
+                            className="p-1.5 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-50 shadow-sm transition-colors"
+                            title="Edit"
+                          >
                             <IconBriefcase size={16} />
                           </Link>
                           <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.id); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteProject(project.id);
+                            }}
                             className="p-1.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-white shadow-sm transition-colors"
                             title="Delete"
                           >
@@ -553,13 +750,19 @@ export function InternalOperationsBoard({
                 <IconArrowsMaximize size={16} stroke={2} />
               </button>
               <div className="flex items-center gap-1 bg-slate-50 rounded-lg border border-slate-200 p-1 shadow-sm">
-                <button onClick={prevMonth} className="text-slate-400 hover:text-slate-900 hover:bg-white p-1 rounded-md transition-all">
+                <button
+                  onClick={prevMonth}
+                  className="text-slate-400 hover:text-slate-900 hover:bg-white p-1 rounded-md transition-all"
+                >
                   <IconChevronLeft size={16} stroke={2} />
                 </button>
                 <span className="body-sm text-slate-800 w-24 sm:w-32 text-center truncate font-medium">
                   {currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
                 </span>
-                <button onClick={nextMonth} className="text-slate-400 hover:text-slate-900 hover:bg-white p-1 rounded-md transition-all">
+                <button
+                  onClick={nextMonth}
+                  className="text-slate-400 hover:text-slate-900 hover:bg-white p-1 rounded-md transition-all"
+                >
                   <IconChevronRight size={16} stroke={2} />
                 </button>
               </div>
@@ -568,17 +771,33 @@ export function InternalOperationsBoard({
 
           {/* Real Calendar Grid */}
           <div className="grid grid-cols-7 gap-2 sm:gap-3 mb-8">
-            {daysOfWeek.map(d => (
-              <div key={d} className="text-center text-slate-400 mb-2 label-caps font-medium tracking-wider">{d}</div>
+            {daysOfWeek.map((d) => (
+              <div
+                key={d}
+                className="text-center text-slate-400 mb-2 label-caps font-medium tracking-wider"
+              >
+                {d}
+              </div>
             ))}
             {calendarDays.map((day, i) => {
-              const isSelected = day &&
+              const isSelected =
+                day &&
                 selectedDate.getDate() === day &&
                 selectedDate.getMonth() === currentDate.getMonth() &&
                 selectedDate.getFullYear() === currentDate.getFullYear();
 
-              const dayEvents = day ? events.filter((e) => isSameCalendarDay(e.startsAt, currentDate.getFullYear(), currentDate.getMonth(), day)) : [];
-              const isToday = day &&
+              const dayEvents = day
+                ? events.filter((e) =>
+                    isSameCalendarDay(
+                      e.startsAt,
+                      currentDate.getFullYear(),
+                      currentDate.getMonth(),
+                      day
+                    )
+                  )
+                : [];
+              const isToday =
+                day &&
                 new Date().getDate() === day &&
                 new Date().getMonth() === currentDate.getMonth() &&
                 new Date().getFullYear() === currentDate.getFullYear();
@@ -586,7 +805,12 @@ export function InternalOperationsBoard({
               return (
                 <button
                   key={i}
-                  onClick={() => day && setSelectedDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), day, 12))}
+                  onClick={() =>
+                    day &&
+                    setSelectedDate(
+                      new Date(currentDate.getFullYear(), currentDate.getMonth(), day, 12)
+                    )
+                  }
                   disabled={!day}
                   className={cn(
                     "relative mx-auto flex size-10 sm:size-12 flex-col items-center justify-center rounded-full transition-all duration-200 outline-none group",
@@ -598,7 +822,15 @@ export function InternalOperationsBoard({
                         : "text-slate-700 hover:bg-slate-50"
                   )}
                 >
-                  <span className={cn("relative z-10 leading-none text-sm sm:text-base", isSelected || isToday ? "font-medium" : "font-normal", dayEvents.length > 0 ? "mb-1.5" : "")}>{day}</span>
+                  <span
+                    className={cn(
+                      "relative z-10 leading-none text-sm sm:text-base",
+                      isSelected || isToday ? "font-medium" : "font-normal",
+                      dayEvents.length > 0 ? "mb-1.5" : ""
+                    )}
+                  >
+                    {day}
+                  </span>
 
                   {/* Event Indicators */}
                   {dayEvents.length > 0 && (
@@ -613,7 +845,10 @@ export function InternalOperationsBoard({
                           dotColor = "bg-white/90";
                         }
                         return (
-                          <div key={idx} className={cn("size-[3.5px] rounded-full shadow-sm", dotColor)} />
+                          <div
+                            key={idx}
+                            className={cn("size-[3.5px] rounded-full shadow-sm", dotColor)}
+                          />
                         );
                       })}
                     </div>
@@ -628,10 +863,16 @@ export function InternalOperationsBoard({
             <h4 className="text-title-secondary text-slate-800 mb-6 flex justify-between items-center px-1">
               <span>
                 {selectedDate.toDateString() === new Date().toDateString()
-                  ? 'Today\'s Itinerary'
-                  : selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  ? "Today's Itinerary"
+                  : selectedDate.toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
               </span>
-              <span className="text-xxs font-medium font-mono bg-slate-50 border border-slate-200/60 rounded-lg px-2.5 py-1 shadow-sm">{selectedDateEvents.length} Event(s)</span>
+              <span className="text-xxs font-medium font-mono bg-slate-50 border border-slate-200/60 rounded-lg px-2.5 py-1 shadow-sm">
+                {selectedDateEvents.length} Event(s)
+              </span>
             </h4>
 
             <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
@@ -644,17 +885,31 @@ export function InternalOperationsBoard({
                   .toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
                   .split(" ");
                 return (
-                  <div key={evt.id} className="lg:p-5 my-4 border-b pb-4 border-slate-200/60 lg:rounded-[20px] lg:bg-white lg:border lg:border-slate-100 flex gap-5 relative overflow-hidden group lg:shadow-[0_2px_12px_rgba(0,0,0,0.03)] lg:hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] lg:hover:-translate-y-0.5 transition-all">
-                    <div className={cn("absolute inset-0 opacity-[0.02] pointer-events-none transition-opacity group-hover:opacity-[0.04]", style.bg)} />
+                  <div
+                    key={evt.id}
+                    className="lg:p-5 my-4 border-b pb-4 border-slate-200/60 lg:rounded-[20px] lg:bg-white lg:border lg:border-slate-100 flex gap-5 relative overflow-hidden group lg:shadow-[0_2px_12px_rgba(0,0,0,0.03)] lg:hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] lg:hover:-translate-y-0.5 transition-all"
+                  >
+                    <div
+                      className={cn(
+                        "absolute inset-0 opacity-[0.02] pointer-events-none transition-opacity group-hover:opacity-[0.04]",
+                        style.bg
+                      )}
+                    />
 
                     {/* Minimal Time Block with Right Border */}
                     <div className="w-16 shrink-0 flex flex-col items-center justify-center px-2 border-r border-slate-100/80 bg-slate-50/30">
-                      <span className="font-mono font-medium text-2xl leading-none mb-1 font-medium tracking-tight">{timePart}</span>
-                      <span className="text-xxs font-medium tracking-widest opacity-70 uppercase">{periodPart ?? ""}</span>
+                      <span className="font-mono font-medium text-2xl leading-none mb-1 font-medium tracking-tight">
+                        {timePart}
+                      </span>
+                      <span className="text-xxs font-medium tracking-widest opacity-70 uppercase">
+                        {periodPart ?? ""}
+                      </span>
                     </div>
 
                     <div className="flex-1 w-full flex flex-col justify-center relative z-10 py-1">
-                      <h5 className="text-body-primary text-slate-900 truncate mb-2">{evt.title}</h5>
+                      <h5 className="text-body-primary text-slate-900 truncate mb-2">
+                        {evt.title}
+                      </h5>
                       <div className="flex items-center gap-2.5 flex-wrap">
                         <div className="flex items-center gap-1.5 body-sm text-slate-400">
                           <IconClock size={14} className={style.iconColor} />
@@ -663,7 +918,12 @@ export function InternalOperationsBoard({
                         <span className="text-slate-300">•</span>
                         <div className="flex items-center gap-1.5 body-sm text-slate-400">
                           <style.icon size={14} className={style.iconColor} />
-                          <div className={cn("capitalize text-xs font-medium uppercase tracking-widest", style.text)}>
+                          <div
+                            className={cn(
+                              "capitalize text-xs font-medium uppercase tracking-widest",
+                              style.text
+                            )}
+                          >
                             {evt.type}
                           </div>
                         </div>
@@ -674,7 +934,15 @@ export function InternalOperationsBoard({
                             <span className="text-slate-300">•</span>
                             <div className="flex -space-x-1.5">
                               {evt.attendees.slice(0, 3).map((attendee, idx) => (
-                                <Image key={idx} src={`https://i.pravatar.cc/150?u=${attendee.name}`} alt={attendee.name} width={22} height={22} className="w-[22px] h-[22px] rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover" title={attendee.name} />
+                                <Image
+                                  key={idx}
+                                  src={`https://i.pravatar.cc/150?u=${attendee.name}`}
+                                  alt={attendee.name}
+                                  width={22}
+                                  height={22}
+                                  className="w-[22px] h-[22px] rounded-full ring-2 ring-white bg-slate-100 shadow-sm object-cover"
+                                  title={attendee.name}
+                                />
                               ))}
                               {evt.attendees.length > 3 && (
                                 <div className="w-[22px] h-[22px] rounded-full ring-2 ring-white bg-slate-50 flex items-center justify-center text-xxs font-medium text-slate-600 shadow-sm z-10">
@@ -732,7 +1000,10 @@ export function InternalOperationsBoard({
 
               {selectedDateEvents.length > 3 && (
                 <div className="text-center pt-2">
-                  <Link href="/admin/events" className="text-meta-muted-strong hover:text-slate-800 transition-colors">
+                  <Link
+                    href="/admin/events"
+                    className="text-meta-muted-strong hover:text-slate-800 transition-colors"
+                  >
                     + {selectedDateEvents.length - 3} more events today
                   </Link>
                 </div>
@@ -749,7 +1020,6 @@ export function InternalOperationsBoard({
               )}
             </div>
           </div>
-
         </BoardPanel>
       </section>
 
@@ -767,7 +1037,10 @@ export function InternalOperationsBoard({
             description: eventForEdit.description || "",
             type: eventForEdit.type,
             date: eventForEdit.startsAt.split("T")[0],
-            time: new Date(eventForEdit.startsAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+            time: new Date(eventForEdit.startsAt).toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
             duration: computeDurationLabel(eventForEdit.startsAt, eventForEdit.endsAt),
           }}
           onClose={() => setEventForEdit(null)}
@@ -781,7 +1054,10 @@ export function InternalOperationsBoard({
       />
       <CalendarModal
         open={calendarModalOpen}
-        onClose={() => { setCalendarModalOpen(false); loadEvents(); }}
+        onClose={() => {
+          setCalendarModalOpen(false);
+          loadEvents();
+        }}
         entityId={entityId}
       />
     </div>

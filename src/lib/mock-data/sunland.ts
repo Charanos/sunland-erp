@@ -1,11 +1,5 @@
 export type TrendDirection = "up" | "down" | "flat";
-export type DashboardTone =
-  | "primary"
-  | "success"
-  | "warning"
-  | "risk"
-  | "data"
-  | "neutral";
+export type DashboardTone = "primary" | "success" | "warning" | "risk" | "data" | "neutral";
 
 export type ExecutiveKpi = {
   id: string;

@@ -13,7 +13,7 @@ import {
   IconDotsVertical,
   IconEye,
   IconFileExport,
-  IconFilter
+  IconFilter,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast-provider";
@@ -22,7 +22,12 @@ import { Drawer } from "@/components/ui/drawer";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FinanceModuleNav } from "@/components/finance/finance-module-nav";
 import { FinanceQrProof } from "@/components/finance/finance-qr-proof";
-import { BoardHeader, BoardPanel, Button, PaginationControls } from "@/components/ui/erp-primitives";
+import {
+  BoardHeader,
+  BoardPanel,
+  Button,
+  PaginationControls,
+} from "@/components/ui/erp-primitives";
 import { formatCompactKES } from "@/lib/utils/format";
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
@@ -104,13 +109,13 @@ const INITIAL_RUNS: PayrollRun[] = [
       { name: "Finance", gross: 650000, count: 3 },
       { name: "HR", gross: 400000, count: 2 },
       { name: "Business Dev", gross: 550000, count: 4 },
-      { name: "Front Office", gross: 300000, count: 3 }
+      { name: "Front Office", gross: 300000, count: 3 },
     ],
     activityLog: [
       "Created by HR Head Cody Fisher · 2026-06-18",
       "Pushed to Finance for validation by Dennis Munge · 2026-06-19",
-      "Awaiting GM disbursement authorization · 2026-06-20"
-    ]
+      "Awaiting GM disbursement authorization · 2026-06-20",
+    ],
   },
   {
     id: "run-02",
@@ -129,14 +134,14 @@ const INITIAL_RUNS: PayrollRun[] = [
       { name: "Finance", gross: 600000, count: 3 },
       { name: "HR", gross: 400000, count: 2 },
       { name: "Business Dev", gross: 510000, count: 4 },
-      { name: "Front Office", gross: 300000, count: 3 }
+      { name: "Front Office", gross: 300000, count: 3 },
     ],
     activityLog: [
       "Created by HR Head Cody Fisher · 2026-05-18",
       "Pushed to Finance by Dennis Munge · 2026-05-19",
-      "Approved and Disbursed by GM Grace Mutua · 2026-05-28"
-    ]
-  }
+      "Approved and Disbursed by GM Grace Mutua · 2026-05-28",
+    ],
+  },
 ];
 
 const INITIAL_PAYSLIPS: EmployeePayslip[] = [
@@ -156,7 +161,7 @@ const INITIAL_PAYSLIPS: EmployeePayslip[] = [
     housingLevy: 7500,
     netPay: 328500,
     status: "Approved",
-    activityLog: ["Aggregated from Management timesheet", "Payslip approved in run PAY-2026-06"]
+    activityLog: ["Aggregated from Management timesheet", "Payslip approved in run PAY-2026-06"],
   },
   {
     id: "ps-02",
@@ -174,7 +179,7 @@ const INITIAL_PAYSLIPS: EmployeePayslip[] = [
     housingLevy: 4500,
     netPay: 196000,
     status: "Approved",
-    activityLog: ["Aggregated from Finance timesheet", "Payslip approved in run PAY-2026-06"]
+    activityLog: ["Aggregated from Finance timesheet", "Payslip approved in run PAY-2026-06"],
   },
   {
     id: "ps-03",
@@ -192,7 +197,7 @@ const INITIAL_PAYSLIPS: EmployeePayslip[] = [
     housingLevy: 4200,
     netPay: 182800,
     status: "Approved",
-    activityLog: ["Aggregated from HR timesheet", "Payslip approved in run PAY-2026-06"]
+    activityLog: ["Aggregated from HR timesheet", "Payslip approved in run PAY-2026-06"],
   },
   {
     id: "ps-04",
@@ -210,7 +215,7 @@ const INITIAL_PAYSLIPS: EmployeePayslip[] = [
     housingLevy: 1800,
     netPay: 77200,
     status: "Approved",
-    activityLog: ["Aggregated from Front Office timesheet", "Payslip approved in run PAY-2026-06"]
+    activityLog: ["Aggregated from Front Office timesheet", "Payslip approved in run PAY-2026-06"],
   },
   {
     id: "ps-05",
@@ -228,8 +233,8 @@ const INITIAL_PAYSLIPS: EmployeePayslip[] = [
     housingLevy: 3750,
     netPay: 163000,
     status: "Approved",
-    activityLog: ["Aggregated from BD timesheet", "Payslip approved in run PAY-2026-06"]
-  }
+    activityLog: ["Aggregated from BD timesheet", "Payslip approved in run PAY-2026-06"],
+  },
 ];
 
 const INITIAL_REMITTANCES: StatutoryRemittance[] = [
@@ -241,7 +246,7 @@ const INITIAL_REMITTANCES: StatutoryRemittance[] = [
     dueDate: "2026-07-09",
     period: "June 2026",
     status: "Pending",
-    activityLog: ["Accrued from payroll run PAY-2026-06", "Awaiting bank transmission reference"]
+    activityLog: ["Accrued from payroll run PAY-2026-06", "Awaiting bank transmission reference"],
   },
   {
     id: "rem-02",
@@ -251,7 +256,7 @@ const INITIAL_REMITTANCES: StatutoryRemittance[] = [
     dueDate: "2026-07-15",
     period: "June 2026",
     status: "Draft",
-    activityLog: ["Accrued from payroll run PAY-2026-06"]
+    activityLog: ["Accrued from payroll run PAY-2026-06"],
   },
   {
     id: "rem-03",
@@ -261,7 +266,7 @@ const INITIAL_REMITTANCES: StatutoryRemittance[] = [
     dueDate: "2026-07-15",
     period: "June 2026",
     status: "Draft",
-    activityLog: ["Accrued from payroll run PAY-2026-06"]
+    activityLog: ["Accrued from payroll run PAY-2026-06"],
   },
   {
     id: "rem-04",
@@ -271,16 +276,46 @@ const INITIAL_REMITTANCES: StatutoryRemittance[] = [
     dueDate: "2026-07-15",
     period: "June 2026",
     status: "Draft",
-    activityLog: ["Accrued from payroll run PAY-2026-06"]
-  }
+    activityLog: ["Accrued from payroll run PAY-2026-06"],
+  },
 ];
 
 const MOCK_TIME_LOGS: MockTimeLog[] = [
-  { employeeName: "Paul Amos", department: "Management", hoursLogged: 160, baseRate: 3125, computedGross: 500000 },
-  { employeeName: "Dennis Munge", department: "Finance", hoursLogged: 160, baseRate: 1875, computedGross: 300000 },
-  { employeeName: "Cody Fisher", department: "HR", hoursLogged: 160, baseRate: 1750, computedGross: 280000 },
-  { employeeName: "Sharon Koech", department: "Front Office", hoursLogged: 160, baseRate: 750, computedGross: 120000 },
-  { employeeName: "Jared Omondi", department: "Business Dev", hoursLogged: 160, baseRate: 1562.5, computedGross: 250000 }
+  {
+    employeeName: "Paul Amos",
+    department: "Management",
+    hoursLogged: 160,
+    baseRate: 3125,
+    computedGross: 500000,
+  },
+  {
+    employeeName: "Dennis Munge",
+    department: "Finance",
+    hoursLogged: 160,
+    baseRate: 1875,
+    computedGross: 300000,
+  },
+  {
+    employeeName: "Cody Fisher",
+    department: "HR",
+    hoursLogged: 160,
+    baseRate: 1750,
+    computedGross: 280000,
+  },
+  {
+    employeeName: "Sharon Koech",
+    department: "Front Office",
+    hoursLogged: 160,
+    baseRate: 750,
+    computedGross: 120000,
+  },
+  {
+    employeeName: "Jared Omondi",
+    department: "Business Dev",
+    hoursLogged: 160,
+    baseRate: 1562.5,
+    computedGross: 250000,
+  },
 ];
 
 const ROWS_PER_PAGE = 5;
@@ -288,9 +323,9 @@ const ROWS_PER_PAGE = 5;
 export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
   const { pushToast } = useToast();
   const mounted = useSyncExternalStore(
-    () => () => { },
+    () => () => {},
     () => true,
-    () => false,
+    () => false
   );
   const [currentRole, setCurrentRole] = useState<string>("ceo");
 
@@ -328,7 +363,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           setCurrentRole(data.user.role);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   // Helpers
@@ -356,7 +391,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
 
     if (remaining > 0) {
       const band1 = Math.min(remaining, 24000);
-      payeBeforeRelief += band1 * 0.10;
+      payeBeforeRelief += band1 * 0.1;
       remaining -= band1;
     }
     if (remaining > 0) {
@@ -366,7 +401,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
     }
     if (remaining > 0) {
       const band3 = Math.min(remaining, 467667);
-      payeBeforeRelief += band3 * 0.30;
+      payeBeforeRelief += band3 * 0.3;
       remaining -= band3;
     }
     if (remaining > 0) {
@@ -413,7 +448,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
       ahlRelief,
       totalReliefs,
       netPaye,
-      netPay
+      netPay,
     };
   };
 
@@ -451,11 +486,11 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
 
       totalGross += calc.gross;
       totalNet += calc.netPay;
-      totalDeductions += (calc.nssf + calc.shif + calc.ahlEmployee + calc.netPaye);
+      totalDeductions += calc.nssf + calc.shif + calc.ahlEmployee + calc.netPaye;
       totalPaye += calc.netPaye;
       totalNssf += calc.nssf;
       totalShif += calc.shif;
-      totalLevy += (calc.ahlEmployee + calc.ahlEmployer);
+      totalLevy += calc.ahlEmployee + calc.ahlEmployer;
 
       const basic = gr * 0.8;
       const allowance = gr * 0.2;
@@ -476,7 +511,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         housingLevy: calc.ahlEmployee,
         netPay: calc.netPay,
         status: "Draft",
-        activityLog: [`Created in draft run PAY-${newRunPeriod.replace(" ", "-").toUpperCase()}`]
+        activityLog: [`Created in draft run PAY-${newRunPeriod.replace(" ", "-").toUpperCase()}`],
       };
     });
 
@@ -497,9 +532,11 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         { name: "Finance", gross: 300000, count: 1 },
         { name: "HR", gross: 280000, count: 1 },
         { name: "Business Dev", gross: 250000, count: 1 },
-        { name: "Front Office", gross: 120000, count: 1 }
+        { name: "Front Office", gross: 120000, count: 1 },
       ],
-      activityLog: [`Created as Draft by Finance Head Dennis Munge · ${new Date().toISOString().split("T")[0]}`]
+      activityLog: [
+        `Created as Draft by Finance Head Dennis Munge · ${new Date().toISOString().split("T")[0]}`,
+      ],
     };
 
     setRuns([newRun, ...runs]);
@@ -511,7 +548,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Payroll Run Initiated",
-      body: `Draft run ${newRun.runCode} created successfully with aggregated timesheet hours.`
+      body: `Draft run ${newRun.runCode} created successfully with aggregated timesheet hours.`,
     });
   };
 
@@ -522,7 +559,10 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           return {
             ...r,
             status: "Pending",
-            activityLog: [`Submitted for GM disbursement approval · ${new Date().toISOString().split("T")[0]}`, ...r.activityLog]
+            activityLog: [
+              `Submitted for GM disbursement approval · ${new Date().toISOString().split("T")[0]}`,
+              ...r.activityLog,
+            ],
           };
         }
         return r;
@@ -532,7 +572,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
     pushToast({
       tone: "info",
       title: "Disbursement Routed",
-      body: `Payroll run ${run.runCode} has been sent to the GM and CEO approvals queue.`
+      body: `Payroll run ${run.runCode} has been sent to the GM and CEO approvals queue.`,
     });
   };
 
@@ -550,7 +590,10 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           return {
             ...r,
             status: "Disbursed",
-            activityLog: [`Approved and Disbursed by GM Grace Mutua · ${todayStr}`, ...r.activityLog]
+            activityLog: [
+              `Approved and Disbursed by GM Grace Mutua · ${todayStr}`,
+              ...r.activityLog,
+            ],
           };
         }
         return r;
@@ -577,7 +620,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         dueDate: "2026-07-09",
         period: confirmDisbursementRun.period,
         status: "Pending",
-        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`]
+        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`],
       },
       {
         id: `rem-nssf-${Date.now()}`,
@@ -587,7 +630,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         dueDate: "2026-07-15",
         period: confirmDisbursementRun.period,
         status: "Draft",
-        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`]
+        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`],
       },
       {
         id: `rem-shif-${Date.now()}`,
@@ -597,7 +640,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         dueDate: "2026-07-15",
         period: confirmDisbursementRun.period,
         status: "Draft",
-        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`]
+        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`],
       },
       {
         id: `rem-ahl-${Date.now()}`,
@@ -607,8 +650,8 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         dueDate: "2026-07-15",
         period: confirmDisbursementRun.period,
         status: "Draft",
-        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`]
-      }
+        activityLog: [`Accrued from run ${confirmDisbursementRun.runCode}`],
+      },
     ];
 
     setRemittances((prev) => [...newRemittances, ...prev]);
@@ -619,7 +662,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Disbursement Complete",
-      body: `Payroll run ${confirmDisbursementRun.runCode} marked as Disbursed. Bank allocations dispatched.`
+      body: `Payroll run ${confirmDisbursementRun.runCode} marked as Disbursed. Bank allocations dispatched.`,
     });
   };
 
@@ -640,7 +683,10 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
             paymentRef: remitRef,
             paymentDate: todayStr,
             bankAccount: remitAccount,
-            activityLog: [`Remitted using ${remitAccount} with Ref: ${remitRef} · ${todayStr}`, ...rem.activityLog]
+            activityLog: [
+              `Remitted using ${remitAccount} with Ref: ${remitRef} · ${todayStr}`,
+              ...rem.activityLog,
+            ],
           };
         }
         return rem;
@@ -653,29 +699,40 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
     pushToast({
       tone: "success",
       title: "Statutory Payment Remitted",
-      body: `Statutory payment of ${formatMoney(selectedRemittance.amount)} to ${selectedRemittance.statutoryBody} verified.`
+      body: `Statutory payment of ${formatMoney(selectedRemittance.amount)} to ${selectedRemittance.statutoryBody} verified.`,
     });
   };
 
   // --- Computations ---
   const aggregates = useMemo(() => {
     const activeRuns = runs.filter((r) => r.status === "Pending" || r.status === "Draft").length;
-    const totalGrossMTD = runs.filter((r) => r.status === "Disbursed").reduce((sum, r) => sum + r.grossPay, 0);
-    const totalDeductionsMTD = runs.filter((r) => r.status === "Disbursed").reduce((sum, r) => sum + r.deductions, 0);
-    const pendingRemittancesVal = remittances.filter((rem) => rem.status !== "Remitted").reduce((sum, rem) => sum + rem.amount, 0);
+    const totalGrossMTD = runs
+      .filter((r) => r.status === "Disbursed")
+      .reduce((sum, r) => sum + r.grossPay, 0);
+    const totalDeductionsMTD = runs
+      .filter((r) => r.status === "Disbursed")
+      .reduce((sum, r) => sum + r.deductions, 0);
+    const pendingRemittancesVal = remittances
+      .filter((rem) => rem.status !== "Remitted")
+      .reduce((sum, rem) => sum + rem.amount, 0);
 
     return {
       activeRuns,
       grossMTD: totalGrossMTD,
       deductionsMTD: totalDeductionsMTD,
-      pendingRemittances: pendingRemittancesVal
+      pendingRemittances: pendingRemittancesVal,
     };
   }, [runs, remittances]);
 
   const filteredRows = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     if (tabId === "runs") {
-      return runs.filter((r) => r.runCode.toLowerCase().includes(q) || r.period.toLowerCase().includes(q) || r.status.toLowerCase().includes(q));
+      return runs.filter(
+        (r) =>
+          r.runCode.toLowerCase().includes(q) ||
+          r.period.toLowerCase().includes(q) ||
+          r.status.toLowerCase().includes(q)
+      );
     } else if (tabId === "payslips") {
       return payslips.filter(
         (p) =>
@@ -685,7 +742,12 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           p.period.toLowerCase().includes(q)
       );
     } else {
-      return remittances.filter((rem) => rem.remittanceCode.toLowerCase().includes(q) || rem.statutoryBody.toLowerCase().includes(q) || rem.status.toLowerCase().includes(q));
+      return remittances.filter(
+        (rem) =>
+          rem.remittanceCode.toLowerCase().includes(q) ||
+          rem.statutoryBody.toLowerCase().includes(q) ||
+          rem.status.toLowerCase().includes(q)
+      );
     }
   }, [runs, payslips, remittances, tabId, searchQuery]);
 
@@ -714,23 +776,31 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           {/* Subtle background image */}
           <div
             className="absolute inset-0 opacity-[0.06] mix-blend-overlay bg-cover bg-center"
-            style={{ backgroundImage: `url(https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2564&auto=format&fit=crop)` }}
+            style={{
+              backgroundImage: `url(https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2564&auto=format&fit=crop)`,
+            }}
           />
           <div className="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-indigo-500/10 blur-2xl" />
 
           <div className="relative z-10 space-y-4">
             <div className="flex items-center gap-3">
-              <Badge tone="primary" className="bg-indigo-500/20 text-indigo-200 border-indigo-500/30 px-3 py-1 shadow-sm backdrop-blur-md">
+              <Badge
+                tone="primary"
+                className="bg-indigo-500/20 text-indigo-200 border-indigo-500/30 px-3 py-1 shadow-sm backdrop-blur-md"
+              >
                 Sunland Group
               </Badge>
-              <span className="text-sm font-normal tracking-widest uppercase text-slate-400/80">People Operations</span>
+              <span className="text-sm font-normal tracking-widest uppercase text-slate-400/80">
+                People Operations
+              </span>
             </div>
             <div>
               <h2 className="title-serif text-4xl font-normal leading-tight tracking-tight text-white mb-2">
                 Disbursement Ledger
               </h2>
               <p className="text-base leading-relaxed text-slate-300/85 font-normal max-w-lg">
-                Manage payroll schedules, generate individual payslip statements with automated NHIF/SHIF calculations, and route compliance returns securely.
+                Manage payroll schedules, generate individual payslip statements with automated
+                NHIF/SHIF calculations, and route compliance returns securely.
               </p>
             </div>
           </div>
@@ -738,8 +808,18 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           <div className="relative z-10 pt-4 flex items-center justify-between border-t border-white/10 mt-4">
             <div className="flex items-center gap-4">
               <div className="flex -space-x-2.5">
-                <div className="size-7 rounded-full border border-indigo-900 bg-indigo-600 flex items-center justify-center text-sm font-medium text-white shadow-md transition-all hover:scale-110 cursor-pointer" title="Cody Fisher">PA</div>
-                <div className="size-7 rounded-full border border-indigo-900 bg-indigo-800 flex items-center justify-center text-sm font-medium text-white shadow-md transition-all hover:scale-110 cursor-pointer" title="Dennis Munge">DM</div>
+                <div
+                  className="size-7 rounded-full border border-indigo-900 bg-indigo-600 flex items-center justify-center text-sm font-medium text-white shadow-md transition-all hover:scale-110 cursor-pointer"
+                  title="Cody Fisher"
+                >
+                  PA
+                </div>
+                <div
+                  className="size-7 rounded-full border border-indigo-900 bg-indigo-800 flex items-center justify-center text-sm font-medium text-white shadow-md transition-all hover:scale-110 cursor-pointer"
+                  title="Dennis Munge"
+                >
+                  DM
+                </div>
                 <div className="flex size-7 items-center justify-center rounded-full border border-indigo-900 bg-indigo-500/20 text-xs font-medium text-indigo-200 backdrop-blur-md">
                   +2
                 </div>
@@ -785,7 +865,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
             </div>
             <div className="mt-auto">
               <span className="text-2xl leading-none text-value-mono">
-                {formatMoney(runs.filter((r) => r.status === "Disbursed").reduce((sum, r) => sum + r.netPay, 0))}
+                {formatMoney(
+                  runs.filter((r) => r.status === "Disbursed").reduce((sum, r) => sum + r.netPay, 0)
+                )}
               </span>
               <p className="body-sm text-slate-400 mt-1">Net payroll posted</p>
             </div>
@@ -794,7 +876,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
           <BoardPanel className="p-4 flex flex-col justify-between h-[120px] relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:border-rose-250 bg-gradient-to-b from-white to-rose-50/10">
             <div className="flex items-center gap-2 text-slate-400">
               <IconBuildingBank size={15} className="text-rose-600" />
-              <span className="body-sm font-medium uppercase tracking-wider">Unpaid Remittance</span>
+              <span className="body-sm font-medium uppercase tracking-wider">
+                Unpaid Remittance
+              </span>
             </div>
             <div className="mt-auto">
               <span className="text-2xl font-mono font-medium tracking-tight text-rose-700 leading-none">
@@ -811,7 +895,11 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
           <div>
             <h3 className="title-serif font-normal text-slate-900">
-              {tabId === "runs" ? "Payroll Cycles" : tabId === "payslips" ? "Staff Earnings Vouchers" : "Statutory Returns Control"}
+              {tabId === "runs"
+                ? "Payroll Cycles"
+                : tabId === "payslips"
+                  ? "Staff Earnings Vouchers"
+                  : "Statutory Returns Control"}
             </h3>
             <p className="text-slate-450 mt-1 font-medium text-base">
               {tabId === "runs"
@@ -901,7 +989,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                     >
                       {tabId === "runs" && (
                         <>
-                          <td className="px-3 py-3 text-slate-900 mono-data">{(row as PayrollRun).runCode}</td>
+                          <td className="px-3 py-3 text-slate-900 mono-data">
+                            {(row as PayrollRun).runCode}
+                          </td>
                           <td className="px-3 py-3 text-slate-800">{(row as PayrollRun).period}</td>
                           <td className="px-3 py-3 text-right text-slate-900 mono-data">
                             {formatMoney((row as PayrollRun).grossPay)}
@@ -932,9 +1022,15 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                           <td className="px-3 py-3 text-slate-900 mono-data">
                             {(row as EmployeePayslip).payslipCode}
                           </td>
-                          <td className="px-3 py-3 text-slate-800 font-medium">{(row as EmployeePayslip).employeeName}</td>
-                          <td className="px-3 py-3 text-slate-400">{(row as EmployeePayslip).department}</td>
-                          <td className="px-3 py-3 text-slate-400">{(row as EmployeePayslip).period}</td>
+                          <td className="px-3 py-3 text-slate-800 font-medium">
+                            {(row as EmployeePayslip).employeeName}
+                          </td>
+                          <td className="px-3 py-3 text-slate-400">
+                            {(row as EmployeePayslip).department}
+                          </td>
+                          <td className="px-3 py-3 text-slate-400">
+                            {(row as EmployeePayslip).period}
+                          </td>
                           <td className="px-3 py-3 text-right text-slate-400 mono-data">
                             {formatMoney((row as EmployeePayslip).grossPay)}
                           </td>
@@ -961,12 +1057,18 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                           <td className="px-3 py-3 text-slate-900 mono-data">
                             {(row as StatutoryRemittance).remittanceCode}
                           </td>
-                          <td className="px-3 py-3 text-slate-800 font-medium">{(row as StatutoryRemittance).statutoryBody}</td>
-                          <td className="px-3 py-3 text-slate-400">{(row as StatutoryRemittance).period}</td>
+                          <td className="px-3 py-3 text-slate-800 font-medium">
+                            {(row as StatutoryRemittance).statutoryBody}
+                          </td>
+                          <td className="px-3 py-3 text-slate-400">
+                            {(row as StatutoryRemittance).period}
+                          </td>
                           <td className="px-3 py-3 text-right text-slate-900 mono-data">
                             {formatMoney((row as StatutoryRemittance).amount)}
                           </td>
-                          <td className="px-3 py-3 text-slate-400 mono-data">{(row as StatutoryRemittance).dueDate}</td>
+                          <td className="px-3 py-3 text-slate-400 mono-data">
+                            {(row as StatutoryRemittance).dueDate}
+                          </td>
                           <td className="px-3 py-3">
                             <Badge
                               tone={
@@ -1010,7 +1112,8 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
               </div>
               <h4 className="text-body-primary">No records found</h4>
               <p className="text-slate-450 leading-relaxed text-base">
-                We couldn&apos;t find any values matching your active search queries. Try adjusting your query or filter configurations.
+                We couldn&apos;t find any values matching your active search queries. Try adjusting
+                your query or filter configurations.
               </p>
             </div>
           </div>
@@ -1030,7 +1133,10 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 Close Panel
               </Button>
               {selectedRun.status === "Draft" && !isGMorCEO && (
-                <Button onClick={() => handleSubmitRunForApproval(selectedRun)} className="flex-1 bg-[#151936] text-white">
+                <Button
+                  onClick={() => handleSubmitRunForApproval(selectedRun)}
+                  className="flex-1 bg-[#151936] text-white"
+                >
                   Submit for Approval
                 </Button>
               )}
@@ -1056,8 +1162,12 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 <IconCoins size={20} />
               </div>
               <div>
-                <h4 className="font-medium text-slate-900 leading-snug body-md">{selectedRun.period} Allocation</h4>
-                <p className="text-slate-400 mt-0.5 text-sm">{selectedRun.runCode} · Status: {selectedRun.status}</p>
+                <h4 className="font-medium text-slate-900 leading-snug body-md">
+                  {selectedRun.period} Allocation
+                </h4>
+                <p className="text-slate-400 mt-0.5 text-sm">
+                  {selectedRun.runCode} · Status: {selectedRun.status}
+                </p>
               </div>
             </div>
 
@@ -1099,10 +1209,15 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 <span className="text-slate-450 label-caps">Department Allocation Breakdown</span>
                 <div className="rounded-xl border border-slate-100 divide-y divide-slate-100 overflow-hidden">
                   {selectedRun.departmentsBreakdown.map((dept) => (
-                    <div key={dept.name} className="flex justify-between items-center p-3 hover:bg-slate-50/50">
+                    <div
+                      key={dept.name}
+                      className="flex justify-between items-center p-3 hover:bg-slate-50/50"
+                    >
                       <div>
                         <p className="text-slate-800 font-medium">{dept.name}</p>
-                        <p className="text-slate-400 font-sans text-sm">{dept.count} active employees</p>
+                        <p className="text-slate-400 font-sans text-sm">
+                          {dept.count} active employees
+                        </p>
                       </div>
                       <p className="text-slate-900 mono-amount">{formatMoney(dept.gross)}</p>
                     </div>
@@ -1126,7 +1241,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 </div>
                 <div>
                   <span className="text-slate-400 label-caps">Housing Levy (3.0% Total)</span>
-                  <p className="text-slate-700 mt-1 mono-data">{formatMoney(selectedRun.housingLevy)}</p>
+                  <p className="text-slate-700 mt-1 mono-data">
+                    {formatMoney(selectedRun.housingLevy)}
+                  </p>
                 </div>
               </div>
 
@@ -1156,7 +1273,11 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         footer={
           selectedPayslip && (
             <div className="flex gap-2 w-full">
-              <Button onClick={() => setSelectedPayslip(null)} variant="secondary" className="flex-1">
+              <Button
+                onClick={() => setSelectedPayslip(null)}
+                variant="secondary"
+                className="flex-1"
+              >
                 Close View
               </Button>
               <Button
@@ -1164,7 +1285,7 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                   pushToast({
                     tone: "success",
                     title: "Payslip Statement Sent",
-                    body: `Payslip email and SMS voucher dispatched to ${selectedPayslip.employeeName}.`
+                    body: `Payslip email and SMS voucher dispatched to ${selectedPayslip.employeeName}.`,
                   });
                   setSelectedPayslip(null);
                 }}
@@ -1183,8 +1304,12 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 <IconUser size={20} />
               </div>
               <div>
-                <h4 className="font-medium text-slate-900 leading-snug body-md">{selectedPayslip.employeeName}</h4>
-                <p className="text-slate-400 mt-0.5 text-sm">{selectedPayslip.employeeRole} · {selectedPayslip.department}</p>
+                <h4 className="font-medium text-slate-900 leading-snug body-md">
+                  {selectedPayslip.employeeName}
+                </h4>
+                <p className="text-slate-400 mt-0.5 text-sm">
+                  {selectedPayslip.employeeRole} · {selectedPayslip.department}
+                </p>
               </div>
             </div>
 
@@ -1251,7 +1376,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
 
               {/* Kenyan Tax & Relief Ledger Breakdown */}
               <div className="space-y-2 mt-4 font-sans">
-                <span className="text-slate-450 label-caps">KRA PAYE & Relief Ledger Breakdown</span>
+                <span className="text-slate-450 label-caps">
+                  KRA PAYE & Relief Ledger Breakdown
+                </span>
                 <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-2 text-body-regular">
                   {(() => {
                     const calc = calculateKenyanStatutories(selectedPayslip.grossPay);
@@ -1290,7 +1417,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                         </div>
                         <div className="flex justify-between border-t border-slate-100 pt-2 font-medium text-slate-800">
                           <span>Net PAYE Obligation</span>
-                          <span className="font-mono text-rose-600">{formatMoney(calc.netPaye)}</span>
+                          <span className="font-mono text-rose-600">
+                            {formatMoney(calc.netPaye)}
+                          </span>
                         </div>
                       </>
                     );
@@ -1333,7 +1462,11 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
         footer={
           selectedRemittance && (
             <div className="flex gap-2 w-full">
-              <Button onClick={() => setSelectedRemittance(null)} variant="secondary" className="flex-1">
+              <Button
+                onClick={() => setSelectedRemittance(null)}
+                variant="secondary"
+                className="flex-1"
+              >
                 Close Panel
               </Button>
               {selectedRemittance.status !== "Remitted" && (
@@ -1357,8 +1490,12 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 <IconBuildingBank size={20} />
               </div>
               <div>
-                <h4 className="font-medium text-slate-900 leading-snug body-md">{selectedRemittance.statutoryBody} Return</h4>
-                <p className="text-slate-400 mt-0.5 text-sm">{selectedRemittance.remittanceCode} · Period: {selectedRemittance.period}</p>
+                <h4 className="font-medium text-slate-900 leading-snug body-md">
+                  {selectedRemittance.statutoryBody} Return
+                </h4>
+                <p className="text-slate-400 mt-0.5 text-sm">
+                  {selectedRemittance.remittanceCode} · Period: {selectedRemittance.period}
+                </p>
               </div>
             </div>
 
@@ -1370,7 +1507,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 </div>
 
                 <div className="flex justify-between items-start text-slate-450 border-b border-slate-200/50 pb-2 text-sm">
-                  <span className="font-sans font-medium text-slate-600">REPUBLIC OF KENYA STATUTORY RETURN</span>
+                  <span className="font-sans font-medium text-slate-600">
+                    REPUBLIC OF KENYA STATUTORY RETURN
+                  </span>
                   <span>REF: {selectedRemittance.remittanceCode}</span>
                 </div>
 
@@ -1384,29 +1523,41 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                 <div className="space-y-2 border-t border-slate-200/50 pt-3 text-slate-400 font-sans text-sm">
                   <div className="flex justify-between">
                     <span>Beneficiary Body</span>
-                    <span className="font-mono font-medium text-slate-700">{selectedRemittance.statutoryBody}</span>
+                    <span className="font-mono font-medium text-slate-700">
+                      {selectedRemittance.statutoryBody}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Filing Period</span>
-                    <span className="font-mono font-medium text-slate-700">{selectedRemittance.period}</span>
+                    <span className="font-mono font-medium text-slate-700">
+                      {selectedRemittance.period}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Due Date Limit</span>
-                    <span className="font-mono text-rose-600 font-medium">{selectedRemittance.dueDate}</span>
+                    <span className="font-mono text-rose-600 font-medium">
+                      {selectedRemittance.dueDate}
+                    </span>
                   </div>
                   {selectedRemittance.status === "Remitted" && (
                     <>
                       <div className="flex justify-between">
                         <span>Payment Date</span>
-                        <span className="font-mono font-medium text-slate-700">{selectedRemittance.paymentDate}</span>
+                        <span className="font-mono font-medium text-slate-700">
+                          {selectedRemittance.paymentDate}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Payment Reference</span>
-                        <span className="font-mono font-medium text-slate-800">{selectedRemittance.paymentRef}</span>
+                        <span className="font-mono font-medium text-slate-800">
+                          {selectedRemittance.paymentRef}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Source Account</span>
-                        <span className="font-mono text-slate-700">{selectedRemittance.bankAccount}</span>
+                        <span className="font-mono text-slate-700">
+                          {selectedRemittance.bankAccount}
+                        </span>
                       </div>
                     </>
                   )}
@@ -1423,28 +1574,33 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                     const body = selectedRemittance.statutoryBody;
 
                     if (body === "KRA / PAYE") {
-                      csvHeader = "Employee PIN,Employee Name,Basic Salary,Allowances,Gross Salary,NSSF Deduction,SHIF Deduction,AHL Deduction,Personal Relief,Net PAYE\n";
+                      csvHeader =
+                        "Employee PIN,Employee Name,Basic Salary,Allowances,Gross Salary,NSSF Deduction,SHIF Deduction,AHL Deduction,Personal Relief,Net PAYE\n";
                       csvRows = MOCK_TIME_LOGS.map((log) => {
                         const gr = log.computedGross;
                         const calc = calculateKenyanStatutories(gr);
                         return `A001234567B,${log.employeeName},${(gr * 0.8).toFixed(2)},${(gr * 0.2).toFixed(2)},${gr.toFixed(2)},${calc.nssf.toFixed(2)},${calc.shif.toFixed(2)},${calc.ahlEmployee.toFixed(2)},2400.00,${calc.netPaye.toFixed(2)}`;
                       }).join("\n");
                     } else if (body === "NSSF") {
-                      csvHeader = "Employee PIN,Employee Name,NSSF Number,Gross Pay,Employee Share (6%),Employer Share (6%),Total Contribution (12%)\n";
+                      csvHeader =
+                        "Employee PIN,Employee Name,NSSF Number,Gross Pay,Employee Share (6%),Employer Share (6%),Total Contribution (12%)\n";
                       csvRows = MOCK_TIME_LOGS.map((log) => {
                         const gr = log.computedGross;
                         const calc = calculateKenyanStatutories(gr);
                         return `A001234567B,${log.employeeName},NSSF-123456,${gr.toFixed(2)},${calc.nssf.toFixed(2)},${calc.nssf.toFixed(2)},${(calc.nssf * 2).toFixed(2)}`;
                       }).join("\n");
                     } else if (body === "SHIF") {
-                      csvHeader = "Employee PIN,Employee Name,SHIF Number,Gross Salary,SHIF Contribution (2.75%)\n";
+                      csvHeader =
+                        "Employee PIN,Employee Name,SHIF Number,Gross Salary,SHIF Contribution (2.75%)\n";
                       csvRows = MOCK_TIME_LOGS.map((log) => {
                         const gr = log.computedGross;
                         const calc = calculateKenyanStatutories(gr);
                         return `A001234567B,${log.employeeName},SHIF-992019,${gr.toFixed(2)},${calc.shif.toFixed(2)}`;
                       }).join("\n");
-                    } else { // Affordable Housing Fund
-                      csvHeader = "Employee PIN,Employee Name,Gross Pay,Employee AHL Share (1.5%),Employer AHL Share (1.5%),Total AHL Contribution (3.0%)\n";
+                    } else {
+                      // Affordable Housing Fund
+                      csvHeader =
+                        "Employee PIN,Employee Name,Gross Pay,Employee AHL Share (1.5%),Employer AHL Share (1.5%),Total AHL Contribution (3.0%)\n";
                       csvRows = MOCK_TIME_LOGS.map((log) => {
                         const gr = log.computedGross;
                         const calc = calculateKenyanStatutories(gr);
@@ -1452,11 +1608,14 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                       }).join("\n");
                     }
 
-                    downloadCsv(`${body.replace(/\s+\/\s+/g, "-").replace(/\s+/g, "-")}-Filing-${selectedRemittance.remittanceCode}.csv`, csvHeader + csvRows);
+                    downloadCsv(
+                      `${body.replace(/\s+\/\s+/g, "-").replace(/\s+/g, "-")}-Filing-${selectedRemittance.remittanceCode}.csv`,
+                      csvHeader + csvRows
+                    );
                     pushToast({
                       tone: "success",
                       title: `${body} Return CSV Exported`,
-                      body: `iTax upload ready file downloaded with ${MOCK_TIME_LOGS.length} employee records.`
+                      body: `iTax upload ready file downloaded with ${MOCK_TIME_LOGS.length} employee records.`,
                     });
                   }}
                   className="w-full justify-center flex items-center gap-1.5"
@@ -1484,7 +1643,12 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
       </Drawer>
 
       {/* ── Modal: New Payroll Run ────────────────────────────────────────── */}
-      <Modal open={showNewRunModal} onClose={() => setShowNewRunModal(false)} title="Initiate Payroll Run" size="lg">
+      <Modal
+        open={showNewRunModal}
+        onClose={() => setShowNewRunModal(false)}
+        title="Initiate Payroll Run"
+        size="lg"
+      >
         <form onSubmit={handleCreateRun} className="space-y-5 text-slate-700 text-sm">
           <div className="rounded-xl bg-indigo-50/50 border border-indigo-100/50 p-4">
             <h4 className="font-medium text-indigo-900 mb-1 flex items-center gap-1.5 text-sm">
@@ -1492,13 +1656,16 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
               Accrual Generation Notice
             </h4>
             <p className="text-indigo-700/80 leading-relaxed font-sans body-sm">
-              This process pulls active employee hours directly from HR time clocks (reconciled by the HR Liaison) and computes KRA PAYE, NSSF, SHIF, and Housing Levy automatically.
+              This process pulls active employee hours directly from HR time clocks (reconciled by
+              the HR Liaison) and computes KRA PAYE, NSSF, SHIF, and Housing Levy automatically.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="runPeriod" className="block text-slate-450 mb-2 label-caps">Target Month</label>
+              <label htmlFor="runPeriod" className="block text-slate-450 mb-2 label-caps">
+                Target Month
+              </label>
               <select
                 id="runPeriod"
                 value={newRunPeriod}
@@ -1523,19 +1690,30 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
             <span className="text-slate-450 label-caps">HR Reconciled Work Hours (Read-Only)</span>
             <div className="border border-slate-100 rounded-xl overflow-hidden divide-y divide-slate-100 max-h-[200px] overflow-y-auto">
               {MOCK_TIME_LOGS.map((log) => (
-                <div key={log.employeeName} className="flex justify-between items-center p-3 hover:bg-slate-50/40">
+                <div
+                  key={log.employeeName}
+                  className="flex justify-between items-center p-3 hover:bg-slate-50/40"
+                >
                   <div>
                     <p className="text-title-primary">{log.employeeName}</p>
-                    <p className="text-slate-400 font-sans text-sm">{log.department} · {log.hoursLogged} hours logged</p>
+                    <p className="text-slate-400 font-sans text-sm">
+                      {log.department} · {log.hoursLogged} hours logged
+                    </p>
                   </div>
-                  <p className="text-slate-700 mono-data">Gross: {formatMoney(log.computedGross)}</p>
+                  <p className="text-slate-700 mono-data">
+                    Gross: {formatMoney(log.computedGross)}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="flex gap-2.5 justify-end pt-3 border-t border-slate-100">
-            <Button onClick={() => setShowNewRunModal(false)} variant="secondary" disabled={isSubmitting}>
+            <Button
+              onClick={() => setShowNewRunModal(false)}
+              variant="secondary"
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting} className="bg-[#151936] text-white">
@@ -1546,7 +1724,12 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
       </Modal>
 
       {/* ── Modal: Pay Remittance ─────────────────────────────────────────── */}
-      <Modal open={showPayRemittanceModal} onClose={() => setShowPayRemittanceModal(false)} title="Verify Statutory Remittance" size="md">
+      <Modal
+        open={showPayRemittanceModal}
+        onClose={() => setShowPayRemittanceModal(false)}
+        title="Verify Statutory Remittance"
+        size="md"
+      >
         <form onSubmit={handlePayRemittanceSubmit} className="space-y-5 text-slate-700 text-sm">
           {selectedRemittance && (
             <>
@@ -1556,12 +1739,19 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
                   Statutory Clearance
                 </h4>
                 <p className="text-amber-700/80 leading-relaxed font-sans body-sm">
-                  Verify that statutory payment of <span className="font-mono font-medium">{formatMoney(selectedRemittance.amount)}</span> to the <span className="font-medium">{selectedRemittance.statutoryBody}</span> has been debited from the bank accounts before inputting the reference.
+                  Verify that statutory payment of{" "}
+                  <span className="font-mono font-medium">
+                    {formatMoney(selectedRemittance.amount)}
+                  </span>{" "}
+                  to the <span className="font-medium">{selectedRemittance.statutoryBody}</span> has
+                  been debited from the bank accounts before inputting the reference.
                 </p>
               </div>
 
               <div>
-                <label htmlFor="remitAcct" className="block text-slate-450 mb-2 label-caps">Debited Source Account</label>
+                <label htmlFor="remitAcct" className="block text-slate-450 mb-2 label-caps">
+                  Debited Source Account
+                </label>
                 <select
                   id="remitAcct"
                   value={remitAccount}
@@ -1574,7 +1764,9 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
               </div>
 
               <div>
-                <label htmlFor="remitRef" className="block text-slate-450 mb-2 label-caps">Payment Reference / Ticket Hash</label>
+                <label htmlFor="remitRef" className="block text-slate-450 mb-2 label-caps">
+                  Payment Reference / Ticket Hash
+                </label>
                 <div className="relative flex h-10 items-center rounded-lg border border-slate-200 bg-white px-3 focus-within:border-indigo-400">
                   <input
                     id="remitRef"
@@ -1589,7 +1781,11 @@ export function PayrollBoard({ tabId = "runs" }: { tabId: string }) {
               </div>
 
               <div className="flex gap-2.5 justify-end pt-3 border-t border-slate-100">
-                <Button onClick={() => setShowPayRemittanceModal(false)} variant="secondary" disabled={isSubmitting}>
+                <Button
+                  onClick={() => setShowPayRemittanceModal(false)}
+                  variant="secondary"
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSubmitting} className="bg-[#151936] text-white">

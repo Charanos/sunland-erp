@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from "fs";
 
-let content = fs.readFileSync('src/db/seed.ts', 'utf-8');
+let content = fs.readFileSync("src/db/seed.ts", "utf-8");
 
 // Add avatars
 content = content.replace(
@@ -27,7 +27,6 @@ content = content.replace(
   /email: "sales2@sunlandre.co.ke",\s*passwordHash: hashedPass,\s*name: "Lucy Kariuki",\s*role: "property_manager",\s*title: "Sales Agent",\s*primaryEntityId: resEntity.id,/g,
   'email: "sales2@sunlandre.co.ke", passwordHash: hashedPass, name: "Lucy Kariuki", role: "property_manager", title: "Sales Agent", avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80", primaryEntityId: resEntity.id,'
 );
-
 
 // Replace the propsToInsert static array to include media
 const propertiesSearchStr = `    const propsToInsert = [
@@ -169,5 +168,5 @@ const loopReplacementStr = `    const propertyTypes = ["Apartment", "Commercial"
 
 content = content.replace(loopSearchStr, loopReplacementStr);
 
-fs.writeFileSync('src/db/seed.ts', content, 'utf-8');
-console.log('Done');
+fs.writeFileSync("src/db/seed.ts", content, "utf-8");
+console.log("Done");

@@ -11,7 +11,11 @@ export async function GET(request: Request) {
     const status = searchParams.get("status") ?? undefined;
 
     const ctx = await requireCallerContext(entityId, request);
-    const projects = await listProjects(ctx, { entityId: entityId ?? undefined, department, status });
+    const projects = await listProjects(ctx, {
+      entityId: entityId ?? undefined,
+      department,
+      status,
+    });
 
     return NextResponse.json({ projects });
   } catch (error) {

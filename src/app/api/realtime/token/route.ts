@@ -13,8 +13,7 @@ export async function GET() {
     const tokenRequest = await getAblyToken(user.id);
     return NextResponse.json(tokenRequest);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to create Ably token";
+    const message = error instanceof Error ? error.message : "Unable to create Ably token";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

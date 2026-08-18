@@ -23,11 +23,11 @@ export function FinanceModuleNav() {
   const activeGroup = financeGroupById[activeSection.groupId];
   const GroupIcon = activeGroup.icon;
   const visibleSectionIds = activeGroup.sectionIds.filter((sectionId) =>
-    canAccess(currentRole, financeSectionById[sectionId].href),
+    canAccess(currentRole, financeSectionById[sectionId].href)
   );
   const totalAttention = visibleSectionIds.reduce(
     (sum, sectionId) => sum + (financeSectionById[sectionId].attention ?? 0),
-    0,
+    0
   );
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export function FinanceModuleNav() {
           setCurrentRole(data.user.role);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   return (
@@ -51,17 +51,16 @@ export function FinanceModuleNav() {
               <GroupIcon size={18} stroke={1.7} />
             </div>
             <div className="min-w-0">
-              <h2 className="truncate leading-none text-title-primary">
-                {activeGroup.title}
-              </h2>
-              <p className="mt-1.5 truncate text-sm text-slate-400">
-                {activeGroup.description}
-              </p>
+              <h2 className="truncate leading-none text-title-primary">{activeGroup.title}</h2>
+              <p className="mt-1.5 truncate text-sm text-slate-400">{activeGroup.description}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Badge tone={totalAttention > 0 ? "warning" : "success"} className="gap-1.5 py-0.5 px-2 font-medium">
+            <Badge
+              tone={totalAttention > 0 ? "warning" : "success"}
+              className="gap-1.5 py-0.5 px-2 font-medium"
+            >
               <IconAlertTriangle size={12} />
               {totalAttention} Attention
             </Badge>
@@ -77,7 +76,7 @@ export function FinanceModuleNav() {
                       "inline-flex h-7 items-center gap-1.5 rounded-md px-3 text-sm  font-medium transition",
                       isActive
                         ? "bg-[#151936] text-white shadow-sm"
-                        : "text-slate-400 hover:bg-slate-100 hover:text-slate-900",
+                        : "text-slate-400 hover:bg-slate-100 hover:text-slate-900"
                     )}
                   >
                     <span>{section.label}</span>
@@ -85,7 +84,7 @@ export function FinanceModuleNav() {
                       <span
                         className={cn(
                           "rounded-full px-1.5 py-0.5 text-xs",
-                          isActive ? "bg-[#f3df27] text-[#151936]" : "bg-slate-200 text-slate-650",
+                          isActive ? "bg-[#f3df27] text-[#151936]" : "bg-slate-200 text-slate-650"
                         )}
                       >
                         {section.attention}
@@ -111,7 +110,7 @@ export function FinanceModuleNav() {
                     "inline-flex px-3.5 py-1.5 text-base font-medium rounded-lg transition-all flex items-center gap-1.5",
                     isActive
                       ? "bg-[#151936] text-white shadow-sm"
-                      : "text-slate-400 hover:text-slate-900 hover:bg-slate-50",
+                      : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
                   )}
                 >
                   <span>{tab.label}</span>
@@ -119,7 +118,7 @@ export function FinanceModuleNav() {
                     <span
                       className={cn(
                         "rounded-full px-1.5 py-0.5 text-xs font-medium",
-                        isActive ? "bg-[#f3df27] text-[#151936]" : "bg-amber-500/20 text-amber-700",
+                        isActive ? "bg-[#f3df27] text-[#151936]" : "bg-amber-500/20 text-amber-700"
                       )}
                     >
                       {tab.attention}

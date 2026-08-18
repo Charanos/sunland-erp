@@ -15,7 +15,13 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       integrations,
-      audit: audit.map((a) => ({ id: a.id, actorName: a.actorName, action: a.action, summary: a.summary, createdAt: a.createdAt })),
+      audit: audit.map((a) => ({
+        id: a.id,
+        actorName: a.actorName,
+        action: a.action,
+        summary: a.summary,
+        createdAt: a.createdAt,
+      })),
     });
   } catch (error) {
     return handleRouteError(error);

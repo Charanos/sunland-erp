@@ -4,7 +4,15 @@ import { useEffect, useMemo, useState, type ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   IconAlertTriangle,
   IconArrowUpRight,
@@ -60,7 +68,12 @@ import { formatCompactKES, formatFileSize } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 import type { Property } from "./property-constants";
 import type { LeaseSummary, PropertyDocumentSummary } from "./property-detail-types";
-import { findMandateLetterDocument, mandateLetterStatus, mandateOriginLabel, MANDATE_LETTER_STATUS_META } from "./mandate-constants";
+import {
+  findMandateLetterDocument,
+  mandateLetterStatus,
+  mandateOriginLabel,
+  MANDATE_LETTER_STATUS_META,
+} from "./mandate-constants";
 
 type TabKey = "overview" | "financials" | "units" | "documents" | "activity";
 type ActionTone = "amber" | "rose" | "neutral";
@@ -79,22 +92,23 @@ interface ActionItem {
 const ACTION_TONE_CLASSES: Record<ActionTone, { div: string; iconWrap: string; cta: string }> = {
   amber: {
     div: "border-amber-200 bg-amber-500/[0.04] rounded-2xl p-4 flex items-center justify-between gap-4 border shadow-sm transition-all duration-300 hover:shadow-md",
-    iconWrap: "bg-amber-100/80 text-amber-700 size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
+    iconWrap:
+      "bg-amber-100/80 text-amber-700 size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
     cta: "bg-[#f3df27] text-[#151936] font-medium text-xs rounded-xl px-4 py-1.5 hover:bg-[#e6d220] transition-colors shadow-sm whitespace-nowrap",
   },
   rose: {
     div: "border-rose-100 bg-rose-500/[0.02] rounded-2xl p-4 flex items-center justify-between gap-4 border shadow-sm transition-all duration-300 hover:shadow-md",
-    iconWrap: "bg-rose-100/80 text-rose-600 size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
+    iconWrap:
+      "bg-rose-100/80 text-rose-600 size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
     cta: "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-medium text-xs rounded-xl px-4 py-1.5 transition-colors shadow-xs whitespace-nowrap",
   },
   neutral: {
     div: "border-slate-200/80 bg-slate-50/50 rounded-2xl p-4 flex items-center justify-between gap-4 border shadow-sm transition-all duration-300 hover:shadow-md",
-    iconWrap: "bg-slate-100 text-slate-500 size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
+    iconWrap:
+      "bg-slate-100 text-slate-500 size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
     cta: "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-medium text-xs rounded-xl px-4 py-1.5 transition-colors shadow-xs whitespace-nowrap",
   },
 };
-
-
 
 type VitalTone = "emerald" | "amber" | "rose" | "neutral";
 
@@ -142,19 +156,52 @@ interface MandateDetail {
   endDate: string | null;
   pendingApproverRole: "gm" | "ceo" | "department_head" | null;
   approvalRequestId: string | null;
-  currentPeriod?: { collectedAmount: number; managementFee: number; expenses: number; landlordRemittance: number };
+  currentPeriod?: {
+    collectedAmount: number;
+    managementFee: number;
+    expenses: number;
+    landlordRemittance: number;
+  };
   pendingRemittance: RemittanceAdvice | null;
   maintenanceAuthorityKes: string | null;
   renewalType: string | null;
   noticePeriodDays: number | null;
   scopeDescription: string | null;
-  landlord: { id: string; name: string; email: string | null; phone: string | null; verifiedAt: string | null; avatarUrl?: string | null; company?: string | null; propertiesUnderMandateCount?: number };
-  manager: { id: string; name: string | null; title: string | null; email: string | null; avatarUrl: string | null; assignedPropertyCount?: number; onTimeCollectionPct?: number | null } | null;
-  property: { id: string; name: string; propertyCode: string; propertyType: string; location: string; media: Array<{ url: string; alt?: string }> };
+  landlord: {
+    id: string;
+    name: string;
+    email: string | null;
+    phone: string | null;
+    verifiedAt: string | null;
+    avatarUrl?: string | null;
+    company?: string | null;
+    propertiesUnderMandateCount?: number;
+  };
+  manager: {
+    id: string;
+    name: string | null;
+    title: string | null;
+    email: string | null;
+    avatarUrl: string | null;
+    assignedPropertyCount?: number;
+    onTimeCollectionPct?: number | null;
+  } | null;
+  property: {
+    id: string;
+    name: string;
+    propertyCode: string;
+    propertyType: string;
+    location: string;
+    media: Array<{ url: string; alt?: string }>;
+  };
   leases: LeaseSummary[];
   documents: PropertyDocumentSummary[];
   collections: Array<{ period: string; expected: number; collected: number }>;
-  arrears: { status: "current" | "partial" | "defaulted"; amount: number; daysInArrears: number } | null;
+  arrears: {
+    status: "current" | "partial" | "defaulted";
+    amount: number;
+    daysInArrears: number;
+  } | null;
   originValuation: { id: string; valuationCode: string } | null;
 }
 
@@ -172,10 +219,15 @@ interface PropertyUnitRow {
   monthlyRentKes: string | null;
   status: "vacant" | "occupied" | "reserved" | "maintenance";
   notes: string | null;
-  lease: { id: string; tenantContactId: string; tenantName: string; tenantAvatarUrl: string | null; monthlyRentKes: string; endsAt: string } | null;
+  lease: {
+    id: string;
+    tenantContactId: string;
+    tenantName: string;
+    tenantAvatarUrl: string | null;
+    monthlyRentKes: string;
+    endsAt: string;
+  } | null;
 }
-
-
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -240,7 +292,8 @@ export function MandateFullViewBoard({
     if (!mandate || !mandate.endDate) return "Open-ended";
     const start = new Date(mandate.startDate);
     const end = new Date(mandate.endDate);
-    const diff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    const diff =
+      (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
     return `${diff} months`;
   }, [mandate]);
 
@@ -293,17 +346,21 @@ export function MandateFullViewBoard({
     if (unitStatusFilter !== "all") result = result.filter((u) => u.status === unitStatusFilter);
     if (unitSearchQuery.trim()) {
       const q = unitSearchQuery.trim().toLowerCase();
-      result = result.filter((u) =>
-        u.unitLabel.toLowerCase().includes(q) ||
-        (u.unitType ?? "").toLowerCase().includes(q) ||
-        (u.lease?.tenantName ?? "").toLowerCase().includes(q)
+      result = result.filter(
+        (u) =>
+          u.unitLabel.toLowerCase().includes(q) ||
+          (u.unitType ?? "").toLowerCase().includes(q) ||
+          (u.lease?.tenantName ?? "").toLowerCase().includes(q)
       );
     }
     return result;
   }, [units, unitStatusFilter, unitSearchQuery]);
   const unitTotalPages = Math.max(1, Math.ceil(filteredUnits.length / UNITS_PER_PAGE));
   const safeUnitPage = Math.min(unitPage, unitTotalPages);
-  const paginatedUnits = filteredUnits.slice((safeUnitPage - 1) * UNITS_PER_PAGE, safeUnitPage * UNITS_PER_PAGE);
+  const paginatedUnits = filteredUnits.slice(
+    (safeUnitPage - 1) * UNITS_PER_PAGE,
+    safeUnitPage * UNITS_PER_PAGE
+  );
 
   useEffect(() => {
     let active = true;
@@ -338,7 +395,7 @@ export function MandateFullViewBoard({
       .then((data) => {
         if (active && data?.user?.role) setViewerRole(data.user.role);
       })
-      .catch(() => { });
+      .catch(() => {});
     return () => {
       active = false;
     };
@@ -423,7 +480,11 @@ export function MandateFullViewBoard({
       pushToast({ tone: "success", title: `Generated ${data.units?.length ?? 0} units` });
       loadUnits();
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Could not generate units." });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not generate units.",
+      });
     } finally {
       setGeneratingUnits(false);
     }
@@ -451,7 +512,9 @@ export function MandateFullViewBoard({
         key: "decision",
         tone: "amber",
         icon: IconFileCertificate,
-        title: canDecideMandate ? "Mandate awaiting your approval" : `Mandate pending at the ${(mandate.pendingApproverRole ?? "gm").toUpperCase()} step`,
+        title: canDecideMandate
+          ? "Mandate awaiting your approval"
+          : `Mandate pending at the ${(mandate.pendingApproverRole ?? "gm").toUpperCase()} step`,
         meta: `${(mandate.mandateRate * 100).toFixed(0)}% rate${mandate.manager?.name ? ` · ${mandate.manager.name}` : ""}`,
         cta: canDecideMandate ? "Review" : canOverrideMandate ? "Decide Directly" : "View",
         primary: canDecideMandate,
@@ -470,10 +533,16 @@ export function MandateFullViewBoard({
         meta: formatCompactKES(Number(mandate.pendingRemittance.netRemittanceKes)),
         cta: "Review",
         primary: false,
-        onClick: () => { setSelectedRemittance(mandate.pendingRemittance); setRemittancePanelOpen(true); },
+        onClick: () => {
+          setSelectedRemittance(mandate.pendingRemittance);
+          setRemittancePanelOpen(true);
+        },
       });
     }
-    if (mandate.arrears && (mandate.arrears.status === "partial" || mandate.arrears.status === "defaulted")) {
+    if (
+      mandate.arrears &&
+      (mandate.arrears.status === "partial" || mandate.arrears.status === "defaulted")
+    ) {
       items.push({
         key: "arrears",
         tone: "rose",
@@ -485,7 +554,8 @@ export function MandateFullViewBoard({
         onClick: () => setActiveTab("units"),
       });
     }
-    const hasMandateLetter = mandateLetterStatus(mandate.documents, mandate.property.id) === "verified";
+    const hasMandateLetter =
+      mandateLetterStatus(mandate.documents, mandate.property.id) === "verified";
     if (!hasMandateLetter) {
       items.push({
         key: "letter",
@@ -506,13 +576,15 @@ export function MandateFullViewBoard({
     let filtered = activityLog;
     if (activitySearchQuery) {
       const q = activitySearchQuery.toLowerCase();
-      filtered = filtered.filter(a => a.summary.toLowerCase().includes(q));
+      filtered = filtered.filter((a) => a.summary.toLowerCase().includes(q));
     }
     if (activityFilter !== "all") {
-      filtered = filtered.filter(a => {
+      filtered = filtered.filter((a) => {
         const lower = a.summary.toLowerCase();
-        if (activityFilter === "edits") return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
-        if (activityFilter === "terminations") return lower.includes("terminat") || lower.includes("delet");
+        if (activityFilter === "edits")
+          return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
+        if (activityFilter === "terminations")
+          return lower.includes("terminat") || lower.includes("delet");
         if (activityFilter === "system") return lower.includes("system") || lower.includes("auto");
         return true;
       });
@@ -522,15 +594,21 @@ export function MandateFullViewBoard({
 
   const activityTotalPages = Math.max(1, Math.ceil(filteredActivity.length / ACTIVITY_PER_PAGE));
   const safeActivityPage = Math.min(activityPage, activityTotalPages);
-  const paginatedActivity = filteredActivity.slice((safeActivityPage - 1) * ACTIVITY_PER_PAGE, safeActivityPage * ACTIVITY_PER_PAGE);
+  const paginatedActivity = filteredActivity.slice(
+    (safeActivityPage - 1) * ACTIVITY_PER_PAGE,
+    safeActivityPage * ACTIVITY_PER_PAGE
+  );
 
   const filteredRemittances = useMemo(() => {
     let filtered = remittances;
     if (remittanceSearchQuery) {
       const q = remittanceSearchQuery.toLowerCase();
-      filtered = filtered.filter((r) =>
-        new Date(r.periodStart).toLocaleDateString("en-KE", { month: "short", year: "numeric" }).toLowerCase().includes(q) ||
-        r.status.toLowerCase().includes(q)
+      filtered = filtered.filter(
+        (r) =>
+          new Date(r.periodStart)
+            .toLocaleDateString("en-KE", { month: "short", year: "numeric" })
+            .toLowerCase()
+            .includes(q) || r.status.toLowerCase().includes(q)
       );
     }
     if (remittanceStatusFilter !== "all") {
@@ -539,16 +617,24 @@ export function MandateFullViewBoard({
     return filtered;
   }, [remittances, remittanceSearchQuery, remittanceStatusFilter]);
 
-  const remittanceTotalPages = Math.max(1, Math.ceil(filteredRemittances.length / REMITTANCE_PER_PAGE));
+  const remittanceTotalPages = Math.max(
+    1,
+    Math.ceil(filteredRemittances.length / REMITTANCE_PER_PAGE)
+  );
   const safeRemittancePage = Math.min(remittancePage, remittanceTotalPages);
-  const paginatedRemittances = filteredRemittances.slice((safeRemittancePage - 1) * REMITTANCE_PER_PAGE, safeRemittancePage * REMITTANCE_PER_PAGE);
+  const paginatedRemittances = filteredRemittances.slice(
+    (safeRemittancePage - 1) * REMITTANCE_PER_PAGE,
+    safeRemittancePage * REMITTANCE_PER_PAGE
+  );
 
   const filteredOtherDocs = useMemo(() => {
     const otherDocs = (mandate?.documents ?? []).filter((d) => d.type !== "mandate_letter");
     let filtered = otherDocs;
     if (docSearchQuery) {
       const q = docSearchQuery.toLowerCase();
-      filtered = filtered.filter((d) => d.name.toLowerCase().includes(q) || (d.type ?? "").toLowerCase().includes(q));
+      filtered = filtered.filter(
+        (d) => d.name.toLowerCase().includes(q) || (d.type ?? "").toLowerCase().includes(q)
+      );
     }
     if (docStatusFilter !== "all") {
       filtered = filtered.filter((d) => d.status === docStatusFilter);
@@ -558,11 +644,15 @@ export function MandateFullViewBoard({
 
   const docTotalPages = Math.max(1, Math.ceil(filteredOtherDocs.length / DOC_PER_PAGE));
   const safeDocPage = Math.min(docPage, docTotalPages);
-  const paginatedOtherDocs = filteredOtherDocs.slice((safeDocPage - 1) * DOC_PER_PAGE, safeDocPage * DOC_PER_PAGE);
+  const paginatedOtherDocs = filteredOtherDocs.slice(
+    (safeDocPage - 1) * DOC_PER_PAGE,
+    safeDocPage * DOC_PER_PAGE
+  );
 
   const getActivityTone = (summary: string) => {
     const lower = summary.toLowerCase();
-    if (lower.includes("terminat") || lower.includes("delet") || lower.includes("reject")) return "bg-rose-300 ring-rose-50";
+    if (lower.includes("terminat") || lower.includes("delet") || lower.includes("reject"))
+      return "bg-rose-300 ring-rose-50";
     if (lower.includes("override")) return "bg-amber-400 ring-amber-50";
     if (lower.includes("updat") || lower.includes("chang")) return "bg-indigo-300 ring-indigo-50";
     return "bg-slate-200 ring-white";
@@ -618,12 +708,15 @@ export function MandateFullViewBoard({
   const mediaList = mandate.property.media || [];
   const primaryImage = mediaList[activeMediaIndex]?.url ?? mediaList[0]?.url;
   const period = mandate.currentPeriod;
-  const remittanceDue = mandate.pendingRemittance ? Number(mandate.pendingRemittance.netRemittanceKes) : period?.landlordRemittance ?? 0;
+  const remittanceDue = mandate.pendingRemittance
+    ? Number(mandate.pendingRemittance.netRemittanceKes)
+    : (period?.landlordRemittance ?? 0);
 
   const lastCollection = mandate.collections?.[mandate.collections.length - 1];
   const expectedAmount = lastCollection?.expected ?? 0;
   const collectedAmount = period?.collectedAmount ?? 0;
-  const collectionPct = expectedAmount > 0 ? Math.round((collectedAmount / expectedAmount) * 100) : 0;
+  const collectionPct =
+    expectedAmount > 0 ? Math.round((collectedAmount / expectedAmount) * 100) : 0;
   // Displayed/ring-stroke value is capped at 100 - an uncapped ratio (e.g.
   // from a double-counted payment) would otherwise wrap the SVG stroke
   // around again, which renders indistinguishably from an ordinary full
@@ -656,10 +749,17 @@ export function MandateFullViewBoard({
     {
       label: "Units Occupied",
       value: `${occupiedUnits}/${mandate.unitCount}`,
-      subText: mandate.unitCount - occupiedUnits > 0 ? `${mandate.unitCount - occupiedUnits} vacant` : "fully occupied",
-      badgeText: occupiedUnits === mandate.unitCount ? "100% OCCUPIED" : `${Math.round((occupiedUnits / (mandate.unitCount || 1)) * 100)}%`,
-      badgeTone: occupiedUnits === mandate.unitCount ? "emerald" as VitalTone : "amber" as VitalTone,
-      tone: occupiedUnits === mandate.unitCount ? "emerald" as VitalTone : "amber" as VitalTone,
+      subText:
+        mandate.unitCount - occupiedUnits > 0
+          ? `${mandate.unitCount - occupiedUnits} vacant`
+          : "fully occupied",
+      badgeText:
+        occupiedUnits === mandate.unitCount
+          ? "100% OCCUPIED"
+          : `${Math.round((occupiedUnits / (mandate.unitCount || 1)) * 100)}%`,
+      badgeTone:
+        occupiedUnits === mandate.unitCount ? ("emerald" as VitalTone) : ("amber" as VitalTone),
+      tone: occupiedUnits === mandate.unitCount ? ("emerald" as VitalTone) : ("amber" as VitalTone),
       icon: IconUsers,
       tab: "units" as TabKey,
     },
@@ -668,8 +768,8 @@ export function MandateFullViewBoard({
       value: formatCompactKES(remittanceDue),
       subText: mandate.pendingRemittance ? "pending release" : "released",
       badgeText: mandate.pendingRemittance ? "ACTION NEEDED" : "CLEARED",
-      badgeTone: mandate.pendingRemittance ? "rose" as VitalTone : "neutral" as VitalTone,
-      tone: mandate.pendingRemittance ? "rose" as VitalTone : "neutral" as VitalTone,
+      badgeTone: mandate.pendingRemittance ? ("rose" as VitalTone) : ("neutral" as VitalTone),
+      tone: mandate.pendingRemittance ? ("rose" as VitalTone) : ("neutral" as VitalTone),
       icon: IconArrowUpRight,
       tab: "financials" as TabKey,
     },
@@ -686,9 +786,26 @@ export function MandateFullViewBoard({
       status: "occupied",
       location: mandate.property.location,
       ownerContactId: mandate.landlord.id,
-      owner: { name: mandate.landlord.name, phone: mandate.landlord.phone, email: mandate.landlord.email, verifiedAt: mandate.landlord.verifiedAt, company: null, idNumber: null, clientSince: null, avatarUrl: null },
+      owner: {
+        name: mandate.landlord.name,
+        phone: mandate.landlord.phone,
+        email: mandate.landlord.email,
+        verifiedAt: mandate.landlord.verifiedAt,
+        company: null,
+        idNumber: null,
+        clientSince: null,
+        avatarUrl: null,
+      },
       ownerName: mandate.landlord.name,
-      manager: mandate.manager ? { id: mandate.manager.id, name: mandate.manager.name, title: mandate.manager.title, email: mandate.manager.email, avatarUrl: mandate.manager.avatarUrl } : null,
+      manager: mandate.manager
+        ? {
+            id: mandate.manager.id,
+            name: mandate.manager.name,
+            title: mandate.manager.title,
+            email: mandate.manager.email,
+            avatarUrl: mandate.manager.avatarUrl,
+          }
+        : null,
       mandateStatus: mandate.status,
       media: mandate.property.media,
       isFeatured: false,
@@ -718,7 +835,11 @@ export function MandateFullViewBoard({
       setTerminateNotes("");
       setRefreshCount((c) => c + 1);
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Failed to terminate mandate" });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to terminate mandate",
+      });
     } finally {
       setIsTerminating(false);
     }
@@ -748,7 +869,11 @@ export function MandateFullViewBoard({
       loadRemittances();
       setRefreshCount((c) => c + 1);
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Could not generate remittance advice." });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not generate remittance advice.",
+      });
     } finally {
       setGeneratingRemittance(false);
     }
@@ -759,7 +884,11 @@ export function MandateFullViewBoard({
     pushToast({ tone: "success", title: "Link copied" });
   };
 
-  const tabs: { key: TabKey; label: string; icon: ComponentType<{ size?: number; className?: string }> }[] = [
+  const tabs: {
+    key: TabKey;
+    label: string;
+    icon: ComponentType<{ size?: number; className?: string }>;
+  }[] = [
     { key: "overview", label: "Overview", icon: IconFileCertificate },
     { key: "financials", label: "Financials", icon: IconReceipt2 },
     { key: "units", label: "Units & Tenants", icon: IconBuildingCommunity },
@@ -842,13 +971,29 @@ export function MandateFullViewBoard({
                 </div>
               }
             >
-              <DropdownItem icon={IconLink} onClick={handleCopyLink}>Copy deep link</DropdownItem>
+              <DropdownItem icon={IconLink} onClick={handleCopyLink}>
+                Copy deep link
+              </DropdownItem>
               {mandate.manager && (
-                <DropdownItem icon={IconBell} onClick={() => setNotifyPmOpen(true)}>Notify Property Manager</DropdownItem>
+                <DropdownItem icon={IconBell} onClick={() => setNotifyPmOpen(true)}>
+                  Notify Property Manager
+                </DropdownItem>
               )}
-              <DropdownItem icon={IconBell} disabled title="Available once the landlord portal launches">Notify Landlord</DropdownItem>
+              <DropdownItem
+                icon={IconBell}
+                disabled
+                title="Available once the landlord portal launches"
+              >
+                Notify Landlord
+              </DropdownItem>
               {(mandate.status === "active" || mandate.status === "pending_approval") && (
-                <DropdownItem icon={IconTrash} variant="danger" onClick={() => setTerminateOpen(true)}>Terminate mandate</DropdownItem>
+                <DropdownItem
+                  icon={IconTrash}
+                  variant="danger"
+                  onClick={() => setTerminateOpen(true)}
+                >
+                  Terminate mandate
+                </DropdownItem>
               )}
             </DropdownMenu>
           )}
@@ -907,13 +1052,17 @@ export function MandateFullViewBoard({
 
             <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
               <span className="bg-black/50 font-mono backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-xxs font-medium uppercase tracking-wider text-white">
-                {(MANDATE_STATUS_LABEL[mandate.status] ?? mandate.status).toUpperCase()} · {(mandate.mandateRate * 100).toFixed(1)}% FEE
+                {(MANDATE_STATUS_LABEL[mandate.status] ?? mandate.status).toUpperCase()} ·{" "}
+                {(mandate.mandateRate * 100).toFixed(1)}% FEE
               </span>
             </div>
           </div>
 
           {/* Middle Stakeholders Strip */}
-          <div className="relative z-10 flex flex-wrap items-center gap-2.5 my-auto pt-6" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative z-10 flex flex-wrap items-center gap-2.5 my-auto pt-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               onClick={() => setOwnerDrawerOpen(true)}
@@ -925,8 +1074,12 @@ export function MandateFullViewBoard({
                 className="size-7 bg-white text-slate-800 text-xs font-medium border border-slate-200 shadow-2xs"
               />
               <div className="text-left leading-none">
-                <p className="text-xs font-medium text-white group-hover/landlord:underline">{mandate.landlord.name}</p>
-                <span className="text-xxs uppercase tracking-wider text-slate-300 font-mono block mt-0.5">Landlord</span>
+                <p className="text-xs font-medium text-white group-hover/landlord:underline">
+                  {mandate.landlord.name}
+                </p>
+                <span className="text-xxs uppercase tracking-wider text-slate-300 font-mono block mt-0.5">
+                  Landlord
+                </span>
               </div>
             </button>
 
@@ -942,8 +1095,12 @@ export function MandateFullViewBoard({
                   className="size-7 bg-[#151936] text-white text-xs font-medium border border-white/20 shadow-2xs"
                 />
                 <div className="text-left leading-none">
-                  <p className="text-xs font-medium text-white group-hover/pm:underline">{mandate.manager.name}</p>
-                  <span className="text-xxs uppercase tracking-wider text-slate-300 font-mono block mt-0.5">Property Manager</span>
+                  <p className="text-xs font-medium text-white group-hover/pm:underline">
+                    {mandate.manager.name}
+                  </p>
+                  <span className="text-xxs uppercase tracking-wider text-slate-300 font-mono block mt-0.5">
+                    Property Manager
+                  </span>
                 </div>
               </button>
             )}
@@ -970,14 +1127,28 @@ export function MandateFullViewBoard({
             </div>
 
             {/* Right Collection Gauge Card */}
-            <div className="lg:col-span-6 flex flex-col gap-2 bg-black/40 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 shadow-sm" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="lg:col-span-6 flex flex-col gap-2 bg-black/40 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 shadow-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center justify-between text-xs">
-                <span className="text-xxs font-mono uppercase tracking-wider text-slate-300">Collection MTD ({currentMonthName})</span>
-                <span className="font-mono text-xs font-medium text-white">{collectionPctDisplay}% Collected</span>
+                <span className="text-xxs font-mono uppercase tracking-wider text-slate-300">
+                  Collection MTD ({currentMonthName})
+                </span>
+                <span className="font-mono text-xs font-medium text-white">
+                  {collectionPctDisplay}% Collected
+                </span>
               </div>
               <div className="h-2 w-full bg-white/15 rounded-full overflow-hidden">
                 <div
-                  className={cn("h-full rounded-full transition-all duration-500", collectionPct >= 90 ? "bg-emerald-400" : collectionPct >= 50 ? "bg-[#f3df27]" : "bg-rose-400")}
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    collectionPct >= 90
+                      ? "bg-emerald-400"
+                      : collectionPct >= 50
+                        ? "bg-[#f3df27]"
+                        : "bg-rose-400"
+                  )}
                   style={{ width: `${Math.min(100, collectionPct)}%` }}
                 />
               </div>
@@ -1066,7 +1237,12 @@ export function MandateFullViewBoard({
             <div className="flex items-start justify-between relative z-10">
               <div className="flex flex-col gap-1 max-w-[calc(100%-48px)]">
                 <span className="text-desc-secondary font-medium">{v.label}</span>
-                <span className={cn("font-mono font-medium text-2xl font-medium mt-1 leading-none", VITAL_TONE_VALUE[v.tone])}>
+                <span
+                  className={cn(
+                    "font-mono font-medium text-2xl font-medium mt-1 leading-none",
+                    VITAL_TONE_VALUE[v.tone]
+                  )}
+                >
                   {v.value}
                 </span>
               </div>
@@ -1095,7 +1271,12 @@ export function MandateFullViewBoard({
 
       {/* ── Action-required band ── */}
       {actionItems.length > 0 && (
-        <div className={cn("grid gap-3.5 animate-fade-in-up stagger-3 mt-1", actionItems.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1")}>
+        <div
+          className={cn(
+            "grid gap-3.5 animate-fade-in-up stagger-3 mt-1",
+            actionItems.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"
+          )}
+        >
           {actionItems.map((item) => {
             const t = ACTION_TONE_CLASSES[item.tone];
             return (
@@ -1105,8 +1286,12 @@ export function MandateFullViewBoard({
                     <item.icon size={18} />
                   </span>
                   <div className="min-w-0">
-                    <p className="font-sans text-sm font-medium text-slate-950 truncate leading-snug">{item.title}</p>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate font-medium">{item.meta}</p>
+                    <p className="font-sans text-sm font-medium text-slate-950 truncate leading-snug">
+                      {item.title}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5 truncate font-medium">
+                      {item.meta}
+                    </p>
                   </div>
                 </div>
                 <button type="button" onClick={item.onClick} className={t.cta}>
@@ -1123,7 +1308,11 @@ export function MandateFullViewBoard({
       {/* ── Main: tabbed content + context rail ── */}
       <RailLayout gap="gap-6 lg:gap-3.5">
         <div className="flex flex-col min-w-0">
-          <div role="tablist" aria-label="Mandate sections" className="flex bg-white border border-slate-100 p-1.5 rounded-[16px] shadow-[0_2px_10px_rgb(0,0,0,0.02)] gap-1 overflow-x-auto flex-nowrap mb-6">
+          <div
+            role="tablist"
+            aria-label="Mandate sections"
+            className="flex bg-white border border-slate-100 p-1.5 rounded-[16px] shadow-[0_2px_10px_rgb(0,0,0,0.02)] gap-1 overflow-x-auto flex-nowrap mb-6"
+          >
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -1132,7 +1321,9 @@ export function MandateFullViewBoard({
                 onClick={() => setActiveTab(tab.key)}
                 className={cn(
                   "body-sm px-4 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shrink-0 whitespace-nowrap font-medium",
-                  activeTab === tab.key ? "bg-[#151936] text-white shadow-md" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                  activeTab === tab.key
+                    ? "bg-[#151936] text-white shadow-md"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 )}
               >
                 <tab.icon size={15} aria-hidden="true" />
@@ -1160,17 +1351,28 @@ export function MandateFullViewBoard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 @board-md:grid-cols-4 gap-4">
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Landlord</p>
-                    <p className="body-md text-slate-800 font-medium truncate" title={mandate.landlord.name}>{mandate.landlord.name}</p>
+                    <p
+                      className="body-md text-slate-800 font-medium truncate"
+                      title={mandate.landlord.name}
+                    >
+                      {mandate.landlord.name}
+                    </p>
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Started</p>
                     <p className="mono-amount text-slate-900">
-                      {new Date(mandate.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      {new Date(mandate.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Fee Rate</p>
-                    <p className="mono-amount text-slate-900">{(mandate.mandateRate * 100).toFixed(1)}%</p>
+                    <p className="mono-amount text-slate-900">
+                      {(mandate.mandateRate * 100).toFixed(1)}%
+                    </p>
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Units</p>
@@ -1178,8 +1380,15 @@ export function MandateFullViewBoard({
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Maintenance Authority</p>
-                    <p className={cn("mono-amount", mandate.maintenanceAuthorityKes ? "text-slate-900" : "text-slate-400 italic")}>
-                      {mandate.maintenanceAuthorityKes ? `≤ ${formatCompactKES(parseFloat(mandate.maintenanceAuthorityKes))}` : "Not yet configured"}
+                    <p
+                      className={cn(
+                        "mono-amount",
+                        mandate.maintenanceAuthorityKes ? "text-slate-900" : "text-slate-400 italic"
+                      )}
+                    >
+                      {mandate.maintenanceAuthorityKes
+                        ? `≤ ${formatCompactKES(parseFloat(mandate.maintenanceAuthorityKes))}`
+                        : "Not yet configured"}
                     </p>
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
@@ -1188,20 +1397,37 @@ export function MandateFullViewBoard({
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Renewal</p>
-                    <p className={cn("body-md font-medium", mandate.renewalType ? "text-slate-800" : "text-slate-400 italic")}>
-                      {mandate.renewalType ? mandate.renewalType.charAt(0).toUpperCase() + mandate.renewalType.slice(1) : "Not yet configured"}
+                    <p
+                      className={cn(
+                        "body-md font-medium",
+                        mandate.renewalType ? "text-slate-800" : "text-slate-400 italic"
+                      )}
+                    >
+                      {mandate.renewalType
+                        ? mandate.renewalType.charAt(0).toUpperCase() + mandate.renewalType.slice(1)
+                        : "Not yet configured"}
                     </p>
                   </div>
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
                     <p className="label-caps text-slate-600">Notice Period</p>
-                    <p className={cn("mono-amount", mandate.noticePeriodDays != null ? "text-slate-900" : "text-slate-400 italic")}>
-                      {mandate.noticePeriodDays != null ? `${mandate.noticePeriodDays} days` : "Not yet configured"}
+                    <p
+                      className={cn(
+                        "mono-amount",
+                        mandate.noticePeriodDays != null
+                          ? "text-slate-900"
+                          : "text-slate-400 italic"
+                      )}
+                    >
+                      {mandate.noticePeriodDays != null
+                        ? `${mandate.noticePeriodDays} days`
+                        : "Not yet configured"}
                     </p>
                   </div>
                 </div>
                 {mandate.rateJustification && (
                   <p className="body-sm text-slate-500 mt-5 pt-5 border-t border-slate-100">
-                    <span className="font-medium text-slate-700">Rate justification: </span>{mandate.rateJustification}
+                    <span className="font-medium text-slate-700">Rate justification: </span>
+                    {mandate.rateJustification}
                   </p>
                 )}
               </div>
@@ -1210,10 +1436,16 @@ export function MandateFullViewBoard({
               <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <h3 className="text-title-primary mb-3">Scope of management</h3>
                 {mandate.scopeDescription ? (
-                  <p className="body-md text-slate-600 leading-relaxed">{mandate.scopeDescription}</p>
+                  <p className="body-md text-slate-600 leading-relaxed">
+                    {mandate.scopeDescription}
+                  </p>
                 ) : (
                   <p className="body-md text-slate-600 leading-relaxed">
-                    Sunland manages rent collection and remittance for the {mandate.unitCount} unit{mandate.unitCount === 1 ? "" : "s"} at {mandate.property.name}, remitting collected rent to the landlord net of a {(mandate.mandateRate * 100).toFixed(1)}% management fee{mandate.rateJustification ? ` (${mandate.rateJustification})` : ""}.
+                    Sunland manages rent collection and remittance for the {mandate.unitCount} unit
+                    {mandate.unitCount === 1 ? "" : "s"} at {mandate.property.name}, remitting
+                    collected rent to the landlord net of a {(mandate.mandateRate * 100).toFixed(1)}
+                    % management fee
+                    {mandate.rateJustification ? ` (${mandate.rateJustification})` : ""}.
                   </p>
                 )}
               </div>
@@ -1222,12 +1454,21 @@ export function MandateFullViewBoard({
 
           {activeTab === "financials" && (
             <div className="flex flex-col gap-4">
-              {mandate.arrears && (mandate.arrears.status === "partial" || mandate.arrears.status === "defaulted") && (
-                <div className="flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50/60 px-4 py-3">
-                  <IconAlertTriangle size={18} className="text-rose-500 shrink-0" aria-hidden="true" />
-                  <p className="text-body-regular text-rose-700">{formatCompactKES(mandate.arrears.amount)} in arrears · {mandate.arrears.daysInArrears} days</p>
-                </div>
-              )}
+              {mandate.arrears &&
+                (mandate.arrears.status === "partial" ||
+                  mandate.arrears.status === "defaulted") && (
+                  <div className="flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50/60 px-4 py-3">
+                    <IconAlertTriangle
+                      size={18}
+                      className="text-rose-500 shrink-0"
+                      aria-hidden="true"
+                    />
+                    <p className="text-body-regular text-rose-700">
+                      {formatCompactKES(mandate.arrears.amount)} in arrears ·{" "}
+                      {mandate.arrears.daysInArrears} days
+                    </p>
+                  </div>
+                )}
 
               {period && (
                 <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
@@ -1237,43 +1478,80 @@ export function MandateFullViewBoard({
                       {currentMonthName}
                     </span>
                   </div>
-                  <p className="text-desc-secondary mb-5">Collected rent is a landlord-payable liability — only the management fee is Sunland revenue.</p>
+                  <p className="text-desc-secondary mb-5">
+                    Collected rent is a landlord-payable liability — only the management fee is
+                    Sunland revenue.
+                  </p>
 
                   {/* Segmented Horizontal Progress Bar */}
-                  <div className="h-4 w-full rounded-full overflow-hidden flex bg-slate-100" aria-hidden="true">
-                    <div className="h-full bg-[#122a20]" style={{ width: `${(period.landlordRemittance / (period.collectedAmount || 1)) * 100}%` }} />
-                    <div className="h-full bg-slate-400" style={{ width: `${(period.expenses / (period.collectedAmount || 1)) * 100}%` }} />
-                    <div className="h-full bg-[#f3df27]" style={{ width: `${(period.managementFee / (period.collectedAmount || 1)) * 100}%` }} />
+                  <div
+                    className="h-4 w-full rounded-full overflow-hidden flex bg-slate-100"
+                    aria-hidden="true"
+                  >
+                    <div
+                      className="h-full bg-[#122a20]"
+                      style={{
+                        width: `${(period.landlordRemittance / (period.collectedAmount || 1)) * 100}%`,
+                      }}
+                    />
+                    <div
+                      className="h-full bg-slate-400"
+                      style={{
+                        width: `${(period.expenses / (period.collectedAmount || 1)) * 100}%`,
+                      }}
+                    />
+                    <div
+                      className="h-full bg-[#f3df27]"
+                      style={{
+                        width: `${(period.managementFee / (period.collectedAmount || 1)) * 100}%`,
+                      }}
+                    />
                   </div>
 
                   <div className="flex flex-col mt-6 gap-1">
                     <div className="flex items-center justify-between py-3 border-b border-slate-100/50">
                       <div className="flex items-center gap-2">
                         <span className="size-2.5 rounded-full bg-slate-300" />
-                        <span className="text-xs text-slate-600 font-medium uppercase tracking-wide">Rent collected (landlord-payable)</span>
+                        <span className="text-xs text-slate-600 font-medium uppercase tracking-wide">
+                          Rent collected (landlord-payable)
+                        </span>
                       </div>
-                      <span className="font-mono font-medium text-sm font-normal text-slate-900">{formatCompactKES(period.collectedAmount)}</span>
+                      <span className="font-mono font-medium text-sm font-normal text-slate-900">
+                        {formatCompactKES(period.collectedAmount)}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between py-3 border-b border-slate-100/50">
                       <div className="flex items-center gap-2">
                         <span className="size-2.5 rounded-full bg-[#f3df27]" />
-                        <span className="text-xs text-slate-600 font-medium uppercase tracking-wide">Less management fee — Sunland revenue</span>
+                        <span className="text-xs text-slate-600 font-medium uppercase tracking-wide">
+                          Less management fee — Sunland revenue
+                        </span>
                       </div>
-                      <span className="font-mono font-medium text-sm font-normal text-[#b49818]">- {formatCompactKES(period.managementFee)}</span>
+                      <span className="font-mono font-medium text-sm font-normal text-[#b49818]">
+                        - {formatCompactKES(period.managementFee)}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between py-3 border-b border-slate-100/50">
                       <div className="flex items-center gap-2">
                         <span className="size-2.5 rounded-full bg-slate-400" />
-                        <span className="text-xs text-slate-600 font-medium uppercase tracking-wide">Less approved expenses</span>
+                        <span className="text-xs text-slate-600 font-medium uppercase tracking-wide">
+                          Less approved expenses
+                        </span>
                       </div>
-                      <span className="font-mono font-medium text-sm font-normal text-slate-500">- {formatCompactKES(period.expenses)}</span>
+                      <span className="font-mono font-medium text-sm font-normal text-slate-500">
+                        - {formatCompactKES(period.expenses)}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between py-3">
                       <div className="flex items-center gap-2">
                         <span className="size-2.5 rounded-full bg-[#122a20]" />
-                        <span className="text-xs text-slate-800 font-normal uppercase tracking-wide">Landlord remittance due</span>
+                        <span className="text-xs text-slate-800 font-normal uppercase tracking-wide">
+                          Landlord remittance due
+                        </span>
                       </div>
-                      <span className="font-mono font-medium text-lg font-medium text-[#122a20]">{formatCompactKES(period.landlordRemittance)}</span>
+                      <span className="font-mono font-medium text-lg font-medium text-[#122a20]">
+                        {formatCompactKES(period.landlordRemittance)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1282,10 +1560,15 @@ export function MandateFullViewBoard({
               {mandate.collections.length > 0 && (
                 <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                   <h3 className="text-title-primary">Collections — Expected vs Collected</h3>
-                  <p className="text-desc-secondary mb-6">Six-month rolling ledger for this mandate.</p>
+                  <p className="text-desc-secondary mb-6">
+                    Six-month rolling ledger for this mandate.
+                  </p>
                   <div className="h-[260px] w-full">
                     <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0}>
-                      <AreaChart data={mandate.collections} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <AreaChart
+                        data={mandate.collections}
+                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                      >
                         <defs>
                           <linearGradient id="colorCollectedMandate" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#122a20" stopOpacity={0.25} />
@@ -1293,11 +1576,39 @@ export function MandateFullViewBoard({
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                        <XAxis dataKey="period" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} dy={10} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} tickFormatter={(v) => formatCompactKES(v)} dx={-10} />
+                        <XAxis
+                          dataKey="period"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#64748b", fontSize: 11 }}
+                          dy={10}
+                        />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#64748b", fontSize: 11 }}
+                          tickFormatter={(v) => formatCompactKES(v)}
+                          dx={-10}
+                        />
                         <Tooltip formatter={(v) => formatCompactKES(Number(v))} />
-                        <Area type="monotone" dataKey="expected" name="Expected" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="4 4" fill="transparent" />
-                        <Area type="monotone" dataKey="collected" name="Collected" stroke="#122a20" strokeWidth={2.5} fillOpacity={1} fill="url(#colorCollectedMandate)" />
+                        <Area
+                          type="monotone"
+                          dataKey="expected"
+                          name="Expected"
+                          stroke="#94a3b8"
+                          strokeWidth={1.5}
+                          strokeDasharray="4 4"
+                          fill="transparent"
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="collected"
+                          name="Collected"
+                          stroke="#122a20"
+                          strokeWidth={2.5}
+                          fillOpacity={1}
+                          fill="url(#colorCollectedMandate)"
+                        />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
@@ -1308,7 +1619,8 @@ export function MandateFullViewBoard({
                       <span className="h-0.5 w-3 bg-[#122a20] rounded-full" /> Collected
                     </span>
                     <span className="flex items-center gap-1.5 font-medium text-slate-500">
-                      <span className="h-0.5 w-3 border-t border-dashed border-slate-400" /> Expected
+                      <span className="h-0.5 w-3 border-t border-dashed border-slate-400" />{" "}
+                      Expected
                     </span>
                   </div>
                 </div>
@@ -1317,25 +1629,39 @@ export function MandateFullViewBoard({
               <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col gap-4">
                 <h3 className="text-title-primary">Remittance History</h3>
                 {remittances.length === 0 ? (
-                  <p className="text-slate-600 text-center py-8 text-sm bg-slate-50 rounded-2xl border border-slate-100 border-dashed">No remittance advices generated yet.</p>
+                  <p className="text-slate-600 text-center py-8 text-sm bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
+                    No remittance advices generated yet.
+                  </p>
                 ) : (
                   <>
                     {/* Search + status filter */}
                     <div className="flex flex-wrap items-center gap-2.5">
                       <div className="relative flex-1 min-w-[200px]">
-                        <IconSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <IconSearch
+                          size={14}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                        />
                         <input
                           value={remittanceSearchQuery}
-                          onChange={(e) => { setRemittanceSearchQuery(e.target.value); setRemittancePage(1); }}
+                          onChange={(e) => {
+                            setRemittanceSearchQuery(e.target.value);
+                            setRemittancePage(1);
+                          }}
                           placeholder="Search by period or status..."
                           className="w-full h-9 rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
                         />
                       </div>
                       <div className="relative shrink-0">
-                        <IconFilter size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <IconFilter
+                          size={13}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                        />
                         <select
                           value={remittanceStatusFilter}
-                          onChange={(e) => { setRemittanceStatusFilter(e.target.value); setRemittancePage(1); }}
+                          onChange={(e) => {
+                            setRemittanceStatusFilter(e.target.value);
+                            setRemittancePage(1);
+                          }}
                           className="h-9 rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm appearance-none"
                         >
                           <option value="all">All statuses</option>
@@ -1347,23 +1673,33 @@ export function MandateFullViewBoard({
                     </div>
 
                     {paginatedRemittances.length === 0 ? (
-                      <div className="p-8 text-center text-slate-400 text-sm">No remittances match this search/filter.</div>
+                      <div className="p-8 text-center text-slate-400 text-sm">
+                        No remittances match this search/filter.
+                      </div>
                     ) : (
                       <div className="divide-y divide-slate-100">
                         {paginatedRemittances.map((r) => (
                           <button
                             key={r.id}
                             type="button"
-                            onClick={() => { setSelectedRemittance(r); setRemittancePanelOpen(true); }}
+                            onClick={() => {
+                              setSelectedRemittance(r);
+                              setRemittancePanelOpen(true);
+                            }}
                             className="flex items-center justify-between w-full py-3.5 hover:bg-slate-50/60 transition-colors text-left px-2 -mx-2 rounded-lg"
                           >
                             <div>
                               <p className="body-sm text-slate-800 font-medium">
-                                {new Date(r.periodStart).toLocaleDateString("en-KE", { month: "short", year: "numeric" })}
+                                {new Date(r.periodStart).toLocaleDateString("en-KE", {
+                                  month: "short",
+                                  year: "numeric",
+                                })}
                               </p>
                               <p className="text-xs text-slate-600 mt-0.5 capitalize">{r.status}</p>
                             </div>
-                            <span className="font-mono font-medium text-slate-900">{formatCompactKES(Number(r.netRemittanceKes))}</span>
+                            <span className="font-mono font-medium text-slate-900">
+                              {formatCompactKES(Number(r.netRemittanceKes))}
+                            </span>
                           </button>
                         ))}
                       </div>
@@ -1373,7 +1709,8 @@ export function MandateFullViewBoard({
                     {remittanceTotalPages > 1 && (
                       <div className="flex items-center justify-between pt-4 mt-1 border-t border-slate-100">
                         <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
-                          Page {safeRemittancePage} of {remittanceTotalPages} <span className="mx-1">·</span> {filteredRemittances.length} remittances
+                          Page {safeRemittancePage} of {remittanceTotalPages}{" "}
+                          <span className="mx-1">·</span> {filteredRemittances.length} remittances
                         </span>
                         <div className="flex items-center gap-1.5">
                           <button
@@ -1386,7 +1723,11 @@ export function MandateFullViewBoard({
                           </button>
                           <button
                             type="button"
-                            onClick={() => setRemittancePage(Math.min(remittanceTotalPages, safeRemittancePage + 1))}
+                            onClick={() =>
+                              setRemittancePage(
+                                Math.min(remittanceTotalPages, safeRemittancePage + 1)
+                              )
+                            }
                             disabled={safeRemittancePage >= remittanceTotalPages}
                             className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
                           >
@@ -1412,7 +1753,10 @@ export function MandateFullViewBoard({
                   {canManage && units.length > 0 && (
                     <button
                       type="button"
-                      onClick={() => { setEditingUnit(null); setUnitFormOpen(true); }}
+                      onClick={() => {
+                        setEditingUnit(null);
+                        setUnitFormOpen(true);
+                      }}
                       className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium rounded-xl px-4 py-2 shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <IconEdit size={13} /> Add Unit
@@ -1431,7 +1775,9 @@ export function MandateFullViewBoard({
               </div>
 
               {unitsLoading ? (
-                <div className="flex justify-center py-12"><LoadingSpinner size="md" /></div>
+                <div className="flex justify-center py-12">
+                  <LoadingSpinner size="md" />
+                </div>
               ) : units.length === 0 ? (
                 <div className="p-10 text-center flex flex-col items-center gap-3">
                   <p className="text-slate-500 text-sm">No units recorded for this property yet.</p>
@@ -1451,19 +1797,31 @@ export function MandateFullViewBoard({
                   {/* Search + status filter */}
                   <div className="flex flex-wrap items-center gap-2.5 mb-1">
                     <div className="relative flex-1 min-w-[200px]">
-                      <IconSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                      <IconSearch
+                        size={14}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                      />
                       <input
                         value={unitSearchQuery}
-                        onChange={(e) => { setUnitSearchQuery(e.target.value); setUnitPage(1); }}
+                        onChange={(e) => {
+                          setUnitSearchQuery(e.target.value);
+                          setUnitPage(1);
+                        }}
                         placeholder="Search unit, type, or tenant..."
                         className="w-full h-9 rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
                       />
                     </div>
                     <div className="relative shrink-0">
-                      <IconFilter size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                      <IconFilter
+                        size={13}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                      />
                       <select
                         value={unitStatusFilter}
-                        onChange={(e) => { setUnitStatusFilter(e.target.value); setUnitPage(1); }}
+                        onChange={(e) => {
+                          setUnitStatusFilter(e.target.value);
+                          setUnitPage(1);
+                        }}
                         className="h-9 rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm appearance-none"
                       >
                         <option value="all">All statuses</option>
@@ -1476,7 +1834,9 @@ export function MandateFullViewBoard({
                   </div>
 
                   {paginatedUnits.length === 0 ? (
-                    <div className="p-10 text-center text-slate-400 text-sm">No units match this search/filter.</div>
+                    <div className="p-10 text-center text-slate-400 text-sm">
+                      No units match this search/filter.
+                    </div>
                   ) : (
                     <>
                       {/* Mobile: stacked cards - a dense 6-column grid doesn't decard
@@ -1484,15 +1844,23 @@ export function MandateFullViewBoard({
                           of relying on horizontal scroll. */}
                       <div className="flex flex-col gap-2 sm:hidden">
                         {paginatedUnits.map((unit) => (
-                          <div key={unit.id} className="rounded-2xl border border-slate-100 p-4 flex flex-col gap-3">
+                          <div
+                            key={unit.id}
+                            className="rounded-2xl border border-slate-100 p-4 flex flex-col gap-3"
+                          >
                             <div className="flex items-center justify-between gap-2">
-                              <span className="font-mono font-medium text-slate-900">{unit.unitLabel}</span>
+                              <span className="font-mono font-medium text-slate-900">
+                                {unit.unitLabel}
+                              </span>
                               <Badge
                                 tone={
-                                  unit.status === "occupied" ? "success" :
-                                    unit.status === "reserved" ? "warning" :
-                                      unit.status === "maintenance" ? "risk" :
-                                        "neutral"
+                                  unit.status === "occupied"
+                                    ? "success"
+                                    : unit.status === "reserved"
+                                      ? "warning"
+                                      : unit.status === "maintenance"
+                                        ? "risk"
+                                        : "neutral"
                                 }
                               >
                                 {unit.status}
@@ -1509,18 +1877,31 @@ export function MandateFullViewBoard({
                                   fallback={getInitials(unit.lease.tenantName)}
                                   className="size-8 bg-slate-100 text-slate-800 text-xs font-normal shrink-0"
                                 />
-                                <span className="text-slate-800 font-medium truncate text-sm">{unit.lease.tenantName}</span>
+                                <span className="text-slate-800 font-medium truncate text-sm">
+                                  {unit.lease.tenantName}
+                                </span>
                               </button>
                             ) : (
                               <span className="flex items-center gap-2.5 min-w-0">
-                                <span className="size-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 font-mono text-xxs font-normal shrink-0">—</span>
-                                <span className="text-slate-400 font-medium text-sm">No tenant assigned</span>
+                                <span className="size-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 font-mono text-xxs font-normal shrink-0">
+                                  —
+                                </span>
+                                <span className="text-slate-400 font-medium text-sm">
+                                  No tenant assigned
+                                </span>
                               </span>
                             )}
                             <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-50">
                               <span className="text-slate-500">{unit.unitType || "—"}</span>
-                              <span className={cn("font-mono", unit.monthlyRentKes ? "text-slate-600" : "text-slate-400")}>
-                                {unit.monthlyRentKes ? `${formatCompactKES(parseFloat(unit.monthlyRentKes))}/mo` : "—"}
+                              <span
+                                className={cn(
+                                  "font-mono",
+                                  unit.monthlyRentKes ? "text-slate-600" : "text-slate-400"
+                                )}
+                              >
+                                {unit.monthlyRentKes
+                                  ? `${formatCompactKES(parseFloat(unit.monthlyRentKes))}/mo`
+                                  : "—"}
                               </span>
                             </div>
                             {canManage && (
@@ -1536,7 +1917,10 @@ export function MandateFullViewBoard({
                                 )}
                                 <button
                                   type="button"
-                                  onClick={() => { setEditingUnit(unit); setUnitFormOpen(true); }}
+                                  onClick={() => {
+                                    setEditingUnit(unit);
+                                    setUnitFormOpen(true);
+                                  }}
                                   className="h-8 px-3 rounded-lg border border-slate-200 flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
                                 >
                                   <IconEdit size={13} /> Edit
@@ -1548,7 +1932,10 @@ export function MandateFullViewBoard({
                       </div>
 
                       {/* Desktop/tablet: dense grid */}
-                      <div className="hidden sm:flex sm:flex-col overflow-x-auto" style={scrollHiddenStyle}>
+                      <div
+                        className="hidden sm:flex sm:flex-col overflow-x-auto"
+                        style={scrollHiddenStyle}
+                      >
                         <div className="grid grid-cols-[90px_1.2fr_1fr_110px_110px_80px] items-center px-4 py-2.5 bg-slate-50/50 rounded-xl text-xxs font-medium uppercase tracking-wider text-slate-500 mb-2 border border-slate-100/60 min-w-[720px]">
                           <div>Unit</div>
                           <div>Tenant</div>
@@ -1564,7 +1951,9 @@ export function MandateFullViewBoard({
                               key={unit.id}
                               className="grid grid-cols-[90px_1.2fr_1fr_110px_110px_80px] items-center py-3 px-4 hover:bg-slate-50/60 rounded-2xl transition-colors text-sm group"
                             >
-                              <span className="font-mono font-normal text-slate-900 truncate">{unit.unitLabel}</span>
+                              <span className="font-mono font-normal text-slate-900 truncate">
+                                {unit.unitLabel}
+                              </span>
                               {unit.lease ? (
                                 <button
                                   type="button"
@@ -1576,25 +1965,41 @@ export function MandateFullViewBoard({
                                     fallback={getInitials(unit.lease.tenantName)}
                                     className="size-7 bg-slate-100 text-slate-800 text-xs font-normal shrink-0"
                                   />
-                                  <span className="text-slate-800 font-medium truncate">{unit.lease.tenantName}</span>
+                                  <span className="text-slate-800 font-medium truncate">
+                                    {unit.lease.tenantName}
+                                  </span>
                                 </button>
                               ) : (
                                 <span className="flex items-center gap-2.5 min-w-0">
-                                  <span className="size-7 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 font-mono text-xxs font-normal shrink-0">—</span>
+                                  <span className="size-7 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 font-mono text-xxs font-normal shrink-0">
+                                    —
+                                  </span>
                                   <span className="text-slate-400 font-medium">—</span>
                                 </span>
                               )}
-                              <span className="text-slate-500 text-xs truncate pr-2">{unit.unitType || "—"}</span>
-                              <span className={cn("font-mono", unit.monthlyRentKes ? "text-slate-600" : "text-slate-400")}>
-                                {unit.monthlyRentKes ? `${formatCompactKES(parseFloat(unit.monthlyRentKes))}/mo` : "—"}
+                              <span className="text-slate-500 text-xs truncate pr-2">
+                                {unit.unitType || "—"}
+                              </span>
+                              <span
+                                className={cn(
+                                  "font-mono",
+                                  unit.monthlyRentKes ? "text-slate-600" : "text-slate-400"
+                                )}
+                              >
+                                {unit.monthlyRentKes
+                                  ? `${formatCompactKES(parseFloat(unit.monthlyRentKes))}/mo`
+                                  : "—"}
                               </span>
                               <div>
                                 <Badge
                                   tone={
-                                    unit.status === "occupied" ? "success" :
-                                      unit.status === "reserved" ? "warning" :
-                                        unit.status === "maintenance" ? "risk" :
-                                          "neutral"
+                                    unit.status === "occupied"
+                                      ? "success"
+                                      : unit.status === "reserved"
+                                        ? "warning"
+                                        : unit.status === "maintenance"
+                                          ? "risk"
+                                          : "neutral"
                                   }
                                 >
                                   {unit.status}
@@ -1614,7 +2019,10 @@ export function MandateFullViewBoard({
                                 {canManage && (
                                   <button
                                     type="button"
-                                    onClick={() => { setEditingUnit(unit); setUnitFormOpen(true); }}
+                                    onClick={() => {
+                                      setEditingUnit(unit);
+                                      setUnitFormOpen(true);
+                                    }}
                                     title="Edit unit"
                                     className="size-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors"
                                   >
@@ -1631,7 +2039,9 @@ export function MandateFullViewBoard({
 
                   {unitTotalPages > 1 && (
                     <div className="flex items-center justify-between pt-2">
-                      <span className="text-xs text-slate-400">Page {safeUnitPage} of {unitTotalPages}</span>
+                      <span className="text-xs text-slate-400">
+                        Page {safeUnitPage} of {unitTotalPages}
+                      </span>
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
@@ -1657,191 +2067,247 @@ export function MandateFullViewBoard({
             </div>
           )}
 
-          {activeTab === "documents" && (() => {
-            const mandateLetterDoc = findMandateLetterDocument(mandate.documents, mandate.property.id);
-            const hasAnyOtherDocs = mandate.documents.some((d) => d.type !== "mandate_letter");
-            const letterStatus = mandateLetterStatus(mandate.documents, mandate.property.id);
-            const letterStatusMeta = MANDATE_LETTER_STATUS_META[letterStatus];
-            return (
-              <div className="flex flex-col gap-4">
-                {/* Mandate Letter Card */}
-                <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                  <div className="flex items-center justify-between gap-3 mb-1.5">
-                    <span className="text-xs font-medium uppercase tracking-wider text-slate-400 font-mono block">Mandate Letter</span>
-                    <Badge tone={letterStatusMeta.tone}>{letterStatusMeta.label}</Badge>
-                  </div>
-                  <p className="text-desc-secondary mb-5">The signed instrument authorizing Sunland to collect rent and manage this property on {mandate.landlord.name}&apos;s behalf.</p>
+          {activeTab === "documents" &&
+            (() => {
+              const mandateLetterDoc = findMandateLetterDocument(
+                mandate.documents,
+                mandate.property.id
+              );
+              const hasAnyOtherDocs = mandate.documents.some((d) => d.type !== "mandate_letter");
+              const letterStatus = mandateLetterStatus(mandate.documents, mandate.property.id);
+              const letterStatusMeta = MANDATE_LETTER_STATUS_META[letterStatus];
+              return (
+                <div className="flex flex-col gap-4">
+                  {/* Mandate Letter Card */}
+                  <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <div className="flex items-center justify-between gap-3 mb-1.5">
+                      <span className="text-xs font-medium uppercase tracking-wider text-slate-400 font-mono block">
+                        Mandate Letter
+                      </span>
+                      <Badge tone={letterStatusMeta.tone}>{letterStatusMeta.label}</Badge>
+                    </div>
+                    <p className="text-desc-secondary mb-5">
+                      The signed instrument authorizing Sunland to collect rent and manage this
+                      property on {mandate.landlord.name}&apos;s behalf.
+                    </p>
 
-                  {mandateLetterDoc ? (
-                    <div className="flex items-center justify-between gap-6">
-                      <div className="flex-1 bg-slate-50/50 border border-slate-100/60 rounded-2xl p-4 flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="size-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 shadow-xs shrink-0">
-                            <IconFileText size={18} className="text-slate-600" />
+                    {mandateLetterDoc ? (
+                      <div className="flex items-center justify-between gap-6">
+                        <div className="flex-1 bg-slate-50/50 border border-slate-100/60 rounded-2xl p-4 flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="size-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 shadow-xs shrink-0">
+                              <IconFileText size={18} className="text-slate-600" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-normal text-slate-800 truncate">
+                                {mandateLetterDoc.name}
+                              </p>
+                              <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-mono">
+                                {[
+                                  formatFileSize(mandateLetterDoc.fileSizeBytes),
+                                  mandateLetterDoc.createdAt
+                                    ? `added ${new Date(mandateLetterDoc.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`
+                                    : null,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" · ") || "Details not on file"}
+                              </p>
+                            </div>
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-normal text-slate-800 truncate">{mandateLetterDoc.name}</p>
-                            <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-mono">
-                              {[
-                                formatFileSize(mandateLetterDoc.fileSizeBytes),
-                                mandateLetterDoc.createdAt
-                                  ? `added ${new Date(mandateLetterDoc.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`
-                                  : null,
-                              ].filter(Boolean).join(" · ") || "Details not on file"}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <a
-                            href={mandateLetterDoc.url || "#"}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-[#122a20] hover:underline text-xs font-normal px-3 py-1.5 hover:bg-slate-100/50 rounded-lg transition-colors"
-                          >
-                            Open
-                          </a>
-                          {canManage && (
-                            <button
-                              type="button"
-                              onClick={() => setMandateLetterOpen(true)}
-                              className="text-slate-500 hover:text-slate-700 text-xs font-medium px-3 py-1.5 hover:bg-slate-100/50 rounded-lg transition-colors cursor-pointer"
+                          <div className="flex items-center gap-2 shrink-0">
+                            <a
+                              href={mandateLetterDoc.url || "#"}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-[#122a20] hover:underline text-xs font-normal px-3 py-1.5 hover:bg-slate-100/50 rounded-lg transition-colors"
                             >
-                              Replace
-                            </button>
-                          )}
+                              Open
+                            </a>
+                            {canManage && (
+                              <button
+                                type="button"
+                                onClick={() => setMandateLetterOpen(true)}
+                                className="text-slate-500 hover:text-slate-700 text-xs font-medium px-3 py-1.5 hover:bg-slate-100/50 rounded-lg transition-colors cursor-pointer"
+                              >
+                                Replace
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Scan Live QR Block */}
-                      <div className="flex flex-col items-center gap-2 shrink-0">
-                        <div className="size-16 flex items-center justify-center">
-                          <IconQrcode size={44} className="text-slate-800" stroke={1.5} />
-                        </div>
-                        <span className="text-xxs text-slate-400 font-medium uppercase tracking-wide text-center leading-tight">Scan to view live copy</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-slate-50/50 border border-slate-200 border-dashed rounded-2xl p-6 text-center flex flex-col items-center gap-3">
-                      <IconFileText size={32} className="text-slate-400" />
-                      <div>
-                        <p className="text-sm font-normal text-slate-700">No mandate letter attached</p>
-                        <p className="text-xs text-slate-500 mt-1">Upload the signed instrument authorizing Sunland to manage this property.</p>
-                      </div>
-                      {canManage && (
-                        <button
-                          type="button"
-                          onClick={() => setMandateLetterOpen(true)}
-                          className="bg-[#151936] text-white hover:bg-[#1f254e] text-xs font-medium rounded-xl px-4 py-2 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
-                        >
-                          + Upload Letter
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Other Documents Card */}
-                <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col gap-4">
-                  <h3 className="text-title-primary">Other documents</h3>
-                  {!hasAnyOtherDocs ? (
-                    <p className="text-slate-500 text-center py-10 text-xs bg-slate-50 rounded-2xl border border-slate-100 border-dashed">No other documents attached yet.</p>
-                  ) : (
-                    <>
-                      {/* Search + status filter */}
-                      <div className="flex flex-wrap items-center gap-2.5">
-                        <div className="relative flex-1 min-w-[200px]">
-                          <IconSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                          <input
-                            value={docSearchQuery}
-                            onChange={(e) => { setDocSearchQuery(e.target.value); setDocPage(1); }}
-                            placeholder="Search documents by name or type..."
-                            className="w-full h-9 rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
-                          />
-                        </div>
-                        <div className="relative shrink-0">
-                          <IconFilter size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                          <select
-                            value={docStatusFilter}
-                            onChange={(e) => { setDocStatusFilter(e.target.value); setDocPage(1); }}
-                            className="h-9 rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm appearance-none"
-                          >
-                            <option value="all">All statuses</option>
-                            <option value="draft">Draft</option>
-                            <option value="awaiting_signature">Awaiting signature</option>
-                            <option value="signed">Signed</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {paginatedOtherDocs.length === 0 ? (
-                        <div className="p-10 text-center text-slate-400 text-sm">No documents match this search/filter.</div>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          {paginatedOtherDocs.map((doc) => {
-                            const isSigned = doc.status === "signed" || (doc.type && ["mandate_letter", "lease_agreement", "offer_letter"].includes(doc.type));
-                            const statusLabel = doc.status === "signed" ? "SIGNED" : doc.status === "awaiting_signature" ? "AWAITING SIGNATURE" : "FILED";
-                            const sizeLabel = formatFileSize(doc.fileSizeBytes);
-                            const addedLabel = doc.createdAt
-                              ? `added ${new Date(doc.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`
-                              : null;
-                            return (
-                              <div key={doc.id} className="flex items-center justify-between p-3.5 px-4 bg-slate-50/50 border border-slate-100/60 hover:bg-slate-50 rounded-2xl transition-colors w-full group">
-                                <div className="flex items-center gap-3 min-w-0">
-                                  <div className="size-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 shadow-xs shrink-0">
-                                    <IconFileText size={15} className="text-slate-500" />
-                                  </div>
-                                  <div className="min-w-0">
-                                    <a href={doc.url || "#"} target="_blank" rel="noreferrer" className="text-sm font-medium text-slate-700 hover:text-slate-900 hover:underline truncate block">
-                                      {doc.name}
-                                    </a>
-                                    <p className="text-xs text-slate-400 mt-0.5 font-mono">
-                                      {[sizeLabel, addedLabel].filter(Boolean).join(" · ") || "Details not on file"}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div>
-                                  <Badge tone={isSigned ? "success" : "neutral"}>
-                                    {statusLabel}
-                                  </Badge>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      {/* Pagination Controls */}
-                      {docTotalPages > 1 && (
-                        <div className="flex items-center justify-between pt-4 mt-1 border-t border-slate-100">
-                          <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
-                            Page {safeDocPage} of {docTotalPages} <span className="mx-1">·</span> {filteredOtherDocs.length} documents
+                        {/* Scan Live QR Block */}
+                        <div className="flex flex-col items-center gap-2 shrink-0">
+                          <div className="size-16 flex items-center justify-center">
+                            <IconQrcode size={44} className="text-slate-800" stroke={1.5} />
+                          </div>
+                          <span className="text-xxs text-slate-400 font-medium uppercase tracking-wide text-center leading-tight">
+                            Scan to view live copy
                           </span>
-                          <div className="flex items-center gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => setDocPage(Math.max(1, safeDocPage - 1))}
-                              disabled={safeDocPage <= 1}
-                              className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-slate-50/50 border border-slate-200 border-dashed rounded-2xl p-6 text-center flex flex-col items-center gap-3">
+                        <IconFileText size={32} className="text-slate-400" />
+                        <div>
+                          <p className="text-sm font-normal text-slate-700">
+                            No mandate letter attached
+                          </p>
+                          <p className="text-xs text-slate-500 mt-1">
+                            Upload the signed instrument authorizing Sunland to manage this
+                            property.
+                          </p>
+                        </div>
+                        {canManage && (
+                          <button
+                            type="button"
+                            onClick={() => setMandateLetterOpen(true)}
+                            className="bg-[#151936] text-white hover:bg-[#1f254e] text-xs font-medium rounded-xl px-4 py-2 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                          >
+                            + Upload Letter
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Other Documents Card */}
+                  <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col gap-4">
+                    <h3 className="text-title-primary">Other documents</h3>
+                    {!hasAnyOtherDocs ? (
+                      <p className="text-slate-500 text-center py-10 text-xs bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
+                        No other documents attached yet.
+                      </p>
+                    ) : (
+                      <>
+                        {/* Search + status filter */}
+                        <div className="flex flex-wrap items-center gap-2.5">
+                          <div className="relative flex-1 min-w-[200px]">
+                            <IconSearch
+                              size={14}
+                              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                            />
+                            <input
+                              value={docSearchQuery}
+                              onChange={(e) => {
+                                setDocSearchQuery(e.target.value);
+                                setDocPage(1);
+                              }}
+                              placeholder="Search documents by name or type..."
+                              className="w-full h-9 rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
+                            />
+                          </div>
+                          <div className="relative shrink-0">
+                            <IconFilter
+                              size={13}
+                              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                            />
+                            <select
+                              value={docStatusFilter}
+                              onChange={(e) => {
+                                setDocStatusFilter(e.target.value);
+                                setDocPage(1);
+                              }}
+                              className="h-9 rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-sm focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm appearance-none"
                             >
-                              <IconChevronLeft size={15} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDocPage(Math.min(docTotalPages, safeDocPage + 1))}
-                              disabled={safeDocPage >= docTotalPages}
-                              className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
-                            >
-                              <IconChevronRight size={15} />
-                            </button>
+                              <option value="all">All statuses</option>
+                              <option value="draft">Draft</option>
+                              <option value="awaiting_signature">Awaiting signature</option>
+                              <option value="signed">Signed</option>
+                            </select>
                           </div>
                         </div>
-                      )}
-                    </>
-                  )}
+
+                        {paginatedOtherDocs.length === 0 ? (
+                          <div className="p-10 text-center text-slate-400 text-sm">
+                            No documents match this search/filter.
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-2">
+                            {paginatedOtherDocs.map((doc) => {
+                              const isSigned =
+                                doc.status === "signed" ||
+                                (doc.type &&
+                                  ["mandate_letter", "lease_agreement", "offer_letter"].includes(
+                                    doc.type
+                                  ));
+                              const statusLabel =
+                                doc.status === "signed"
+                                  ? "SIGNED"
+                                  : doc.status === "awaiting_signature"
+                                    ? "AWAITING SIGNATURE"
+                                    : "FILED";
+                              const sizeLabel = formatFileSize(doc.fileSizeBytes);
+                              const addedLabel = doc.createdAt
+                                ? `added ${new Date(doc.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`
+                                : null;
+                              return (
+                                <div
+                                  key={doc.id}
+                                  className="flex items-center justify-between p-3.5 px-4 bg-slate-50/50 border border-slate-100/60 hover:bg-slate-50 rounded-2xl transition-colors w-full group"
+                                >
+                                  <div className="flex items-center gap-3 min-w-0">
+                                    <div className="size-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 shadow-xs shrink-0">
+                                      <IconFileText size={15} className="text-slate-500" />
+                                    </div>
+                                    <div className="min-w-0">
+                                      <a
+                                        href={doc.url || "#"}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-sm font-medium text-slate-700 hover:text-slate-900 hover:underline truncate block"
+                                      >
+                                        {doc.name}
+                                      </a>
+                                      <p className="text-xs text-slate-400 mt-0.5 font-mono">
+                                        {[sizeLabel, addedLabel].filter(Boolean).join(" · ") ||
+                                          "Details not on file"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <Badge tone={isSigned ? "success" : "neutral"}>
+                                      {statusLabel}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Pagination Controls */}
+                        {docTotalPages > 1 && (
+                          <div className="flex items-center justify-between pt-4 mt-1 border-t border-slate-100">
+                            <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
+                              Page {safeDocPage} of {docTotalPages} <span className="mx-1">·</span>{" "}
+                              {filteredOtherDocs.length} documents
+                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setDocPage(Math.max(1, safeDocPage - 1))}
+                                disabled={safeDocPage <= 1}
+                                className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                              >
+                                <IconChevronLeft size={15} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setDocPage(Math.min(docTotalPages, safeDocPage + 1))}
+                                disabled={safeDocPage >= docTotalPages}
+                                className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                              >
+                                <IconChevronRight size={15} />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })()}
+              );
+            })()}
 
           {activeTab === "activity" && (
             <div className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
@@ -1853,7 +2319,10 @@ export function MandateFullViewBoard({
                 {/* Advanced Search & Filter Bar */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <div className="relative flex-1">
-                    <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <IconSearch
+                      size={16}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
                     <input
                       type="text"
                       placeholder="Search activity logs..."
@@ -1866,7 +2335,10 @@ export function MandateFullViewBoard({
                     />
                   </div>
                   <div className="relative shrink-0">
-                    <IconFilter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <IconFilter
+                      size={14}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                    />
                     <select
                       value={activityFilter}
                       onChange={(e) => {
@@ -1897,13 +2369,17 @@ export function MandateFullViewBoard({
                     <IconMoodEmpty size={32} className="text-slate-300" />
                   </div>
                   <h3 className="text-sm font-medium text-slate-700">No recorded activity yet.</h3>
-                  <p className="text-slate-400 max-w-sm text-xs">Status changes, edits, and mandate events will safely log here.</p>
+                  <p className="text-slate-400 max-w-sm text-xs">
+                    Status changes, edits, and mandate events will safely log here.
+                  </p>
                 </div>
               ) : paginatedActivity.length === 0 ? (
                 <div className="flex flex-col items-center py-12 text-center">
                   <IconSearch size={24} className="text-slate-300 mb-3" />
                   <p className="text-sm font-medium text-slate-700">No logs match your filter</p>
-                  <p className="text-xs text-slate-400 mt-1">Try adjusting the search query or dropdown.</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Try adjusting the search query or dropdown.
+                  </p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6 relative ml-1">
@@ -1911,13 +2387,27 @@ export function MandateFullViewBoard({
                   {paginatedActivity.map((entry) => {
                     const toneColor = getActivityTone(entry.summary);
                     return (
-                      <div key={entry.id} className="relative flex items-start lg:items-center gap-4 z-10 group">
-                        <div className={cn("size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs", toneColor)} />
+                      <div
+                        key={entry.id}
+                        className="relative flex items-start lg:items-center gap-4 z-10 group"
+                      >
+                        <div
+                          className={cn(
+                            "size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs",
+                            toneColor
+                          )}
+                        />
                         <div className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 bg-slate-50/50 hover:bg-slate-100/50 -my-1.5 -mx-3 p-2 px-3 rounded-xl transition-colors">
                           <p className="text-sm text-slate-500 leading-snug group-hover:text-slate-700 transition-colors flex-1 min-w-0 pr-4">
                             {entry.actorName ? (
                               <>
-                                <span className="font-medium text-slate-700">{entry.actorName}</span> {entry.summary.replace(entry.actorName, "").replace(/^ - |^ — /, "").trim()}
+                                <span className="font-medium text-slate-700">
+                                  {entry.actorName}
+                                </span>{" "}
+                                {entry.summary
+                                  .replace(entry.actorName, "")
+                                  .replace(/^ - |^ — /, "")
+                                  .trim()}
                               </>
                             ) : (
                               entry.summary
@@ -1925,7 +2415,16 @@ export function MandateFullViewBoard({
                           </p>
                           <div className="flex items-center gap-3 shrink-0">
                             <p className="text-xs text-slate-400 font-mono tracking-wider hidden lg:block">
-                              {new Date(entry.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}, {new Date(entry.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                              {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                              ,{" "}
+                              {new Date(entry.createdAt).toLocaleTimeString("en-GB", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </p>
                             <Badge tone="neutral" className="whitespace-nowrap">
                               {relativeTime(entry.createdAt)}
@@ -1942,7 +2441,8 @@ export function MandateFullViewBoard({
               {activityTotalPages > 1 && (
                 <div className="flex items-center justify-between pt-6 mt-6 border-t border-slate-100">
                   <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
-                    Page {safeActivityPage} of {activityTotalPages} <span className="mx-1">·</span> {filteredActivity.length} logs
+                    Page {safeActivityPage} of {activityTotalPages} <span className="mx-1">·</span>{" "}
+                    {filteredActivity.length} logs
                   </span>
                   <div className="flex items-center gap-1.5">
                     <button
@@ -1955,7 +2455,9 @@ export function MandateFullViewBoard({
                     </button>
                     <button
                       type="button"
-                      onClick={() => setActivityPage(Math.min(activityTotalPages, safeActivityPage + 1))}
+                      onClick={() =>
+                        setActivityPage(Math.min(activityTotalPages, safeActivityPage + 1))
+                      }
                       disabled={safeActivityPage >= activityTotalPages}
                       className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
                     >
@@ -1987,13 +2489,17 @@ export function MandateFullViewBoard({
 
               {/* Name and subtitle at the top */}
               <div className="relative z-10 mt-2">
-                <h4 className="text-2xl font-serif text-white tracking-tight">{mandate.landlord.name}</h4>
+                <h4 className="text-2xl font-serif text-white tracking-tight">
+                  {mandate.landlord.name}
+                </h4>
                 {mandate.landlord.verifiedAt ? (
                   <span className="text-xs text-slate-200/90 flex items-center justify-center gap-1 mt-1 font-medium">
                     <IconShieldCheck size={14} className="text-emerald-400" /> Verified landlord
                   </span>
                 ) : (
-                  <span className="text-xs text-slate-300/80 flex items-center justify-center gap-1 mt-1 font-medium">Landlord</span>
+                  <span className="text-xs text-slate-300/80 flex items-center justify-center gap-1 mt-1 font-medium">
+                    Landlord
+                  </span>
                 )}
               </div>
 
@@ -2001,7 +2507,7 @@ export function MandateFullViewBoard({
               <div className="relative z-10 flex justify-center gap-3 mb-1">
                 <button
                   type="button"
-                  onClick={() => router.push('/admin/messages')}
+                  onClick={() => router.push("/admin/messages")}
                   className="size-9 rounded-full bg-white hover:bg-slate-50 text-slate-900 shadow-md flex items-center justify-center transition-all cursor-pointer border border-slate-100"
                   title="Message"
                 >
@@ -2028,7 +2534,9 @@ export function MandateFullViewBoard({
                   </span>
                   <span className="text-xs font-medium text-slate-600 ml-2.5">Phone</span>
                 </div>
-                <span className="text-xs font-mono font-medium text-slate-700 pr-3 truncate">{mandate.landlord.phone || "—"}</span>
+                <span className="text-xs font-mono font-medium text-slate-700 pr-3 truncate">
+                  {mandate.landlord.phone || "—"}
+                </span>
               </div>
 
               {/* Mail */}
@@ -2039,7 +2547,10 @@ export function MandateFullViewBoard({
                   </span>
                   <span className="text-xs font-medium text-slate-600 ml-2.5">Mail</span>
                 </div>
-                <span className="text-xs font-mono font-medium text-slate-700 pr-3 truncate max-w-[160px]" title={mandate.landlord.email || ""}>
+                <span
+                  className="text-xs font-mono font-medium text-slate-700 pr-3 truncate max-w-[160px]"
+                  title={mandate.landlord.email || ""}
+                >
                   {mandate.landlord.email || "—"}
                 </span>
               </div>
@@ -2089,13 +2600,17 @@ export function MandateFullViewBoard({
                   {getInitials(mandate.manager?.name || "Unassigned")}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-slate-800 leading-snug">{mandate.manager?.name || "Unassigned"}</h4>
-                  <p className="label-caps text-slate-600 mt-0.5">{mandate.manager?.title || "Property Manager"}</p>
+                  <h4 className="text-sm font-medium text-slate-800 leading-snug">
+                    {mandate.manager?.name || "Unassigned"}
+                  </h4>
+                  <p className="label-caps text-slate-600 mt-0.5">
+                    {mandate.manager?.title || "Property Manager"}
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
-                onClick={() => router.push('/admin/messages')}
+                onClick={() => router.push("/admin/messages")}
                 className="size-10 rounded-full bg-white hover:bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-600 shadow-xs transition-colors"
                 title="Message"
               >
@@ -2108,12 +2623,27 @@ export function MandateFullViewBoard({
                 <div className="flex flex-col gap-2.5 border-t border-slate-100 pt-4">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-600 font-medium">Portfolio</span>
-                    <span className="font-mono font-medium text-slate-800">{mandate.manager.assignedPropertyCount ?? 0} properties</span>
+                    <span className="font-mono font-medium text-slate-800">
+                      {mandate.manager.assignedPropertyCount ?? 0} properties
+                    </span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-600 font-medium">On-time collection</span>
-                    <span className={cn("font-mono font-medium", mandate.manager.onTimeCollectionPct == null ? "text-slate-400" : mandate.manager.onTimeCollectionPct >= 90 ? "text-emerald-600" : mandate.manager.onTimeCollectionPct >= 70 ? "text-amber-600" : "text-rose-600")}>
-                      {mandate.manager.onTimeCollectionPct == null ? "—" : `${mandate.manager.onTimeCollectionPct}%`}
+                    <span
+                      className={cn(
+                        "font-mono font-medium",
+                        mandate.manager.onTimeCollectionPct == null
+                          ? "text-slate-400"
+                          : mandate.manager.onTimeCollectionPct >= 90
+                            ? "text-emerald-600"
+                            : mandate.manager.onTimeCollectionPct >= 70
+                              ? "text-amber-600"
+                              : "text-rose-600"
+                      )}
+                    >
+                      {mandate.manager.onTimeCollectionPct == null
+                        ? "—"
+                        : `${mandate.manager.onTimeCollectionPct}%`}
                     </span>
                   </div>
                 </div>
@@ -2173,7 +2703,8 @@ export function MandateFullViewBoard({
               </div>
             </div>
             <p className="text-xs text-slate-400/90 leading-relaxed pt-2 border-t border-slate-50">
-              Landlords see remittance history and documents; tenants log complaints and view their contract from their own portal.
+              Landlords see remittance history and documents; tenants log complaints and view their
+              contract from their own portal.
             </p>
           </div>
 
@@ -2183,22 +2714,39 @@ export function MandateFullViewBoard({
             <div className="flex flex-col gap-3 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-slate-600 font-medium">Mandate ref</span>
-                <span className="font-mono font-medium text-slate-800">MND-{new Date(mandate.startDate).getFullYear()}-{mandate.id.slice(0, 3).toUpperCase()}</span>
+                <span className="font-mono font-medium text-slate-800">
+                  MND-{new Date(mandate.startDate).getFullYear()}-
+                  {mandate.id.slice(0, 3).toUpperCase()}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600 font-medium">Signed</span>
                 <span className="font-mono font-medium text-slate-800">
-                  {new Date(mandate.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  {new Date(mandate.startDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600 font-medium">Property code</span>
-                <span className="font-mono font-medium text-slate-800">{mandate.property.propertyCode}</span>
+                <span className="font-mono font-medium text-slate-800">
+                  {mandate.property.propertyCode}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600 font-medium">Next remittance</span>
                 <span className="font-mono font-medium text-slate-800">
-                  {new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  {new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth() + 1,
+                    0
+                  ).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </span>
               </div>
             </div>
@@ -2208,30 +2756,40 @@ export function MandateFullViewBoard({
 
       {/* ── Overlays ── */}
       <LeaseDetailDrawer
-        lease={drawerLease ? {
-          id: drawerLease.id,
-          startsAt: drawerLease.startDate,
-          endsAt: drawerLease.endDate ?? "",
-          monthlyRentKes: drawerLease.monthlyRentKes,
-          depositKes: drawerLease.depositKes,
-          isActive: drawerLease.isActive,
-          propertyId: mandate.property.id,
-          tenantContactId: drawerLease.tenantContactId,
-          propertyName: mandate.property.name,
-          propertyCode: mandate.property.propertyCode,
-          propertyType: mandate.property.propertyType,
-          propertyLocation: mandate.property.location,
-          tenantName: drawerLease.tenantName,
-          tenantEmail: drawerLease.tenantEmail ?? null,
-          tenantPhone: drawerLease.tenantPhone ?? null,
-        } : null}
+        lease={
+          drawerLease
+            ? {
+                id: drawerLease.id,
+                startsAt: drawerLease.startDate,
+                endsAt: drawerLease.endDate ?? "",
+                monthlyRentKes: drawerLease.monthlyRentKes,
+                depositKes: drawerLease.depositKes,
+                isActive: drawerLease.isActive,
+                propertyId: mandate.property.id,
+                tenantContactId: drawerLease.tenantContactId,
+                propertyName: mandate.property.name,
+                propertyCode: mandate.property.propertyCode,
+                propertyType: mandate.property.propertyType,
+                propertyLocation: mandate.property.location,
+                tenantName: drawerLease.tenantName,
+                tenantEmail: drawerLease.tenantEmail ?? null,
+                tenantPhone: drawerLease.tenantPhone ?? null,
+              }
+            : null
+        }
         open={!!drawerLease}
         entityId={entityId ?? undefined}
         onClose={() => setDrawerLease(null)}
         canManage={canManage}
         onTerminate={() => setRefreshCount((c) => c + 1)}
-        onEdit={() => { setEditingLease(drawerLease); setDrawerLease(null); }}
-        onRenew={() => { setRenewingLease(drawerLease); setDrawerLease(null); }}
+        onEdit={() => {
+          setEditingLease(drawerLease);
+          setDrawerLease(null);
+        }}
+        onRenew={() => {
+          setRenewingLease(drawerLease);
+          setDrawerLease(null);
+        }}
       />
 
       <LeaseFormModal
@@ -2317,7 +2875,9 @@ export function MandateFullViewBoard({
         propertyId={mandate.property.id}
         propertyName={mandate.property.name}
         landlordName={mandate.landlord.name}
-        hasExistingLetter={mandateLetterStatus(mandate.documents, mandate.property.id) === "verified"}
+        hasExistingLetter={
+          mandateLetterStatus(mandate.documents, mandate.property.id) === "verified"
+        }
         onClose={() => setMandateLetterOpen(false)}
         onAttached={() => setRefreshCount((c) => c + 1)}
       />
@@ -2338,12 +2898,19 @@ export function MandateFullViewBoard({
         landlordName={mandate.landlord.name}
         propertyName={mandate.property.name}
         onClose={() => setRemittancePanelOpen(false)}
-        onDecided={() => { loadRemittances(); setRefreshCount((c) => c + 1); }}
+        onDecided={() => {
+          loadRemittances();
+          setRefreshCount((c) => c + 1);
+        }}
       />
 
       <ConfirmDialog
         open={terminateOpen}
-        onClose={() => { setTerminateOpen(false); setTerminateNotes(""); setTerminateNotesErr(false); }}
+        onClose={() => {
+          setTerminateOpen(false);
+          setTerminateNotes("");
+          setTerminateNotesErr(false);
+        }}
         onConfirm={handleTerminate}
         title="Terminate Mandate"
         description="This cannot be undone. Rent collection under this mandate stops, and the final landlord remittance is queued for review."
@@ -2354,7 +2921,10 @@ export function MandateFullViewBoard({
           label: "Termination reason",
           placeholder: "Why is this mandate being terminated?",
           value: terminateNotes,
-          onChange: (v) => { setTerminateNotes(v); setTerminateNotesErr(false); },
+          onChange: (v) => {
+            setTerminateNotes(v);
+            setTerminateNotesErr(false);
+          },
           required: true,
           error: terminateNotesErr ? "A reason is required." : undefined,
         }}
@@ -2366,7 +2936,10 @@ export function MandateFullViewBoard({
         entityId={entityId ?? ""}
         ownerContactId={mandate.landlord.id}
         properties={singlePropertyList}
-        onOpenProperty={(p) => { setOwnerDrawerOpen(false); router.push(`/admin/properties/${p.id}`); }}
+        onOpenProperty={(p) => {
+          setOwnerDrawerOpen(false);
+          router.push(`/admin/properties/${p.id}`);
+        }}
       />
 
       <PropertyManagerProfileDrawer
@@ -2375,7 +2948,10 @@ export function MandateFullViewBoard({
         entityId={entityId ?? ""}
         managerId={mandate.manager?.id ?? null}
         properties={singlePropertyList}
-        onOpenProperty={(p) => { setManagerDrawerOpen(false); router.push(`/admin/properties/${p.id}`); }}
+        onOpenProperty={(p) => {
+          setManagerDrawerOpen(false);
+          router.push(`/admin/properties/${p.id}`);
+        }}
       />
 
       <PhotoLightbox
@@ -2410,7 +2986,10 @@ interface MandatePropertyShape {
   location: string;
 }
 
-function leaseSummaryToEditTarget(l: LeaseSummary, property: MandatePropertyShape): LeaseEditTarget {
+function leaseSummaryToEditTarget(
+  l: LeaseSummary,
+  property: MandatePropertyShape
+): LeaseEditTarget {
   return {
     id: l.id,
     propertyName: property.name,
@@ -2422,7 +3001,10 @@ function leaseSummaryToEditTarget(l: LeaseSummary, property: MandatePropertyShap
   };
 }
 
-function leaseSummaryToRenewTarget(l: LeaseSummary, property: MandatePropertyShape): LeaseRenewTarget {
+function leaseSummaryToRenewTarget(
+  l: LeaseSummary,
+  property: MandatePropertyShape
+): LeaseRenewTarget {
   return {
     id: l.id,
     propertyName: property.name,

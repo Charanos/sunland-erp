@@ -31,7 +31,8 @@ function parseExpiryMs(expiry: string): number {
   const match = expiry.trim().match(/^(\d+)\s*(s|m|h|d)?$/i);
   if (!match) return 7 * 24 * 60 * 60 * 1000; // fall back to 7 days on an unrecognized format
   const value = Number(match[1]);
-  const unitMs = { s: 1000, m: 60_000, h: 3_600_000, d: 86_400_000 }[match[2]?.toLowerCase() ?? "s"] ?? 1000;
+  const unitMs =
+    { s: 1000, m: 60_000, h: 3_600_000, d: 86_400_000 }[match[2]?.toLowerCase() ?? "s"] ?? 1000;
   return value * unitMs;
 }
 
@@ -82,7 +83,9 @@ export async function setSession(user: SessionUser, metadata: SessionMetadata = 
         associatedId: jti,
         action: "auth.login",
         summary: `${user.name} signed in`,
-        metadata: metadata.userAgent ? { userAgent: metadata.userAgent, ip: metadata.ip ?? null } : {},
+        metadata: metadata.userAgent
+          ? { userAgent: metadata.userAgent, ip: metadata.ip ?? null }
+          : {},
       });
       await db.update(users).set({ lastSignedInAt: new Date() }).where(eq(users.id, user.id));
     } catch {

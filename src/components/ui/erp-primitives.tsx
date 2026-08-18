@@ -25,7 +25,7 @@ export function BoardHeader({
       aria-label="Board header"
       className={cn(
         "flex flex-col gap-1 border-b border-slate-200/60 pb-3 animate-fade-in-up",
-        className,
+        className
       )}
     >
       {(eyebrow || meta || actions) && (
@@ -39,9 +39,7 @@ export function BoardHeader({
       )}
       <h1 className="title-serif mt-2 text-slate-900">{title}</h1>
       {description && (
-        <p className="mt-1 max-w-3xl text-base leading-relaxed text-slate-400">
-          {description}
-        </p>
+        <p className="mt-1 max-w-3xl text-base leading-relaxed text-slate-400">{description}</p>
       )}
     </section>
   );
@@ -58,14 +56,7 @@ export function BoardPanel({
   as?: "section" | "div";
 } & HTMLAttributes<HTMLElement>) {
   return (
-    <Component
-      className={cn(
-        "py-6",
-        "rounded-lg",
-        className,
-      )}
-      {...props}
-    >
+    <Component className={cn("py-6", "rounded-lg", className)} {...props}>
       {children}
     </Component>
   );
@@ -87,7 +78,9 @@ export function RailLayout({
   // thing here. Keeps each caller's own two inner wrapper divs as-is;
   // this only owns the grid split itself.
   return (
-    <div className={cn("grid grid-cols-1 @board-lg:grid-cols-[1fr_320px] items-start", gap, className)}>
+    <div
+      className={cn("grid grid-cols-1 @board-lg:grid-cols-[1fr_320px] items-start", gap, className)}
+    >
       {children}
     </div>
   );
@@ -155,25 +148,28 @@ export function KpiCard({
       className={cn(
         "group relative flex h-[155px] cursor-pointer flex-col justify-between overflow-hidden rounded-lg p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md",
         tones.card,
-        className,
+        className
       )}
     >
       <div className="flex items-center gap-2">
-        <div className={cn("flex size-[22px] items-center justify-center rounded-full", tones.icon)}>
+        <div
+          className={cn("flex size-[22px] items-center justify-center rounded-full", tones.icon)}
+        >
           <IconComponent size={13} stroke={2.5} />
         </div>
         <span className={cn("text-base font-normal tracking-wide", tones.text)}>{label}</span>
         {href && (
           <IconArrowUpRight
             size={12}
-            className={cn("ml-auto opacity-0 transition-opacity group-hover:opacity-100", tones.text)}
+            className={cn(
+              "ml-auto opacity-0 transition-opacity group-hover:opacity-100",
+              tones.text
+            )}
           />
         )}
       </div>
       <div className="mb-3 mt-auto flex items-end justify-between">
-        <span className={cn("kpi-numeral tracking-normal", tones.text)}>
-          {value}
-        </span>
+        <span className={cn("kpi-numeral tracking-normal", tones.text)}>{value}</span>
         {trend && <span className={cn("mb-0.5 text-sm font-medium", tones.text)}>{trend}</span>}
       </div>
       <div className={cn("h-[4px] w-full overflow-hidden rounded-full", tones.track)}>
@@ -328,7 +324,9 @@ export function ProfileDrawerRow({
         <IconComponent size={16} stroke={1.5} />
       </span>
       <span className="flex-1 body-sm text-slate-400">{label}</span>
-      <span className={cn("body-sm font-medium", mono && "mono-data", valueClass || "text-slate-900")}>
+      <span
+        className={cn("body-sm font-medium", mono && "mono-data", valueClass || "text-slate-900")}
+      >
         {value}
       </span>
     </div>
@@ -359,4 +357,3 @@ export function ActionLoadingOverlay({
     </div>
   );
 }
-

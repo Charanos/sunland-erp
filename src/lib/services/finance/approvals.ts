@@ -1,6 +1,12 @@
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
-import { approvalRequests, maintenanceRequests, propertyMandates, transactions, users } from "@/db/schema";
+import {
+  approvalRequests,
+  maintenanceRequests,
+  propertyMandates,
+  transactions,
+  users,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { ConflictError, DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -26,7 +32,7 @@ async function notifyRequiredApprovers(
   tx: Tx,
   entityId: string,
   requiredApproverRole: string,
-  request: { id: string; requestType: string; amountKes: string | null },
+  request: { id: string; requestType: string; amountKes: string | null }
 ) {
   const targetRoles =
     requiredApproverRole === "gm"
@@ -66,7 +72,7 @@ async function notifyRequiredApprovers(
  */
 export async function listApprovalRequests(
   ctx: CallerContext,
-  filters: { entityId?: string; status?: string } = {},
+  filters: { entityId?: string; status?: string } = {}
 ) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) throw new DomainValidationError("entityId is required");
@@ -77,7 +83,9 @@ export async function listApprovalRequests(
   if (filters.status === "decided") {
     conditions.push(inArray(approvalRequests.status, ["approved", "rejected"]));
   } else if (filters.status && (REAL_STATUS_VALUES as readonly string[]).includes(filters.status)) {
-    conditions.push(eq(approvalRequests.status, filters.status as (typeof REAL_STATUS_VALUES)[number]));
+    conditions.push(
+      eq(approvalRequests.status, filters.status as (typeof REAL_STATUS_VALUES)[number])
+    );
   }
   // Any other unrecognized status value is silently ignored rather than
   // forwarded to Postgres - never trust a client-supplied string into an
@@ -183,7 +191,12 @@ export async function decideApprovalRequest(ctx: CallerContext, rawInput: unknow
           status: input.status === "approved" ? "active" : "draft",
           updatedAt: new Date(),
         })
-        .where(and(eq(propertyMandates.id, existing.relatedId), eq(propertyMandates.status, "pending_approval")));
+        .where(
+          and(
+            eq(propertyMandates.id, existing.relatedId),
+            eq(propertyMandates.status, "pending_approval")
+          )
+        );
     }
 
     // Maintenance cost side-effect (ADR 015 follow-up): stamp actualCostKes
@@ -199,7 +212,12 @@ export async function decideApprovalRequest(ctx: CallerContext, rawInput: unknow
           status: "reported",
           updatedAt: new Date(),
         })
-        .where(and(eq(maintenanceRequests.id, existing.relatedId), eq(maintenanceRequests.status, "awaiting_approval")));
+        .where(
+          and(
+            eq(maintenanceRequests.id, existing.relatedId),
+            eq(maintenanceRequests.status, "awaiting_approval")
+          )
+        );
     }
 
     // Disbursement side-effect on approval - will move onto the real ledger

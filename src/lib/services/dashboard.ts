@@ -63,7 +63,13 @@ export function computeIncome(rows: TransactionRow[]): number {
   return rows.reduce((sum, t) => {
     const amt = toNumber(t.amountKes);
     if (t.type === "rent") return sum + amt * MANAGEMENT_FEE_RATE;
-    if (t.type === "commission" || t.type === "valuation_fee" || t.type === "agreement_fee" || t.type === "sales_commission") return sum + amt;
+    if (
+      t.type === "commission" ||
+      t.type === "valuation_fee" ||
+      t.type === "agreement_fee" ||
+      t.type === "sales_commission"
+    )
+      return sum + amt;
     return sum; // deposit (liability) and expense/other never count as income
   }, 0);
 }
@@ -94,7 +100,7 @@ function inRange<T extends { occurredAt: Date } | { createdAt: Date }>(
   rows: T[],
   field: "occurredAt" | "createdAt",
   start: Date,
-  end?: Date,
+  end?: Date
 ): T[] {
   return rows.filter((r) => {
     const rawVal = (r as unknown as Record<string, unknown>)[field];
@@ -108,7 +114,11 @@ export type ChartPeriod = "week" | "month" | "quarter";
 
 type ChartPoint = { day: string; Revenue: number; Transactions: number; Leads: number };
 
-function buildChartSeries(period: ChartPeriod, txns: TransactionRow[], leadRows: LeadRow[]): ChartPoint[] {
+function buildChartSeries(
+  period: ChartPeriod,
+  txns: TransactionRow[],
+  leadRows: LeadRow[]
+): ChartPoint[] {
   const now = new Date();
 
   if (period === "week") {
@@ -134,7 +144,11 @@ function buildChartSeries(period: ChartPeriod, txns: TransactionRow[], leadRows:
     let weekStart = startOfMonth;
     let weekNum = 1;
     while (weekStart <= now) {
-      const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 7);
+      const weekEnd = new Date(
+        weekStart.getFullYear(),
+        weekStart.getMonth(),
+        weekStart.getDate() + 7
+      );
       const wTxns = inRange(txns, "occurredAt", weekStart, weekEnd);
       const wLeads = inRange(leadRows, "createdAt", weekStart, weekEnd);
       points.push({
@@ -176,54 +190,69 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
   const startOfThisWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
   const lookback = new Date(now.getFullYear(), now.getMonth() - 3, 1); // covers quarter charting + mom trends
 
-  const [allProperties, recentTransactions, allLeads, recentLogs, allMaintenanceRequests, allLeases, mandateManagerRows, allMandates, pendingRemittanceRows] =
-    await Promise.all([
-      db.select().from(properties).where(eq(properties.entityId, entityId)),
-      db
-        .select()
-        .from(transactions)
-        .where(and(eq(transactions.entityId, entityId), gte(transactions.occurredAt, lookback))),
-      db.select().from(leads).where(eq(leads.entityId, entityId)),
-      db
-        .select()
-        .from(activityLogs)
-        .where(eq(activityLogs.entityId, entityId))
-        .orderBy(desc(activityLogs.createdAt))
-        .limit(8),
-      db.select().from(maintenanceRequests).where(eq(maintenanceRequests.entityId, entityId)),
-      db.select().from(leases).where(eq(leases.entityId, entityId)),
-      db
-        .select({
-          propertyId: propertyMandates.propertyId,
-          managerId: propertyMandates.assignedPmId,
-          managerName: users.name,
-          managerAvatarUrl: users.avatarUrl,
-        })
-        .from(propertyMandates)
-        .leftJoin(users, eq(propertyMandates.assignedPmId, users.id))
-        .where(
-          and(
-            eq(propertyMandates.entityId, entityId),
-            inArray(propertyMandates.status, ["pending_approval", "active"]),
-          ),
-        ),
-      db.select().from(propertyMandates).where(eq(propertyMandates.entityId, entityId)),
-      db
-        .select()
-        .from(remittanceAdvices)
-        .where(and(eq(remittanceAdvices.entityId, entityId), eq(remittanceAdvices.status, "pending"))),
-    ]);
+  const [
+    allProperties,
+    recentTransactions,
+    allLeads,
+    recentLogs,
+    allMaintenanceRequests,
+    allLeases,
+    mandateManagerRows,
+    allMandates,
+    pendingRemittanceRows,
+  ] = await Promise.all([
+    db.select().from(properties).where(eq(properties.entityId, entityId)),
+    db
+      .select()
+      .from(transactions)
+      .where(and(eq(transactions.entityId, entityId), gte(transactions.occurredAt, lookback))),
+    db.select().from(leads).where(eq(leads.entityId, entityId)),
+    db
+      .select()
+      .from(activityLogs)
+      .where(eq(activityLogs.entityId, entityId))
+      .orderBy(desc(activityLogs.createdAt))
+      .limit(8),
+    db.select().from(maintenanceRequests).where(eq(maintenanceRequests.entityId, entityId)),
+    db.select().from(leases).where(eq(leases.entityId, entityId)),
+    db
+      .select({
+        propertyId: propertyMandates.propertyId,
+        managerId: propertyMandates.assignedPmId,
+        managerName: users.name,
+        managerAvatarUrl: users.avatarUrl,
+      })
+      .from(propertyMandates)
+      .leftJoin(users, eq(propertyMandates.assignedPmId, users.id))
+      .where(
+        and(
+          eq(propertyMandates.entityId, entityId),
+          inArray(propertyMandates.status, ["pending_approval", "active"])
+        )
+      ),
+    db.select().from(propertyMandates).where(eq(propertyMandates.entityId, entityId)),
+    db
+      .select()
+      .from(remittanceAdvices)
+      .where(
+        and(eq(remittanceAdvices.entityId, entityId), eq(remittanceAdvices.status, "pending"))
+      ),
+  ]);
 
   const managerByPropertyId = new Map(
     mandateManagerRows
       .filter((r) => r.managerId)
-      .map((r) => [r.propertyId, { id: r.managerId as string, name: r.managerName, avatarUrl: r.managerAvatarUrl }]),
+      .map((r) => [
+        r.propertyId,
+        { id: r.managerId as string, name: r.managerName, avatarUrl: r.managerAvatarUrl },
+      ])
   );
 
   // ── Portfolio ──
   const totalProperties = allProperties.length;
   const occupiedProperties = allProperties.filter((p) => p.status === "occupied").length;
-  const occupancyRate = totalProperties > 0 ? Math.round((occupiedProperties / totalProperties) * 100) : 0;
+  const occupancyRate =
+    totalProperties > 0 ? Math.round((occupiedProperties / totalProperties) * 100) : 0;
   const propertiesThisMonth = allProperties.filter((p) => {
     const d = getParsedDate(p.createdAt);
     return d ? d >= startOfThisMonth : false;
@@ -239,7 +268,12 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
 
   // ── Revenue (real, management-fee-aware - never gross rent collected) ──
   const txnsThisMonth = inRange(recentTransactions, "occurredAt", startOfThisMonth);
-  const txnsLastMonth = inRange(recentTransactions, "occurredAt", startOfLastMonth, startOfThisMonth);
+  const txnsLastMonth = inRange(
+    recentTransactions,
+    "occurredAt",
+    startOfLastMonth,
+    startOfThisMonth
+  );
   const incomeThisMonth = computeIncome(txnsThisMonth);
   const incomeLastMonth = computeIncome(txnsLastMonth);
   const expensesThisMonth = computeExpenses(txnsThisMonth);
@@ -257,7 +291,9 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
     const d = getParsedDate(l.closedAt);
     return d ? d >= startOfLastMonth && d < startOfThisMonth : false;
   });
-  const activePipeline = allLeads.filter((l) => l.stage !== "closed_won" && l.stage !== "closed_lost");
+  const activePipeline = allLeads.filter(
+    (l) => l.stage !== "closed_won" && l.stage !== "closed_lost"
+  );
   const newLeadsThisMonth = allLeads.filter((l) => {
     const d = getParsedDate(l.createdAt);
     return d ? d >= startOfThisMonth : false;
@@ -270,14 +306,15 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
     const d = getParsedDate(l.createdAt);
     return d ? d >= startOfThisWeek : false;
   });
-  const conversionRate = allLeads.length > 0 ? Math.round((closedWon.length / allLeads.length) * 1000) / 10 : 0;
+  const conversionRate =
+    allLeads.length > 0 ? Math.round((closedWon.length / allLeads.length) * 1000) / 10 : 0;
 
   // ── Department stats (Internal Structure & Scheduler panel) ──
   // Real, relevant counts tied to what each card actually links to - not
   // literal headcounts, since no HR employee/headcount table exists yet:
   // Sales -> active pipeline, Ops -> open maintenance work, Legal -> active leases.
   const openMaintenanceCount = allMaintenanceRequests.filter((m) =>
-    ["reported", "awaiting_approval", "scheduled", "in_progress"].includes(m.status),
+    ["reported", "awaiting_approval", "scheduled", "in_progress"].includes(m.status)
   ).length;
   const activeLeaseCount = allLeases.filter((l) => l.isActive).length;
   const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -304,12 +341,15 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
   let arrearsKes = 0;
   for (const l of activeLeasesNow) {
     const expected = toNumber(l.monthlyRentKes);
-    const collected = rentTxThisMonth.filter((t) => t.leaseId === l.id).reduce((sum, t) => sum + toNumber(t.amountKes), 0);
+    const collected = rentTxThisMonth
+      .filter((t) => t.leaseId === l.id)
+      .reduce((sum, t) => sum + toNumber(t.amountKes), 0);
     expectedThisMonthKes += expected;
     collectedThisMonthKes += collected;
     arrearsKes += Math.max(0, expected - collected);
   }
-  const collectionRatePct = expectedThisMonthKes > 0 ? Math.round((collectedThisMonthKes / expectedThisMonthKes) * 100) : 0;
+  const collectionRatePct =
+    expectedThisMonthKes > 0 ? Math.round((collectedThisMonthKes / expectedThisMonthKes) * 100) : 0;
 
   // ── Mandate Portfolio - real status breakdown + collectible value. (Not
   // broken out "by division" - checked seed.ts: every property/mandate/
@@ -334,14 +374,22 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
   // service before despite holding real, varied-status data.
   const pendingRemittances = {
     count: pendingRemittanceRows.length,
-    totalKes: Math.round(pendingRemittanceRows.reduce((sum, r) => sum + toNumber(r.netRemittanceKes), 0)),
+    totalKes: Math.round(
+      pendingRemittanceRows.reduce((sum, r) => sum + toNumber(r.netRemittanceKes), 0)
+    ),
   };
 
   // ── Awaiting My Decision (spec §8.1) - pending approvals at the viewer's own tier ──
   const approvalTier = ROLE_APPROVAL_TIER[ctx.user.role as UserRole];
   let awaitingMyDecision: {
     count: number;
-    items: Array<{ id: string; requestType: string; amountKes: number | null; requestedAt: Date; relatedTable: string }>;
+    items: Array<{
+      id: string;
+      requestType: string;
+      amountKes: number | null;
+      requestedAt: Date;
+      relatedTable: string;
+    }>;
   } = { count: 0, items: [] };
 
   if (approvalTier) {
@@ -352,8 +400,8 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
         and(
           eq(approvalRequests.entityId, entityId),
           eq(approvalRequests.status, "pending"),
-          eq(approvalRequests.requiredApproverRole, approvalTier),
-        ),
+          eq(approvalRequests.requiredApproverRole, approvalTier)
+        )
       )
       .orderBy(approvalRequests.requestedAt);
 
@@ -378,7 +426,7 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
     ]);
     const lastThresholdChangeAt = allSettings.reduce<Date | null>(
       (latest, s) => (!latest || s.updatedAt > latest ? s.updatedAt : latest),
-      null,
+      null
     );
     systemHealth = { activeUserCount: activeUsers.length, lastThresholdChangeAt };
   }
@@ -441,8 +489,10 @@ export async function getDashboardOverview(ctx: CallerContext, period: ChartPeri
         else if (p.status === "off_market") status = "Sold";
 
         let priceStr = "N/A";
-        if (p.monthlyRentKes) priceStr = `KES ${parseFloat(p.monthlyRentKes).toLocaleString()} / mo`;
-        else if (p.askingPriceKes) priceStr = `KES ${parseFloat(p.askingPriceKes).toLocaleString()}`;
+        if (p.monthlyRentKes)
+          priceStr = `KES ${parseFloat(p.monthlyRentKes).toLocaleString()} / mo`;
+        else if (p.askingPriceKes)
+          priceStr = `KES ${parseFloat(p.askingPriceKes).toLocaleString()}`;
 
         const media = p.media as Array<{ url: string; alt?: string }> | null;
         const manager = managerByPropertyId.get(p.id) ?? null;

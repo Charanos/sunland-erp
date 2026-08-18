@@ -10,7 +10,11 @@ export default function NotificationsPage() {
   const { activeEntityId } = useUIStore();
   return (
     <Suspense fallback={null}>
-      <AccountSystemBoard entityId={activeEntityId} startScope="personal" startSection="notifications" />
+      <AccountSystemBoard
+        entityId={activeEntityId}
+        startScope="personal"
+        startSection="notifications"
+      />
     </Suspense>
   );
 }

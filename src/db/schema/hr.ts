@@ -21,8 +21,12 @@ export const complaints = pgTable(
   "complaints",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    filedById: uuid("filed_by_id").references(() => users.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    filedById: uuid("filed_by_id")
+      .references(() => users.id)
+      .notNull(),
     // Identity is always captured (filedById above) - this only controls
     // display-layer masking for anyone other than the current owner.
     isAnonymous: boolean("is_anonymous").default(false).notNull(),
@@ -52,5 +56,5 @@ export const complaints = pgTable(
     statusIdx: index("complaints_status_idx").on(table.status),
     ownerRoleIdx: index("complaints_owner_role_idx").on(table.currentOwnerRole),
     filedByIdx: index("complaints_filed_by_idx").on(table.filedById),
-  }),
+  })
 );

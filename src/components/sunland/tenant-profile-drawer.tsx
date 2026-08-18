@@ -97,26 +97,44 @@ export function TenantProfileDrawer({
 
   const infoRows = profile
     ? [
-      ...(profile.companyName ? [{ icon: IconFileText, label: "Company", value: profile.companyName }] : []),
-      ...(profile.phone ? [{ icon: IconPhone, label: "Phone", value: profile.phone, mono: true }] : []),
-      ...(profile.email ? [{ icon: IconMail, label: "Mail", value: profile.email }] : []),
-      { icon: IconCalendar, label: "Tenant since", value: formatPropertyDate(profile.createdAt), mono: true },
-    ]
+        ...(profile.companyName
+          ? [{ icon: IconFileText, label: "Company", value: profile.companyName }]
+          : []),
+        ...(profile.phone
+          ? [{ icon: IconPhone, label: "Phone", value: profile.phone, mono: true }]
+          : []),
+        ...(profile.email ? [{ icon: IconMail, label: "Mail", value: profile.email }] : []),
+        {
+          icon: IconCalendar,
+          label: "Tenant since",
+          value: formatPropertyDate(profile.createdAt),
+          mono: true,
+        },
+      ]
     : [];
 
   return (
     <Drawer open={open} onClose={onClose} title="Tenant Profile" width="34rem">
       {loading || !profile ? (
-        <div className="flex items-center justify-center h-64 text-slate-400 text-sm">Loading tenant profile...</div>
+        <div className="flex items-center justify-center h-64 text-slate-400 text-sm">
+          Loading tenant profile...
+        </div>
       ) : (
         <div className="flex flex-col gap-5">
           {/* Premium photo-hero matching the owner/manager drawer design */}
           <div className="relative h-64 rounded-3xl overflow-hidden shadow-sm flex flex-col justify-end bg-slate-900 border border-slate-100/10">
             {profile.avatarUrl ? (
-              <Image src={profile.avatarUrl} alt={profile.displayName} fill className="object-cover opacity-80" />
+              <Image
+                src={profile.avatarUrl}
+                alt={profile.displayName}
+                fill
+                className="object-cover opacity-80"
+              />
             ) : (
               <div className="absolute inset-0 bg-tertiary-gradient flex items-center justify-center">
-                <span className="text-6xl font-mono text-white/30">{initialsOf(profile.displayName)}</span>
+                <span className="text-6xl font-mono text-white/30">
+                  {initialsOf(profile.displayName)}
+                </span>
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-[#151936]/90 via-[#151936]/40 to-transparent" />
@@ -127,7 +145,8 @@ export function TenantProfileDrawer({
                 <div className="flex items-center justify-center gap-1.5 text-slate-300 body-sm mb-5">
                   {profile.balanceKes > 0 ? (
                     <span className="flex items-center gap-1.5 text-rose-300">
-                      <IconAlertTriangle size={14} /> {formatCompactKES(profile.balanceKes)} in arrears
+                      <IconAlertTriangle size={14} /> {formatCompactKES(profile.balanceKes)} in
+                      arrears
                     </span>
                   ) : (
                     <>Tenant</>
@@ -138,7 +157,13 @@ export function TenantProfileDrawer({
               <div className="flex items-center justify-center gap-3">
                 <button
                   type="button"
-                  onClick={() => pushToast({ tone: "info", title: "Message drafted", body: "Opens the internal messaging composer." })}
+                  onClick={() =>
+                    pushToast({
+                      tone: "info",
+                      title: "Message drafted",
+                      body: "Opens the internal messaging composer.",
+                    })
+                  }
                   aria-label="Message tenant"
                   className="size-9 rounded-full bg-white hover:bg-slate-50 text-[#151936] flex items-center justify-center shadow-lg transition-all hover:scale-105"
                 >
@@ -170,7 +195,12 @@ export function TenantProfileDrawer({
           <div>
             <p className="label-caps text-slate-400 mb-3 px-1">Tenancy with Sunland</p>
             <div className="flex flex-col gap-2">
-              <ProfileDrawerRow icon={IconFileText} label="Active leases" value={String(activeLeaseCount)} mono />
+              <ProfileDrawerRow
+                icon={IconFileText}
+                label="Active leases"
+                value={String(activeLeaseCount)}
+                mono
+              />
               <ProfileDrawerRow
                 icon={IconAlertTriangle}
                 label="Current balance"
@@ -178,7 +208,12 @@ export function TenantProfileDrawer({
                 mono
                 valueClass={profile.balanceKes > 0 ? "text-rose-600" : "text-emerald-600"}
               />
-              <ProfileDrawerRow icon={IconCash} label="Paid YTD" value={formatCompactKES(profile.paidYtd)} mono />
+              <ProfileDrawerRow
+                icon={IconCash}
+                label="Paid YTD"
+                value={formatCompactKES(profile.paidYtd)}
+                mono
+              />
             </div>
           </div>
 
@@ -196,9 +231,12 @@ export function TenantProfileDrawer({
                       <IconFileText size={18} />
                     </span>
                     <span className="flex-1 min-w-0">
-                      <span className="block body-sm text-slate-900 truncate">{l.propertyName}</span>
+                      <span className="block body-sm text-slate-900 truncate">
+                        {l.propertyName}
+                      </span>
                       <span className="block label-caps text-slate-400">
-                        {l.propertyCode} · {formatCompactKES(parseFloat(l.monthlyRentKes))}/mo {l.isActive ? "" : "· ended"}
+                        {l.propertyCode} · {formatCompactKES(parseFloat(l.monthlyRentKes))}/mo{" "}
+                        {l.isActive ? "" : "· ended"}
                       </span>
                     </span>
                     <IconChevronRight size={15} className="text-slate-300 shrink-0" />

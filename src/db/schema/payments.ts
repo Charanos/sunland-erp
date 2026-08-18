@@ -1,12 +1,4 @@
-import {
-  index,
-  numeric,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { index, numeric, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { entities, timestamps } from "@/db/schema/platform";
 import { contacts } from "@/db/schema/crm";
 import { leases } from "@/db/schema/properties";
@@ -43,9 +35,15 @@ export const tenantPayments = pgTable(
   "tenant_payments",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    leaseId: uuid("lease_id").references(() => leases.id).notNull(),
-    tenantContactId: uuid("tenant_contact_id").references(() => contacts.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    leaseId: uuid("lease_id")
+      .references(() => leases.id)
+      .notNull(),
+    tenantContactId: uuid("tenant_contact_id")
+      .references(() => contacts.id)
+      .notNull(),
     method: tenantPaymentMethod("method").notNull().default("mpesa"),
     amountKes: numeric("amount_kes", { precision: 14, scale: 2 }).notNull(),
     // The phone number STK push is sent to - captured at initiation, may
@@ -72,5 +70,5 @@ export const tenantPayments = pgTable(
     tenantContactIdx: index("tenant_payments_tenant_contact_idx").on(table.tenantContactId),
     statusIdx: index("tenant_payments_status_idx").on(table.status),
     checkoutRequestIdx: index("tenant_payments_checkout_request_idx").on(table.checkoutRequestId),
-  }),
+  })
 );

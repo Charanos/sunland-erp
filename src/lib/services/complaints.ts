@@ -59,7 +59,7 @@ const NEXT_TIER: Record<ComplaintTier, ComplaintTier | null> = {
  * with HR Head, the same as any other department's non-head staff.
  */
 async function computeInitialOwner(
-  namedPersonId: string | null,
+  namedPersonId: string | null
 ): Promise<{ ownerRole: ComplaintTier; initialStatus: "open" | "escalated" }> {
   if (!namedPersonId) return { ownerRole: "hr_head", initialStatus: "open" };
 
@@ -161,7 +161,7 @@ export async function createComplaint(ctx: CallerContext, rawInput: unknown) {
  */
 export async function listComplaints(
   ctx: CallerContext,
-  filters: { entityId?: string; tab: "my-queue" | "escalated" | "resolved" },
+  filters: { entityId?: string; tab: "my-queue" | "escalated" | "resolved" }
 ) {
   const rawEntityId = filters.entityId ?? ctx.entityId;
   if (!rawEntityId) return [];
@@ -174,7 +174,8 @@ export async function listComplaints(
     await authorize(ctx, "hr.complaint.manage", entityId);
   }
 
-  const statusForTab = filters.tab === "my-queue" ? "open" : filters.tab === "escalated" ? "escalated" : "resolved";
+  const statusForTab =
+    filters.tab === "my-queue" ? "open" : filters.tab === "escalated" ? "escalated" : "resolved";
 
   const rows = await db
     .select()
@@ -183,8 +184,8 @@ export async function listComplaints(
       and(
         eq(complaints.entityId, entityId),
         eq(complaints.currentOwnerRole, tier),
-        eq(complaints.status, statusForTab),
-      ),
+        eq(complaints.status, statusForTab)
+      )
     );
 
   return rows.map((row) => sanitizeForViewer(row, ctx.user.id));
@@ -192,7 +193,11 @@ export async function listComplaints(
 
 /** 404s (never 403s) for anyone who isn't the filer and doesn't tier-match - existence itself is need-to-know. */
 export async function getComplaint(ctx: CallerContext, complaintId: string) {
-  const [complaint] = await db.select().from(complaints).where(eq(complaints.id, complaintId)).limit(1);
+  const [complaint] = await db
+    .select()
+    .from(complaints)
+    .where(eq(complaints.id, complaintId))
+    .limit(1);
   if (!complaint) throw new NotFoundError("Complaint not found");
 
   const isFiler = complaint.filedById === ctx.user.id;
@@ -204,9 +209,17 @@ export async function getComplaint(ctx: CallerContext, complaintId: string) {
   return sanitizeForViewer(complaint, ctx.user.id);
 }
 
-export async function escalateComplaint(ctx: CallerContext, complaintId: string, rawInput: unknown) {
+export async function escalateComplaint(
+  ctx: CallerContext,
+  complaintId: string,
+  rawInput: unknown
+) {
   const input = parseInput(escalateComplaintSchema, rawInput);
-  const [existing] = await db.select().from(complaints).where(eq(complaints.id, complaintId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(complaints)
+    .where(eq(complaints.id, complaintId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Complaint not found");
   assertCurrentOwner(ctx, existing);
 
@@ -243,7 +256,11 @@ export async function escalateComplaint(ctx: CallerContext, complaintId: string,
 
 export async function resolveComplaint(ctx: CallerContext, complaintId: string, rawInput: unknown) {
   const input = parseInput(resolveComplaintSchema, rawInput);
-  const [existing] = await db.select().from(complaints).where(eq(complaints.id, complaintId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(complaints)
+    .where(eq(complaints.id, complaintId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Complaint not found");
   assertCurrentOwner(ctx, existing);
 
@@ -285,12 +302,20 @@ export async function resolveComplaint(ctx: CallerContext, complaintId: string, 
 
 export async function addComplaintNote(ctx: CallerContext, complaintId: string, rawInput: unknown) {
   const input = parseInput(addComplaintNoteSchema, rawInput);
-  const [existing] = await db.select().from(complaints).where(eq(complaints.id, complaintId)).limit(1);
+  const [existing] = await db
+    .select()
+    .from(complaints)
+    .where(eq(complaints.id, complaintId))
+    .limit(1);
   if (!existing) throw new NotFoundError("Complaint not found");
   assertCurrentOwner(ctx, existing);
 
-  const notes = (existing.internalNotes as Array<{ authorId: string; note: string; at: string }>) ?? [];
-  const nextNotes = [...notes, { authorId: ctx.user.id, note: input.note, at: new Date().toISOString() }];
+  const notes =
+    (existing.internalNotes as Array<{ authorId: string; note: string; at: string }>) ?? [];
+  const nextNotes = [
+    ...notes,
+    { authorId: ctx.user.id, note: input.note, at: new Date().toISOString() },
+  ];
 
   return db.transaction(async (tx) => {
     const [updated] = await tx

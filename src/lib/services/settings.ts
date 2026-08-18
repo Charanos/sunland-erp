@@ -96,7 +96,8 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "mandate_default_rate",
     value: 0.1,
-    description: "Default management-fee rate for a new mandate; a different rate requires justification",
+    description:
+      "Default management-fee rate for a new mandate; a different rate requires justification",
   },
 
   // ── Executive Dashboard Spec §6.2 - Consolidated Approval Authority Table.
@@ -109,12 +110,14 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "property_petty_cash_auto_approve_kes",
     value: 5000,
-    description: "Property petty-cash expense auto-approved below this amount, no approval routing needed",
+    description:
+      "Property petty-cash expense auto-approved below this amount, no approval routing needed",
   },
   {
     key: "property_petty_cash_gm_threshold_kes",
     value: 5000,
-    description: "Property petty-cash expense requires GM approval from this amount up to the CEO threshold",
+    description:
+      "Property petty-cash expense requires GM approval from this amount up to the CEO threshold",
   },
   {
     key: "property_petty_cash_ceo_threshold_kes",
@@ -124,12 +127,14 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "office_petty_cash_auto_approve_kes",
     value: 10000,
-    description: "Office petty-cash expense auto-approved below this amount, no approval routing needed",
+    description:
+      "Office petty-cash expense auto-approved below this amount, no approval routing needed",
   },
   {
     key: "office_petty_cash_gm_threshold_kes",
     value: 10000,
-    description: "Office petty-cash expense requires GM approval from this amount up to the CEO threshold",
+    description:
+      "Office petty-cash expense requires GM approval from this amount up to the CEO threshold",
   },
   {
     key: "office_petty_cash_ceo_threshold_kes",
@@ -139,12 +144,14 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "petty_cash_topup_gm_threshold_kes",
     value: 5000,
-    description: "Petty-cash top-up requests above this amount require GM approval (spec §8.3 proposed default)",
+    description:
+      "Petty-cash top-up requests above this amount require GM approval (spec §8.3 proposed default)",
   },
   {
     key: "petty_cash_topup_ceo_threshold_kes",
     value: 50000,
-    description: "Petty-cash top-up requests above this amount require CEO approval (spec §8.3 proposed default)",
+    description:
+      "Petty-cash top-up requests above this amount require CEO approval (spec §8.3 proposed default)",
   },
   {
     key: "vehicle_request_external_hire_requires_gm",
@@ -154,7 +161,8 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "mandate_activation_ceo_unit_threshold",
     value: 10,
-    description: "Mandate activation requires CEO approval above this many units (GM approval is always required)",
+    description:
+      "Mandate activation requires CEO approval above this many units (GM approval is always required)",
   },
   {
     key: "mandate_activation_ceo_annual_value_kes",
@@ -164,32 +172,38 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "mandate_letter_ceo_policy_exceeds",
     value: true,
-    description: "Mandate letter requires CEO approval whenever its value or term exceeds standing policy",
+    description:
+      "Mandate letter requires CEO approval whenever its value or term exceeds standing policy",
   },
   {
     key: "payroll_disbursement_requires_gm",
     value: true,
-    description: "Payroll disbursement always requires GM approval; CEO visibility is informational only",
+    description:
+      "Payroll disbursement always requires GM approval; CEO visibility is informational only",
   },
   {
     key: "promotion_demotion_head_level_requires_ceo",
     value: true,
-    description: "Promotions/demotions into or out of a Head-level role require CEO approval; other roles require GM",
+    description:
+      "Promotions/demotions into or out of a Head-level role require CEO approval; other roles require GM",
   },
   {
     key: "bankers_cheque_dual_signoff_threshold_kes",
     value: 500000,
-    description: "Banker's cheques above this amount require dual sign-off with the Finance Head before crediting",
+    description:
+      "Banker's cheques above this amount require dual sign-off with the Finance Head before crediting",
   },
   {
     key: "agent_commission_payout_requires_ceo",
     value: true,
-    description: "Agent commission payouts and deal approvals always require CEO sign-off, never auto-approved",
+    description:
+      "Agent commission payouts and deal approvals always require CEO sign-off, never auto-approved",
   },
   {
     key: "offboarding_head_level_notifies_ceo",
     value: true,
-    description: "Offboarding a Head-level role notifies the CEO; treated as effectively required sign-off",
+    description:
+      "Offboarding a Head-level role notifies the CEO; treated as effectively required sign-off",
   },
 
   // ── Maintenance module (property lifecycle unification follow-up).
@@ -201,22 +215,26 @@ export const DEFAULT_SETTINGS: Array<{ key: string; value: unknown; description:
   {
     key: "maintenance_sla_hours_critical",
     value: 6,
-    description: "Target hours to resolve a critical-severity maintenance request before it's flagged breached",
+    description:
+      "Target hours to resolve a critical-severity maintenance request before it's flagged breached",
   },
   {
     key: "maintenance_sla_hours_urgent",
     value: 24,
-    description: "Target hours to resolve an urgent-severity maintenance request before it's flagged breached",
+    description:
+      "Target hours to resolve an urgent-severity maintenance request before it's flagged breached",
   },
   {
     key: "maintenance_sla_hours_routine",
     value: 72,
-    description: "Target hours to resolve a routine-severity maintenance request before it's flagged breached",
+    description:
+      "Target hours to resolve a routine-severity maintenance request before it's flagged breached",
   },
   {
     key: "maintenance_cost_gm_threshold_kes",
     value: 25000,
-    description: "Maintenance work order cost above this amount (and above the property mandate's own authority) requires GM approval",
+    description:
+      "Maintenance work order cost above this amount (and above the property mandate's own authority) requires GM approval",
   },
   {
     key: "maintenance_cost_ceo_threshold_kes",
@@ -229,7 +247,12 @@ export async function seedDefaultSettings(groupEntityId: string) {
   for (const setting of DEFAULT_SETTINGS) {
     await db
       .insert(settings)
-      .values({ entityId: groupEntityId, key: setting.key, value: setting.value, description: setting.description })
+      .values({
+        entityId: groupEntityId,
+        key: setting.key,
+        value: setting.value,
+        description: setting.description,
+      })
       .onConflictDoUpdate({
         target: [settings.entityId, settings.key],
         set: { value: setting.value, description: setting.description },

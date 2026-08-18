@@ -76,7 +76,15 @@ function EntitySwitchOverlayInner() {
 
       return () => clearTimeout(timeout);
     }
-  }, [progress, switchingToEntityId, targetEntity, router, searchParams, setActiveEntityId, setSwitchingToEntityId]);
+  }, [
+    progress,
+    switchingToEntityId,
+    targetEntity,
+    router,
+    searchParams,
+    setActiveEntityId,
+    setSwitchingToEntityId,
+  ]);
 
   if (!switchingToEntityId || !targetEntity) return null;
 

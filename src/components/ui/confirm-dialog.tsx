@@ -38,7 +38,8 @@ export function ConfirmDialog({
     error?: string;
   };
 }) {
-  const IconComponent = tone === "info" ? IconShieldCheck : tone === "warning" ? IconAlertTriangle : IconAlertCircle;
+  const IconComponent =
+    tone === "info" ? IconShieldCheck : tone === "warning" ? IconAlertTriangle : IconAlertCircle;
   const confirmVariant = tone === "danger" ? "danger" : "primary";
 
   const toneColor =
@@ -49,28 +50,24 @@ export function ConfirmDialog({
         : "bg-slate-50 text-[#151936] border-slate-200 shadow-2xs";
 
   return (
-    <Modal
-      onClose={isLoading ? () => { } : onClose}
-      open={open}
-      title={title}
-      size="md"
-    >
+    <Modal onClose={isLoading ? () => {} : onClose} open={open} title={title} size="md">
       <div className="flex flex-col gap-4 py-1">
         <div className="flex items-start gap-4">
-          <div className={`flex size-11 shrink-0 items-center justify-center rounded-2xl border ${toneColor}`}>
+          <div
+            className={`flex size-11 shrink-0 items-center justify-center rounded-2xl border ${toneColor}`}
+          >
             <IconComponent aria-hidden size={22} stroke={2} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              {description}
-            </p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{description}</p>
           </div>
         </div>
 
         {notes && (
           <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4 space-y-2 shadow-2xs">
             <label className="font-mono text-xxs font-medium uppercase tracking-wider text-slate-500 block">
-              {notes.label}{notes.required && " — Required"}
+              {notes.label}
+              {notes.required && " — Required"}
             </label>
             <textarea
               rows={2.5}
@@ -115,4 +112,3 @@ export function ConfirmDialog({
     </Modal>
   );
 }
-

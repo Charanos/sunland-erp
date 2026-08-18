@@ -8,13 +8,21 @@ import type { CallerContext } from "@/lib/authz/context";
  * that entity is only known after loading the resource (e.g. deciding an
  * approval request), since it must never be taken from client input.
  */
-export async function can(ctx: CallerContext, permissionKey: string, entityId?: string | null): Promise<boolean> {
+export async function can(
+  ctx: CallerContext,
+  permissionKey: string,
+  entityId?: string | null
+): Promise<boolean> {
   const granted = await resolveActorPermissions(ctx, entityId);
   return granted.has(permissionKey);
 }
 
 /** Action-level authorization - throws ForbiddenError, never returns false. */
-export async function authorize(ctx: CallerContext, permissionKey: string, entityId?: string | null): Promise<void> {
+export async function authorize(
+  ctx: CallerContext,
+  permissionKey: string,
+  entityId?: string | null
+): Promise<void> {
   const allowed = await can(ctx, permissionKey, entityId);
   if (!allowed) {
     throw new ForbiddenError(`Missing permission: ${permissionKey}`);

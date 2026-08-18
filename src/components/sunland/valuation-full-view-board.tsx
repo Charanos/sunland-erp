@@ -229,7 +229,9 @@ export function ValuationFullViewBoard({
         if (active && data?.properties) setProperties(data.properties);
       })
       .catch((err) => console.error("Failed to load properties:", err));
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [entityId]);
 
   useEffect(() => {
@@ -256,19 +258,31 @@ export function ValuationFullViewBoard({
       }
     };
     fetchValuation();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [valuationId, entityId, refreshCount]);
 
   useEffect(() => {
     if (activeTab !== "activity" || !entityId) return;
     let active = true;
     Promise.resolve().then(() => setActivityLoading(true));
-    fetch(`/api/audit?entityId=${entityId}&associatedType=valuation&associatedId=${valuationId}&limit=15`)
+    fetch(
+      `/api/audit?entityId=${entityId}&associatedType=valuation&associatedId=${valuationId}&limit=15`
+    )
       .then((res) => (res.ok ? res.json() : { entries: [] }))
-      .then((data) => { if (active) setActivityLog(Array.isArray(data.entries) ? data.entries : []); })
-      .catch(() => { if (active) setActivityLog([]); })
-      .finally(() => { if (active) setActivityLoading(false); });
-    return () => { active = false; };
+      .then((data) => {
+        if (active) setActivityLog(Array.isArray(data.entries) ? data.entries : []);
+      })
+      .catch(() => {
+        if (active) setActivityLog([]);
+      })
+      .finally(() => {
+        if (active) setActivityLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [activeTab, entityId, valuationId, refreshCount]);
 
   useEffect(() => {
@@ -277,15 +291,27 @@ export function ValuationFullViewBoard({
     Promise.resolve().then(() => setDocumentsLoading(true));
     fetch(`/api/documents?entityId=${entityId}&valuationId=${valuationId}`)
       .then((res) => (res.ok ? res.json() : { documents: [] }))
-      .then((data) => { if (active) setDocuments(Array.isArray(data.documents) ? data.documents : []); })
-      .catch(() => { if (active) setDocuments([]); })
-      .finally(() => { if (active) setDocumentsLoading(false); });
-    return () => { active = false; };
+      .then((data) => {
+        if (active) setDocuments(Array.isArray(data.documents) ? data.documents : []);
+      })
+      .catch(() => {
+        if (active) setDocuments([]);
+      })
+      .finally(() => {
+        if (active) setDocumentsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [activeTab, entityId, valuationId, refreshCount]);
 
   const score = useMemo(() => {
     if (!valuation) return null;
-    if (STAGE_ORDER.indexOf(valuation.stage) < STAGE_ORDER.indexOf("valued") || valuation.stage === "declined") return null;
+    if (
+      STAGE_ORDER.indexOf(valuation.stage) < STAGE_ORDER.indexOf("valued") ||
+      valuation.stage === "declined"
+    )
+      return null;
     if (!valuation.marketValueKes || !valuation.proposedFeeRate) return null;
     return scoreForValuation({
       proposedFeeRatePct: Number(valuation.proposedFeeRate) * 100,
@@ -296,9 +322,16 @@ export function ValuationFullViewBoard({
   }, [valuation]);
 
   const isPortfolio = !!valuation?.propertyId;
-  const subjectName = isPortfolio ? valuation?.propertyName ?? "Portfolio property" : valuation?.externalPropertyName ?? "Unknown subject";
-  const subjectLocation = isPortfolio ? valuation?.propertyLocation ?? "-" : valuation?.externalLocation ?? "-";
-  const heroImg = valuation?.propertyMedia?.find((m) => m.isPrimary)?.url ?? valuation?.propertyMedia?.[0]?.url ?? null;
+  const subjectName = isPortfolio
+    ? (valuation?.propertyName ?? "Portfolio property")
+    : (valuation?.externalPropertyName ?? "Unknown subject");
+  const subjectLocation = isPortfolio
+    ? (valuation?.propertyLocation ?? "-")
+    : (valuation?.externalLocation ?? "-");
+  const heroImg =
+    valuation?.propertyMedia?.find((m) => m.isPrimary)?.url ??
+    valuation?.propertyMedia?.[0]?.url ??
+    null;
   const fallbackCoverImg = useMemo(() => {
     if (!valuation?.id) return VALUATION_COVER_POOL[0];
     const hash = parseInt(valuation.id.replace(/-/g, "").slice(-4), 16);
@@ -306,15 +339,26 @@ export function ValuationFullViewBoard({
   }, [valuation?.id]);
   const displayCoverImg = heroImg ?? fallbackCoverImg;
 
-  const cfg = valuation ? STAGE_META[valuation.stage] ?? STAGE_META.requested : STAGE_META.requested;
-  const valuerDisplayName = valuation?.externalValuerName ?? valuation?.valuerName ?? (valuation?.valuersEntityName ?? "Sunland Valuers Ltd");
-  const estAnnualRevenue = valuation?.marketValueKes && valuation?.proposedFeeRate
-    ? Number(valuation.marketValueKes) * Number(valuation.proposedFeeRate)
-    : null;
+  const cfg = valuation
+    ? (STAGE_META[valuation.stage] ?? STAGE_META.requested)
+    : STAGE_META.requested;
+  const valuerDisplayName =
+    valuation?.externalValuerName ??
+    valuation?.valuerName ??
+    valuation?.valuersEntityName ??
+    "Sunland Valuers Ltd";
+  const estAnnualRevenue =
+    valuation?.marketValueKes && valuation?.proposedFeeRate
+      ? Number(valuation.marketValueKes) * Number(valuation.proposedFeeRate)
+      : null;
 
   const vitals: Vital[] = useMemo(() => {
     if (!valuation) return [];
-    const scoreTone: VitalTone = score ? (score.grade === "A" || score.grade === "B" ? "emerald" : "amber") : "neutral";
+    const scoreTone: VitalTone = score
+      ? score.grade === "A" || score.grade === "B"
+        ? "emerald"
+        : "amber"
+      : "neutral";
     return [
       {
         label: "Assessed Market Value",
@@ -323,12 +367,16 @@ export function ValuationFullViewBoard({
         icon: IconArrowUpRight,
         tone: scoreTone,
         hasBar: !!score,
-        barRatio: score ? score.score / 100 : undefined
+        barRatio: score ? score.score / 100 : undefined,
       },
       {
         label: "Proposed Fee Rate",
-        value: valuation.proposedFeeRate ? `${(Number(valuation.proposedFeeRate) * 100).toFixed(1)}%` : "—",
-        sub: estAnnualRevenue ? `${formatCompactKES(estAnnualRevenue)}/yr est. annual` : "Set upon submission",
+        value: valuation.proposedFeeRate
+          ? `${(Number(valuation.proposedFeeRate) * 100).toFixed(1)}%`
+          : "—",
+        sub: estAnnualRevenue
+          ? `${formatCompactKES(estAnnualRevenue)}/yr est. annual`
+          : "Set upon submission",
         icon: IconFileCertificate,
         tone: valuation.proposedFeeRate ? "amber" : "neutral",
       },
@@ -338,7 +386,9 @@ export function ValuationFullViewBoard({
         sub: valuation.landlordVerifiedAt ? "Verified Landlord ✓" : "Landlord Unverified",
         icon: IconShieldCheck,
         tone: valuation.landlordVerifiedAt ? "emerald" : "neutral",
-        onClick: () => { if (valuation.landlordContactId) setOwnerContactId(valuation.landlordContactId); },
+        onClick: () => {
+          if (valuation.landlordContactId) setOwnerContactId(valuation.landlordContactId);
+        },
       },
       {
         label: "Assigned Property Manager",
@@ -346,7 +396,9 @@ export function ValuationFullViewBoard({
         sub: "Sunland Property Manager",
         icon: IconUserCog,
         tone: "neutral",
-        onClick: () => { if (valuation.assignedManagerId) setManagerUserId(valuation.assignedManagerId); },
+        onClick: () => {
+          if (valuation.assignedManagerId) setManagerUserId(valuation.assignedManagerId);
+        },
       },
     ];
   }, [valuation, score, estAnnualRevenue]);
@@ -384,10 +436,18 @@ export function ValuationFullViewBoard({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to move stage");
-      pushToast({ tone: toStage === "declined" ? "info" : "success", title: `${valuation.valuationCode} → ${STAGE_META[toStage].label}`, body: "" });
+      pushToast({
+        tone: toStage === "declined" ? "info" : "success",
+        title: `${valuation.valuationCode} → ${STAGE_META[toStage].label}`,
+        body: "",
+      });
       refresh();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to move stage" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to move stage",
+      });
     }
   };
 
@@ -401,10 +461,18 @@ export function ValuationFullViewBoard({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to sign mandate");
-      pushToast({ tone: "success", title: "Mandate Created", body: `${valuation.valuationCode} is now a real management mandate.` });
+      pushToast({
+        tone: "success",
+        title: "Mandate Created",
+        body: `${valuation.valuationCode} is now a real management mandate.`,
+      });
       refresh();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to sign mandate" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to sign mandate",
+      });
     } finally {
       setIsSigning(false);
       setSignConfirmOpen(false);
@@ -414,7 +482,9 @@ export function ValuationFullViewBoard({
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/valuations/${valuation.id}?entityId=${entityId || ""}`, { method: "DELETE" });
+      const res = await fetch(`/api/valuations/${valuation.id}?entityId=${entityId || ""}`, {
+        method: "DELETE",
+      });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? "Failed to delete");
@@ -422,7 +492,11 @@ export function ValuationFullViewBoard({
       pushToast({ tone: "success", title: "Deleted", body: "Prospect removed." });
       router.push("/admin/valuations");
     } catch (e: unknown) {
-      pushToast({ tone: "warning", title: "Error", body: e instanceof Error ? e.message : "Failed to delete" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: e instanceof Error ? e.message : "Failed to delete",
+      });
       setIsDeleting(false);
       setDeleteConfirmOpen(false);
     }
@@ -430,12 +504,42 @@ export function ValuationFullViewBoard({
 
   // Stage-appropriate primary action, mirroring the design's per-stage footer button.
   let primary: { label: string; icon: typeof IconSend; onClick: () => void } | null = null;
-  if (valuation.stage === "requested") primary = { label: "Confirm Site Visit", icon: IconCalendarEvent, onClick: () => transitionStage("site_visit") };
-  else if (valuation.stage === "site_visit") primary = { label: "Submit Valuation", icon: IconFileCertificate, onClick: () => setSubmitModalOpen(true) };
-  else if (valuation.stage === "valued") primary = { label: "Send Offer Letter", icon: IconSend, onClick: () => transitionStage("offer_sent") };
-  else if (valuation.stage === "offer_sent") primary = { label: "Record Acceptance", icon: IconShieldCheck, onClick: () => transitionStage("accepted") };
-  else if (valuation.stage === "accepted") primary = { label: "Create Mandate", icon: IconFileCertificate, onClick: () => setSignConfirmOpen(true) };
-  else if (valuation.stage === "declined") primary = { label: "Re-open Prospect", icon: IconChevronRight, onClick: () => transitionStage("valued") };
+  if (valuation.stage === "requested")
+    primary = {
+      label: "Confirm Site Visit",
+      icon: IconCalendarEvent,
+      onClick: () => transitionStage("site_visit"),
+    };
+  else if (valuation.stage === "site_visit")
+    primary = {
+      label: "Submit Valuation",
+      icon: IconFileCertificate,
+      onClick: () => setSubmitModalOpen(true),
+    };
+  else if (valuation.stage === "valued")
+    primary = {
+      label: "Send Offer Letter",
+      icon: IconSend,
+      onClick: () => transitionStage("offer_sent"),
+    };
+  else if (valuation.stage === "offer_sent")
+    primary = {
+      label: "Record Acceptance",
+      icon: IconShieldCheck,
+      onClick: () => transitionStage("accepted"),
+    };
+  else if (valuation.stage === "accepted")
+    primary = {
+      label: "Create Mandate",
+      icon: IconFileCertificate,
+      onClick: () => setSignConfirmOpen(true),
+    };
+  else if (valuation.stage === "declined")
+    primary = {
+      label: "Re-open Prospect",
+      icon: IconChevronRight,
+      onClick: () => transitionStage("valued"),
+    };
 
   const editTarget: ValuationEditTarget = {
     id: valuation.id,
@@ -485,9 +589,7 @@ export function ValuationFullViewBoard({
             <h1 className="title-serif text-[#151936] text-2xl lg:text-3xl font-normal leading-tight truncate">
               {subjectName}
             </h1>
-            <Badge tone={stageTone(valuation.stage)}>
-              {cfg.label}
-            </Badge>
+            <Badge tone={stageTone(valuation.stage)}>{cfg.label}</Badge>
           </div>
           <div className="flex items-center gap-3 text-slate-500 text-xs min-w-0 font-medium">
             <span className="flex items-center gap-1.5 min-w-0 text-slate-600">
@@ -529,20 +631,29 @@ export function ValuationFullViewBoard({
               {menuOpen && (
                 <div className="absolute right-0 top-[44px] z-30 w-52 bg-white border border-slate-200/90 rounded-2xl shadow-xl p-1.5 animate-in fade-in zoom-in-95">
                   <button
-                    onClick={() => { setEditModalOpen(true); setMenuOpen(false); }}
+                    onClick={() => {
+                      setEditModalOpen(true);
+                      setMenuOpen(false);
+                    }}
                     className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                   >
                     <IconUserCog size={15} className="text-slate-400" /> Edit prospect details
                   </button>
                   <button
-                    onClick={() => { setDocModalOpen(true); setMenuOpen(false); }}
+                    onClick={() => {
+                      setDocModalOpen(true);
+                      setMenuOpen(false);
+                    }}
                     className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                   >
                     <IconUpload size={15} className="text-slate-400" /> Attach document
                   </button>
                   {valuation.stage !== "mandate_signed" && valuation.stage !== "declined" && (
                     <button
-                      onClick={() => { transitionStage("declined"); setMenuOpen(false); }}
+                      onClick={() => {
+                        transitionStage("declined");
+                        setMenuOpen(false);
+                      }}
                       className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors"
                     >
                       <IconX size={15} /> Decline prospect
@@ -550,7 +661,10 @@ export function ValuationFullViewBoard({
                   )}
                   <div className="h-px bg-slate-100 my-1" />
                   <button
-                    onClick={() => { setDeleteConfirmOpen(true); setMenuOpen(false); }}
+                    onClick={() => {
+                      setDeleteConfirmOpen(true);
+                      setMenuOpen(false);
+                    }}
                     className="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors"
                   >
                     <IconX size={15} /> Delete prospect
@@ -566,11 +680,20 @@ export function ValuationFullViewBoard({
       <div className="relative rounded-[28px] overflow-hidden h-[260px] sm:h-[300px] bg-[#151936] flex flex-col shadow-md animate-fade-in-up border border-slate-200/80">
         {displayCoverImg ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={displayCoverImg} alt={subjectName} className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={displayCoverImg}
+            alt={subjectName}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#151936] via-[#1e2336] to-[#0c1f24]" />
         )}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,23,42,0.15) 0%, rgba(15,23,42,0.85) 100%)" }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(180deg, rgba(15,23,42,0.15) 0%, rgba(15,23,42,0.85) 100%)",
+          }}
+        />
 
         {/* High contrast text overlay on bottom left */}
         <div className="relative z-10 p-6 mt-auto flex items-end justify-between gap-4">
@@ -599,7 +722,9 @@ export function ValuationFullViewBoard({
               <IconHistory size={18} />
             </span>
             <div>
-              <h3 className="text-sm font-medium text-slate-900 leading-tight">Pipeline Stage & Velocity Tracker</h3>
+              <h3 className="text-sm font-medium text-slate-900 leading-tight">
+                Pipeline Stage & Velocity Tracker
+              </h3>
               <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mt-0.5">
                 Stage progression, velocity SLA & transition history
               </p>
@@ -640,7 +765,8 @@ export function ValuationFullViewBoard({
               <div>
                 <p className="text-xs font-medium text-rose-900">Prospect Marked as Declined</p>
                 <p className="text-xxs text-rose-700 font-mono mt-0.5">
-                  Declined {daysSince(valuation.stageEnteredAt)} days ago. Re-open at any time to resume valuation pipeline.
+                  Declined {daysSince(valuation.stageEnteredAt)} days ago. Re-open at any time to
+                  resume valuation pipeline.
                 </p>
               </div>
             </div>
@@ -765,7 +891,10 @@ export function ValuationFullViewBoard({
                 {v.hasBar ? (
                   <div className="flex flex-col gap-1.5 w-full min-w-[100px]">
                     <div className="h-1.5 rounded-full bg-slate-200/40 overflow-hidden">
-                      <div className={cn("h-full rounded-full", VITAL_TONE_BAR[v.tone])} style={{ width: `${Math.min(100, Math.round((v.barRatio ?? 0) * 100))}%` }} />
+                      <div
+                        className={cn("h-full rounded-full", VITAL_TONE_BAR[v.tone])}
+                        style={{ width: `${Math.min(100, Math.round((v.barRatio ?? 0) * 100))}%` }}
+                      />
                     </div>
                     {v.sub && <span className="text-xs text-slate-500 font-medium">{v.sub}</span>}
                   </div>
@@ -786,13 +915,28 @@ export function ValuationFullViewBoard({
       {valuation.stage === "valued" && (
         <div className="rounded-2xl p-4 flex items-center justify-between gap-4 border border-amber-200 bg-amber-500/[0.04] shadow-sm animate-fade-in-up">
           <div className="flex items-start gap-3 min-w-0">
-            <span className="size-9 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shrink-0"><IconFileCertificate size={18} /></span>
+            <span className="size-9 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shrink-0">
+              <IconFileCertificate size={18} />
+            </span>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-slate-950">Valuation ready - awaiting your offer decision</p>
-              <p className="text-xs text-slate-500 mt-0.5">{valuation.managerName ?? "The assigned manager"} completed the site visit; valued at {valuation.marketValueKes ? formatCompactKES(Number(valuation.marketValueKes)) : "—"}.</p>
+              <p className="text-sm font-medium text-slate-950">
+                Valuation ready - awaiting your offer decision
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {valuation.managerName ?? "The assigned manager"} completed the site visit; valued
+                at{" "}
+                {valuation.marketValueKes
+                  ? formatCompactKES(Number(valuation.marketValueKes))
+                  : "—"}
+                .
+              </p>
             </div>
           </div>
-          <button type="button" onClick={() => transitionStage("offer_sent")} className="rounded-xl px-4 py-1.5 text-xxs font-medium whitespace-nowrap bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] shadow-sm">
+          <button
+            type="button"
+            onClick={() => transitionStage("offer_sent")}
+            className="rounded-xl px-4 py-1.5 text-xxs font-medium whitespace-nowrap bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] shadow-sm"
+          >
             Send Offer Letter
           </button>
         </div>
@@ -801,7 +945,11 @@ export function ValuationFullViewBoard({
       {/* ── Tabs + rail ── */}
       <RailLayout gap="gap-6">
         <div className="min-w-0 flex flex-col gap-4">
-          <div role="tablist" aria-label="Valuation sections" className="flex bg-white border border-slate-100 p-1.5 rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)] gap-1 overflow-x-auto">
+          <div
+            role="tablist"
+            aria-label="Valuation sections"
+            className="flex bg-white border border-slate-100 p-1.5 rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)] gap-1 overflow-x-auto"
+          >
             {tabs.map((t) => (
               <button
                 key={t.key}
@@ -810,7 +958,9 @@ export function ValuationFullViewBoard({
                 onClick={() => setActiveTab(t.key)}
                 className={cn(
                   "px-4 py-1.5 rounded-xl transition-all duration-300 flex items-center gap-2 shrink-0 whitespace-nowrap font-medium text-sm",
-                  activeTab === t.key ? "bg-[#151936] text-white shadow-md" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50",
+                  activeTab === t.key
+                    ? "bg-[#151936] text-white shadow-md"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 )}
               >
                 <t.icon size={12} /> {t.label}
@@ -825,7 +975,9 @@ export function ValuationFullViewBoard({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                   <div className="border border-slate-100 bg-slate-50 rounded-2xl p-4">
                     <p className="label-caps text-slate-400 mb-1">Subject Type</p>
-                    <p className="text-body-primary text-slate-900">{valuation.isLand ? "Land" : "Built Property"}</p>
+                    <p className="text-body-primary text-slate-900">
+                      {valuation.isLand ? "Land" : "Built Property"}
+                    </p>
                   </div>
                   <div className="border border-slate-100 bg-slate-50 rounded-2xl p-4">
                     <p className="label-caps text-slate-400 mb-1">Location</p>
@@ -833,13 +985,17 @@ export function ValuationFullViewBoard({
                   </div>
                   <div className="border border-slate-100 bg-slate-50 rounded-2xl p-4">
                     <p className="label-caps text-slate-400 mb-1">Requested</p>
-                    <p className="text-body-primary text-slate-900">{fmtDate(valuation.createdAt)}</p>
+                    <p className="text-body-primary text-slate-900">
+                      {fmtDate(valuation.createdAt)}
+                    </p>
                   </div>
                 </div>
               </Card>
               <Card className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <h3 className="text-sm font-medium text-slate-900 mb-3">Notes</h3>
-                <p className="text-body-regular text-slate-600 whitespace-pre-line">{valuation.notes || "No notes recorded."}</p>
+                <p className="text-body-regular text-slate-600 whitespace-pre-line">
+                  {valuation.notes || "No notes recorded."}
+                </p>
               </Card>
             </>
           )}
@@ -847,9 +1003,13 @@ export function ValuationFullViewBoard({
           {activeTab === "comparables" && (
             <Card className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <h3 className="text-sm font-medium text-slate-900 mb-1">Comparable Evidence</h3>
-              <p className="text-desc-secondary mb-4">Entered by the valuer when the valuation was submitted.</p>
+              <p className="text-desc-secondary mb-4">
+                Entered by the valuer when the valuation was submitted.
+              </p>
               {!valuation.comparables || valuation.comparables.length === 0 ? (
-                <p className="text-slate-400 text-center py-10 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">No comparable evidence recorded.</p>
+                <p className="text-slate-400 text-center py-10 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  No comparable evidence recorded.
+                </p>
               ) : (
                 <div className="overflow-x-auto">
                   <div className="min-w-[480px]">
@@ -860,13 +1020,30 @@ export function ValuationFullViewBoard({
                       <span className="label-caps text-slate-400 text-right">Adj. Value</span>
                     </div>
                     {valuation.comparables.map((c, i) => (
-                      <div key={i} className="grid grid-cols-[1.4fr_0.9fr_0.9fr_0.9fr] gap-2 px-3 py-2.5 border-x border-b border-slate-50 items-center">
+                      <div
+                        key={i}
+                        className="grid grid-cols-[1.4fr_0.9fr_0.9fr_0.9fr] gap-2 px-3 py-2.5 border-x border-b border-slate-50 items-center"
+                      >
                         <span className="text-sm text-slate-700 truncate">{c.name}</span>
-                        <span className="font-mono text-xs text-slate-500 text-right">{formatKES(c.pricePerSqft)}</span>
-                        <span className={cn("font-mono text-xs text-right", c.adjustmentPct > 0 ? "text-emerald-600" : c.adjustmentPct < 0 ? "text-rose-600" : "text-slate-400")}>
-                          {c.adjustmentPct > 0 ? "+" : ""}{c.adjustmentPct}%
+                        <span className="font-mono text-xs text-slate-500 text-right">
+                          {formatKES(c.pricePerSqft)}
                         </span>
-                        <span className="font-mono text-xs text-slate-900 text-right">{formatCompactKES(c.adjustedValueKes)}</span>
+                        <span
+                          className={cn(
+                            "font-mono text-xs text-right",
+                            c.adjustmentPct > 0
+                              ? "text-emerald-600"
+                              : c.adjustmentPct < 0
+                                ? "text-rose-600"
+                                : "text-slate-400"
+                          )}
+                        >
+                          {c.adjustmentPct > 0 ? "+" : ""}
+                          {c.adjustmentPct}%
+                        </span>
+                        <span className="font-mono text-xs text-slate-900 text-right">
+                          {formatCompactKES(c.adjustedValueKes)}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -877,8 +1054,13 @@ export function ValuationFullViewBoard({
 
           {activeTab === "methodology" && (
             <Card className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-              <h3 className="text-sm font-medium text-slate-900 mb-3">Methodology &amp; Assumptions</h3>
-              <p className="text-body-regular text-slate-600 whitespace-pre-line leading-relaxed">{valuation.methodology || "Not yet recorded - captured when the valuation is submitted."}</p>
+              <h3 className="text-sm font-medium text-slate-900 mb-3">
+                Methodology &amp; Assumptions
+              </h3>
+              <p className="text-body-regular text-slate-600 whitespace-pre-line leading-relaxed">
+                {valuation.methodology ||
+                  "Not yet recorded - captured when the valuation is submitted."}
+              </p>
             </Card>
           )}
 
@@ -886,23 +1068,38 @@ export function ValuationFullViewBoard({
             <Card className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-medium text-slate-900">Documents</h3>
-                <button onClick={() => setDocModalOpen(true)} className="inline-flex items-center gap-1.5 text-xs font-medium border border-slate-200 rounded-xl px-3 py-1.5 hover:border-[#f3df27] hover:bg-[#fffdf0] transition-colors">
+                <button
+                  onClick={() => setDocModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium border border-slate-200 rounded-xl px-3 py-1.5 hover:border-[#f3df27] hover:bg-[#fffdf0] transition-colors"
+                >
                   <IconUpload size={13} /> Attach
                 </button>
               </div>
               {documentsLoading ? (
-                <div className="flex justify-center py-10"><LoadingSpinner size="md" /></div>
+                <div className="flex justify-center py-10">
+                  <LoadingSpinner size="md" />
+                </div>
               ) : !documents || documents.length === 0 ? (
-                <p className="text-slate-400 text-center py-10 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">No documents attached yet.</p>
+                <p className="text-slate-400 text-center py-10 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  No documents attached yet.
+                </p>
               ) : (
                 <div className="flex flex-col gap-2">
                   {documents.map((d) => {
                     const Icon = DOC_TYPE_ICON[d.type] ?? IconFileText;
                     return (
-                      <a key={d.id} href={d.fileUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-2.5 hover:bg-slate-100/70 transition-colors">
+                      <a
+                        key={d.id}
+                        href={d.fileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2.5 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-2.5 hover:bg-slate-100/70 transition-colors"
+                      >
                         <Icon size={18} className="text-[#122a20] shrink-0" />
                         <span className="flex-1 text-sm text-slate-800 truncate">{d.title}</span>
-                        <span className="text-ms text-slate-400 font-mono">{fmtDate(d.createdAt)}</span>
+                        <span className="text-ms text-slate-400 font-mono">
+                          {fmtDate(d.createdAt)}
+                        </span>
                       </a>
                     );
                   })}
@@ -915,18 +1112,28 @@ export function ValuationFullViewBoard({
             <Card className="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <h3 className="text-sm font-medium text-slate-900 mb-4">Activity Log</h3>
               {activityLoading ? (
-                <div className="flex justify-center py-10"><LoadingSpinner size="md" /></div>
+                <div className="flex justify-center py-10">
+                  <LoadingSpinner size="md" />
+                </div>
               ) : !activityLog || activityLog.length === 0 ? (
-                <p className="text-slate-400 text-center py-10 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">No recorded activity yet.</p>
+                <p className="text-slate-400 text-center py-10 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  No recorded activity yet.
+                </p>
               ) : (
                 <div className="space-y-0 pl-2">
                   {activityLog.map((entry, i) => (
                     <div key={entry.id} className="flex gap-4 relative py-3.5">
-                      {i < activityLog.length - 1 && <div className="absolute left-[9px] top-[32px] bottom-0 w-0.5 bg-slate-100 rounded-full" />}
+                      {i < activityLog.length - 1 && (
+                        <div className="absolute left-[9px] top-[32px] bottom-0 w-0.5 bg-slate-100 rounded-full" />
+                      )}
                       <div className="size-[18px] rounded-full border-[3px] border-slate-200 bg-white shrink-0 mt-0.5 z-10" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-800 leading-snug">{entry.summary}</p>
-                        <p className="text-xs text-slate-400 mt-1 font-mono">{relativeTime(entry.createdAt)}</p>
+                        <p className="text-sm font-medium text-slate-800 leading-snug">
+                          {entry.summary}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-1 font-mono">
+                          {relativeTime(entry.createdAt)}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -945,27 +1152,67 @@ export function ValuationFullViewBoard({
                 <div className="relative h-[150px]">
                   {valuation.landlordAvatarUrl ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
-                    <img src={valuation.landlordAvatarUrl} alt={valuation.landlordName} className="absolute inset-0 w-full h-full object-cover" />
+                    <img
+                      src={valuation.landlordAvatarUrl}
+                      alt={valuation.landlordName}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="absolute inset-0 bg-slate-100" />
                   )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(21,25,54,0.3) 0%, rgba(21,25,54,0) 40%, rgba(21,25,54,0.5) 100%)" }} />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(21,25,54,0.3) 0%, rgba(21,25,54,0) 40%, rgba(21,25,54,0.5) 100%)",
+                    }}
+                  />
                   <div className="absolute top-3.5 left-0 right-0 text-center">
-                    <p className="text-white text-base font-medium" style={{ textShadow: "0 2px 12px rgba(21,25,54,0.4)" }}>{valuation.landlordName}</p>
+                    <p
+                      className="text-white text-base font-medium"
+                      style={{ textShadow: "0 2px 12px rgba(21,25,54,0.4)" }}
+                    >
+                      {valuation.landlordName}
+                    </p>
                     <p className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-white/90">
-                      {valuation.landlordVerifiedAt ? <><IconShieldCheck size={12} /> Verified landlord</> : <><IconShieldHalf size={12} /> Unverified - confirm before offer</>}
+                      {valuation.landlordVerifiedAt ? (
+                        <>
+                          <IconShieldCheck size={12} /> Verified landlord
+                        </>
+                      ) : (
+                        <>
+                          <IconShieldHalf size={12} /> Unverified - confirm before offer
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>
                 <div className="p-3.5 flex flex-col gap-1.5">
                   {valuation.landlordPhone && (
-                    <div className="flex items-center justify-between"><span className="text-xs text-slate-500 flex items-center gap-1.5"><IconPhone size={12} /> Phone</span><span className="font-mono text-xs text-slate-900">{valuation.landlordPhone}</span></div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-500 flex items-center gap-1.5">
+                        <IconPhone size={12} /> Phone
+                      </span>
+                      <span className="font-mono text-xs text-slate-900">
+                        {valuation.landlordPhone}
+                      </span>
+                    </div>
                   )}
                   {valuation.landlordEmail && (
-                    <div className="flex items-center justify-between"><span className="text-xs text-slate-500 flex items-center gap-1.5"><IconMail size={12} /> Email</span><span className="font-mono text-xs text-slate-900 truncate max-w-[140px]">{valuation.landlordEmail}</span></div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-500 flex items-center gap-1.5">
+                        <IconMail size={12} /> Email
+                      </span>
+                      <span className="font-mono text-xs text-slate-900 truncate max-w-[140px]">
+                        {valuation.landlordEmail}
+                      </span>
+                    </div>
                   )}
                   {valuation.landlordContactId && (
-                    <Link href={`/admin/contacts/${valuation.landlordContactId}`} className="mt-1.5 text-xs text-center text-[#151936] flex items-center justify-center gap-1.5 bg-slate-50 border border-slate-100 rounded-xl py-2 hover:bg-slate-100 transition-colors">
+                    <Link
+                      href={`/admin/contacts/${valuation.landlordContactId}`}
+                      className="mt-1.5 text-xs text-center text-[#151936] flex items-center justify-center gap-1.5 bg-slate-50 border border-slate-100 rounded-xl py-2 hover:bg-slate-100 transition-colors"
+                    >
                       <IconMessageCircle size={13} /> Landlord Profile
                     </Link>
                   )}
@@ -980,10 +1227,18 @@ export function ValuationFullViewBoard({
           <Card className="bg-white border border-slate-100 rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="flex items-center gap-2.5">
               <span className="size-11 rounded-full bg-[#151936] text-[#f3df27] flex items-center justify-center font-mono text-sm shrink-0">
-                {valuation.managerName ? valuation.managerName.split(" ").map((w) => w[0]).slice(0, 2).join("") : "?"}
+                {valuation.managerName
+                  ? valuation.managerName
+                      .split(" ")
+                      .map((w) => w[0])
+                      .slice(0, 2)
+                      .join("")
+                  : "?"}
               </span>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-slate-900 truncate">{valuation.managerName ?? "Unassigned"}</p>
+                <p className="text-sm font-medium text-slate-900 truncate">
+                  {valuation.managerName ?? "Unassigned"}
+                </p>
                 <p className="label-caps text-slate-400">Property Manager</p>
               </div>
             </div>
@@ -991,19 +1246,30 @@ export function ValuationFullViewBoard({
 
           {/* Valuer card */}
           <Card className="bg-white border border-slate-100 rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <p className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-2.5">Valuer</p>
+            <p className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-2.5">
+              Valuer
+            </p>
             <div className="flex items-center gap-2.5">
-              <span className="size-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-[#122a20] shrink-0"><IconShieldHalf size={17} /></span>
+              <span className="size-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-[#122a20] shrink-0">
+                <IconShieldHalf size={17} />
+              </span>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-slate-900 truncate">{valuerDisplayName}</p>
-                <p className="text-xs text-slate-400">{valuation.externalValuerName ? "Independent firm" : "Sunland Valuers Ltd - internal"}</p>
+                <p className="text-xs text-slate-400">
+                  {valuation.externalValuerName
+                    ? "Independent firm"
+                    : "Sunland Valuers Ltd - internal"}
+                </p>
               </div>
             </div>
           </Card>
 
           {/* Convert preview */}
           {valuation.stage === "mandate_signed" && valuation.resultingMandateId ? (
-            <button onClick={() => router.push(`/admin/mandates/${valuation.resultingMandateId}`)} className="bg-tertiary-gradient rounded-[24px] shadow-xl p-5 text-left hover:opacity-95 transition-opacity">
+            <button
+              onClick={() => router.push(`/admin/mandates/${valuation.resultingMandateId}`)}
+              className="bg-tertiary-gradient rounded-[24px] shadow-xl p-5 text-left hover:opacity-95 transition-opacity"
+            >
               <p className="text-xs text-white/60 mb-1">Converted to</p>
               <p className="mono-data text-lg text-white mb-3">Management Mandate</p>
               <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#f3df27]">
@@ -1015,8 +1281,20 @@ export function ValuationFullViewBoard({
               <p className="text-xs text-white/60 mb-1">If accepted, becomes</p>
               <p className="mono-data text-lg text-white mb-3">Management Mandate</p>
               <div className="flex flex-col gap-1.5">
-                <div className="flex justify-between text-xs"><span className="text-white/60">Fee</span><span className="font-mono text-[#f3df27]">{valuation.proposedFeeRate ? `${(Number(valuation.proposedFeeRate) * 100).toFixed(1)}%` : "—"}</span></div>
-                <div className="flex justify-between text-xs"><span className="text-white/60">Est. annual revenue</span><span className="font-mono text-white">{estAnnualRevenue ? formatCompactKES(estAnnualRevenue) : "—"}</span></div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-white/60">Fee</span>
+                  <span className="font-mono text-[#f3df27]">
+                    {valuation.proposedFeeRate
+                      ? `${(Number(valuation.proposedFeeRate) * 100).toFixed(1)}%`
+                      : "—"}
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-white/60">Est. annual revenue</span>
+                  <span className="font-mono text-white">
+                    {estAnnualRevenue ? formatCompactKES(estAnnualRevenue) : "—"}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -1077,7 +1355,7 @@ export function ValuationFullViewBoard({
         entityId={entityId || "group"}
         ownerContactId={ownerContactId}
         properties={properties}
-        onOpenProperty={() => { }}
+        onOpenProperty={() => {}}
       />
 
       <PropertyManagerProfileDrawer
@@ -1086,7 +1364,7 @@ export function ValuationFullViewBoard({
         entityId={entityId || "group"}
         managerId={managerUserId}
         properties={properties}
-        onOpenProperty={() => { }}
+        onOpenProperty={() => {}}
       />
     </div>
   );

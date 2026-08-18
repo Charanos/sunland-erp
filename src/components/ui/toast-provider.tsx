@@ -26,7 +26,10 @@ type ToastContextValue = {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-const toneStyles: Record<ToastTone, { icon: string; iconBg: string; barBg: string; artwork: string }> = {
+const toneStyles: Record<
+  ToastTone,
+  { icon: string; iconBg: string; barBg: string; artwork: string }
+> = {
   success: {
     icon: "text-emerald-600",
     iconBg: "bg-emerald-50 border-emerald-200/80 shadow-2xs",
@@ -89,13 +92,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       pushToast(toast) {
         const id = crypto.randomUUID();
         const duration = toast.duration ?? DEFAULT_DURATIONS[toast.tone];
-        setToasts((current) =>
-          [{ ...toast, id, duration }, ...current].slice(0, 3)
-        );
+        setToasts((current) => [{ ...toast, id, duration }, ...current].slice(0, 3));
         window.setTimeout(() => dismissToast(id), duration);
       },
     }),
-    [dismissToast],
+    [dismissToast]
   );
 
   return (
@@ -113,7 +114,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 "relative overflow-hidden rounded-2xl p-4 shadow-[0_12px_35px_rgba(0,0,0,0.08)] backdrop-blur-xl bg-white/95 border border-slate-200/80 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto group",
                 isExiting
                   ? "translate-x-[120%] opacity-0 scale-95"
-                  : "animate-fade-in translate-x-0 opacity-100 scale-100 hover:shadow-[0_16px_45px_rgba(0,0,0,0.12)]",
+                  : "animate-fade-in translate-x-0 opacity-100 scale-100 hover:shadow-[0_16px_45px_rgba(0,0,0,0.12)]"
               )}
               key={toast.id}
             >
@@ -121,7 +122,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               <div className={cn("absolute left-0 top-0 bottom-0 w-1", styles.barBg)} />
 
               {/* Artwork Watermark */}
-              <div className={cn("absolute -bottom-6 -right-4 opacity-[0.04] pointer-events-none transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.06]", styles.artwork)}>
+              <div
+                className={cn(
+                  "absolute -bottom-6 -right-4 opacity-[0.04] pointer-events-none transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.06]",
+                  styles.artwork
+                )}
+              >
                 <IconComponent size={96} stroke={1.5} />
               </div>
 
@@ -130,7 +136,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "flex size-8 shrink-0 items-center justify-center rounded-xl border font-medium",
                     styles.icon,
-                    styles.iconBg,
+                    styles.iconBg
                   )}
                 >
                   <IconComponent aria-hidden size={16} stroke={2.5} />
@@ -181,4 +187,3 @@ export function useToast() {
 
   return context;
 }
-

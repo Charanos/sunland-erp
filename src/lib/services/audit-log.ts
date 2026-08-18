@@ -51,10 +51,19 @@ export async function listAuditLog(ctx: CallerContext, filters: AuditLogFilters 
   // groups, so there's no ambiguity about which one wins.
   const groups = filters.associatedGroups?.filter((g) => g.ids.length > 0) ?? [];
   if (groups.length > 0) {
-    conditions.push(or(...groups.map((g) => and(eq(activityLogs.associatedType, g.type), inArray(activityLogs.associatedId, g.ids))))!);
+    conditions.push(
+      or(
+        ...groups.map((g) =>
+          and(eq(activityLogs.associatedType, g.type), inArray(activityLogs.associatedId, g.ids))
+        )
+      )!
+    );
   } else {
     if (filters.associatedType) {
-      const types = filters.associatedType.split(",").map((t) => t.trim()).filter(Boolean);
+      const types = filters.associatedType
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
       if (types.length > 1) {
         conditions.push(inArray(activityLogs.associatedType, types));
       } else if (types.length === 1) {

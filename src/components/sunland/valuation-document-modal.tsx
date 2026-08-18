@@ -34,7 +34,8 @@ export function ValuationDocumentModal({
 }: ValuationDocumentModalProps) {
   const { pushToast } = useToast();
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<(typeof VALUATION_DOCUMENT_TYPES)[number]["value"]>("valuation_report");
+  const [type, setType] =
+    useState<(typeof VALUATION_DOCUMENT_TYPES)[number]["value"]>("valuation_report");
   const [url, setUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -57,13 +58,21 @@ export function ValuationDocumentModal({
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to attach document");
 
-      pushToast({ tone: "success", title: "Document attached", body: `Saved against ${valuationLabel}.` });
+      pushToast({
+        tone: "success",
+        title: "Document attached",
+        body: `Saved against ${valuationLabel}.`,
+      });
       onAttached();
       onClose();
       setTitle("");
       setUrl("");
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not attach document." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not attach document.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -72,7 +81,7 @@ export function ValuationDocumentModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title="Attach Document"
       description={valuationLabel}
       size="sm"
@@ -97,7 +106,9 @@ export function ValuationDocumentModal({
             className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-body-primary focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm"
           >
             {VALUATION_DOCUMENT_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>{t.label}</option>
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
             ))}
           </select>
         </div>

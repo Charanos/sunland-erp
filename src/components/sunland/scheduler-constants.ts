@@ -19,7 +19,10 @@ import {
 
 export type EventType = "internal" | "external" | "legal" | "maintenance" | "viewing";
 
-export const EVENT_TYPE_META: Record<EventType, { label: string; short: string; color: string; icon: Icon }> = {
+export const EVENT_TYPE_META: Record<
+  EventType,
+  { label: string; short: string; color: string; icon: Icon }
+> = {
   internal: { label: "Internal meeting", short: "Internal", color: "#151936", icon: IconVideo },
   external: { label: "External / client", short: "External", color: "#10b981", icon: IconUsers },
   legal: { label: "Legal / escrow", short: "Legal", color: "#f59e0b", icon: IconGavel },
@@ -27,7 +30,13 @@ export const EVENT_TYPE_META: Record<EventType, { label: string; short: string; 
   viewing: { label: "Property viewing", short: "Viewing", color: "#7c3aed", icon: IconHome },
 };
 
-export const EVENT_TYPE_ORDER: EventType[] = ["internal", "external", "viewing", "legal", "maintenance"];
+export const EVENT_TYPE_ORDER: EventType[] = [
+  "internal",
+  "external",
+  "viewing",
+  "legal",
+  "maintenance",
+];
 
 export function eventTypeMeta(type: string) {
   return EVENT_TYPE_META[type as EventType] ?? EVENT_TYPE_META.internal;
@@ -40,12 +49,13 @@ export function eventTypeMeta(type: string) {
 
 export type BoardColumn = "planned" | "progress" | "risk" | "done";
 
-export const BOARD_COLUMN_META: Record<BoardColumn, { label: string; color: string; bar: string }> = {
-  planned: { label: "Planned", color: "#94a3b8", bar: "#94a3b8" },
-  progress: { label: "In Progress", color: "#122a20", bar: "#122a20" },
-  risk: { label: "At Risk", color: "#f43f5e", bar: "#f43f5e" },
-  done: { label: "Done", color: "#cbd5e1", bar: "#cbd5e1" },
-};
+export const BOARD_COLUMN_META: Record<BoardColumn, { label: string; color: string; bar: string }> =
+  {
+    planned: { label: "Planned", color: "#94a3b8", bar: "#94a3b8" },
+    progress: { label: "In Progress", color: "#122a20", bar: "#122a20" },
+    risk: { label: "At Risk", color: "#f43f5e", bar: "#f43f5e" },
+    done: { label: "Done", color: "#cbd5e1", bar: "#cbd5e1" },
+  };
 
 export const BOARD_COLUMN_ORDER: BoardColumn[] = ["planned", "progress", "risk", "done"];
 
@@ -60,23 +70,35 @@ export function boardColumnFor(status: string, atRisk: boolean): BoardColumn {
 /** The (status, atRisk) write a drag into `column` should perform. */
 export function boardStateForColumn(column: BoardColumn): { status?: string; atRisk: boolean } {
   switch (column) {
-    case "planned": return { status: "planning", atRisk: false };
-    case "progress": return { status: "in_progress", atRisk: false };
+    case "planned":
+      return { status: "planning", atRisk: false };
+    case "progress":
+      return { status: "in_progress", atRisk: false };
     // Staying in_progress is the point - at-risk is a flag, not a stage.
-    case "risk": return { status: "in_progress", atRisk: true };
-    case "done": return { status: "completed", atRisk: false };
+    case "risk":
+      return { status: "in_progress", atRisk: true };
+    case "done":
+      return { status: "completed", atRisk: false };
   }
 }
 
 // ── Project departments (the design's "category") ────────────────────────────
 
 export const PROJECT_DEPT_META: Record<string, { label: string; chip: string; icon: Icon }> = {
-  ops: { label: "Operations", chip: "bg-[rgba(21,25,54,0.07)] text-[#151936]", icon: IconBriefcase },
+  ops: {
+    label: "Operations",
+    chip: "bg-[rgba(21,25,54,0.07)] text-[#151936]",
+    icon: IconBriefcase,
+  },
   finance: { label: "Finance", chip: "bg-emerald-50 text-emerald-700", icon: IconCash },
   sales: { label: "Sales", chip: "bg-amber-50 text-amber-700", icon: IconBriefcase },
   legal: { label: "Legal", chip: "bg-violet-50 text-violet-700", icon: IconGavel },
   hr: { label: "HR", chip: "bg-sky-50 text-sky-700", icon: IconUsers },
-  front_office: { label: "Front Office", chip: "bg-slate-100 text-slate-600", icon: IconCalendarEvent },
+  front_office: {
+    label: "Front Office",
+    chip: "bg-slate-100 text-slate-600",
+    icon: IconCalendarEvent,
+  },
 };
 
 export function deptMeta(department: string) {
@@ -96,7 +118,7 @@ export function milestoneProgress(milestones: Milestone[] | null | undefined) {
 /** Real overlap: two events on the same calendar that genuinely collide in time. */
 export function hasOverlap(
   event: { id: string; startsAt: string; endsAt: string },
-  all: Array<{ id: string; startsAt: string; endsAt: string }>,
+  all: Array<{ id: string; startsAt: string; endsAt: string }>
 ): boolean {
   const start = new Date(event.startsAt).getTime();
   const end = new Date(event.endsAt).getTime();

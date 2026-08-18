@@ -13,7 +13,13 @@ interface MandateOverrideModalProps {
   onDecided: () => void;
 }
 
-export function MandateOverrideModal({ open, approvalRequestId, gmName, onClose, onDecided }: MandateOverrideModalProps) {
+export function MandateOverrideModal({
+  open,
+  approvalRequestId,
+  gmName,
+  onClose,
+  onDecided,
+}: MandateOverrideModalProps) {
   const { pushToast } = useToast();
   const [reason, setReason] = useState("");
   const [reasonErr, setReasonErr] = useState(false);
@@ -30,16 +36,28 @@ export function MandateOverrideModal({ open, approvalRequestId, gmName, onClose,
       const res = await fetch("/api/finance/approvals/decide", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId: approvalRequestId, status: "approved", overrideNote: reason.trim() }),
+        body: JSON.stringify({
+          requestId: approvalRequestId,
+          status: "approved",
+          overrideNote: reason.trim(),
+        }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to override the pending decision");
-      pushToast({ tone: "success", title: "Override recorded", body: "Mandate activated. The GM step has been notified with your reason." });
+      pushToast({
+        tone: "success",
+        title: "Override recorded",
+        body: "Mandate activated. The GM step has been notified with your reason.",
+      });
       setReason("");
       onDecided();
       onClose();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not record the override." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not record the override.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -48,15 +66,17 @@ export function MandateOverrideModal({ open, approvalRequestId, gmName, onClose,
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title="Decide Directly — CEO Override"
       description="Bypasses the pending GM approval step"
       size="sm"
     >
       <div className="space-y-4">
         <p className="text-body-regular text-slate-600 leading-relaxed">
-          This mandate is awaiting <span className="font-medium text-slate-900">{gmName ?? "the General Manager"}</span>. Deciding directly
-          activates it now, logs the action as an override, and notifies the GM with your reason.
+          This mandate is awaiting{" "}
+          <span className="font-medium text-slate-900">{gmName ?? "the General Manager"}</span>.
+          Deciding directly activates it now, logs the action as an override, and notifies the GM
+          with your reason.
         </p>
         <div>
           <label htmlFor="override-reason" className="label-caps text-slate-400 mb-1.5 block">
@@ -66,11 +86,18 @@ export function MandateOverrideModal({ open, approvalRequestId, gmName, onClose,
             id="override-reason"
             rows={3}
             value={reason}
-            onChange={(e) => { setReason(e.target.value); setReasonErr(false); }}
+            onChange={(e) => {
+              setReason(e.target.value);
+              setReasonErr(false);
+            }}
             placeholder="Why this decision can't wait for the GM step…"
             className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-body-primary focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm resize-y"
           />
-          {reasonErr && <p className="body-sm text-rose-600 mt-1.5">An override reason is mandatory — it is logged and sent to the GM.</p>}
+          {reasonErr && (
+            <p className="body-sm text-rose-600 mt-1.5">
+              An override reason is mandatory — it is logged and sent to the GM.
+            </p>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">

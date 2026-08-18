@@ -11,7 +11,12 @@ export type PersonalSection = "messages" | "notifications" | "preferences" | "se
 // the directory and what the access policies are.
 export type OrgSection = "directory" | "policies";
 
-export const PERSONAL_SECTIONS: PersonalSection[] = ["messages", "notifications", "preferences", "security"];
+export const PERSONAL_SECTIONS: PersonalSection[] = [
+  "messages",
+  "notifications",
+  "preferences",
+  "security",
+];
 export const ORG_SECTIONS: OrgSection[] = ["directory", "policies"];
 
 export type ConsoleSection = PersonalSection | OrgSection;
@@ -59,7 +64,10 @@ export function consoleRouteFor(scope: ConsoleScope, section: ConsoleSection): s
 // system (catalog.ts) is untouched.
 export type RoleTier = "superadmin" | "admin" | "manager" | "finance" | "agent" | "viewer";
 
-export const ROLE_TIER_META: Record<RoleTier, { label: string; scope: string; color: string; order: number }> = {
+export const ROLE_TIER_META: Record<
+  RoleTier,
+  { label: string; scope: string; color: string; order: number }
+> = {
   superadmin: { label: "Super-admin", scope: "Full control", color: "#151936", order: 0 },
   admin: { label: "Admin", scope: "Manage org & ops", color: "#2A6FDB", order: 1 },
   manager: { label: "Manager", scope: "Portfolio & tenants", color: "#7c3aed", order: 2 },
@@ -68,7 +76,14 @@ export const ROLE_TIER_META: Record<RoleTier, { label: string; scope: string; co
   viewer: { label: "Viewer", scope: "Read-only", color: "#64748b", order: 5 },
 };
 
-export const ROLE_TIER_ORDER: RoleTier[] = ["superadmin", "admin", "manager", "finance", "agent", "viewer"];
+export const ROLE_TIER_ORDER: RoleTier[] = [
+  "superadmin",
+  "admin",
+  "manager",
+  "finance",
+  "agent",
+  "viewer",
+];
 
 const ROLE_TO_TIER: Record<string, RoleTier> = {
   ceo: "superadmin",
@@ -102,13 +117,46 @@ export function roleTierFor(role: string): RoleTier {
 }
 
 // Notification routing categories (mirror the service's NOTIFICATION_CATEGORIES).
-export const NOTIF_CATEGORY_META: Record<string, { label: string; hint: string; icon: string; color: string }> = {
-  viewing: { label: "Viewings", hint: "Bookings, confirmations, reschedules", icon: "IconEye", color: "#151936" },
-  remittance: { label: "Remittances", hint: "Payout runs and landlord statements", icon: "IconCash", color: "#10b981" },
-  maintenance: { label: "Maintenance", hint: "Work orders and critical repairs", icon: "IconTool", color: "#f43f5e" },
-  approval: { label: "Approvals", hint: "Mandates and spend above threshold", icon: "IconFileCertificate", color: "#f59e0b" },
-  renewal: { label: "Renewals", hint: "Lease expiries and escalations", icon: "IconRefresh", color: "#64748b" },
-  system: { label: "System & compliance", hint: "Alerts, exports and integrations", icon: "IconServerBolt", color: "#7c3aed" },
+export const NOTIF_CATEGORY_META: Record<
+  string,
+  { label: string; hint: string; icon: string; color: string }
+> = {
+  viewing: {
+    label: "Viewings",
+    hint: "Bookings, confirmations, reschedules",
+    icon: "IconEye",
+    color: "#151936",
+  },
+  remittance: {
+    label: "Remittances",
+    hint: "Payout runs and landlord statements",
+    icon: "IconCash",
+    color: "#10b981",
+  },
+  maintenance: {
+    label: "Maintenance",
+    hint: "Work orders and critical repairs",
+    icon: "IconTool",
+    color: "#f43f5e",
+  },
+  approval: {
+    label: "Approvals",
+    hint: "Mandates and spend above threshold",
+    icon: "IconFileCertificate",
+    color: "#f59e0b",
+  },
+  renewal: {
+    label: "Renewals",
+    hint: "Lease expiries and escalations",
+    icon: "IconRefresh",
+    color: "#64748b",
+  },
+  system: {
+    label: "System & compliance",
+    hint: "Alerts, exports and integrations",
+    icon: "IconServerBolt",
+    color: "#7c3aed",
+  },
 };
 
 // Org access-policy well-known settings keys + defaults. Stored in the real

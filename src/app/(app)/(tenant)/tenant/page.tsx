@@ -45,7 +45,10 @@ export default function TenantOverviewPage() {
       {/* Welcome */}
       <div className="rounded-2xl bg-[#151936] px-5 py-5 text-white">
         <p className="label-caps text-white/40">Sunland ERP - Tenant Portal</p>
-        <h1 className="mt-1 text-xl text-white" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
+        <h1
+          className="mt-1 text-xl text-white"
+          style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}
+        >
           Welcome back
         </h1>
         <p className="mt-1 text-white/60 text-base">{t.unit}</p>
@@ -56,15 +59,20 @@ export default function TenantOverviewPage() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              {t.status === "current"
-                ? <IconCheck size={16} className="text-emerald-600" />
-                : <IconAlertCircle size={16} className="text-rose-600" />
-              }
-              <p className={`text-base ${t.status === "current" ? "text-emerald-800" : "text-rose-800"}`}>
+              {t.status === "current" ? (
+                <IconCheck size={16} className="text-emerald-600" />
+              ) : (
+                <IconAlertCircle size={16} className="text-rose-600" />
+              )}
+              <p
+                className={`text-base ${t.status === "current" ? "text-emerald-800" : "text-rose-800"}`}
+              >
                 {STATUS_LABEL[t.status]}
               </p>
             </div>
-            <p className={`mt-1 text-sm ${t.status === "current" ? "text-emerald-600" : "text-rose-600"}`}>
+            <p
+              className={`mt-1 text-sm ${t.status === "current" ? "text-emerald-600" : "text-rose-600"}`}
+            >
               Balance: {t.balance === 0 ? "KES 0 - Fully Paid" : formatCompactKES(t.balance)}
             </p>
           </div>
@@ -78,12 +86,7 @@ export default function TenantOverviewPage() {
 
       {/* KPI strip */}
       <div className="gsap-stagger grid grid-cols-2 gap-3">
-        <KpiCard
-          icon={IconCalendar}
-          label="Lease Ends"
-          value={t.leaseEnd}
-          tone="neutral"
-        />
+        <KpiCard icon={IconCalendar} label="Lease Ends" value={t.leaseEnd} tone="neutral" />
         <KpiCard
           icon={IconCurrencyDollar}
           label="Deposit Held"
@@ -96,12 +99,7 @@ export default function TenantOverviewPage() {
           value={String(t.openComplaints)}
           tone={t.openComplaints > 0 ? "warning" : "neutral"}
         />
-        <KpiCard
-          icon={IconHome}
-          label="Payments This Year"
-          value="7"
-          tone="success"
-        />
+        <KpiCard icon={IconHome} label="Payments This Year" value="7" tone="success" />
       </div>
 
       {/* Recent payments */}
@@ -112,7 +110,10 @@ export default function TenantOverviewPage() {
         </div>
         <div className="divide-y divide-slate-100">
           {MOCK_RECENT_PAYMENTS.map((payment) => (
-            <div key={payment.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+            <div
+              key={payment.id}
+              className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
+            >
               <div>
                 <p className="text-title-primary">{payment.month}</p>
                 <p className="text-slate-400 text-base flex items-center gap-1">

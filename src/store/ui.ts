@@ -59,8 +59,7 @@ export const useUIStore = create<UIStore>((set) => ({
   chatOpen: false,
   selectedChatDMId: null,
   searchOpen: false,
-  toggleSidebar: () =>
-    set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+  toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
   openMobileNav: () => set({ mobileNavOpen: true }),
   closeMobileNav: () => set({ mobileNavOpen: false }),
@@ -75,8 +74,7 @@ export const useUIStore = create<UIStore>((set) => ({
       selectedRecordId: recordId,
       selectedRecordType: recordType,
     }),
-  closeModal: () =>
-    set({ activeModal: null, selectedRecordId: null, selectedRecordType: null }),
+  closeModal: () => set({ activeModal: null, selectedRecordId: null, selectedRecordType: null }),
   setDashboardLoading: (loading) => set({ dashboardLoading: loading }),
   toggleChat: () => set((state) => ({ chatOpen: !state.chatOpen })),
   openChat: () => set({ chatOpen: true }),
@@ -84,7 +82,7 @@ export const useUIStore = create<UIStore>((set) => ({
   setSelectedChatDMId: (id, openChat) =>
     set(() => ({
       selectedChatDMId: id,
-      chatOpen: openChat !== undefined ? openChat : (id !== null),
+      chatOpen: openChat !== undefined ? openChat : id !== null,
     })),
   openSearch: () => set({ searchOpen: true }),
   closeSearch: () => set({ searchOpen: false }),

@@ -25,7 +25,7 @@ function isConfigured(): boolean {
     process.env.MPESA_CONSUMER_KEY &&
       process.env.MPESA_CONSUMER_SECRET &&
       process.env.MPESA_SHORTCODE &&
-      process.env.MPESA_PASSKEY,
+      process.env.MPESA_PASSKEY
   );
 }
 
@@ -45,7 +45,7 @@ export async function initiateTenantPayment(ctx: CallerContext, rawInput: unknow
   if (!isConfigured()) {
     throw new DomainValidationError(
       "M-Pesa paybill integration is not configured yet (MPESA_CONSUMER_KEY/SECRET/SHORTCODE/PASSKEY). " +
-        "This payment cannot be initiated until real Safaricom Daraja credentials are provided.",
+        "This payment cannot be initiated until real Safaricom Daraja credentials are provided."
     );
   }
 
@@ -101,16 +101,25 @@ export async function handleMpesaCallback(rawPayload: unknown) {
   const payload = rawPayload as Partial<DarajaStkCallback>;
   const callback = payload?.Body?.stkCallback;
   if (!callback?.CheckoutRequestID) {
-    throw new DomainValidationError("Malformed M-Pesa callback payload - missing Body.stkCallback.CheckoutRequestID.");
+    throw new DomainValidationError(
+      "Malformed M-Pesa callback payload - missing Body.stkCallback.CheckoutRequestID."
+    );
   }
 
   const [payment] = await db
     .select()
     .from(tenantPayments)
-    .where(and(eq(tenantPayments.checkoutRequestId, callback.CheckoutRequestID), eq(tenantPayments.status, "pending")));
+    .where(
+      and(
+        eq(tenantPayments.checkoutRequestId, callback.CheckoutRequestID),
+        eq(tenantPayments.status, "pending")
+      )
+    );
 
   if (!payment) {
-    throw new NotFoundError(`No pending tenant_payments row found for CheckoutRequestID ${callback.CheckoutRequestID}`);
+    throw new NotFoundError(
+      `No pending tenant_payments row found for CheckoutRequestID ${callback.CheckoutRequestID}`
+    );
   }
 
   if (callback.ResultCode !== 0) {

@@ -19,7 +19,12 @@ import { parseInput } from "@/lib/validation/parse";
 // module (no `db`/`crypto` imports) so client components - kanban drag
 // preview, score badges - can import the exact same functions; re-exported
 // here so server call sites only need to import from the service.
-import { canMoveToStage, daysSince, scoreForValuation, type ValuationStage } from "@/components/sunland/valuation-constants";
+import {
+  canMoveToStage,
+  daysSince,
+  scoreForValuation,
+  type ValuationStage,
+} from "@/components/sunland/valuation-constants";
 
 export { canMoveToStage, daysSince, scoreForValuation };
 export type { ValuationStage };
@@ -49,7 +54,7 @@ function toDateOrNull(value: string | null | undefined): Date | null {
 
 export async function listValuations(
   ctx: CallerContext,
-  filters: { view?: "pipeline" | "archive" } = {},
+  filters: { view?: "pipeline" | "archive" } = {}
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -63,7 +68,8 @@ export async function listValuations(
   // archivedAt rather than by stage directly so the two predicates can
   // never silently drift out of sync with each other.
   const view = filters.view ?? "pipeline";
-  const archiveCondition = view === "archive" ? isNotNull(valuations.archivedAt) : isNull(valuations.archivedAt);
+  const archiveCondition =
+    view === "archive" ? isNotNull(valuations.archivedAt) : isNull(valuations.archivedAt);
 
   return db
     .select({
@@ -118,7 +124,10 @@ export async function getValuation(ctx: CallerContext, valuationId: string) {
   if (!row) throw new NotFoundError("Valuation not found");
 
   const [namedValuer] = row.valuerId
-    ? await db.select({ name: users.name, email: users.email }).from(users).where(eq(users.id, row.valuerId))
+    ? await db
+        .select({ name: users.name, email: users.email })
+        .from(users)
+        .where(eq(users.id, row.valuerId))
     : [];
 
   return { ...row, valuerName: namedValuer?.name ?? null, valuerEmail: namedValuer?.email ?? null };
@@ -131,7 +140,7 @@ export async function createValuation(ctx: CallerContext, rawInput: unknown) {
 
   if (!input.propertyId && !input.externalPropertyName) {
     throw new DomainValidationError(
-      "A valuation needs a subject - pick a portfolio property or name an external one.",
+      "A valuation needs a subject - pick a portfolio property or name an external one."
     );
   }
 
@@ -144,7 +153,11 @@ export async function createValuation(ctx: CallerContext, rawInput: unknown) {
   }
 
   if (input.assignedManagerId) {
-    const [manager] = await db.select().from(users).where(eq(users.id, input.assignedManagerId)).limit(1);
+    const [manager] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, input.assignedManagerId))
+      .limit(1);
     if (!manager) throw new NotFoundError("Property manager not found");
     if (manager.role !== "property_manager") {
       throw new DomainValidationError("Selected staff member is not a Property Manager");
@@ -208,12 +221,14 @@ export async function updateValuation(ctx: CallerContext, valuationId: string, r
   // updateValuationSchema's comment.
   const updatable: Partial<typeof valuations.$inferInsert> = {};
   if (input.propertyId !== undefined) updatable.propertyId = input.propertyId;
-  if (input.externalPropertyName !== undefined) updatable.externalPropertyName = input.externalPropertyName;
+  if (input.externalPropertyName !== undefined)
+    updatable.externalPropertyName = input.externalPropertyName;
   if (input.externalLocation !== undefined) updatable.externalLocation = input.externalLocation;
   if (input.landlordContactId !== undefined) updatable.landlordContactId = input.landlordContactId;
   if (input.assignedManagerId !== undefined) updatable.assignedManagerId = input.assignedManagerId;
   if (input.valuerId !== undefined) updatable.valuerId = input.valuerId;
-  if (input.externalValuerName !== undefined) updatable.externalValuerName = input.externalValuerName;
+  if (input.externalValuerName !== undefined)
+    updatable.externalValuerName = input.externalValuerName;
   if (input.isLand !== undefined) updatable.isLand = input.isLand;
   if (input.marketValueKes !== undefined) updatable.marketValueKes = input.marketValueKes;
   if (input.proposedFeeRate !== undefined) updatable.proposedFeeRate = input.proposedFeeRate;
@@ -273,11 +288,17 @@ async function loadValuationForTransition(ctx: CallerContext, valuationId: strin
  * drag, detail-page action buttons, decline/reopen). canMoveToStage() is
  * enforced here, not left to the caller.
  */
-export async function transitionValuationStage(ctx: CallerContext, valuationId: string, toStage: ValuationStage) {
+export async function transitionValuationStage(
+  ctx: CallerContext,
+  valuationId: string,
+  toStage: ValuationStage
+) {
   const { entityId, existing } = await loadValuationForTransition(ctx, valuationId);
 
   if (!canMoveToStage(existing.stage, toStage)) {
-    throw new DomainValidationError(`Cannot move from "${existing.stage}" to "${toStage}" - only adjacent stages, or a decline/reopen, are allowed.`);
+    throw new DomainValidationError(
+      `Cannot move from "${existing.stage}" to "${toStage}" - only adjacent stages, or a decline/reopen, are allowed.`
+    );
   }
 
   return db.transaction(async (tx) => {
@@ -363,16 +384,22 @@ export async function signMandateFromValuation(ctx: CallerContext, valuationId: 
     throw new DomainValidationError('A mandate can only be signed from the "accepted" stage.');
   }
   if (!existing.landlordContactId) {
-    throw new DomainValidationError("A landlord contact is required before a mandate can be signed.");
+    throw new DomainValidationError(
+      "A landlord contact is required before a mandate can be signed."
+    );
   }
   if (!existing.proposedFeeRate) {
-    throw new DomainValidationError("A proposed fee rate is required before a mandate can be signed.");
+    throw new DomainValidationError(
+      "A proposed fee rate is required before a mandate can be signed."
+    );
   }
 
   let propertyId = existing.propertyId;
   if (!propertyId) {
     if (!existing.externalPropertyName || !existing.externalLocation) {
-      throw new DomainValidationError("This prospect has no property name/location on record - cannot create a mandate.");
+      throw new DomainValidationError(
+        "This prospect has no property name/location on record - cannot create a mandate."
+      );
     }
     const newProperty = await createProperty(ctx, {
       name: existing.externalPropertyName,

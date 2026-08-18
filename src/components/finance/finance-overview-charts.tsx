@@ -49,7 +49,11 @@ const PIE_COLORS = ["#151936", "#3f919d", "#8b5cf6", "#c96f45", "#f59e0b"];
 type ChartValue = number | string | readonly (number | string)[];
 type ChartName = number | string;
 
-const RevExpTooltip = ({ active, payload, label }: Partial<TooltipContentProps<ChartValue, ChartName>>) => {
+const RevExpTooltip = ({
+  active,
+  payload,
+  label,
+}: Partial<TooltipContentProps<ChartValue, ChartName>>) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-xl border border-slate-100 bg-white/95 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur-md animate-scale-in">
@@ -73,7 +77,11 @@ const RevExpTooltip = ({ active, payload, label }: Partial<TooltipContentProps<C
   return null;
 };
 
-const CashFlowTooltip = ({ active, payload, label }: Partial<TooltipContentProps<ChartValue, ChartName>>) => {
+const CashFlowTooltip = ({
+  active,
+  payload,
+  label,
+}: Partial<TooltipContentProps<ChartValue, ChartName>>) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-xl border border-slate-100 bg-white/95 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur-md animate-scale-in">
@@ -94,17 +102,17 @@ const CashFlowTooltip = ({ active, payload, label }: Partial<TooltipContentProps
 const PieTooltip = ({ active, payload }: Partial<TooltipContentProps<ChartValue, ChartName>>) => {
   if (active && payload && payload.length) {
     const dataPayload = payload[0].payload;
-    const fill = dataPayload && typeof dataPayload === "object" && "fill" in dataPayload
-      ? (dataPayload as { fill?: string }).fill : undefined;
+    const fill =
+      dataPayload && typeof dataPayload === "object" && "fill" in dataPayload
+        ? (dataPayload as { fill?: string }).fill
+        : undefined;
     return (
       <div className="rounded-xl border border-slate-100 bg-white/95 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur-md animate-scale-in">
         <div className="flex items-center gap-2">
           <div className="size-2.5 rounded-full" style={{ backgroundColor: fill }} />
           <span className="text-caption text-slate-600">{payload[0].name}</span>
         </div>
-        <p className="text-caption font-mono text-slate-950 mt-1">
-          {payload[0].value}%
-        </p>
+        <p className="text-caption font-mono text-slate-950 mt-1">{payload[0].value}%</p>
       </div>
     );
   }
@@ -133,7 +141,10 @@ export function FinanceOverviewCharts({ period, entityId = "group" }: FinanceOve
         const total = json.totalRevenueKes || 0;
         const shares = json.streams
           .filter((s) => s.totalKes > 0)
-          .map((s) => ({ name: s.label, value: total > 0 ? Math.round((s.totalKes / total) * 100) : 0 }));
+          .map((s) => ({
+            name: s.label,
+            value: total > 0 ? Math.round((s.totalKes / total) * 100) : 0,
+          }));
         setStreamShares(shares);
       })
       .catch(() => {
@@ -146,10 +157,14 @@ export function FinanceOverviewCharts({ period, entityId = "group" }: FinanceOve
 
   const chartData = useMemo(() => {
     switch (period) {
-      case "3M": return QUARTERLY.slice(-3);
-      case "6M": return MONTHLY;
-      case "1Y": return QUARTERLY;
-      default: return MONTHLY.slice(-1); // 1M = just current month context; use 6M granularity
+      case "3M":
+        return QUARTERLY.slice(-3);
+      case "6M":
+        return MONTHLY;
+      case "1Y":
+        return QUARTERLY;
+      default:
+        return MONTHLY.slice(-1); // 1M = just current month context; use 6M granularity
     }
   }, [period]);
 
@@ -187,11 +202,38 @@ export function FinanceOverviewCharts({ period, entityId = "group" }: FinanceOve
           <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0}>
             <ComposedChart data={displayData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
               <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.04)" />
-              <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#94a3b8" }} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#94a3b8", fontFamily: "monospace" }} tickFormatter={formatCompactKES} />
+              <XAxis
+                dataKey="label"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                dy={10}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: "#94a3b8", fontFamily: "monospace" }}
+                tickFormatter={formatCompactKES}
+              />
               <Tooltip content={<RevExpTooltip />} cursor={{ fill: "rgba(0,0,0,0.02)" }} />
-              <Bar dataKey="revenue" name="Revenue" fill="#151936" radius={[4, 4, 0, 0]} maxBarSize={40} animationDuration={800} />
-              <Line type="monotone" dataKey="expenses" name="Expenses" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: "#fff" }} activeDot={{ r: 6, fill: "#f59e0b", stroke: "#fff" }} animationDuration={800} />
+              <Bar
+                dataKey="revenue"
+                name="Revenue"
+                fill="#151936"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={40}
+                animationDuration={800}
+              />
+              <Line
+                type="monotone"
+                dataKey="expenses"
+                name="Expenses"
+                stroke="#f59e0b"
+                strokeWidth={3}
+                dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                activeDot={{ r: 6, fill: "#f59e0b", stroke: "#fff" }}
+                animationDuration={800}
+              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -212,9 +254,26 @@ export function FinanceOverviewCharts({ period, entityId = "group" }: FinanceOve
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#94a3b8" }} dy={10} />
-              <Tooltip content={<CashFlowTooltip />} cursor={{ stroke: "rgba(16,185,129,0.2)", strokeWidth: 2, strokeDasharray: "4 4" }} />
-              <Area type="monotone" dataKey="cash" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorCash)" animationDuration={800} />
+              <XAxis
+                dataKey="label"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                dy={10}
+              />
+              <Tooltip
+                content={<CashFlowTooltip />}
+                cursor={{ stroke: "rgba(16,185,129,0.2)", strokeWidth: 2, strokeDasharray: "4 4" }}
+              />
+              <Area
+                type="monotone"
+                dataKey="cash"
+                stroke="#10b981"
+                strokeWidth={3}
+                fillOpacity={1}
+                fill="url(#colorCash)"
+                animationDuration={800}
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -259,7 +318,12 @@ export function FinanceOverviewCharts({ period, entityId = "group" }: FinanceOve
               </ResponsiveContainer>
               {/* Inner Donut Text */}
               <div className="absolute inset-0 flex flex-col items-center justify-center -mt-6 pointer-events-none">
-                <span className="font-mono text-slate-900 leading-none" style={{ fontSize: "24px" }}>100%</span>
+                <span
+                  className="font-mono text-slate-900 leading-none"
+                  style={{ fontSize: "24px" }}
+                >
+                  100%
+                </span>
                 <span className="label-caps text-slate-400 mt-1">Total</span>
               </div>
             </div>
@@ -268,7 +332,10 @@ export function FinanceOverviewCharts({ period, entityId = "group" }: FinanceOve
             <div className="grid grid-cols-2 gap-y-2 gap-x-2 mt-auto pt-4 border-t border-slate-50">
               {streamShares.map((entry, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div className="size-2.5 rounded-full shrink-0" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
+                  <div
+                    className="size-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
+                  />
                   <span className="text-meta-muted truncate">{entry.name}</span>
                 </div>
               ))}

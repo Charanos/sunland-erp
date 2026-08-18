@@ -20,7 +20,14 @@ import {
   IconShieldX,
   IconTool,
 } from "@tabler/icons-react";
-import { BoardHeader, Button, ConfirmDialog, Drawer, PaginationControls, SkeletonBlock } from "@/components/ui/erp-primitives";
+import {
+  BoardHeader,
+  Button,
+  ConfirmDialog,
+  Drawer,
+  PaginationControls,
+  SkeletonBlock,
+} from "@/components/ui/erp-primitives";
 import { Badge } from "@/components/ui/badge";
 import { PageTransition } from "@/components/shared/page-transition";
 import { useToast } from "@/components/ui/toast-provider";
@@ -102,7 +109,12 @@ interface MaintenanceDetail extends MaintenanceRequestRow {
   propertyManagerName: string | null;
   pendingApproval: { id: string; requiredApproverRole: string; amountKes: string } | null;
   scheduledVisit: { id: string; startsAt: string; endsAt: string; outcome: string } | null;
-  sla: { state: "ok" | "at_risk" | "breached"; hoursElapsed: number; hoursRemaining: number; targetHours: number };
+  sla: {
+    state: "ok" | "at_risk" | "breached";
+    hoursElapsed: number;
+    hoursRemaining: number;
+    targetHours: number;
+  };
 }
 
 // ── Display constants ───────────────────────────────────────────────────────
@@ -116,7 +128,11 @@ const FILTERS: Array<{ id: "all" | "urgent" | MaintenanceStatus; label: string }
   { id: "done", label: "Completed" },
 ];
 
-const DEFAULT_SLA_HOURS: Record<MaintenancePriority, number> = { routine: 72, urgent: 24, critical: 6 };
+const DEFAULT_SLA_HOURS: Record<MaintenancePriority, number> = {
+  routine: 72,
+  urgent: 24,
+  critical: 6,
+};
 
 function fmtKes(v: string | number | null | undefined): string {
   const n = typeof v === "string" ? parseFloat(v) : v;
@@ -125,7 +141,11 @@ function fmtKes(v: string | number | null | undefined): string {
 }
 function fmtDate(iso: string | null): string {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-KE", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 function fmtDateTime(iso: string | null): string {
   if (!iso) return "—";
@@ -151,7 +171,10 @@ function dayLabel(iso: string): string {
   return d.toLocaleDateString("en-KE", { weekday: "short" }).toUpperCase();
 }
 
-function slaLineFor(r: { createdAt: string; resolvedAt: string | null; status: MaintenanceStatus }, targetHours: number): { text: string; color: string } {
+function slaLineFor(
+  r: { createdAt: string; resolvedAt: string | null; status: MaintenanceStatus },
+  targetHours: number
+): { text: string; color: string } {
   const sla = slaStateFor({ createdAt: r.createdAt, resolvedAt: r.resolvedAt, targetHours });
   const display = slaDisplayStateFor(r.status, sla.state);
   const meta = SLA_STATE_META[display] ?? SLA_STATE_META.ok;
@@ -161,7 +184,10 @@ function slaLineFor(r: { createdAt: string; resolvedAt: string | null; status: M
   }
   if (display === "breached") return { text: `SLA ${targetHours}h · breached`, color: meta.color };
   const hoursIn = Math.max(0, sla.hoursElapsed);
-  return { text: `SLA ${targetHours}h · ${hoursIn < 1 ? "<1h" : hoursIn.toFixed(1) + "h"} in`, color: meta.color };
+  return {
+    text: `SLA ${targetHours}h · ${hoursIn < 1 ? "<1h" : hoursIn.toFixed(1) + "h"} in`,
+    color: meta.color,
+  };
 }
 
 // Content-shaped loading state for the queue, replacing a centered spinner -
@@ -170,7 +196,10 @@ function WorkOrderRowsSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="flex flex-col gap-2.5">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3.5 rounded-[18px] border border-slate-100 bg-white p-3.5">
+        <div
+          key={i}
+          className="flex items-center gap-3.5 rounded-[18px] border border-slate-100 bg-white p-3.5"
+        >
           <SkeletonBlock className="w-1 self-stretch rounded-full shrink-0" />
           <SkeletonBlock className="size-16 rounded-2xl shrink-0" />
           <div className="flex-1 flex flex-col gap-2 min-w-0">
@@ -222,7 +251,11 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       if (!res.ok) throw new Error(data.error || "Failed to load work orders");
       setRequests(data.maintenanceRequests ?? []);
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to load work orders" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to load work orders",
+      });
     } finally {
       setLoading(false);
     }
@@ -234,11 +267,11 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       fetch(`/api/contacts?entityId=${entityId}&type=contractor`)
         .then((r) => r.json())
         .then((d) => setContractors(Array.isArray(d.contacts) ? d.contacts : []))
-        .catch(() => { });
+        .catch(() => {});
       fetch(`/api/scheduling/events?entityId=${entityId}&scope=all`)
         .then((r) => r.json())
         .then((d) => setEvents(Array.isArray(d.events) ? d.events : []))
-        .catch(() => { });
+        .catch(() => {});
     });
   }, [loadRequests, entityId]);
 
@@ -248,7 +281,9 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
     fetch(`/api/settings?entityId=${entityId}`)
       .then((r) => r.json())
       .then((d) => {
-        const rows: Array<{ key: string; value: unknown }> = Array.isArray(d.settings) ? d.settings : [];
+        const rows: Array<{ key: string; value: unknown }> = Array.isArray(d.settings)
+          ? d.settings
+          : [];
         const next = { ...DEFAULT_SLA_HOURS };
         for (const p of ["routine", "urgent", "critical"] as const) {
           const row = rows.find((r) => r.key === `maintenance_sla_hours_${p}`);
@@ -256,7 +291,7 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
         }
         setSlaHours(next);
       })
-      .catch(() => { });
+      .catch(() => {});
   }, [entityId]);
 
   // ── Derived analytics (real - never fabricated) ────────────────────────────
@@ -264,30 +299,74 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
   const kpis = useMemo(() => {
     const open = requests.filter((r) => r.status !== "done");
     const urgent = open.filter((r) => r.priority !== "routine");
-    const slaStates = requests.map((r) => slaStateFor({ createdAt: r.createdAt, resolvedAt: r.resolvedAt, targetHours: slaHours[r.priority] }).state);
-    const slaCompliancePct = slaStates.length > 0 ? Math.round((slaStates.filter((s) => s !== "breached").length / slaStates.length) * 100) : 100;
+    const slaStates = requests.map(
+      (r) =>
+        slaStateFor({
+          createdAt: r.createdAt,
+          resolvedAt: r.resolvedAt,
+          targetHours: slaHours[r.priority],
+        }).state
+    );
+    const slaCompliancePct =
+      slaStates.length > 0
+        ? Math.round((slaStates.filter((s) => s !== "breached").length / slaStates.length) * 100)
+        : 100;
 
     const resolved = requests.filter((r) => r.status === "done" && r.resolvedAt);
-    const avgResponseHours = resolved.length > 0
-      ? resolved.reduce((sum, r) => sum + (new Date(r.resolvedAt!).getTime() - new Date(r.createdAt).getTime()) / 3_600_000, 0) / resolved.length
-      : null;
+    const avgResponseHours =
+      resolved.length > 0
+        ? resolved.reduce(
+            (sum, r) =>
+              sum +
+              (new Date(r.resolvedAt!).getTime() - new Date(r.createdAt).getTime()) / 3_600_000,
+            0
+          ) / resolved.length
+        : null;
 
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const monthRequests = requests.filter((r) => new Date(r.createdAt) >= monthStart);
-    const spendTotal = monthRequests.reduce((sum, r) => sum + (r.actualCostKes ? parseFloat(r.actualCostKes) : r.estimatedCostKes ? parseFloat(r.estimatedCostKes) : 0), 0);
+    const spendTotal = monthRequests.reduce(
+      (sum, r) =>
+        sum +
+        (r.actualCostKes
+          ? parseFloat(r.actualCostKes)
+          : r.estimatedCostKes
+            ? parseFloat(r.estimatedCostKes)
+            : 0),
+      0
+    );
     const monthLabel = now.toLocaleDateString("en-KE", { month: "long" });
 
-    const mix = (["reactive", "planned", "compliance"] as const).map((cat) => ({ cat, count: requests.filter((r) => r.category === cat).length }));
+    const mix = (["reactive", "planned", "compliance"] as const).map((cat) => ({
+      cat,
+      count: requests.filter((r) => r.category === cat).length,
+    }));
     const mixTotal = mix.reduce((a, m) => a + m.count, 0) || 1;
 
-    return { open, urgent, slaCompliancePct, avgResponseHours, spendTotal, monthLabel, mix, mixTotal };
+    return {
+      open,
+      urgent,
+      slaCompliancePct,
+      avgResponseHours,
+      spendTotal,
+      monthLabel,
+      mix,
+      mixTotal,
+    };
   }, [requests, slaHours]);
 
   const [nowMs] = useState(() => Date.now());
 
   const attentionItems = useMemo(() => {
-    type Item = { id: string; tone: "rose" | "amber"; icon: typeof IconShieldX; title: string; meta: string; ctaLabel: string };
+    type Item = {
+      id: string;
+      tone: "rose" | "amber";
+      icon: typeof IconShieldX;
+      title: string;
+      meta: string;
+      ctaLabel: string;
+    };
     const items: Item[] = [];
     const now = nowMs;
 
@@ -299,19 +378,28 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       })
       .sort((a, b) => new Date(a.dueAt!).getTime() - new Date(b.dueAt!).getTime())[0];
     if (complianceSoon) {
-      const days = Math.max(0, Math.round((new Date(complianceSoon.dueAt!).getTime() - now) / 86_400_000));
+      const days = Math.max(
+        0,
+        Math.round((new Date(complianceSoon.dueAt!).getTime() - now) / 86_400_000)
+      );
       items.push({
-        id: complianceSoon.id, tone: "rose", icon: IconShieldX,
+        id: complianceSoon.id,
+        tone: "rose",
+        icon: IconShieldX,
         title: `${complianceSoon.title} — due in ${days} day${days === 1 ? "" : "s"}`,
         meta: `${complianceSoon.propertyName} · ${fmtKes(complianceSoon.estimatedCostKes)} awaiting decision`,
         ctaLabel: "Review",
       });
     }
 
-    const criticalActive = requests.find((r) => r.priority === "critical" && (r.status === "in_progress" || r.status === "scheduled"));
+    const criticalActive = requests.find(
+      (r) => r.priority === "critical" && (r.status === "in_progress" || r.status === "scheduled")
+    );
     if (criticalActive) {
       items.push({
-        id: criticalActive.id, tone: "rose", icon: IconDroplet,
+        id: criticalActive.id,
+        tone: "rose",
+        icon: IconDroplet,
         title: `Urgent: ${criticalActive.title}`,
         meta: `${criticalActive.propertyName} · ${(STATUS_META[criticalActive.status] ?? STATUS_META.reported).label}`,
         ctaLabel: "Track",
@@ -320,7 +408,9 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
 
     const awaitingApproval = requests
       .filter((r) => r.status === "awaiting_approval")
-      .sort((a, b) => parseFloat(b.estimatedCostKes || "0") - parseFloat(a.estimatedCostKes || "0"))[0];
+      .sort(
+        (a, b) => parseFloat(b.estimatedCostKes || "0") - parseFloat(a.estimatedCostKes || "0")
+      )[0];
     if (awaitingApproval) {
       items.push({
         id: awaitingApproval.id,
@@ -332,18 +422,23 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       });
     }
 
-    const unique = items.filter((item, index, self) => index === self.findIndex((t) => t.id === item.id));
+    const unique = items.filter(
+      (item, index, self) => index === self.findIndex((t) => t.id === item.id)
+    );
     return unique.slice(0, 3);
   }, [requests, nowMs]);
 
-  const filterCounts = useMemo(() => ({
-    all: requests.length,
-    urgent: requests.filter((r) => r.priority !== "routine").length,
-    awaiting_approval: requests.filter((r) => r.status === "awaiting_approval").length,
-    in_progress: requests.filter((r) => r.status === "in_progress").length,
-    scheduled: requests.filter((r) => r.status === "scheduled").length,
-    done: requests.filter((r) => r.status === "done").length,
-  }), [requests]);
+  const filterCounts = useMemo(
+    () => ({
+      all: requests.length,
+      urgent: requests.filter((r) => r.priority !== "routine").length,
+      awaiting_approval: requests.filter((r) => r.status === "awaiting_approval").length,
+      in_progress: requests.filter((r) => r.status === "in_progress").length,
+      scheduled: requests.filter((r) => r.status === "scheduled").length,
+      done: requests.filter((r) => r.status === "done").length,
+    }),
+    [requests]
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
@@ -351,12 +446,27 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     return requests
-      .filter((r) => filter === "all" ? true : filter === "urgent" ? r.priority !== "routine" : r.status === filter)
-      .filter((r) => !q || [r.title, r.propertyName, r.propertyCode, r.assignedContractorName].some((s) => s?.toLowerCase().includes(q)))
+      .filter((r) =>
+        filter === "all"
+          ? true
+          : filter === "urgent"
+            ? r.priority !== "routine"
+            : r.status === filter
+      )
+      .filter(
+        (r) =>
+          !q ||
+          [r.title, r.propertyName, r.propertyCode, r.assignedContractorName].some((s) =>
+            s?.toLowerCase().includes(q)
+          )
+      )
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [requests, filter, query]);
 
-  const totalPages = useMemo(() => Math.ceil(visible.length / pageSize) || 1, [visible.length, pageSize]);
+  const totalPages = useMemo(
+    () => Math.ceil(visible.length / pageSize) || 1,
+    [visible.length, pageSize]
+  );
 
   const pagedVisible = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -366,10 +476,17 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
   const crew = useMemo(() => {
     return contractors
       .map((c) => {
-        const activeCount = requests.filter((r) => r.assignedContractorId === c.id && (r.status === "scheduled" || r.status === "in_progress")).length;
-        const quoting = requests.some((r) => r.assignedContractorId === c.id && r.status === "awaiting_approval");
+        const activeCount = requests.filter(
+          (r) =>
+            r.assignedContractorId === c.id &&
+            (r.status === "scheduled" || r.status === "in_progress")
+        ).length;
+        const quoting = requests.some(
+          (r) => r.assignedContractorId === c.id && r.status === "awaiting_approval"
+        );
         const load = activeCount > 0 ? `${activeCount} active` : quoting ? "Quoting" : "Available";
-        const tone: "amber" | "slate" | "emerald" = activeCount > 0 ? "amber" : quoting ? "slate" : "emerald";
+        const tone: "amber" | "slate" | "emerald" =
+          activeCount > 0 ? "amber" : quoting ? "slate" : "emerald";
         return { ...c, load, tone, activeCount };
       })
       .sort((a, b) => b.activeCount - a.activeCount)
@@ -379,7 +496,12 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
   const scheduledVisits = useMemo(() => {
     const now = nowMs;
     return events
-      .filter((e) => e.type === "maintenance" && e.maintenanceRequestId && new Date(e.startsAt).getTime() >= now)
+      .filter(
+        (e) =>
+          e.type === "maintenance" &&
+          e.maintenanceRequestId &&
+          new Date(e.startsAt).getTime() >= now
+      )
       .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())
       .slice(0, 4)
       .map((e) => {
@@ -387,9 +509,14 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
         return {
           id: e.id,
           day: dayLabel(e.startsAt),
-          time: new Date(e.startsAt).toLocaleTimeString("en-KE", { hour: "2-digit", minute: "2-digit" }),
+          time: new Date(e.startsAt).toLocaleTimeString("en-KE", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
           what: linked ? `${linked.title} — ${linked.propertyName}` : e.title,
-          dotClass: linked ? (PRIORITY_META[linked.priority] ?? PRIORITY_META.routine).rail : "bg-slate-300",
+          dotClass: linked
+            ? (PRIORITY_META[linked.priority] ?? PRIORITY_META.routine).rail
+            : "bg-slate-300",
           onOpen: () => linked && openDrawer(linked.id),
         };
       });
@@ -402,41 +529,56 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
     const byId = new Map<string, { name: string; amt: number }>();
     for (const r of requests) {
       if (new Date(r.createdAt) < monthStart) continue;
-      const cost = r.actualCostKes ? parseFloat(r.actualCostKes) : r.estimatedCostKes ? parseFloat(r.estimatedCostKes) : 0;
+      const cost = r.actualCostKes
+        ? parseFloat(r.actualCostKes)
+        : r.estimatedCostKes
+          ? parseFloat(r.estimatedCostKes)
+          : 0;
       if (cost <= 0) continue;
       const prev = byId.get(r.propertyId) ?? { name: r.propertyName, amt: 0 };
       prev.amt += cost;
       byId.set(r.propertyId, prev);
     }
-    const rows = Array.from(byId.values()).sort((a, b) => b.amt - a.amt).slice(0, 5);
+    const rows = Array.from(byId.values())
+      .sort((a, b) => b.amt - a.amt)
+      .slice(0, 5);
     const max = rows[0]?.amt ?? 1;
     return rows.map((r) => ({ ...r, pct: (r.amt / max) * 100 }));
   }, [requests]);
 
   // ── Drawer / detail ──────────────────────────────────────────────────────
 
-  const openDrawer = useCallback((id: string) => {
-    setSelectedId(id);
+  const openDrawer = useCallback(
+    (id: string) => {
+      setSelectedId(id);
+      setDetail(null);
+      setDetailLoading(true);
+      setScheduleOpen(false);
+      fetch(`/api/maintenance-requests/${id}?entityId=${entityId}`)
+        .then((r) => r.json())
+        .then((d) => setDetail(d.maintenanceRequest ?? null))
+        .catch(() => setDetail(null))
+        .finally(() => setDetailLoading(false));
+
+      setActivity([]);
+      setActivityQuery("");
+      setActivityLoading(true);
+      fetch(
+        `/api/audit?entityId=${entityId}&associatedType=maintenance_request&associatedId=${id}&limit=20`
+      )
+        .then((r) => r.json())
+        .then((d) => setActivity(Array.isArray(d.entries) ? d.entries : []))
+        .catch(() => setActivity([]))
+        .finally(() => setActivityLoading(false));
+    },
+    [entityId]
+  );
+
+  const closeDrawer = () => {
+    setSelectedId(null);
     setDetail(null);
-    setDetailLoading(true);
     setScheduleOpen(false);
-    fetch(`/api/maintenance-requests/${id}?entityId=${entityId}`)
-      .then((r) => r.json())
-      .then((d) => setDetail(d.maintenanceRequest ?? null))
-      .catch(() => setDetail(null))
-      .finally(() => setDetailLoading(false));
-
-    setActivity([]);
-    setActivityQuery("");
-    setActivityLoading(true);
-    fetch(`/api/audit?entityId=${entityId}&associatedType=maintenance_request&associatedId=${id}&limit=20`)
-      .then((r) => r.json())
-      .then((d) => setActivity(Array.isArray(d.entries) ? d.entries : []))
-      .catch(() => setActivity([]))
-      .finally(() => setActivityLoading(false));
-  }, [entityId]);
-
-  const closeDrawer = () => { setSelectedId(null); setDetail(null); setScheduleOpen(false); };
+  };
 
   const moveStatus = async (id: string, status: MaintenanceStatus) => {
     try {
@@ -447,19 +589,40 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update status");
-      pushToast({ tone: "success", title: "Updated", body: `Moved to ${STATUS_META[status].label}.` });
+      pushToast({
+        tone: "success",
+        title: "Updated",
+        body: `Moved to ${STATUS_META[status].label}.`,
+      });
       loadRequests();
       if (selectedId === id) openDrawer(id);
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to update status" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to update status",
+      });
     }
   };
 
-  const handleStepperClick = (id: string, current: MaintenanceStatus, target: MaintenanceStatus) => {
+  const handleStepperClick = (
+    id: string,
+    current: MaintenanceStatus,
+    target: MaintenanceStatus
+  ) => {
     if (target === current) return;
-    if (target === "scheduled") { if (current === "reported") setScheduleOpen(true); return; }
-    if (target === "in_progress" && (current === "reported" || current === "scheduled")) { moveStatus(id, "in_progress"); return; }
-    if (target === "done" && current !== "done") { moveStatus(id, "done"); return; }
+    if (target === "scheduled") {
+      if (current === "reported") setScheduleOpen(true);
+      return;
+    }
+    if (target === "in_progress" && (current === "reported" || current === "scheduled")) {
+      moveStatus(id, "in_progress");
+      return;
+    }
+    if (target === "done" && current !== "done") {
+      moveStatus(id, "done");
+      return;
+    }
   };
 
   const submitSchedule = async () => {
@@ -469,19 +632,34 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       const res = await fetch(`/api/maintenance-requests/${selectedId}/schedule-visit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entityId, startsAt: new Date(scheduleStart).toISOString(), endsAt: new Date(scheduleEnd).toISOString() }),
+        body: JSON.stringify({
+          entityId,
+          startsAt: new Date(scheduleStart).toISOString(),
+          endsAt: new Date(scheduleEnd).toISOString(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to schedule visit");
-      pushToast({ tone: "success", title: "Scheduler event created", body: "Visit booked — crew notified." });
+      pushToast({
+        tone: "success",
+        title: "Scheduler event created",
+        body: "Visit booked — crew notified.",
+      });
       setScheduleOpen(false);
       setScheduleStart("");
       setScheduleEnd("");
       loadRequests();
       openDrawer(selectedId);
-      fetch(`/api/scheduling/events?entityId=${entityId}&scope=all`).then((r) => r.json()).then((d) => setEvents(Array.isArray(d.events) ? d.events : [])).catch(() => { });
+      fetch(`/api/scheduling/events?entityId=${entityId}&scope=all`)
+        .then((r) => r.json())
+        .then((d) => setEvents(Array.isArray(d.events) ? d.events : []))
+        .catch(() => {});
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to schedule visit" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to schedule visit",
+      });
     } finally {
       setIsScheduling(false);
     }
@@ -494,11 +672,19 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       const res = await fetch(`/api/maintenance-requests/${cancelConfirmId}`, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to cancel work order");
-      pushToast({ tone: "success", title: "Work order cancelled", body: "Removed from the queue." });
+      pushToast({
+        tone: "success",
+        title: "Work order cancelled",
+        body: "Removed from the queue.",
+      });
       loadRequests();
       if (selectedId === cancelConfirmId) closeDrawer();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to cancel work order" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to cancel work order",
+      });
     } finally {
       setIsCancelling(false);
       setCancelConfirmId(null);
@@ -515,14 +701,18 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
   const filteredActivity = useMemo(() => {
     const q = activityQuery.trim().toLowerCase();
     if (!q) return activity;
-    return activity.filter((a) => a.summary.toLowerCase().includes(q) || a.actorName?.toLowerCase().includes(q));
+    return activity.filter(
+      (a) => a.summary.toLowerCase().includes(q) || a.actorName?.toLowerCase().includes(q)
+    );
   }, [activity, activityQuery]);
 
   const activityTone = (summary: string) => {
     const lower = summary.toLowerCase();
     if (lower.includes("delet") || lower.includes("cancel")) return "bg-rose-300 ring-rose-50";
-    if (lower.includes("approv") || lower.includes("complet")) return "bg-emerald-300 ring-emerald-50";
-    if (lower.includes("updat") || lower.includes("mov") || lower.includes("schedul")) return "bg-indigo-300 ring-indigo-50";
+    if (lower.includes("approv") || lower.includes("complet"))
+      return "bg-emerald-300 ring-emerald-50";
+    if (lower.includes("updat") || lower.includes("mov") || lower.includes("schedul"))
+      return "bg-indigo-300 ring-indigo-50";
     return "bg-slate-200 ring-white";
   };
 
@@ -559,7 +749,6 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       {/* ── Executive 4-Card Dark KPI Tier ── */}
       <div className="gsap-stagger bg-tertiary-gradient text-white rounded-[28px] shadow-2xl relative overflow-hidden group mb-6 border border-slate-800/80">
         <div className="grid grid-cols-1 md:grid-cols-2 @board-lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/10 relative z-10">
-
           {/* Card 1: Active Work Orders */}
           <div className="py-6 px-6 lg:py-7 lg:px-7 flex flex-col justify-between relative overflow-hidden group/card">
             <div className="absolute -bottom-10 -right-10 opacity-5 text-amber-400 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
@@ -572,7 +761,10 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               </Badge>
             </div>
             <div className="relative z-10 mt-4">
-              <span className="font-mono text-3xl font-medium text-white">{kpis.open.length} <span className="text-xxs font-mono text-slate-300 font-normal">Orders</span></span>
+              <span className="font-mono text-3xl font-medium text-white">
+                {kpis.open.length}{" "}
+                <span className="text-xxs font-mono text-slate-300 font-normal">Orders</span>
+              </span>
               <p className="text-xxs text-slate-400 font-mono mt-2 flex items-center gap-2">
                 <span className="inline-flex items-center gap-1 text-amber-300">
                   <span className="size-1.5 rounded-full bg-amber-400" />
@@ -580,7 +772,8 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                 </span>
                 <span>·</span>
                 <span className="inline-flex items-center gap-1 text-slate-300">
-                  {kpis.open.filter((r) => r.status === "awaiting_approval").length} pending sign-off
+                  {kpis.open.filter((r) => r.status === "awaiting_approval").length} pending
+                  sign-off
                 </span>
               </p>
             </div>
@@ -592,18 +785,39 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               <IconShieldCheck size={140} stroke={1} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">SLA Compliance Rate</span>
-              <Badge tone={kpis.slaCompliancePct >= 90 ? "success" : kpis.slaCompliancePct >= 75 ? "warning" : "risk"}>
-                {kpis.slaCompliancePct >= 90 ? "OPTIMAL" : kpis.slaCompliancePct >= 75 ? "AT RISK" : "CRITICAL"}
+              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
+                SLA Compliance Rate
+              </span>
+              <Badge
+                tone={
+                  kpis.slaCompliancePct >= 90
+                    ? "success"
+                    : kpis.slaCompliancePct >= 75
+                      ? "warning"
+                      : "risk"
+                }
+              >
+                {kpis.slaCompliancePct >= 90
+                  ? "OPTIMAL"
+                  : kpis.slaCompliancePct >= 75
+                    ? "AT RISK"
+                    : "CRITICAL"}
               </Badge>
             </div>
             <div className="relative z-10 mt-4">
-              <span className="font-mono text-3xl font-medium text-emerald-400">{kpis.slaCompliancePct}%</span>
+              <span className="font-mono text-3xl font-medium text-emerald-400">
+                {kpis.slaCompliancePct}%
+              </span>
               <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                <div className="h-full bg-emerald-400 transition-all duration-500" style={{ width: `${kpis.slaCompliancePct}%` }} />
+                <div
+                  className="h-full bg-emerald-400 transition-all duration-500"
+                  style={{ width: `${kpis.slaCompliancePct}%` }}
+                />
               </div>
               <p className="text-xxs text-slate-300 font-mono mt-2">
-                {kpis.avgResponseHours != null ? `Avg resolution: ${kpis.avgResponseHours < 1 ? "<1h" : kpis.avgResponseHours.toFixed(1) + "h"}` : "No resolved orders yet"}
+                {kpis.avgResponseHours != null
+                  ? `Avg resolution: ${kpis.avgResponseHours < 1 ? "<1h" : kpis.avgResponseHours.toFixed(1) + "h"}`
+                  : "No resolved orders yet"}
               </p>
             </div>
           </div>
@@ -614,10 +828,14 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               <IconBuildingBank size={140} stroke={1} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">{kpis.monthLabel} Spend</span>
+              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
+                {kpis.monthLabel} Spend
+              </span>
             </div>
             <div className="relative z-10 mt-4">
-              <span className="font-mono text-3xl font-medium text-white">{formatCompactKES(kpis.spendTotal)}</span>
+              <span className="font-mono text-3xl font-medium text-white">
+                {formatCompactKES(kpis.spendTotal)}
+              </span>
               <p className="text-xxs text-slate-300 font-mono mt-2">
                 Nets directly against monthly landlord remittances
               </p>
@@ -630,34 +848,50 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               <IconTool size={140} stroke={1} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">Works Category Mix</span>
+              <span className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
+                Works Category Mix
+              </span>
             </div>
             <div className="relative z-10 mt-4 flex flex-col gap-2.5">
               <div className="flex h-2 rounded-full overflow-hidden gap-0.5 bg-white/10">
-                {kpis.mix.filter((m) => m.count > 0).map((m) => (
-                  <div
-                    key={m.cat}
-                    style={{
-                      background: m.cat === "reactive" ? "#f59e0b" : m.cat === "planned" ? "#10b981" : "#f43f5e",
-                      width: `${(m.count / kpis.mixTotal) * 100}%`,
-                    }}
-                  />
-                ))}
+                {kpis.mix
+                  .filter((m) => m.count > 0)
+                  .map((m) => (
+                    <div
+                      key={m.cat}
+                      style={{
+                        background:
+                          m.cat === "reactive"
+                            ? "#f59e0b"
+                            : m.cat === "planned"
+                              ? "#10b981"
+                              : "#f43f5e",
+                        width: `${(m.count / kpis.mixTotal) * 100}%`,
+                      }}
+                    />
+                  ))}
               </div>
               <div className="flex items-center justify-between text-xxs font-mono text-slate-300">
                 {kpis.mix.map((m) => (
                   <span key={m.cat} className="flex items-center gap-1">
                     <span
                       className="size-2 rounded-full"
-                      style={{ background: m.cat === "reactive" ? "#f59e0b" : m.cat === "planned" ? "#10b981" : "#f43f5e" }}
+                      style={{
+                        background:
+                          m.cat === "reactive"
+                            ? "#f59e0b"
+                            : m.cat === "planned"
+                              ? "#10b981"
+                              : "#f43f5e",
+                      }}
                     />
-                    {CATEGORY_META[m.cat].label}: <span className="font-medium text-white">{m.count}</span>
+                    {CATEGORY_META[m.cat].label}:{" "}
+                    <span className="font-medium text-white">{m.count}</span>
                   </span>
                 ))}
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -687,8 +921,13 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
                   <div className="flex items-center gap-2 min-w-0">
-                    <p className="text-xs font-medium text-slate-900 leading-snug truncate">{item.title}</p>
-                    <Badge tone={item.tone === "rose" ? "risk" : "warning"} className="shrink-0 text-xxs">
+                    <p className="text-xs font-medium text-slate-900 leading-snug truncate">
+                      {item.title}
+                    </p>
+                    <Badge
+                      tone={item.tone === "rose" ? "risk" : "warning"}
+                      className="shrink-0 text-xxs"
+                    >
                       ACTION REQUIRED
                     </Badge>
                   </div>
@@ -701,7 +940,11 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                 onClick={() => openDrawer(item.id)}
                 className="bg-white hover:bg-slate-50 text-slate-900 border border-slate-200/90 rounded-xl px-3.5 py-1.5 text-xs font-medium transition-all shadow-2xs hover:shadow-xs shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                {item.ctaLabel} <IconArrowUpRight size={13} className="text-slate-400 group-hover:text-slate-900 transition-colors" />
+                {item.ctaLabel}{" "}
+                <IconArrowUpRight
+                  size={13}
+                  className="text-slate-400 group-hover:text-slate-900 transition-colors"
+                />
               </button>
             </div>
           ))}
@@ -736,7 +979,10 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                   <button
                     key={f.id}
                     type="button"
-                    onClick={() => { setFilter(f.id); setCurrentPage(1); }}
+                    onClick={() => {
+                      setFilter(f.id);
+                      setCurrentPage(1);
+                    }}
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all shrink-0",
                       isActive
@@ -745,7 +991,12 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                     )}
                   >
                     {f.label}
-                    <span className={cn("font-mono text-xxs px-1.5 py-0.5 rounded-md", isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500")}>
+                    <span
+                      className={cn(
+                        "font-mono text-xxs px-1.5 py-0.5 rounded-md",
+                        isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                      )}
+                    >
                       {count}
                     </span>
                   </button>
@@ -754,10 +1005,16 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
             </div>
 
             <div className="relative flex items-center shrink-0 min-w-[220px]">
-              <IconSearch size={15} className="absolute left-3 text-slate-600 pointer-events-none" />
+              <IconSearch
+                size={15}
+                className="absolute left-3 text-slate-600 pointer-events-none"
+              />
               <input
                 value={query}
-                onChange={(e) => { setQuery(e.target.value); setCurrentPage(1); }}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
                 placeholder="Search work orders..."
                 className="w-full h-9 rounded-xl border border-slate-200 bg-slate-50/50 pl-9 pr-3 text-xs font-medium text-slate-900 outline-none placeholder:text-slate-600 focus:bg-white focus:border-[#151936]/40 transition-all shadow-2xs"
               />
@@ -773,7 +1030,9 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                 <IconTool size={26} />
               </div>
               <h3 className="text-sm font-medium text-slate-900">No work orders yet</h3>
-              <p className="text-xs text-slate-600 max-w-sm font-medium">Reported issues and planned maintenance tasks will appear here in real time.</p>
+              <p className="text-xs text-slate-600 max-w-sm font-medium">
+                Reported issues and planned maintenance tasks will appear here in real time.
+              </p>
               <Button size="sm" onClick={() => setNewOpen(true)} className="mt-1 rounded-xl">
                 <IconPlus size={14} /> New Work Order
               </Button>
@@ -798,14 +1057,23 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                     onClick={() => openDrawer(r.id)}
                     className="flex items-center gap-3.5 w-full text-left bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_15px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_25px_rgb(0,0,0,0.06)] hover:border-slate-300 transition-all duration-300 group cursor-pointer"
                   >
-                    <span className={cn("w-1 self-stretch rounded-full shrink-0", (PRIORITY_META[r.priority] ?? PRIORITY_META.routine).rail)} />
+                    <span
+                      className={cn(
+                        "w-1 self-stretch rounded-full shrink-0",
+                        (PRIORITY_META[r.priority] ?? PRIORITY_META.routine).rail
+                      )}
+                    />
                     <div className="size-12 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-600 shrink-0 shadow-2xs">
                       <IconTool size={20} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-xs text-slate-600 font-medium">{r.propertyCode}</span>
-                        <Badge tone="neutral">{(CATEGORY_META[r.category] ?? CATEGORY_META.reactive).label}</Badge>
+                        <span className="font-mono text-xs text-slate-600 font-medium">
+                          {r.propertyCode}
+                        </span>
+                        <Badge tone="neutral">
+                          {(CATEGORY_META[r.category] ?? CATEGORY_META.reactive).label}
+                        </Badge>
                         <Badge tone={isUrgentOrCritical ? "risk" : "neutral"}>
                           {(PRIORITY_META[r.priority] ?? PRIORITY_META.routine).label}
                         </Badge>
@@ -818,11 +1086,25 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                       </p>
                     </div>
                     <div className="shrink-0 flex flex-col items-end gap-1">
-                      <Badge tone={isDone ? "success" : isInProgress ? "primary" : isAwaiting ? "warning" : "neutral"}>
+                      <Badge
+                        tone={
+                          isDone
+                            ? "success"
+                            : isInProgress
+                              ? "primary"
+                              : isAwaiting
+                                ? "warning"
+                                : "neutral"
+                        }
+                      >
                         {(STATUS_META[r.status] ?? STATUS_META.reported).label}
                       </Badge>
-                      <span className="font-mono text-xs font-medium text-[#151936] mt-0.5">{fmtKes(r.actualCostKes ?? r.estimatedCostKes)}</span>
-                      <span className="text-xs font-mono font-medium" style={{ color: sla.color }}>{sla.text}</span>
+                      <span className="font-mono text-xs font-medium text-[#151936] mt-0.5">
+                        {fmtKes(r.actualCostKes ?? r.estimatedCostKes)}
+                      </span>
+                      <span className="text-xs font-mono font-medium" style={{ color: sla.color }}>
+                        {sla.text}
+                      </span>
                     </div>
                   </button>
                 );
@@ -846,7 +1128,9 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
           {/* Card 1: Crew & Vendors */}
           <div className=" flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">Crew & Vendors</h4>
+              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                Crew & Vendors
+              </h4>
               <Badge tone="neutral">{contractors.length} ON FILE</Badge>
             </div>
             {crew.length === 0 ? (
@@ -854,17 +1138,32 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
             ) : (
               <div className="flex flex-col gap-2">
                 {crew.map((c) => (
-                  <div key={c.id} className="flex items-center justify-between gap-3 bg-slate-50/70 hover:bg-slate-100/70 border border-slate-200/60 rounded-2xl p-3 transition-colors">
+                  <div
+                    key={c.id}
+                    className="flex items-center justify-between gap-3 bg-slate-50/70 hover:bg-slate-100/70 border border-slate-200/60 rounded-2xl p-3 transition-colors"
+                  >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span className="size-8 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 shrink-0 shadow-2xs">
                         <IconTool size={14} />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-xs font-medium text-slate-900 truncate">{c.displayName}</p>
-                        <p className="text-xs text-slate-600 font-mono truncate">{c.metadata?.specialty ?? "General Repairs"}</p>
+                        <p className="text-xs font-medium text-slate-900 truncate">
+                          {c.displayName}
+                        </p>
+                        <p className="text-xs text-slate-600 font-mono truncate">
+                          {c.metadata?.specialty ?? "General Repairs"}
+                        </p>
                       </div>
                     </div>
-                    <Badge tone={c.tone === "emerald" ? "success" : c.tone === "amber" ? "warning" : "neutral"}>
+                    <Badge
+                      tone={
+                        c.tone === "emerald"
+                          ? "success"
+                          : c.tone === "amber"
+                            ? "warning"
+                            : "neutral"
+                      }
+                    >
                       {c.load}
                     </Badge>
                   </div>
@@ -876,8 +1175,13 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
           {/* Card 2: Scheduled Visits */}
           <div className="bg-white border border-slate-200/80 rounded-[24px] shadow-[0_2px_15px_rgb(0,0,0,0.02)] p-5 flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">Scheduled Visits</h4>
-              <Link href="/admin/events" className="text-xs font-medium text-[#151936] hover:underline flex items-center gap-1 font-mono">
+              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                Scheduled Visits
+              </h4>
+              <Link
+                href="/admin/events"
+                className="text-xs font-medium text-[#151936] hover:underline flex items-center gap-1 font-mono"
+              >
                 Scheduler <IconArrowUpRight size={13} />
               </Link>
             </div>
@@ -886,26 +1190,38 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
             ) : (
               <div className="flex flex-col gap-2">
                 {scheduledVisits.map((v) => (
-                  <button key={v.id} type="button" onClick={v.onOpen} className="flex items-center gap-2.5 bg-slate-50/70 border border-slate-200/60 rounded-2xl p-3 text-left w-full hover:bg-slate-100/70 transition-colors">
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={v.onOpen}
+                    className="flex items-center gap-2.5 bg-slate-50/70 border border-slate-200/60 rounded-2xl p-3 text-left w-full hover:bg-slate-100/70 transition-colors"
+                  >
                     <div className="shrink-0 text-center bg-tertiary-gradient border border-slate-200/80 rounded-xl px-2 py-1 shadow-2xs">
-                      <span className="block font-mono text-xxs text-slate-300 font-medium">{v.day}</span>
+                      <span className="block font-mono text-xxs text-slate-300 font-medium">
+                        {v.day}
+                      </span>
                       <span className="block font-mono text-xl text-slate-200">{v.time}</span>
                     </div>
                     <span className={cn("size-2 rounded-full shrink-0", v.dotClass)} />
-                    <span className="text-xs font-medium text-slate-800 truncate flex-1 min-w-0">{v.what}</span>
+                    <span className="text-xs font-medium text-slate-800 truncate flex-1 min-w-0">
+                      {v.what}
+                    </span>
                   </button>
                 ))}
               </div>
             )}
             <p className="text-xs text-slate-600 font-mono leading-relaxed mt-1">
-              Scheduling a visit auto-syncs with the Scheduler. Closing work orders marks visits complete.
+              Scheduling a visit auto-syncs with the Scheduler. Closing work orders marks visits
+              complete.
             </p>
           </div>
 
           {/* Card 3: Spend by Property */}
           <div className="bg-white border border-slate-200/80 rounded-[24px] shadow-[0_2px_15px_rgb(0,0,0,0.02)] p-5 flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">{kpis.monthLabel} Spend</h4>
+              <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                {kpis.monthLabel} Spend
+              </h4>
               <Badge tone="neutral">REMITTANCE NET</Badge>
             </div>
             {spendByProperty.length === 0 ? (
@@ -916,10 +1232,15 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                   <div key={sp.name} className="flex flex-col gap-1">
                     <div className="flex justify-between items-center text-xs">
                       <span className="font-medium text-slate-800 truncate">{sp.name}</span>
-                      <span className="font-mono text-xs font-medium text-[#151936] shrink-0">{fmtKes(sp.amt)}</span>
+                      <span className="font-mono text-xs font-medium text-[#151936] shrink-0">
+                        {fmtKes(sp.amt)}
+                      </span>
                     </div>
                     <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full rounded-full bg-[#151936]" style={{ width: `${sp.pct}%` }} />
+                      <div
+                        className="h-full rounded-full bg-[#151936]"
+                        style={{ width: `${sp.pct}%` }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -932,7 +1253,13 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
         </div>
       </div>
 
-      <ReportIssueModal open={newOpen} entityId={entityId} title="New Work Order" onClose={() => setNewOpen(false)} onCreated={loadRequests} />
+      <ReportIssueModal
+        open={newOpen}
+        entityId={entityId}
+        title="New Work Order"
+        onClose={() => setNewOpen(false)}
+        onCreated={loadRequests}
+      />
 
       <ConfirmDialog
         open={!!cancelConfirmId}
@@ -946,7 +1273,12 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
       />
 
       {/* ── Work Order drawer ── */}
-      <Drawer open={!!selectedId} onClose={closeDrawer} title={drawerRequest?.title ?? "Work Order Detail"} width="36rem">
+      <Drawer
+        open={!!selectedId}
+        onClose={closeDrawer}
+        title={drawerRequest?.title ?? "Work Order Detail"}
+        width="36rem"
+      >
         {detailLoading || !detail ? (
           <div className="flex flex-col gap-4">
             <SkeletonBlock className="h-40 w-[calc(100%+2.5rem)] rounded-none -mt-5 -mx-5" />
@@ -962,7 +1294,11 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
             <div className="relative h-40 overflow-hidden shrink-0">
               {detail.propertyMedia?.[0]?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={detail.propertyMedia[0].url} alt={detail.title} className="absolute inset-0 size-full object-cover" />
+                <img
+                  src={detail.propertyMedia[0].url}
+                  alt={detail.title}
+                  className="absolute inset-0 size-full object-cover"
+                />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-[#122a20] via-[#151936] to-[#1e1b4b]" />
               )}
@@ -972,17 +1308,37 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                   <span className="font-mono text-xs text-white/80 font-medium px-2.5 py-1 rounded-md bg-white/15 backdrop-blur-md border border-white/20">
                     {detail.propertyCode}
                   </span>
-                  <Badge tone={detail.priority === "critical" ? "risk" : detail.priority === "urgent" ? "warning" : "neutral"}>
+                  <Badge
+                    tone={
+                      detail.priority === "critical"
+                        ? "risk"
+                        : detail.priority === "urgent"
+                          ? "warning"
+                          : "neutral"
+                    }
+                  >
                     {(PRIORITY_META[detail.priority] ?? PRIORITY_META.routine).label}
                   </Badge>
-                  <Badge tone={detail.status === "done" ? "success" : detail.status === "in_progress" ? "primary" : detail.status === "awaiting_approval" ? "warning" : "neutral"}>
+                  <Badge
+                    tone={
+                      detail.status === "done"
+                        ? "success"
+                        : detail.status === "in_progress"
+                          ? "primary"
+                          : detail.status === "awaiting_approval"
+                            ? "warning"
+                            : "neutral"
+                    }
+                  >
                     {(STATUS_META[detail.status] ?? STATUS_META.reported).label}
                   </Badge>
                 </div>
                 <p className="font-mono text-xs text-amber-300 font-medium">
                   {(CATEGORY_META[detail.category] ?? CATEGORY_META.reactive).label} Works
                 </p>
-                <h3 className="text-lg font-medium text-white mt-0.5 leading-snug truncate">{detail.title}</h3>
+                <h3 className="text-lg font-medium text-white mt-0.5 leading-snug truncate">
+                  {detail.title}
+                </h3>
               </div>
             </div>
 
@@ -990,15 +1346,31 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               {/* Fact cells Grid */}
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { label: "Property / Unit", value: `${detail.propertyName} · ${detail.propertyLocation}` },
-                  { label: "Assigned Vendor", value: detail.assignedContractorName ?? "Unassigned" },
+                  {
+                    label: "Property / Unit",
+                    value: `${detail.propertyName} · ${detail.propertyLocation}`,
+                  },
+                  {
+                    label: "Assigned Vendor",
+                    value: detail.assignedContractorName ?? "Unassigned",
+                  },
                   { label: "Reported By", value: detail.reportedByName ?? "—" },
                   { label: "Opened Date", value: fmtDate(detail.createdAt) },
-                  { label: "Scheduled Visit", value: detail.scheduledVisit ? fmtDateTime(detail.scheduledVisit.startsAt) : "Not scheduled" },
+                  {
+                    label: "Scheduled Visit",
+                    value: detail.scheduledVisit
+                      ? fmtDateTime(detail.scheduledVisit.startsAt)
+                      : "Not scheduled",
+                  },
                   { label: "SLA Status", value: slaLineFor(detail, slaTarget).text },
                 ].map((kv) => (
-                  <div key={kv.label} className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-3 min-w-0 shadow-2xs">
-                    <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mb-1">{kv.label}</p>
+                  <div
+                    key={kv.label}
+                    className="bg-slate-50/80 border border-slate-200/70 rounded-2xl p-3 min-w-0 shadow-2xs"
+                  >
+                    <p className="text-xxs font-mono font-medium text-slate-500 uppercase tracking-wider mb-1">
+                      {kv.label}
+                    </p>
                     <p className="text-xs font-medium text-slate-900 truncate">{kv.value}</p>
                   </div>
                 ))}
@@ -1007,18 +1379,26 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               {/* Cost & Approval Card */}
               <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">Cost & Financial Approval</h4>
+                  <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                    Cost & Financial Approval
+                  </h4>
                   <Badge tone="neutral">FINANCIAL LEDGER</Badge>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div className="bg-slate-50/70 border border-slate-200/60 rounded-xl p-3">
-                    <span className="text-slate-500 font-mono block text-xxs mb-0.5">Estimated Cost</span>
-                    <span className="font-mono text-sm font-medium text-[#151936]">{fmtKes(detail.estimatedCostKes)}</span>
+                    <span className="text-slate-500 font-mono block text-xxs mb-0.5">
+                      Estimated Cost
+                    </span>
+                    <span className="font-mono text-sm font-medium text-[#151936]">
+                      {fmtKes(detail.estimatedCostKes)}
+                    </span>
                   </div>
 
                   <div className="bg-slate-50/70 border border-slate-200/60 rounded-xl p-3">
-                    <span className="text-slate-500 font-mono block text-xxs mb-0.5">Approval Status</span>
+                    <span className="text-slate-500 font-mono block text-xxs mb-0.5">
+                      Approval Status
+                    </span>
                     <span className="font-medium text-slate-900 truncate block">
                       {detail.pendingApproval
                         ? `Pending ${detail.pendingApproval.requiredApproverRole.toUpperCase()}`
@@ -1031,7 +1411,10 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
 
                 <div className="flex items-center justify-between text-xs pt-1">
                   <span className="text-slate-500 font-mono">Ledger Posting:</span>
-                  <Link href="/admin/leases?mode=mandates" className="font-medium text-[#151936] hover:underline inline-flex items-center gap-1 font-mono">
+                  <Link
+                    href="/admin/leases?mode=mandates"
+                    className="font-medium text-[#151936] hover:underline inline-flex items-center gap-1 font-mono"
+                  >
                     Mandate ledger <IconArrowUpRight size={12} />
                   </Link>
                 </div>
@@ -1041,8 +1424,10 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                     const cost = detail.actualCostKes ?? detail.estimatedCostKes;
                     const costNum = cost ? parseFloat(cost) : 0;
                     const ceiling = detail.maintenanceAuthorityKes ?? 25000;
-                    if (costNum <= ceiling) return `Within PM KES ${ceiling.toLocaleString()} self-approval ceiling — auto-approved and posted.`;
-                    if (detail.pendingApproval?.requiredApproverRole === "ceo") return "Above CEO threshold: queued for dual CEO sign-off approval.";
+                    if (costNum <= ceiling)
+                      return `Within PM KES ${ceiling.toLocaleString()} self-approval ceiling — auto-approved and posted.`;
+                    if (detail.pendingApproval?.requiredApproverRole === "ceo")
+                      return "Above CEO threshold: queued for dual CEO sign-off approval.";
                     return `Above PM authority ceiling: requires GM sign-off prior to mobilization.`;
                   })()}
                 </div>
@@ -1050,48 +1435,80 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
 
               {/* Linked Records */}
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">Linked Operations Records</h4>
+                <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                  Linked Operations Records
+                </h4>
                 <div className="flex flex-col gap-2">
-                  <Link href={`/admin/properties/${detail.propertyId}`} className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 transition-all shadow-2xs group">
+                  <Link
+                    href={`/admin/properties/${detail.propertyId}`}
+                    className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 transition-all shadow-2xs group"
+                  >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="size-9 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-700 shrink-0 shadow-2xs">
                         <IconBuildingCommunity size={16} />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-xs font-medium text-slate-900 group-hover:text-amber-800 transition-colors truncate">Property File</p>
-                        <p className="text-xs text-slate-500 font-mono truncate">{detail.propertyName}</p>
+                        <p className="text-xs font-medium text-slate-900 group-hover:text-amber-800 transition-colors truncate">
+                          Property File
+                        </p>
+                        <p className="text-xs text-slate-500 font-mono truncate">
+                          {detail.propertyName}
+                        </p>
                       </div>
                     </div>
-                    <IconArrowUpRight size={14} className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0" />
+                    <IconArrowUpRight
+                      size={14}
+                      className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0"
+                    />
                   </Link>
 
                   {detail.maintenanceAuthorityKes != null && (
-                    <Link href="/admin/leases?mode=mandates" className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 transition-all shadow-2xs group">
+                    <Link
+                      href="/admin/leases?mode=mandates"
+                      className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 transition-all shadow-2xs group"
+                    >
                       <div className="flex items-center gap-3 min-w-0">
                         <span className="size-9 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-700 shrink-0 shadow-2xs">
                           <IconFileDescription size={16} />
                         </span>
                         <div className="min-w-0">
-                          <p className="text-xs font-medium text-slate-900 group-hover:text-amber-800 transition-colors truncate">Mandate & Remittance File</p>
-                          <p className="text-xs text-slate-500 font-mono truncate">Net expenses deducted on advice generation</p>
+                          <p className="text-xs font-medium text-slate-900 group-hover:text-amber-800 transition-colors truncate">
+                            Mandate & Remittance File
+                          </p>
+                          <p className="text-xs text-slate-500 font-mono truncate">
+                            Net expenses deducted on advice generation
+                          </p>
                         </div>
                       </div>
-                      <IconArrowUpRight size={14} className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0" />
+                      <IconArrowUpRight
+                        size={14}
+                        className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0"
+                      />
                     </Link>
                   )}
 
                   {detail.scheduledVisit && (
-                    <Link href="/admin/events" className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 transition-all shadow-2xs group">
+                    <Link
+                      href="/admin/events"
+                      className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 transition-all shadow-2xs group"
+                    >
                       <div className="flex items-center gap-3 min-w-0">
                         <span className="size-9 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-700 shrink-0 shadow-2xs">
                           <IconTool size={16} />
                         </span>
                         <div className="min-w-0">
-                          <p className="text-xs font-medium text-slate-900 group-hover:text-amber-800 transition-colors truncate">Scheduler Visit Event</p>
-                          <p className="text-xs text-slate-500 font-mono truncate">{fmtDateTime(detail.scheduledVisit.startsAt)}</p>
+                          <p className="text-xs font-medium text-slate-900 group-hover:text-amber-800 transition-colors truncate">
+                            Scheduler Visit Event
+                          </p>
+                          <p className="text-xs text-slate-500 font-mono truncate">
+                            {fmtDateTime(detail.scheduledVisit.startsAt)}
+                          </p>
                         </div>
                       </div>
-                      <IconArrowUpRight size={14} className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0" />
+                      <IconArrowUpRight
+                        size={14}
+                        className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0"
+                      />
                     </Link>
                   )}
                 </div>
@@ -1100,8 +1517,12 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
               {/* Timeline (activity log) */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">Audit Timeline & Activity Log</h4>
-                  <Badge tone="neutral" className="font-mono">{filteredActivity.length} EVENTS</Badge>
+                  <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                    Audit Timeline & Activity Log
+                  </h4>
+                  <Badge tone="neutral" className="font-mono">
+                    {filteredActivity.length} EVENTS
+                  </Badge>
                 </div>
 
                 <div className="relative">
@@ -1111,26 +1532,43 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                     placeholder="Search activity log..."
                     className="w-full h-9 bg-slate-50/60 border border-slate-200/80 text-xs rounded-xl pl-9 pr-3 font-medium text-slate-900 outline-none placeholder:text-slate-400 focus:bg-white focus:border-[#151936]/40 transition-all shadow-2xs"
                   />
-                  <IconSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <IconSearch
+                    size={14}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  />
                 </div>
 
                 {activityLoading ? (
-                  <div className="flex justify-center py-6"><SkeletonBlock className="h-4 w-1/2" /></div>
+                  <div className="flex justify-center py-6">
+                    <SkeletonBlock className="h-4 w-1/2" />
+                  </div>
                 ) : filteredActivity.length === 0 ? (
                   <div className="flex flex-col items-center py-8 text-center gap-2 bg-slate-50/50 border border-slate-200/60 rounded-2xl">
                     <IconMoodEmpty size={22} className="text-slate-400" />
-                    <p className="text-xs text-slate-500 font-mono font-medium">No activity log entries found.</p>
+                    <p className="text-xs text-slate-500 font-mono font-medium">
+                      No activity log entries found.
+                    </p>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2.5 relative ml-1">
                     <div className="absolute left-[3px] top-1.5 bottom-4 w-px bg-slate-200 z-0" />
                     {filteredActivity.map((entry) => (
                       <div key={entry.id} className="relative flex items-start gap-3 z-10">
-                        <span className={cn("size-2 rounded-full mt-1.5 shrink-0 ring-4 ring-white", activityTone(entry.summary))} />
+                        <span
+                          className={cn(
+                            "size-2 rounded-full mt-1.5 shrink-0 ring-4 ring-white",
+                            activityTone(entry.summary)
+                          )}
+                        />
                         <div className="flex-1 min-w-0 flex items-center justify-between gap-2 bg-slate-50/70 border border-slate-200/60 rounded-xl px-3 py-2">
                           <p className="text-xs text-slate-700 leading-snug min-w-0">
-                            {entry.actorName && <span className="font-medium text-slate-900">{entry.actorName} </span>}
-                            {entry.summary.replace(entry.actorName ?? "", "").replace(/^ - |^ — /, "").trim()}
+                            {entry.actorName && (
+                              <span className="font-medium text-slate-900">{entry.actorName} </span>
+                            )}
+                            {entry.summary
+                              .replace(entry.actorName ?? "", "")
+                              .replace(/^ - |^ — /, "")
+                              .trim()}
                           </p>
                           <span className="text-xxs font-mono font-medium text-slate-400 shrink-0 whitespace-nowrap">
                             {relativeTime(entry.createdAt)}
@@ -1144,9 +1582,19 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
 
               {/* Move Work Order Status */}
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">Move Work Order Status</h4>
+                <h4 className="text-xs font-medium text-slate-900 uppercase tracking-wider font-mono">
+                  Move Work Order Status
+                </h4>
                 <div className="flex flex-wrap gap-2">
-                  {(["reported", "awaiting_approval", "scheduled", "in_progress", "done"] as MaintenanceStatus[]).map((k) => {
+                  {(
+                    [
+                      "reported",
+                      "awaiting_approval",
+                      "scheduled",
+                      "in_progress",
+                      "done",
+                    ] as MaintenanceStatus[]
+                  ).map((k) => {
                     const active = detail.status === k;
                     return (
                       <button
@@ -1160,7 +1608,12 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                             : "bg-slate-50/70 text-slate-700 border-slate-200/80 hover:bg-slate-100 hover:border-slate-300"
                         )}
                       >
-                        <span className={cn("size-1.5 rounded-full", (STATUS_META[k] ?? STATUS_META.reported).dot)} />
+                        <span
+                          className={cn(
+                            "size-1.5 rounded-full",
+                            (STATUS_META[k] ?? STATUS_META.reported).dot
+                          )}
+                        />
                         {(STATUS_META[k] ?? STATUS_META.reported).label}
                       </button>
                     );
@@ -1202,10 +1655,20 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                     </div>
                   </div>
                   <div className="flex justify-end gap-2 pt-1">
-                    <Button variant="secondary" size="sm" onClick={() => setScheduleOpen(false)} className="rounded-xl">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setScheduleOpen(false)}
+                      className="rounded-xl"
+                    >
                       Cancel
                     </Button>
-                    <Button size="sm" onClick={submitSchedule} disabled={isScheduling || !scheduleStart || !scheduleEnd} className="rounded-xl bg-[#151936] text-white hover:bg-[#1f254e]">
+                    <Button
+                      size="sm"
+                      onClick={submitSchedule}
+                      disabled={isScheduling || !scheduleStart || !scheduleEnd}
+                      className="rounded-xl bg-[#151936] text-white hover:bg-[#1f254e]"
+                    >
                       {isScheduling ? "Saving..." : "Confirm Schedule"}
                     </Button>
                   </div>
@@ -1222,7 +1685,8 @@ export function MaintenanceBoard({ entityId = "group" }: { entityId?: string }) 
                 disabled={detail.status === "done"}
                 className="rounded-xl border-slate-200/90 text-slate-800 hover:bg-slate-50"
               >
-                <IconCalendarPlus size={14} /> {detail.scheduledVisit ? "Reschedule Visit" : "Schedule Visit"}
+                <IconCalendarPlus size={14} />{" "}
+                {detail.scheduledVisit ? "Reschedule Visit" : "Schedule Visit"}
               </Button>
 
               <div className="flex items-center gap-2">

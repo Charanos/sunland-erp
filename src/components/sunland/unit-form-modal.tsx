@@ -68,15 +68,15 @@ export function UnitFormModal({
       };
       const res = isEdit
         ? await fetch(`/api/property-units/${unit!.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        })
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          })
         : await fetch(`/api/properties/${propertyId}/units`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
 
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error ?? "Failed to save unit");
@@ -85,7 +85,11 @@ export function UnitFormModal({
       onSaved();
       onClose();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not save this unit." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not save this unit.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -94,7 +98,7 @@ export function UnitFormModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title={isEdit ? "Edit Unit" : "Add Unit"}
       size="md"
     >
@@ -142,7 +146,9 @@ export function UnitFormModal({
                 className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-body-primary focus:outline-none focus:border-[#151936]/40 transition-colors shadow-sm appearance-none disabled:bg-slate-50 disabled:text-slate-400"
               >
                 <option value="vacant">Vacant</option>
-                <option value="occupied" disabled>Occupied (assign a lease instead)</option>
+                <option value="occupied" disabled>
+                  Occupied (assign a lease instead)
+                </option>
                 <option value="reserved">Reserved</option>
                 <option value="maintenance">Maintenance</option>
               </select>

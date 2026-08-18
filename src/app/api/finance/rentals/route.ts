@@ -35,21 +35,24 @@ export async function GET(request: Request) {
       .where(eq(transactions.type, "rent"));
 
     // Map collected rent by lease ID
-    const leasePayments = rentTx.reduce((acc, tx) => {
-      if (tx.leaseId) {
-        const amt = parseFloat(tx.amount.toString()) || 0;
-        acc[tx.leaseId] = (acc[tx.leaseId] || 0) + amt;
-      }
-      return acc;
-    }, {} as Record<string, number>);
+    const leasePayments = rentTx.reduce(
+      (acc, tx) => {
+        if (tx.leaseId) {
+          const amt = parseFloat(tx.amount.toString()) || 0;
+          acc[tx.leaseId] = (acc[tx.leaseId] || 0) + amt;
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     // Build rental records
     const records = activeLeases.map((lease) => {
       const expected = parseFloat(lease.monthlyRent.toString()) || 0;
       const collected = leasePayments[lease.id] || 0;
       const arrears = Math.max(0, expected - collected);
-      const fee = collected * 0.10; // 10% management fee on collected rent!
-      
+      const fee = collected * 0.1; // 10% management fee on collected rent!
+
       let status = "Arrears";
       if (collected >= expected) {
         status = "Paid";

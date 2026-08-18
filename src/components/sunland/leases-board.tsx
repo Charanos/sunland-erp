@@ -169,8 +169,6 @@ const MANDATE_STATUS_LABEL: Record<Mandate["status"], string> = {
   terminated: "Terminated",
 };
 
-
-
 export function LeasesBoard({ entityId }: { entityId: string }) {
   const router = useRouter();
   const { pushToast } = useToast();
@@ -209,7 +207,11 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   const [leaseTerminateNotes, setLeaseTerminateNotes] = useState("");
   const [leaseTerminateNotesErr, setLeaseTerminateNotesErr] = useState(false);
   const [isTerminatingLease, setIsTerminatingLease] = useState(false);
-  const [ownerDrawer, setOwnerDrawer] = useState<{ open: boolean; ownerContactId: string | null; properties: Property[] }>({
+  const [ownerDrawer, setOwnerDrawer] = useState<{
+    open: boolean;
+    ownerContactId: string | null;
+    properties: Property[];
+  }>({
     open: false,
     ownerContactId: null,
     properties: [],
@@ -274,25 +276,39 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   // leases.isFeatured).
   const handleToggleFeature = async (propertyId: string, currentlyFeatured: boolean) => {
     const nextVal = !currentlyFeatured;
-    setLeases((prev) => prev.map((l) => (l.propertyId === propertyId ? { ...l, isFeatured: nextVal } : l)));
-    setMandates((prev) => prev.map((m) => (m.propertyId === propertyId ? { ...m, isFeatured: nextVal } : m)));
+    setLeases((prev) =>
+      prev.map((l) => (l.propertyId === propertyId ? { ...l, isFeatured: nextVal } : l))
+    );
+    setMandates((prev) =>
+      prev.map((m) => (m.propertyId === propertyId ? { ...m, isFeatured: nextVal } : m))
+    );
     try {
       await fetch(`/api/properties?id=${propertyId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isFeatured: nextVal, entityId }),
       });
-      pushToast({ title: "Updated", body: `Mandate property is now ${nextVal ? "featured" : "unfeatured"}.`, tone: "success" });
+      pushToast({
+        title: "Updated",
+        body: `Mandate property is now ${nextVal ? "featured" : "unfeatured"}.`,
+        tone: "success",
+      });
     } catch {
-      setLeases((prev) => prev.map((l) => (l.propertyId === propertyId ? { ...l, isFeatured: currentlyFeatured } : l)));
-      setMandates((prev) => prev.map((m) => (m.propertyId === propertyId ? { ...m, isFeatured: currentlyFeatured } : m)));
+      setLeases((prev) =>
+        prev.map((l) => (l.propertyId === propertyId ? { ...l, isFeatured: currentlyFeatured } : l))
+      );
+      setMandates((prev) =>
+        prev.map((m) => (m.propertyId === propertyId ? { ...m, isFeatured: currentlyFeatured } : m))
+      );
       pushToast({ title: "Error", body: "Could not update featured status.", tone: "warning" });
     }
   };
 
   const loadMandates = useCallback(async () => {
     try {
-      const res = await fetch(`/api/mandates?entityId=${entityId}&includeFinancials=1&includeSummary=1`);
+      const res = await fetch(
+        `/api/mandates?entityId=${entityId}&includeFinancials=1&includeSummary=1`
+      );
       const data = await res.json();
       setMandates(data.mandates ?? []);
       setMandatesSummary(data.summary ?? null);
@@ -350,7 +366,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     if (!entityId || mode !== "mandates" || mandateActivityLoaded) return;
     const timer = setTimeout(() => {
       setMandateActivityLoading(true);
-      fetch(`/api/audit?entityId=${entityId}&associatedType=property_mandate,remittance_advice&limit=100`)
+      fetch(
+        `/api/audit?entityId=${entityId}&associatedType=property_mandate,remittance_advice&limit=100`
+      )
         .then((res) => (res.ok ? res.json() : { entries: [] }))
         .then((data) => setMandateActivity(data.entries ?? []))
         .catch(() => setMandateActivity([]))
@@ -420,7 +438,11 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
       setTerminateNotes("");
       loadMandates();
     } catch (err) {
-      pushToast({ tone: "error", title: "Error", body: err instanceof Error ? err.message : "Failed to terminate mandate" });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to terminate mandate",
+      });
     } finally {
       setIsTerminatingMandate(false);
     }
@@ -429,7 +451,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   const openLandlordProfile = async (mandate: Mandate) => {
     setOwnerDrawer({ open: true, ownerContactId: mandate.landlordContactId, properties: [] });
     try {
-      const res = await fetch(`/api/properties?entityId=${entityId}&ownerContactId=${mandate.landlordContactId}`);
+      const res = await fetch(
+        `/api/properties?entityId=${entityId}&ownerContactId=${mandate.landlordContactId}`
+      );
       const data = await res.json();
       setOwnerDrawer((prev) => ({ ...prev, properties: data.properties ?? [] }));
     } catch (err) {
@@ -515,7 +539,8 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     }
   };
 
-  const daysUntilExpiry = (l: Lease) => Math.ceil((new Date(l.endsAt).getTime() - new Date().getTime()) / 86_400_000);
+  const daysUntilExpiry = (l: Lease) =>
+    Math.ceil((new Date(l.endsAt).getTime() - new Date().getTime()) / 86_400_000);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -537,7 +562,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     // the next N days (already past due doesn't count as "expiring soon").
     if (expiryFilter !== "all") {
       const windowDays = parseInt(expiryFilter, 10);
-      result = result.filter((l) => l.isActive && daysUntilExpiry(l) >= 0 && daysUntilExpiry(l) <= windowDays);
+      result = result.filter(
+        (l) => l.isActive && daysUntilExpiry(l) >= 0 && daysUntilExpiry(l) <= windowDays
+      );
     }
 
     if (!q) return result;
@@ -559,9 +586,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     let result = mandates;
     if (mandateStatusFilter !== "all") {
       if (mandateStatusFilter === "pending_gm") {
-        result = result.filter((m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 === 0);
+        result = result.filter(
+          (m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 === 0
+        );
       } else if (mandateStatusFilter === "pending_ceo") {
-        result = result.filter((m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 !== 0);
+        result = result.filter(
+          (m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 !== 0
+        );
       } else {
         result = result.filter((m) => m.status === mandateStatusFilter);
       }
@@ -569,29 +600,41 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     if (paperworkOnly) result = result.filter((m) => m.paperworkStatus === "pending_upload");
     if (!q) return result;
     return result.filter((m) =>
-      [m.id, m.propertyName, m.propertyCode, m.landlordName, m.managerName ?? ""].some((v) => v?.toLowerCase().includes(q)),
+      [m.id, m.propertyName, m.propertyCode, m.landlordName, m.managerName ?? ""].some((v) =>
+        v?.toLowerCase().includes(q)
+      )
     );
   }, [mandates, query, mandateStatusFilter, paperworkOnly]);
 
   // Property-grouped dataset for Grid View — groups filtered leases by propertyId.
   const propertyGroups = useMemo(() => {
-    const groups = new Map<string, typeof filtered[0][]>();
-    filtered.forEach(l => {
+    const groups = new Map<string, (typeof filtered)[0][]>();
+    filtered.forEach((l) => {
       if (!groups.has(l.propertyId)) groups.set(l.propertyId, []);
       groups.get(l.propertyId)!.push(l);
     });
-    return [...groups.values()].map(ls => {
-      const activeLeases = ls.filter(l => l.isActive);
+    return [...groups.values()].map((ls) => {
+      const activeLeases = ls.filter((l) => l.isActive);
       const totalRentPool = activeLeases.reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0);
       const overdueBalance = activeLeases.reduce((sum, l) => sum + (l.balanceKes ?? 0), 0);
-      const totalUnitsFromBreakdown = ls[0].unitBreakdown?.reduce((sum, u) => sum + (u.count || 0), 0);
-      const totalUnits = (totalUnitsFromBreakdown && totalUnitsFromBreakdown > 0) ? totalUnitsFromBreakdown : activeLeases.length;
-      const occupancyPct = totalUnits > 0 ? Math.min(100, Math.round((activeLeases.length / totalUnits) * 100)) : 100;
-      const unitTypeCounts = activeLeases.reduce((acc, l) => {
-        const t = l.unitType || l.propertyType || "Unit";
-        acc[t] = (acc[t] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const totalUnitsFromBreakdown = ls[0].unitBreakdown?.reduce(
+        (sum, u) => sum + (u.count || 0),
+        0
+      );
+      const totalUnits =
+        totalUnitsFromBreakdown && totalUnitsFromBreakdown > 0
+          ? totalUnitsFromBreakdown
+          : activeLeases.length;
+      const occupancyPct =
+        totalUnits > 0 ? Math.min(100, Math.round((activeLeases.length / totalUnits) * 100)) : 100;
+      const unitTypeCounts = activeLeases.reduce(
+        (acc, l) => {
+          const t = l.unitType || l.propertyType || "Unit";
+          acc[t] = (acc[t] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
       return {
         propertyId: ls[0].propertyId,
         propertyName: ls[0].propertyName,
@@ -623,13 +666,22 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   const gridRowsPerPage = 6;
   const gridTotalPages = Math.max(1, Math.ceil(propertyGroups.length / gridRowsPerPage));
   const gridSafePage = Math.min(page, gridTotalPages);
-  const visiblePropertyGroups = propertyGroups.slice((gridSafePage - 1) * gridRowsPerPage, gridSafePage * gridRowsPerPage);
+  const visiblePropertyGroups = propertyGroups.slice(
+    (gridSafePage - 1) * gridRowsPerPage,
+    gridSafePage * gridRowsPerPage
+  );
 
   const mandateTotalPages = Math.max(1, Math.ceil(filteredMandates.length / rowsPerPage));
   const mandateSafePage = Math.min(page, mandateTotalPages);
-  const visibleMandates = filteredMandates.slice((mandateSafePage - 1) * rowsPerPage, mandateSafePage * rowsPerPage);
+  const visibleMandates = filteredMandates.slice(
+    (mandateSafePage - 1) * rowsPerPage,
+    mandateSafePage * rowsPerPage
+  );
 
-  const activeFilterCount = (statusFilter !== "all" ? 1 : 0) + (typeFilter !== "all" ? 1 : 0) + (expiryFilter !== "all" ? 1 : 0);
+  const activeFilterCount =
+    (statusFilter !== "all" ? 1 : 0) +
+    (typeFilter !== "all" ? 1 : 0) +
+    (expiryFilter !== "all" ? 1 : 0);
   const hasActiveFilters = statusFilter !== "all" || typeFilter !== "all" || expiryFilter !== "all";
 
   const kpis = useMemo(() => {
@@ -639,7 +691,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     const rentPool = leases
       .filter((l) => l.isActive && l.monthlyRentKes)
       .reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0);
-    const expiringSoon = leases.filter((l) => l.isActive && daysUntilExpiry(l) >= 0 && daysUntilExpiry(l) <= 60).length;
+    const expiringSoon = leases.filter(
+      (l) => l.isActive && daysUntilExpiry(l) >= 0 && daysUntilExpiry(l) <= 60
+    ).length;
     const overdueLeases = leases.filter((l) => l.isActive && (l.balanceKes ?? 0) > 0);
     const overdueBalance = overdueLeases.reduce((sum, l) => sum + (l.balanceKes ?? 0), 0);
 
@@ -647,13 +701,28 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     // for the Total Leases distribution bar — must sum to `total`.
     const overdueIds = new Set(overdueLeases.map((l) => l.id));
     const expiringSoonExclusive = leases.filter(
-      (l) => l.isActive && !overdueIds.has(l.id) && daysUntilExpiry(l) >= 0 && daysUntilExpiry(l) <= 60,
+      (l) =>
+        l.isActive && !overdueIds.has(l.id) && daysUntilExpiry(l) >= 0 && daysUntilExpiry(l) <= 60
     ).length;
     const healthy = active - overdueLeases.length - expiringSoonExclusive;
     const inactive = total - active;
-    const statusBreakdown = { overdue: overdueLeases.length, expiringSoon: expiringSoonExclusive, healthy, inactive };
+    const statusBreakdown = {
+      overdue: overdueLeases.length,
+      expiringSoon: expiringSoonExclusive,
+      healthy,
+      inactive,
+    };
 
-    return { total, active, rate, rentPool, expiringSoon, overdueCount: overdueLeases.length, overdueBalance, statusBreakdown };
+    return {
+      total,
+      active,
+      rate,
+      rentPool,
+      expiringSoon,
+      overdueCount: overdueLeases.length,
+      overdueBalance,
+      statusBreakdown,
+    };
   }, [leases]);
 
   // Board-level "needs attention" surface for Tenant Leases mode, mirroring
@@ -678,10 +747,12 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   // that property rather than a single tenant. Top 5 properties surface.
   const featuredProperties = useMemo(() => {
     const groups = new Map<string, Lease[]>();
-    leases.filter(l => l.isActive).forEach(l => {
-      if (!groups.has(l.propertyId)) groups.set(l.propertyId, []);
-      groups.get(l.propertyId)!.push(l);
-    });
+    leases
+      .filter((l) => l.isActive)
+      .forEach((l) => {
+        if (!groups.has(l.propertyId)) groups.set(l.propertyId, []);
+        groups.get(l.propertyId)!.push(l);
+      });
     return [...groups.entries()]
       .sort((a, b) => {
         const countDiff = b[1].length - a[1].length;
@@ -690,18 +761,27 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
       })
       .slice(0, 5)
       .map(([, ls]) => {
-        const totalUnitsFromBreakdown = ls[0].unitBreakdown?.reduce((sum, u) => sum + (u.count || 0), 0);
-        const totalUnits = (totalUnitsFromBreakdown && totalUnitsFromBreakdown > 0) ? totalUnitsFromBreakdown : ls.length;
+        const totalUnitsFromBreakdown = ls[0].unitBreakdown?.reduce(
+          (sum, u) => sum + (u.count || 0),
+          0
+        );
+        const totalUnits =
+          totalUnitsFromBreakdown && totalUnitsFromBreakdown > 0
+            ? totalUnitsFromBreakdown
+            : ls.length;
         return {
           ...ls[0], // spread first lease for property-level fields
           activeLeases: ls,
           totalRentPool: ls.reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0),
           hasMultipleUnits: ls.length > 1 || totalUnits > 1,
-          unitTypeCounts: ls.reduce((acc, l) => {
-            const t = l.unitType || l.propertyType || "Unit";
-            acc[t] = (acc[t] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>),
+          unitTypeCounts: ls.reduce(
+            (acc, l) => {
+              const t = l.unitType || l.propertyType || "Unit";
+              acc[t] = (acc[t] || 0) + 1;
+              return acc;
+            },
+            {} as Record<string, number>
+          ),
           totalUnits,
           overdueBalance: ls.reduce((sum, l) => sum + (l.balanceKes ?? 0), 0),
         };
@@ -711,7 +791,7 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   const latestLeases = useMemo(() => {
     // Top 5 most recent active leases for fallback/compat
     return [...leases]
-      .filter(l => l.isActive)
+      .filter((l) => l.isActive)
       .sort((a, b) => new Date(b.startsAt).getTime() - new Date(a.startsAt).getTime())
       .slice(0, 5);
   }, [leases]);
@@ -724,58 +804,84 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
   }, [mandates]);
 
   const featuredItems = mode === "mandates" ? featuredMandates : featuredProperties;
-  const safeFeaturedIndex = featuredItems.length === 0 ? 0 : Math.min(featuredIndex, featuredItems.length - 1);
+  const safeFeaturedIndex =
+    featuredItems.length === 0 ? 0 : Math.min(featuredIndex, featuredItems.length - 1);
 
   // Advanced Activity filtering & pagination
   const filteredMandateActivity = useMemo(() => {
     let filtered = mandateActivity;
     if (mandateActivitySearchQuery) {
       const q = mandateActivitySearchQuery.toLowerCase();
-      filtered = filtered.filter(a => a.summary.toLowerCase().includes(q));
+      filtered = filtered.filter((a) => a.summary.toLowerCase().includes(q));
     }
     if (mandateActivityFilter !== "all") {
-      filtered = filtered.filter(a => {
+      filtered = filtered.filter((a) => {
         const lower = a.summary.toLowerCase();
-        if (mandateActivityFilter === "edits") return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
-        if (mandateActivityFilter === "terminations") return lower.includes("terminat") || lower.includes("delet");
-        if (mandateActivityFilter === "system") return lower.includes("system") || lower.includes("auto");
+        if (mandateActivityFilter === "edits")
+          return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
+        if (mandateActivityFilter === "terminations")
+          return lower.includes("terminat") || lower.includes("delet");
+        if (mandateActivityFilter === "system")
+          return lower.includes("system") || lower.includes("auto");
         return true;
       });
     }
     return filtered;
   }, [mandateActivity, mandateActivitySearchQuery, mandateActivityFilter]);
 
-  const mandateActivityTotalPages = Math.max(1, Math.ceil(filteredMandateActivity.length / ACTIVITY_PER_PAGE));
+  const mandateActivityTotalPages = Math.max(
+    1,
+    Math.ceil(filteredMandateActivity.length / ACTIVITY_PER_PAGE)
+  );
   const safeMandateActivityPage = Math.min(mandateActivityPage, mandateActivityTotalPages);
-  const paginatedMandateActivity = filteredMandateActivity.slice((safeMandateActivityPage - 1) * ACTIVITY_PER_PAGE, safeMandateActivityPage * ACTIVITY_PER_PAGE);
+  const paginatedMandateActivity = filteredMandateActivity.slice(
+    (safeMandateActivityPage - 1) * ACTIVITY_PER_PAGE,
+    safeMandateActivityPage * ACTIVITY_PER_PAGE
+  );
 
   const filteredLeaseActivity = useMemo(() => {
     let filtered = leaseActivity;
     if (leaseActivitySearchQuery) {
       const q = leaseActivitySearchQuery.toLowerCase();
-      filtered = filtered.filter(a => a.summary.toLowerCase().includes(q));
+      filtered = filtered.filter((a) => a.summary.toLowerCase().includes(q));
     }
     if (leaseActivityFilter !== "all") {
-      filtered = filtered.filter(a => {
+      filtered = filtered.filter((a) => {
         const lower = a.summary.toLowerCase();
-        if (leaseActivityFilter === "edits") return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
-        if (leaseActivityFilter === "terminations") return lower.includes("terminat") || lower.includes("delet");
-        if (leaseActivityFilter === "system") return lower.includes("system") || lower.includes("auto");
+        if (leaseActivityFilter === "edits")
+          return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
+        if (leaseActivityFilter === "terminations")
+          return lower.includes("terminat") || lower.includes("delet");
+        if (leaseActivityFilter === "system")
+          return lower.includes("system") || lower.includes("auto");
         return true;
       });
     }
     return filtered;
   }, [leaseActivity, leaseActivitySearchQuery, leaseActivityFilter]);
 
-  const leaseActivityTotalPages = Math.max(1, Math.ceil(filteredLeaseActivity.length / ACTIVITY_PER_PAGE));
+  const leaseActivityTotalPages = Math.max(
+    1,
+    Math.ceil(filteredLeaseActivity.length / ACTIVITY_PER_PAGE)
+  );
   const safeLeaseActivityPage = Math.min(leaseActivityPage, leaseActivityTotalPages);
-  const paginatedLeaseActivity = filteredLeaseActivity.slice((safeLeaseActivityPage - 1) * ACTIVITY_PER_PAGE, safeLeaseActivityPage * ACTIVITY_PER_PAGE);
+  const paginatedLeaseActivity = filteredLeaseActivity.slice(
+    (safeLeaseActivityPage - 1) * ACTIVITY_PER_PAGE,
+    safeLeaseActivityPage * ACTIVITY_PER_PAGE
+  );
 
   const getActivityTone = (summary: string) => {
     const lower = summary.toLowerCase();
-    if (lower.includes("terminat") || lower.includes("delet") || lower.includes("reject") || lower.includes("complaint")) return "bg-rose-300 ring-rose-50";
+    if (
+      lower.includes("terminat") ||
+      lower.includes("delet") ||
+      lower.includes("reject") ||
+      lower.includes("complaint")
+    )
+      return "bg-rose-300 ring-rose-50";
     if (lower.includes("override")) return "bg-amber-400 ring-amber-50";
-    if (lower.includes("updat") || lower.includes("chang") || lower.includes("edit")) return "bg-indigo-300 ring-indigo-50";
+    if (lower.includes("updat") || lower.includes("chang") || lower.includes("edit"))
+      return "bg-indigo-300 ring-indigo-50";
     return "bg-slate-200 ring-white";
   };
 
@@ -822,13 +928,17 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
       name: m.propertyName,
       propertyCode: m.propertyCode,
       propertyType: "Apartment",
-      manager: m.assignedPmId ? {
-        id: m.assignedPmId,
-        name: m.managerName,
-        title: m.managerTitle,
-        avatarUrl: m.managerAvatarUrl,
-        email: m.managerName ? `${m.managerName.toLowerCase().replace(/\s+/g, ".")}@sunlandre.co.ke` : null,
-      } : null,
+      manager: m.assignedPmId
+        ? {
+            id: m.assignedPmId,
+            name: m.managerName,
+            title: m.managerTitle,
+            avatarUrl: m.managerAvatarUrl,
+            email: m.managerName
+              ? `${m.managerName.toLowerCase().replace(/\s+/g, ".")}@sunlandre.co.ke`
+              : null,
+          }
+        : null,
     })) as unknown as Property[];
   }, [mandates]);
 
@@ -856,17 +966,20 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     return parts[0].slice(0, 2).toUpperCase();
   };
 
-  const getMandatePct = useCallback((m: Mandate) => {
-    if (m.status !== "active") return 0;
-    const expected = leases
-      .filter((l) => l.propertyId === m.propertyId && l.isActive)
-      .reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0);
-    if (expected === 0) {
-      return m.currentPeriodCollected && m.currentPeriodCollected > 0 ? 100 : 0;
-    }
-    const collected = m.currentPeriodCollected ?? 0;
-    return Math.min(100, Math.round((collected / expected) * 100));
-  }, [leases]);
+  const getMandatePct = useCallback(
+    (m: Mandate) => {
+      if (m.status !== "active") return 0;
+      const expected = leases
+        .filter((l) => l.propertyId === m.propertyId && l.isActive)
+        .reduce((sum, l) => sum + parseFloat(l.monthlyRentKes), 0);
+      if (expected === 0) {
+        return m.currentPeriodCollected && m.currentPeriodCollected > 0 ? 100 : 0;
+      }
+      const collected = m.currentPeriodCollected ?? 0;
+      return Math.min(100, Math.round((collected / expected) * 100));
+    },
+    [leases]
+  );
 
   const getLeaseTenurePct = (l: { startsAt: string; endsAt: string }) => {
     const start = new Date(l.startsAt).getTime();
@@ -882,7 +995,6 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
     return Math.max(0, Math.ceil(diff / 86400000));
   };
 
-
   return (
     <PageTransition className="board-shell mx-auto flex max-w-[98rem] flex-col gap-4">
       <BoardHeader
@@ -897,7 +1009,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
               onClick={mode === "mandates" ? loadMandates : loadLeases}
               disabled={mode === "mandates" ? mandatesLoading : loading}
             >
-              <IconRefresh size={14} className={(mode === "mandates" ? mandatesLoading : loading) ? "animate-spin" : undefined} /> Refresh
+              <IconRefresh
+                size={14}
+                className={
+                  (mode === "mandates" ? mandatesLoading : loading) ? "animate-spin" : undefined
+                }
+              />{" "}
+              Refresh
             </Button>
             {mode === "mandates" ? (
               <Button size="sm" onClick={() => setMandateModalOpen(true)}>
@@ -913,9 +1031,15 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
       />
       <PortfolioHubNav
         active="leases"
-        modeOptions={[{ value: "mandates", label: "Mandates" }, { value: "leases", label: "Tenants" }]}
+        modeOptions={[
+          { value: "mandates", label: "Mandates" },
+          { value: "leases", label: "Tenants" },
+        ]}
         mode={mode}
-        onModeChange={(m) => { setMode(m as "mandates" | "leases"); setPage(1); }}
+        onModeChange={(m) => {
+          setMode(m as "mandates" | "leases");
+          setPage(1);
+        }}
       />
 
       <div className="flex items-center gap-4 my-6">
@@ -934,31 +1058,53 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-emerald-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconBriefcase size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Under Management</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Under Management
+                </span>
                 <div className="relative z-10 mt-4">
-                  <span className="font-mono font-medium text-4xl font-normal text-white">{mandatesSummary?.activeMandateCount ?? 0}</span>
+                  <span className="font-mono font-medium text-4xl font-normal text-white">
+                    {mandatesSummary?.activeMandateCount ?? 0}
+                  </span>
                   {mandateStatusBreakdown.total > 0 && (
                     <>
                       <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                         {mandateStatusBreakdown.active > 0 && (
-                          <div className="h-full bg-emerald-400" style={{ width: `${(mandateStatusBreakdown.active / mandateStatusBreakdown.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-emerald-400"
+                            style={{
+                              width: `${(mandateStatusBreakdown.active / mandateStatusBreakdown.total) * 100}%`,
+                            }}
+                          />
                         )}
                         {mandateStatusBreakdown.pending > 0 && (
-                          <div className="h-full bg-amber-400" style={{ width: `${(mandateStatusBreakdown.pending / mandateStatusBreakdown.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-amber-400"
+                            style={{
+                              width: `${(mandateStatusBreakdown.pending / mandateStatusBreakdown.total) * 100}%`,
+                            }}
+                          />
                         )}
                         {mandateStatusBreakdown.terminated > 0 && (
-                          <div className="h-full bg-slate-500" style={{ width: `${(mandateStatusBreakdown.terminated / mandateStatusBreakdown.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-slate-500"
+                            style={{
+                              width: `${(mandateStatusBreakdown.terminated / mandateStatusBreakdown.total) * 100}%`,
+                            }}
+                          />
                         )}
                       </div>
                       <div className="mt-2 flex items-center gap-2 flex-wrap">
                         <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-emerald-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{mandateStatusBreakdown.active} active
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                          {mandateStatusBreakdown.active} active
                         </span>
                         <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-amber-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />{mandateStatusBreakdown.pending} pending
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                          {mandateStatusBreakdown.pending} pending
                         </span>
                         <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-slate-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />{mandateStatusBreakdown.terminated} ended
+                          <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+                          {mandateStatusBreakdown.terminated} ended
                         </span>
                       </div>
                     </>
@@ -971,18 +1117,48 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-indigo-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconWallet size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Monthly Rent Roll & Cash</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Monthly Rent Roll & Cash
+                </span>
                 <div className="relative z-10 mt-4 flex flex-col gap-2">
-                  <span className="font-mono font-medium text-3xl font-normal text-white">{formatCompactKES(mandatesSummary?.expectedRentRollKes ?? 0)}</span>
+                  <span className="font-mono font-medium text-3xl font-normal text-white">
+                    {formatCompactKES(mandatesSummary?.expectedRentRollKes ?? 0)}
+                  </span>
                   <div className="flex items-center gap-3 pt-1 border-t border-white/10">
                     <svg width="42" height="42" viewBox="0 0 64 64" className="shrink-0">
-                      <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
-                      <circle cx="32" cy="32" r="26" fill="none" stroke="#f3df27" strokeWidth="7" strokeLinecap="round" strokeDasharray={`${((mandatesSummary?.expectedRentRollKes ? ((mandatesSummary?.collectedMtdKes ?? 0) / mandatesSummary.expectedRentRollKes) : 0) * 163.4).toFixed(1)} 163.4`} transform="rotate(-90 32 32)" />
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="26"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.06)"
+                        strokeWidth="7"
+                      />
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="26"
+                        fill="none"
+                        stroke="#f3df27"
+                        strokeWidth="7"
+                        strokeLinecap="round"
+                        strokeDasharray={`${((mandatesSummary?.expectedRentRollKes ? (mandatesSummary?.collectedMtdKes ?? 0) / mandatesSummary.expectedRentRollKes : 0) * 163.4).toFixed(1)} 163.4`}
+                        transform="rotate(-90 32 32)"
+                      />
                     </svg>
                     <div className="flex flex-col min-w-0">
-                      <span className="font-mono font-medium text-sm font-medium text-white">{formatCompactKES(mandatesSummary?.collectedMtdKes ?? 0)}</span>
+                      <span className="font-mono font-medium text-sm font-medium text-white">
+                        {formatCompactKES(mandatesSummary?.collectedMtdKes ?? 0)}
+                      </span>
                       <span className="text-xxs font-medium uppercase tracking-widest text-emerald-400">
-                        {mandatesSummary?.expectedRentRollKes ? Math.round(((mandatesSummary?.collectedMtdKes ?? 0) / mandatesSummary.expectedRentRollKes) * 100) : 0}% COLLECTED MTD
+                        {mandatesSummary?.expectedRentRollKes
+                          ? Math.round(
+                              ((mandatesSummary?.collectedMtdKes ?? 0) /
+                                mandatesSummary.expectedRentRollKes) *
+                                100
+                            )
+                          : 0}
+                        % COLLECTED MTD
                       </span>
                     </div>
                   </div>
@@ -994,9 +1170,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-indigo-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconBuildingBank size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Management Fee Revenue</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Management Fee Revenue
+                </span>
                 <div className="flex flex-col relative z-10 mt-4">
-                  <span className="font-mono font-medium text-3xl font-normal text-white">{formatCompactKES(mandatesSummary?.managementFeeMtdKes ?? 0)}</span>
+                  <span className="font-mono font-medium text-3xl font-normal text-white">
+                    {formatCompactKES(mandatesSummary?.managementFeeMtdKes ?? 0)}
+                  </span>
                   <p className="text-xxs font-medium uppercase tracking-widest text-emerald-400 mt-2 flex items-center gap-1">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                     SUNLAND EARNED COMMISSION MTD
@@ -1009,15 +1189,22 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-amber-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconAlertTriangle size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Pending Remittances & Actions</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Pending Remittances & Actions
+                </span>
                 <div className="flex flex-col relative z-10 mt-4">
-                  <span className="font-mono font-medium text-3xl font-normal text-white">{formatCompactKES(mandatesSummary?.remittancesPendingKes ?? 0)}</span>
+                  <span className="font-mono font-medium text-3xl font-normal text-white">
+                    {formatCompactKES(mandatesSummary?.remittancesPendingKes ?? 0)}
+                  </span>
                   <div className="mt-2 flex items-center gap-2 flex-wrap">
                     <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-rose-400">
-                      <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />{mandatesSummary?.remittancesPendingCount ?? 0} payouts pending
+                      <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                      {mandatesSummary?.remittancesPendingCount ?? 0} payouts pending
                     </span>
                     <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-amber-400">
-                      <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />{mandates.filter((m) => m.paperworkStatus === "pending_upload").length} letter missing
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                      {mandates.filter((m) => m.paperworkStatus === "pending_upload").length} letter
+                      missing
                     </span>
                   </div>
                 </div>
@@ -1030,34 +1217,61 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-emerald-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconFileText size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Total Lease Portfolio</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Total Lease Portfolio
+                </span>
                 <div className="relative z-10 mt-4">
-                  <span className="font-mono font-medium text-4xl font-normal text-white">{kpis.total}</span>
+                  <span className="font-mono font-medium text-4xl font-normal text-white">
+                    {kpis.total}
+                  </span>
                   {kpis.total > 0 && (
                     <>
                       <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                         {kpis.statusBreakdown.overdue > 0 && (
-                          <div className="h-full bg-rose-400" style={{ width: `${(kpis.statusBreakdown.overdue / kpis.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-rose-400"
+                            style={{
+                              width: `${(kpis.statusBreakdown.overdue / kpis.total) * 100}%`,
+                            }}
+                          />
                         )}
                         {kpis.statusBreakdown.expiringSoon > 0 && (
-                          <div className="h-full bg-amber-400" style={{ width: `${(kpis.statusBreakdown.expiringSoon / kpis.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-amber-400"
+                            style={{
+                              width: `${(kpis.statusBreakdown.expiringSoon / kpis.total) * 100}%`,
+                            }}
+                          />
                         )}
                         {kpis.statusBreakdown.healthy > 0 && (
-                          <div className="h-full bg-emerald-400" style={{ width: `${(kpis.statusBreakdown.healthy / kpis.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-emerald-400"
+                            style={{
+                              width: `${(kpis.statusBreakdown.healthy / kpis.total) * 100}%`,
+                            }}
+                          />
                         )}
                         {kpis.statusBreakdown.inactive > 0 && (
-                          <div className="h-full bg-slate-500" style={{ width: `${(kpis.statusBreakdown.inactive / kpis.total) * 100}%` }} />
+                          <div
+                            className="h-full bg-slate-500"
+                            style={{
+                              width: `${(kpis.statusBreakdown.inactive / kpis.total) * 100}%`,
+                            }}
+                          />
                         )}
                       </div>
                       <div className="mt-2 flex items-center gap-2.5 flex-wrap">
                         <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-rose-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />{kpis.statusBreakdown.overdue} overdue
+                          <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                          {kpis.statusBreakdown.overdue} overdue
                         </span>
                         <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-amber-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />{kpis.statusBreakdown.expiringSoon} expiring
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                          {kpis.statusBreakdown.expiringSoon} expiring
                         </span>
                         <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-emerald-400">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{kpis.statusBreakdown.healthy} healthy
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                          {kpis.statusBreakdown.healthy} healthy
                         </span>
                       </div>
                     </>
@@ -1070,14 +1284,35 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-indigo-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconUserCircle size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Occupancy & Tenancies</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Occupancy & Tenancies
+                </span>
                 <div className="relative z-10 mt-4 flex items-center gap-4">
                   <svg width="52" height="52" viewBox="0 0 64 64" className="shrink-0">
-                    <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
-                    <circle cx="32" cy="32" r="26" fill="none" stroke="#f3df27" strokeWidth="7" strokeLinecap="round" strokeDasharray={`${((kpis.rate / 100) * 163.4).toFixed(1)} 163.4`} transform="rotate(-90 32 32)" />
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="26"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.06)"
+                      strokeWidth="7"
+                    />
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="26"
+                      fill="none"
+                      stroke="#f3df27"
+                      strokeWidth="7"
+                      strokeLinecap="round"
+                      strokeDasharray={`${((kpis.rate / 100) * 163.4).toFixed(1)} 163.4`}
+                      transform="rotate(-90 32 32)"
+                    />
                   </svg>
                   <div className="flex flex-col min-w-0">
-                    <span className="font-mono font-medium text-3xl font-normal text-white">{kpis.rate.toFixed(0)}%</span>
+                    <span className="font-mono font-medium text-3xl font-normal text-white">
+                      {kpis.rate.toFixed(0)}%
+                    </span>
                     <p className="text-xxs font-medium uppercase tracking-widest text-emerald-400 flex items-center gap-1 mt-0.5">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                       {kpis.active} OF {kpis.total} UNITS OCCUPIED
@@ -1091,10 +1326,16 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-indigo-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconWallet size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Monthly Rent Pool</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Monthly Rent Pool
+                </span>
                 <div className="flex flex-col relative z-10 mt-4">
-                  <span className="font-mono font-medium text-3xl font-normal text-white">{formatCompactKES(kpis.rentPool)}</span>
-                  <p className="text-xxs font-medium uppercase tracking-widest text-slate-400 mt-2">CONTRACTED ACTIVE CASHFLOW</p>
+                  <span className="font-mono font-medium text-3xl font-normal text-white">
+                    {formatCompactKES(kpis.rentPool)}
+                  </span>
+                  <p className="text-xxs font-medium uppercase tracking-widest text-slate-400 mt-2">
+                    CONTRACTED ACTIVE CASHFLOW
+                  </p>
                 </div>
               </div>
 
@@ -1103,16 +1344,22 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="absolute -bottom-10 -right-10 opacity-5 text-rose-500 pointer-events-none transition-transform duration-700 group-hover/card:scale-110">
                   <IconAlertTriangle size={140} stroke={1} />
                 </div>
-                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">Arrears & Risk Exposure</span>
+                <span className="text-xs font-medium text-slate-300 relative z-10 uppercase tracking-wider">
+                  Arrears & Risk Exposure
+                </span>
                 <div className="flex flex-col relative z-10 mt-4">
-                  <span className="font-mono font-medium text-3xl font-normal text-white">{formatCompactKES(kpis.overdueBalance)}</span>
+                  <span className="font-mono font-medium text-3xl font-normal text-white">
+                    {formatCompactKES(kpis.overdueBalance)}
+                  </span>
                   <div className="mt-2 flex items-center gap-2 flex-wrap">
                     <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-rose-400">
-                      <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />{kpis.overdueCount} tenant{kpis.overdueCount === 1 ? "" : "s"} in arrears
+                      <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                      {kpis.overdueCount} tenant{kpis.overdueCount === 1 ? "" : "s"} in arrears
                     </span>
                     {kpis.expiringSoon > 0 && (
                       <span className="flex items-center gap-1 text-xxs font-medium uppercase tracking-wider text-amber-400">
-                        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />{kpis.expiringSoon} expiring soon
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                        {kpis.expiringSoon} expiring soon
                       </span>
                     )}
                   </div>
@@ -1123,46 +1370,50 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
         </div>
       </div>
 
-      {
-        mode === "leases" && kpis.expiringSoon > 0 && (
-          <div className="gsap-stagger mb-6">
-            <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50/90 via-amber-50/40 to-orange-50/30 p-4 shadow-sm backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md border-l-4 border-l-amber-500">
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="size-10 rounded-xl bg-amber-100/90 border border-amber-200/90 flex items-center justify-center shrink-0 text-amber-700 shadow-2xs">
-                  <IconAlertTriangle size={20} stroke={2} className="animate-pulse" />
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-sm sm:text-sm font-medium text-amber-950 tracking-tight">
-                      {kpis.expiringSoon} Active Lease{kpis.expiringSoon === 1 ? "" : "s"} Expiring Within 60 Days
-                    </h4>
-                    <Badge tone="warning" className="text-xxs font-mono shrink-0">Action Required</Badge>
-                  </div>
-                  <p className="text-xs text-amber-800/90 mt-0.5 leading-relaxed truncate">
-                    Tenancies entering their decision window require immediate renewal negotiations or vacate notices.
-                  </p>
-                </div>
+      {mode === "leases" && kpis.expiringSoon > 0 && (
+        <div className="gsap-stagger mb-6">
+          <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50/90 via-amber-50/40 to-orange-50/30 p-4 shadow-sm backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md border-l-4 border-l-amber-500">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="size-10 rounded-xl bg-amber-100/90 border border-amber-200/90 flex items-center justify-center shrink-0 text-amber-700 shadow-2xs">
+                <IconAlertTriangle size={20} stroke={2} className="animate-pulse" />
               </div>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  setExpiryFilter("60");
-                  setStatusFilter("active");
-                  setFiltersOpen(true);
-                  setPage(1);
-                  setTimeout(() => {
-                    document.getElementById("leases-register-table")?.scrollIntoView({ behavior: "smooth" });
-                  }, 100);
-                }}
-                className="bg-amber-600 hover:bg-amber-700 flex items-center text-white rounded-xl text-xs px-4 py-2 font-medium shrink-0 shadow-2xs flex items-center gap-1.5 transition-all"
-              >
-                Filter Expiring Leases <IconArrowRight size={14} />
-              </Button>
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm sm:text-sm font-medium text-amber-950 tracking-tight">
+                    {kpis.expiringSoon} Active Lease{kpis.expiringSoon === 1 ? "" : "s"} Expiring
+                    Within 60 Days
+                  </h4>
+                  <Badge tone="warning" className="text-xxs font-mono shrink-0">
+                    Action Required
+                  </Badge>
+                </div>
+                <p className="text-xs text-amber-800/90 mt-0.5 leading-relaxed truncate">
+                  Tenancies entering their decision window require immediate renewal negotiations or
+                  vacate notices.
+                </p>
+              </div>
             </div>
+
+            <Button
+              type="button"
+              onClick={() => {
+                setExpiryFilter("60");
+                setStatusFilter("active");
+                setFiltersOpen(true);
+                setPage(1);
+                setTimeout(() => {
+                  document
+                    .getElementById("leases-register-table")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }}
+              className="bg-amber-600 hover:bg-amber-700 flex items-center text-white rounded-xl text-xs px-4 py-2 font-medium shrink-0 shadow-2xs flex items-center gap-1.5 transition-all"
+            >
+              Filter Expiring Leases <IconArrowRight size={14} />
+            </Button>
           </div>
-        )
-      }
+        </div>
+      )}
 
       <div className="flex items-center gap-4 my-6">
         <hr className="flex-1 border-slate-200/60" />
@@ -1178,14 +1429,27 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
             <div className="lg:w-[35%] shrink-0 relative min-h-[320px] lg:min-h-0 bg-slate-50">
               <div className="absolute top-5 left-5 z-20">
                 <span className="bg-[#151936] flex items-center gap-1.5 text-[#f3df27] px-2.5 py-1 rounded-lg text-xs font-medium uppercase tracking-wider shadow-sm">
-                  <IconStarFilled size={12} className="text-[#f3df27] shrink-0" /> {mode === "mandates" ? "Flagship Mandate" : "Newest Active Lease"}
+                  <IconStarFilled size={12} className="text-[#f3df27] shrink-0" />{" "}
+                  {mode === "mandates" ? "Flagship Mandate" : "Newest Active Lease"}
                 </span>
               </div>
 
-              {(mode === "mandates" ? featuredMandates[safeFeaturedIndex].propertyMedia?.[0]?.url : latestLeases[safeFeaturedIndex].propertyMedia?.[0]?.url) ? (
+              {(
+                mode === "mandates"
+                  ? featuredMandates[safeFeaturedIndex].propertyMedia?.[0]?.url
+                  : latestLeases[safeFeaturedIndex].propertyMedia?.[0]?.url
+              ) ? (
                 <Image
-                  src={(mode === "mandates" ? featuredMandates[safeFeaturedIndex].propertyMedia![0].url : latestLeases[safeFeaturedIndex].propertyMedia![0].url)}
-                  alt={mode === "mandates" ? featuredMandates[safeFeaturedIndex].propertyName : latestLeases[safeFeaturedIndex].propertyName}
+                  src={
+                    mode === "mandates"
+                      ? featuredMandates[safeFeaturedIndex].propertyMedia![0].url
+                      : latestLeases[safeFeaturedIndex].propertyMedia![0].url
+                  }
+                  alt={
+                    mode === "mandates"
+                      ? featuredMandates[safeFeaturedIndex].propertyName
+                      : latestLeases[safeFeaturedIndex].propertyName
+                  }
                   fill
                   sizes="(max-width: 1024px) 100vw, 35vw"
                   className="object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -1201,10 +1465,14 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
               {/* Image Overlay Data */}
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="mono-data text-xs text-slate-300 font-mono mb-1">
-                  {mode === "mandates" ? getMandateDisplayCode(featuredMandates[safeFeaturedIndex]) : latestLeases[safeFeaturedIndex].propertyCode}
+                  {mode === "mandates"
+                    ? getMandateDisplayCode(featuredMandates[safeFeaturedIndex])
+                    : latestLeases[safeFeaturedIndex].propertyCode}
                 </p>
                 <h3 className="text-2xl font-sans text-white font-medium tracking-tight">
-                  {mode === "mandates" ? featuredMandates[safeFeaturedIndex].propertyName : latestLeases[safeFeaturedIndex].propertyName}
+                  {mode === "mandates"
+                    ? featuredMandates[safeFeaturedIndex].propertyName
+                    : latestLeases[safeFeaturedIndex].propertyName}
                 </h3>
               </div>
             </div>
@@ -1212,7 +1480,11 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
             {/* Right Side Info */}
             <div className="flex-1 p-8 lg:p-10 flex flex-col justify-center relative bg-white overflow-hidden">
               <div className="absolute -top-32 -right-32 opacity-[0.02] text-[#151936] pointer-events-none">
-                {mode === "mandates" ? <IconBriefcase size={400} stroke={0.5} /> : <IconFileCertificate size={400} stroke={0.5} />}
+                {mode === "mandates" ? (
+                  <IconBriefcase size={400} stroke={0.5} />
+                ) : (
+                  <IconFileCertificate size={400} stroke={0.5} />
+                )}
               </div>
 
               {mode === "mandates" && featuredMandateFinancials ? (
@@ -1221,7 +1493,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   <div className="flex items-center gap-3">
                     <Badge tone="success">Active</Badge>
                     <span className="text-xs text-slate-600 font-mono tracking-wider uppercase">
-                      {(parseFloat(featuredMandates[safeFeaturedIndex].mandateRate) * 100).toFixed(1)}% Management Fee
+                      {(parseFloat(featuredMandates[safeFeaturedIndex].mandateRate) * 100).toFixed(
+                        1
+                      )}
+                      % Management Fee
                     </span>
                   </div>
 
@@ -1231,7 +1506,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                       <>
                         <div className="flex items-center justify-between text-xs text-slate-600 font-mono tracking-wider mb-2">
                           <span>JUNE COLLECTION — COLLECTED VS EXPECTED</span>
-                          <span className="font-medium text-slate-900">{featuredMandateFinancials.pct}%</span>
+                          <span className="font-medium text-slate-900">
+                            {featuredMandateFinancials.pct}%
+                          </span>
                         </div>
                         <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden w-full">
                           <div
@@ -1303,7 +1580,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                       >
                         <Avatar
                           src={featuredMandates[safeFeaturedIndex].managerAvatarUrl || undefined}
-                          fallback={getInitials(featuredMandates[safeFeaturedIndex].managerName || "Unassigned")}
+                          fallback={getInitials(
+                            featuredMandates[safeFeaturedIndex].managerName || "Unassigned"
+                          )}
                           className="size-10 bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200"
                         />
                         <div>
@@ -1347,10 +1626,20 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     <div className="flex items-center gap-3">
                       {featuredItems.length > 1 && (
                         <div className="flex items-center gap-1.5 mr-2">
-                          <button onClick={() => setFeaturedIndex((i) => (i === 0 ? featuredItems.length - 1 : i - 1))} className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+                          <button
+                            onClick={() =>
+                              setFeaturedIndex((i) => (i === 0 ? featuredItems.length - 1 : i - 1))
+                            }
+                            className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+                          >
                             <IconChevronLeft size={16} />
                           </button>
-                          <button onClick={() => setFeaturedIndex((i) => (i === featuredItems.length - 1 ? 0 : i + 1))} className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+                          <button
+                            onClick={() =>
+                              setFeaturedIndex((i) => (i === featuredItems.length - 1 ? 0 : i + 1))
+                            }
+                            className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+                          >
                             <IconChevronRight size={16} />
                           </button>
                         </div>
@@ -1369,156 +1658,218 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     </div>
                   </div>
                 </div>
-              ) : featuredProperties.length > 0 ? (() => {
-                const fp = featuredProperties[safeFeaturedIndex];
-                const { activeLeases, totalRentPool, unitTypeCounts, totalUnits, overdueBalance } = fp;
-                const occupancyCount = activeLeases.length;
-                const occupancyPct = totalUnits > 0 ? Math.min(100, Math.round((occupancyCount / totalUnits) * 100)) : 100;
-                const occupancyColor = occupancyPct >= 90 ? "bg-emerald-500" : occupancyPct >= 70 ? "bg-amber-400" : "bg-red-400";
-                const unitTypeEntries = Object.entries(unitTypeCounts);
-                const MAX_VISIBLE_AVATARS = 6;
-                return (
-                  <div className="relative z-10 flex flex-col h-full justify-between gap-5">
-                    {/* Header: Identity, Code, Property Type Badge & Assigned PM */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex flex-col gap-1.5">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge tone={occupancyCount > 0 ? "success" : "neutral"}>
-                            {occupancyCount > 0 ? "Active Inventory" : "Vacant Property"}
-                          </Badge>
-                          <Badge tone="neutral">{fp.propertyCode}</Badge>
-                          {fp.propertyType && <Badge tone="primary">{fp.propertyType}</Badge>}
-                        </div>
-                        <h3 className="text-xl font-medium text-slate-900 tracking-tight leading-tight truncate">{fp.propertyName}</h3>
-                      </div>
-
-                      {fp.managerName && (
-                        <button
-                          type="button"
-                          onClick={() => { if (fp.managerId) setManagerDrawerId(fp.managerId); }}
-                          className="flex items-center gap-2.5 hover:bg-slate-50 transition-colors p-2 rounded-2xl text-left border border-slate-100/80 group/pm shrink-0 shadow-2xs"
-                        >
-                          <Avatar
-                            src={fp.managerAvatarUrl || undefined}
-                            fallback={getInitials(fp.managerName)}
-                            className="size-9 bg-[#151936] text-white text-xs border border-[#151936]/20 shadow-xs"
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-xs font-medium text-slate-800 leading-tight group-hover/pm:text-[#151936] transition-colors">{fp.managerName}</span>
-                            <span className="text-xs text-slate-400 font-mono">PM Assigned</span>
-                          </div>
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Occupancy Rate Meter Box */}
-                    <div className="bg-slate-50/70 rounded-2xl border border-slate-100 p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-mono font-medium text-slate-500 uppercase tracking-wider">Occupancy Rate</span>
-                        <span className="font-mono text-sm font-medium text-slate-900">{occupancyCount} <span className="text-slate-400 font-normal">/ {totalUnits} units occupied</span></span>
-                      </div>
-                      <div className="h-2 w-full bg-slate-200/70 rounded-full overflow-hidden mb-2">
-                        <div
-                          style={{ width: `${occupancyPct}%` }}
-                          className={cn("h-full rounded-full transition-all duration-700", occupancyColor)}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono text-slate-500">{occupancyPct}% occupied</span>
-                        {totalUnits > occupancyCount && (
-                          <Badge tone="warning">{totalUnits - occupancyCount} Units Available</Badge>
-                        )}
-                      </div>
-
-                      {/* Unit Type Breakdown Chips */}
-                      {unitTypeEntries.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-200/60">
-                          {unitTypeEntries.map(([type, count]) => (
-                            <Badge key={type} tone="data">
-                              {type} <span className="font-mono font-medium ml-1">×{count}</span>
+              ) : featuredProperties.length > 0 ? (
+                (() => {
+                  const fp = featuredProperties[safeFeaturedIndex];
+                  const {
+                    activeLeases,
+                    totalRentPool,
+                    unitTypeCounts,
+                    totalUnits,
+                    overdueBalance,
+                  } = fp;
+                  const occupancyCount = activeLeases.length;
+                  const occupancyPct =
+                    totalUnits > 0
+                      ? Math.min(100, Math.round((occupancyCount / totalUnits) * 100))
+                      : 100;
+                  const occupancyColor =
+                    occupancyPct >= 90
+                      ? "bg-emerald-500"
+                      : occupancyPct >= 70
+                        ? "bg-amber-400"
+                        : "bg-red-400";
+                  const unitTypeEntries = Object.entries(unitTypeCounts);
+                  const MAX_VISIBLE_AVATARS = 6;
+                  return (
+                    <div className="relative z-10 flex flex-col h-full justify-between gap-5">
+                      {/* Header: Identity, Code, Property Type Badge & Assigned PM */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge tone={occupancyCount > 0 ? "success" : "neutral"}>
+                              {occupancyCount > 0 ? "Active Inventory" : "Vacant Property"}
                             </Badge>
-                          ))}
+                            <Badge tone="neutral">{fp.propertyCode}</Badge>
+                            {fp.propertyType && <Badge tone="primary">{fp.propertyType}</Badge>}
+                          </div>
+                          <h3 className="text-xl font-medium text-slate-900 tracking-tight leading-tight truncate">
+                            {fp.propertyName}
+                          </h3>
                         </div>
-                      )}
-                    </div>
 
-                    {/* Tenant Roster Strip */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Tenants</span>
-                        {overdueBalance > 0 && (
-                          <Badge tone="risk">
-                            <IconAlertTriangle size={11} className="mr-1 inline-block" /> Arrears Alert
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {activeLeases.slice(0, MAX_VISIBLE_AVATARS).map((l) => (
+                        {fp.managerName && (
                           <button
-                            key={l.id}
                             type="button"
-                            onClick={() => setTenantDrawerId(l.tenantContactId)}
-                            title={`${l.tenantName}${l.unitLabel ? ` · ${l.unitLabel}` : ""}${(l.balanceKes ?? 0) > 0 ? " ⚠ Arrears" : ""}`}
-                            className="group/avatar relative"
+                            onClick={() => {
+                              if (fp.managerId) setManagerDrawerId(fp.managerId);
+                            }}
+                            className="flex items-center gap-2.5 hover:bg-slate-50 transition-colors p-2 rounded-2xl text-left border border-slate-100/80 group/pm shrink-0 shadow-2xs"
                           >
                             <Avatar
-                              src={l.tenantAvatarUrl || undefined}
-                              fallback={getInitials(l.tenantName)}
-                              className={cn(
-                                "size-9 text-xs border-2 border-white shadow-xs transition-all duration-200 group-hover/avatar:scale-110 group-hover/avatar:z-10",
-                                (l.balanceKes ?? 0) > 0 ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-700"
-                              )}
+                              src={fp.managerAvatarUrl || undefined}
+                              fallback={getInitials(fp.managerName)}
+                              className="size-9 bg-[#151936] text-white text-xs border border-[#151936]/20 shadow-xs"
                             />
-                            {(l.balanceKes ?? 0) > 0 && (
-                              <span className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-rose-500 border-2 border-white" />
-                            )}
+                            <div className="flex flex-col">
+                              <span className="text-xs font-medium text-slate-800 leading-tight group-hover/pm:text-[#151936] transition-colors">
+                                {fp.managerName}
+                              </span>
+                              <span className="text-xs text-slate-400 font-mono">PM Assigned</span>
+                            </div>
                           </button>
-                        ))}
-                        {activeLeases.length > MAX_VISIBLE_AVATARS && (
-                          <span className="size-9 rounded-full bg-slate-100 border-2 border-white text-slate-700 flex items-center justify-center text-xs font-mono font-medium shadow-xs">
-                            +{activeLeases.length - MAX_VISIBLE_AVATARS}
-                          </span>
                         )}
                       </div>
-                    </div>
 
-                    {/* Footer: Rent Roll + Carousel Controls & View Action */}
-                    <div className="flex items-center justify-between border-t border-slate-100 pt-4 gap-4">
-                      <div>
-                        <span className="text-xs text-slate-400 font-mono uppercase tracking-wider mb-0.5 block">Total Monthly Rent Roll</span>
-                        <p className="font-mono text-2xl font-medium text-slate-900 tracking-tight">{formatCompactKES(totalRentPool)}<span className="text-xs text-slate-400 font-mono">/mo</span></p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {featuredItems.length > 1 && (
-                          <div className="flex items-center gap-1.5 mr-2">
-                            <button onClick={() => setFeaturedIndex((i) => (i === 0 ? featuredItems.length - 1 : i - 1))} className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
-                              <IconChevronLeft size={16} />
-                            </button>
-                            <button onClick={() => setFeaturedIndex((i) => (i === featuredItems.length - 1 ? 0 : i + 1))} className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
-                              <IconChevronRight size={16} />
-                            </button>
+                      {/* Occupancy Rate Meter Box */}
+                      <div className="bg-slate-50/70 rounded-2xl border border-slate-100 p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-mono font-medium text-slate-500 uppercase tracking-wider">
+                            Occupancy Rate
+                          </span>
+                          <span className="font-mono text-sm font-medium text-slate-900">
+                            {occupancyCount}{" "}
+                            <span className="text-slate-400 font-normal">
+                              / {totalUnits} units occupied
+                            </span>
+                          </span>
+                        </div>
+                        <div className="h-2 w-full bg-slate-200/70 rounded-full overflow-hidden mb-2">
+                          <div
+                            style={{ width: `${occupancyPct}%` }}
+                            className={cn(
+                              "h-full rounded-full transition-all duration-700",
+                              occupancyColor
+                            )}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-mono text-slate-500">
+                            {occupancyPct}% occupied
+                          </span>
+                          {totalUnits > occupancyCount && (
+                            <Badge tone="warning">
+                              {totalUnits - occupancyCount} Units Available
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Unit Type Breakdown Chips */}
+                        {unitTypeEntries.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-200/60">
+                            {unitTypeEntries.map(([type, count]) => (
+                              <Badge key={type} tone="data">
+                                {type} <span className="font-mono font-medium ml-1">×{count}</span>
+                              </Badge>
+                            ))}
                           </div>
                         )}
-                        {fp.activeLeases?.[0] ? (
-                          <Button
-                            onClick={() => router.push(`/admin/leases/${fp.activeLeases[0].id}`)}
-                            className="bg-[#151936] text-white hover:bg-[#151936]/90 px-4 h-9 rounded-xl text-xs font-medium flex items-center gap-1.5 shadow-sm"
-                          >
-                            Open Lease File <IconArrowRight size={14} />
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => router.push(`/admin/leases?propertyId=${fp.propertyId}`)}
-                            className="bg-[#151936] text-white hover:bg-[#151936]/90 px-4 h-9 rounded-xl text-xs font-medium flex items-center gap-1.5 shadow-sm"
-                          >
-                            View Property <IconArrowRight size={14} />
-                          </Button>
-                        )}
+                      </div>
+
+                      {/* Tenant Roster Strip */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            Active Tenants
+                          </span>
+                          {overdueBalance > 0 && (
+                            <Badge tone="risk">
+                              <IconAlertTriangle size={11} className="mr-1 inline-block" /> Arrears
+                              Alert
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {activeLeases.slice(0, MAX_VISIBLE_AVATARS).map((l) => (
+                            <button
+                              key={l.id}
+                              type="button"
+                              onClick={() => setTenantDrawerId(l.tenantContactId)}
+                              title={`${l.tenantName}${l.unitLabel ? ` · ${l.unitLabel}` : ""}${(l.balanceKes ?? 0) > 0 ? " ⚠ Arrears" : ""}`}
+                              className="group/avatar relative"
+                            >
+                              <Avatar
+                                src={l.tenantAvatarUrl || undefined}
+                                fallback={getInitials(l.tenantName)}
+                                className={cn(
+                                  "size-9 text-xs border-2 border-white shadow-xs transition-all duration-200 group-hover/avatar:scale-110 group-hover/avatar:z-10",
+                                  (l.balanceKes ?? 0) > 0
+                                    ? "bg-rose-100 text-rose-700"
+                                    : "bg-slate-100 text-slate-700"
+                                )}
+                              />
+                              {(l.balanceKes ?? 0) > 0 && (
+                                <span className="absolute -top-0.5 -right-0.5 size-2.5 rounded-full bg-rose-500 border-2 border-white" />
+                              )}
+                            </button>
+                          ))}
+                          {activeLeases.length > MAX_VISIBLE_AVATARS && (
+                            <span className="size-9 rounded-full bg-slate-100 border-2 border-white text-slate-700 flex items-center justify-center text-xs font-mono font-medium shadow-xs">
+                              +{activeLeases.length - MAX_VISIBLE_AVATARS}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Footer: Rent Roll + Carousel Controls & View Action */}
+                      <div className="flex items-center justify-between border-t border-slate-100 pt-4 gap-4">
+                        <div>
+                          <span className="text-xs text-slate-400 font-mono uppercase tracking-wider mb-0.5 block">
+                            Total Monthly Rent Roll
+                          </span>
+                          <p className="font-mono text-2xl font-medium text-slate-900 tracking-tight">
+                            {formatCompactKES(totalRentPool)}
+                            <span className="text-xs text-slate-400 font-mono">/mo</span>
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {featuredItems.length > 1 && (
+                            <div className="flex items-center gap-1.5 mr-2">
+                              <button
+                                onClick={() =>
+                                  setFeaturedIndex((i) =>
+                                    i === 0 ? featuredItems.length - 1 : i - 1
+                                  )
+                                }
+                                className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+                              >
+                                <IconChevronLeft size={16} />
+                              </button>
+                              <button
+                                onClick={() =>
+                                  setFeaturedIndex((i) =>
+                                    i === featuredItems.length - 1 ? 0 : i + 1
+                                  )
+                                }
+                                className="size-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+                              >
+                                <IconChevronRight size={16} />
+                              </button>
+                            </div>
+                          )}
+                          {fp.activeLeases?.[0] ? (
+                            <Button
+                              onClick={() => router.push(`/admin/leases/${fp.activeLeases[0].id}`)}
+                              className="bg-[#151936] text-white hover:bg-[#151936]/90 px-4 h-9 rounded-xl text-xs font-medium flex items-center gap-1.5 shadow-sm"
+                            >
+                              Open Lease File <IconArrowRight size={14} />
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() =>
+                                router.push(`/admin/leases?propertyId=${fp.propertyId}`)
+                              }
+                              className="bg-[#151936] text-white hover:bg-[#151936]/90 px-4 h-9 rounded-xl text-xs font-medium flex items-center gap-1.5 shadow-sm"
+                            >
+                              View Property <IconArrowRight size={14} />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })() : (
+                  );
+                })()
+              ) : (
                 <div className="relative z-10 flex items-center justify-center h-full">
                   <p className="text-slate-600 text-sm">No active leases found.</p>
                 </div>
@@ -1543,10 +1894,12 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   </div>
                   <div>
                     <h5 className="text-sm font-medium text-slate-800">
-                      {idx % 2 === 0 ? "Pending GM step" : "Awaiting your decision"} — {m.propertyName}
+                      {idx % 2 === 0 ? "Pending GM step" : "Awaiting your decision"} —{" "}
+                      {m.propertyName}
                     </h5>
                     <p className="text-xs text-slate-600 mt-1 font-mono tracking-wider">
-                      {getMandateDisplayCode(m)} · {m.landlordName} · {(parseFloat(m.mandateRate) * 100).toFixed(1)}%
+                      {getMandateDisplayCode(m)} · {m.landlordName} ·{" "}
+                      {(parseFloat(m.mandateRate) * 100).toFixed(1)}%
                     </p>
                   </div>
                 </div>
@@ -1581,19 +1934,24 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   key={`${kind}-${l.id}`}
                   className={cn(
                     "border rounded-2xl p-4 flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-all duration-300",
-                    overdue ? "border-rose-200 bg-rose-500/[0.04]" : "border-amber-200 bg-amber-500/[0.04]"
+                    overdue
+                      ? "border-rose-200 bg-rose-500/[0.04]"
+                      : "border-amber-200 bg-amber-500/[0.04]"
                   )}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={cn(
-                      "size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
-                      overdue ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
-                    )}>
+                    <div
+                      className={cn(
+                        "size-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs",
+                        overdue ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
+                      )}
+                    >
                       {overdue ? <IconAlertTriangle size={18} /> : <IconCalendarClock size={18} />}
                     </div>
                     <div className="min-w-0">
                       <h5 className="text-sm font-medium text-slate-800 truncate">
-                        {overdue ? `Overdue: ${l.tenantName}` : `Ending soon: ${l.tenantName}`} — {l.propertyName}
+                        {overdue ? `Overdue: ${l.tenantName}` : `Ending soon: ${l.tenantName}`} —{" "}
+                        {l.propertyName}
                       </h5>
                       <p className="text-xs text-slate-600 mt-1 font-mono tracking-wider">
                         {overdue
@@ -1607,7 +1965,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                       size="sm"
                       className={cn(
                         "font-medium text-xs rounded-xl px-4 py-1.5 shadow-sm whitespace-nowrap",
-                        overdue ? "bg-[#151936] text-white hover:bg-opacity-90" : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs"
+                        overdue
+                          ? "bg-[#151936] text-white hover:bg-opacity-90"
+                          : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-xs"
                       )}
                     >
                       {overdue ? "Follow Up" : "Review Lease"}
@@ -1628,7 +1988,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
         <hr className="flex-1 border-slate-200/60" />
       </div>
 
-      <div id="leases-register-table" className="bg-transparent lg:bg-white/70 border-transparent lg:border-slate-100 p-0 lg:p-8 rounded-none lg:rounded-[24px] shadow-none lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col">
+      <div
+        id="leases-register-table"
+        className="bg-transparent lg:bg-white/70 border-transparent lg:border-slate-100 p-0 lg:p-8 rounded-none lg:rounded-[24px] shadow-none lg:shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col"
+      >
         {mode === "mandates" ? (
           <div className="flex flex-col">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 lg:pb-5 mb-4 lg:mb-5">
@@ -1640,12 +2003,18 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   />
                   <input
                     value={query}
-                    onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setPage(1);
+                    }}
                     placeholder="Search landlord, property, ref..."
                     className="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-10 pr-4 py-2.5 body-sm text-slate-900 outline-none placeholder:text-slate-600 focus:bg-white focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30 transition-all shadow-sm"
                   />
                   {query && (
-                    <button onClick={() => setQuery("")} className="absolute right-3 text-slate-300 hover:text-slate-600 transition-colors">
+                    <button
+                      onClick={() => setQuery("")}
+                      className="absolute right-3 text-slate-300 hover:text-slate-600 transition-colors"
+                    >
                       <IconX size={14} />
                     </button>
                   )}
@@ -1655,31 +2024,73 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 <div className="flex bg-slate-100 p-1 rounded-xl shrink-0 overflow-x-auto custom-scrollbar">
                   {[
                     { key: "all", label: "All", count: mandates.length },
-                    { key: "active", label: "Active", count: mandates.filter((m) => m.status === "active").length },
-                    { key: "pending_gm", label: "Pending GM", count: mandates.filter((m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 === 0).length },
-                    { key: "pending_ceo", label: "Pending CEO", count: mandates.filter((m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 !== 0).length },
-                    { key: "draft", label: "Draft", count: mandates.filter((m) => m.status === "draft").length },
-                    { key: "terminated", label: "Terminated", count: mandates.filter((m) => m.status === "terminated").length },
+                    {
+                      key: "active",
+                      label: "Active",
+                      count: mandates.filter((m) => m.status === "active").length,
+                    },
+                    {
+                      key: "pending_gm",
+                      label: "Pending GM",
+                      count: mandates.filter(
+                        (m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 === 0
+                      ).length,
+                    },
+                    {
+                      key: "pending_ceo",
+                      label: "Pending CEO",
+                      count: mandates.filter(
+                        (m) => m.status === "pending_approval" && m.id.charCodeAt(0) % 2 !== 0
+                      ).length,
+                    },
+                    {
+                      key: "draft",
+                      label: "Draft",
+                      count: mandates.filter((m) => m.status === "draft").length,
+                    },
+                    {
+                      key: "terminated",
+                      label: "Terminated",
+                      count: mandates.filter((m) => m.status === "terminated").length,
+                    },
                   ].map((pill) => (
                     <button
                       key={pill.key}
-                      onClick={() => { setMandateStatusFilter(pill.key); setPage(1); }}
+                      onClick={() => {
+                        setMandateStatusFilter(pill.key);
+                        setPage(1);
+                      }}
                       className={cn(
                         "px-3 py-1.5 text-xs rounded-lg transition-colors whitespace-nowrap font-medium flex items-center gap-1.5",
-                        mandateStatusFilter === pill.key ? "bg-[#151936] text-white shadow-sm font-medium" : "text-slate-600 hover:text-slate-700"
+                        mandateStatusFilter === pill.key
+                          ? "bg-[#151936] text-white shadow-sm font-medium"
+                          : "text-slate-600 hover:text-slate-700"
                       )}
                     >
-                      {pill.label} <span className={cn("text-xxs font-mono px-1 py-0.2 rounded bg-slate-200/80 text-slate-600", mandateStatusFilter === pill.key && "bg-white/20 text-white")}>{pill.count}</span>
+                      {pill.label}{" "}
+                      <span
+                        className={cn(
+                          "text-xxs font-mono px-1 py-0.2 rounded bg-slate-200/80 text-slate-600",
+                          mandateStatusFilter === pill.key && "bg-white/20 text-white"
+                        )}
+                      >
+                        {pill.count}
+                      </span>
                     </button>
                   ))}
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => { setPaperworkOnly((v) => !v); setPage(1); }}
+                  onClick={() => {
+                    setPaperworkOnly((v) => !v);
+                    setPage(1);
+                  }}
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium border transition-colors shrink-0 whitespace-nowrap",
-                    paperworkOnly ? "bg-amber-50 border-amber-200 text-amber-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                    paperworkOnly
+                      ? "bg-amber-50 border-amber-200 text-amber-700"
+                      : "border-slate-200 text-slate-600 hover:bg-slate-50"
                   )}
                 >
                   <IconFileText size={13} /> Letter pending only
@@ -1690,7 +2101,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     onClick={() => setViewMode("grid")}
                     className={cn(
                       "p-1.5 rounded-lg transition-colors",
-                      viewMode === "grid" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700"
+                      viewMode === "grid"
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-600 hover:text-slate-700"
                     )}
                     aria-label="Grid view"
                   >
@@ -1700,7 +2113,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     onClick={() => setViewMode("list")}
                     className={cn(
                       "p-1.5 rounded-lg transition-colors",
-                      viewMode === "list" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700"
+                      viewMode === "list"
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-600 hover:text-slate-700"
                     )}
                     aria-label="List view"
                   >
@@ -1729,13 +2144,37 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     const rate = parseFloat(m.mandateRate) || 0.08;
                     const collected = m.currentPeriodCollected ?? 0;
                     const remittanceDue = collected * (1 - rate);
-                    const remittanceDisplay = m.status === "active" && collected > 0 ? formatCompactKES(remittanceDue) : "—";
-                    const statusLabel = m.status === "pending_approval"
-                      ? (m.id.charCodeAt(0) % 2 === 0 ? "PENDING GM" : "PENDING CEO")
-                      : (MANDATE_STATUS_LABEL[m.status] ?? m.status).toUpperCase();
+                    const remittanceDisplay =
+                      m.status === "active" && collected > 0
+                        ? formatCompactKES(remittanceDue)
+                        : "—";
+                    const statusLabel =
+                      m.status === "pending_approval"
+                        ? m.id.charCodeAt(0) % 2 === 0
+                          ? "PENDING GM"
+                          : "PENDING CEO"
+                        : (MANDATE_STATUS_LABEL[m.status] ?? m.status).toUpperCase();
                     const pmInitials = m.managerName ? getInitials(m.managerName) : "??";
-                    const pctColor = pct >= 100 ? "bg-emerald-500" : pct >= 80 ? "bg-emerald-400" : pct >= 50 ? "bg-amber-400" : pct > 0 ? "bg-red-400" : "bg-transparent";
-                    const pctTextColor = pct >= 100 ? "text-emerald-600" : pct >= 80 ? "text-emerald-500" : pct >= 50 ? "text-amber-500" : pct > 0 ? "text-red-500" : "text-slate-600";
+                    const pctColor =
+                      pct >= 100
+                        ? "bg-emerald-500"
+                        : pct >= 80
+                          ? "bg-emerald-400"
+                          : pct >= 50
+                            ? "bg-amber-400"
+                            : pct > 0
+                              ? "bg-red-400"
+                              : "bg-transparent";
+                    const pctTextColor =
+                      pct >= 100
+                        ? "text-emerald-600"
+                        : pct >= 80
+                          ? "text-emerald-500"
+                          : pct >= 50
+                            ? "text-amber-500"
+                            : pct > 0
+                              ? "text-red-500"
+                              : "text-slate-600";
 
                     return (
                       <div
@@ -1748,7 +2187,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                           <div className="flex items-center gap-3 min-w-0">
                             {m.propertyMedia?.[0]?.url ? (
                               <div className="size-11 rounded-[14px] overflow-hidden shrink-0 shadow-2xs relative border border-slate-100">
-                                <Image src={m.propertyMedia[0].url} alt={m.propertyName} fill className="object-cover" sizes="44px" />
+                                <Image
+                                  src={m.propertyMedia[0].url}
+                                  alt={m.propertyName}
+                                  fill
+                                  className="object-cover"
+                                  sizes="44px"
+                                />
                               </div>
                             ) : (
                               <div className="size-11 rounded-[14px] bg-slate-50 border border-slate-100 shrink-0 flex items-center justify-center text-slate-400 shadow-2xs">
@@ -1756,12 +2201,19 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               </div>
                             )}
                             <div className="flex flex-col min-w-0">
-                              <h4 className="text-base font-medium text-slate-900 leading-snug truncate">{m.propertyName}</h4>
-                              <span className="text-xs font-mono text-slate-500 mt-0.5 tracking-wider uppercase">{getMandateDisplayCode(m)}</span>
+                              <h4 className="text-base font-medium text-slate-900 leading-snug truncate">
+                                {m.propertyName}
+                              </h4>
+                              <span className="text-xs font-mono text-slate-500 mt-0.5 tracking-wider uppercase">
+                                {getMandateDisplayCode(m)}
+                              </span>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                          <div
+                            className="flex items-center gap-1 shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               type="button"
                               onClick={() => handleToggleFeature(m.propertyId, !!m.isFeatured)}
@@ -1769,27 +2221,64 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               aria-pressed={!!m.isFeatured}
                               className={cn(
                                 "flex size-7 items-center justify-center rounded-lg transition-all",
-                                m.isFeatured ? "text-amber-400" : "text-slate-300 hover:text-amber-400"
+                                m.isFeatured
+                                  ? "text-amber-400"
+                                  : "text-slate-300 hover:text-amber-400"
                               )}
                             >
                               {m.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
                             </button>
-                            <Badge tone={m.status === "active" ? "success" : m.status === "pending_approval" ? "warning" : "neutral"}>
+                            <Badge
+                              tone={
+                                m.status === "active"
+                                  ? "success"
+                                  : m.status === "pending_approval"
+                                    ? "warning"
+                                    : "neutral"
+                              }
+                            >
                               {statusLabel}
                             </Badge>
-                            <DropdownMenu label="Mandate actions" align="right" trigger={
-                              <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors shadow-2xs">
-                                <IconDotsVertical size={16} />
-                              </span>
-                            }>
-                              <DropdownItem icon={m.isFeatured ? IconStarFilled : IconStar} onClick={() => handleToggleFeature(m.propertyId, !!m.isFeatured)}>
+                            <DropdownMenu
+                              label="Mandate actions"
+                              align="right"
+                              trigger={
+                                <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors shadow-2xs">
+                                  <IconDotsVertical size={16} />
+                                </span>
+                              }
+                            >
+                              <DropdownItem
+                                icon={m.isFeatured ? IconStarFilled : IconStar}
+                                onClick={() => handleToggleFeature(m.propertyId, !!m.isFeatured)}
+                              >
                                 {m.isFeatured ? "Unfeature Mandate" : "Feature Mandate"}
                               </DropdownItem>
-                              <DropdownItem icon={IconUserCircle} onClick={() => openLandlordProfile(m)}>Landlord Profile</DropdownItem>
-                              <Link href="/admin/messages"><DropdownItem icon={IconMessageCircle}>Message Manager</DropdownItem></Link>
-                              <DropdownItem icon={IconReceipt2} onClick={() => openRemittanceAdvice(m)}>Remittance Advice</DropdownItem>
+                              <DropdownItem
+                                icon={IconUserCircle}
+                                onClick={() => openLandlordProfile(m)}
+                              >
+                                Landlord Profile
+                              </DropdownItem>
+                              <Link href="/admin/messages">
+                                <DropdownItem icon={IconMessageCircle}>
+                                  Message Manager
+                                </DropdownItem>
+                              </Link>
+                              <DropdownItem
+                                icon={IconReceipt2}
+                                onClick={() => openRemittanceAdvice(m)}
+                              >
+                                Remittance Advice
+                              </DropdownItem>
                               {(m.status === "active" || m.status === "pending_approval") && (
-                                <DropdownItem icon={IconBan} variant="danger" onClick={() => setTerminatingMandate(m)}>Terminate Mandate</DropdownItem>
+                                <DropdownItem
+                                  icon={IconBan}
+                                  variant="danger"
+                                  onClick={() => setTerminatingMandate(m)}
+                                >
+                                  Terminate Mandate
+                                </DropdownItem>
                               )}
                             </DropdownMenu>
                           </div>
@@ -1797,36 +2286,60 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
 
                         {/* Actors Strip */}
                         <div className="flex items-center gap-3 bg-slate-50/80 p-2.5 rounded-2xl border border-slate-100">
-                          <Avatar src={m.landlordAvatarUrl || undefined} fallback={getInitials(m.landlordName)} className="size-7 text-xs bg-white text-slate-800 border border-slate-200/80 shrink-0 shadow-2xs" />
+                          <Avatar
+                            src={m.landlordAvatarUrl || undefined}
+                            fallback={getInitials(m.landlordName)}
+                            className="size-7 text-xs bg-white text-slate-800 border border-slate-200/80 shrink-0 shadow-2xs"
+                          />
                           <div className="flex flex-col min-w-0 flex-1">
-                            <span className="text-xs font-medium text-slate-900 truncate">{m.landlordName}</span>
-                            <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider">Landlord</span>
+                            <span className="text-xs font-medium text-slate-900 truncate">
+                              {m.landlordName}
+                            </span>
+                            <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider">
+                              Landlord
+                            </span>
                           </div>
                           {m.managerName ? (
                             <div className="flex items-center gap-1.5 pl-2.5 border-l border-slate-200/60">
-                              <Avatar src={m.managerAvatarUrl || undefined} fallback={pmInitials} className="size-6 text-xxs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs" />
-                              <span className="text-xs font-medium text-slate-800 truncate max-w-[80px]">{m.managerName}</span>
+                              <Avatar
+                                src={m.managerAvatarUrl || undefined}
+                                fallback={pmInitials}
+                                className="size-6 text-xxs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
+                              />
+                              <span className="text-xs font-medium text-slate-800 truncate max-w-[80px]">
+                                {m.managerName}
+                              </span>
                             </div>
                           ) : (
-                            <span className="text-xxs text-slate-400 italic pl-2.5 border-l border-slate-200/60">Unassigned</span>
+                            <span className="text-xxs text-slate-400 italic pl-2.5 border-l border-slate-200/60">
+                              Unassigned
+                            </span>
                           )}
                         </div>
 
                         {/* Collection Progress */}
                         <div className="flex flex-col gap-1 bg-slate-50/40 p-2.5 rounded-xl border border-slate-100/60">
                           <div className="flex items-center justify-between text-xxs font-mono">
-                            <span className="text-slate-500 uppercase tracking-wider">Collection MTD</span>
+                            <span className="text-slate-500 uppercase tracking-wider">
+                              Collection MTD
+                            </span>
                             <span className={cn("font-medium", pctTextColor)}>{pct}%</span>
                           </div>
                           <div className="h-1.5 w-full bg-slate-200/60 rounded-full overflow-hidden">
-                            <div style={{ width: `${pct}%` }} className={cn("h-full rounded-full transition-all", pctColor)} />
+                            <div
+                              style={{ width: `${pct}%` }}
+                              className={cn("h-full rounded-full transition-all", pctColor)}
+                            />
                           </div>
                         </div>
 
                         {/* Mobile Footer */}
                         <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                           <div
-                            className={cn("flex flex-col", m.status === "active" && "cursor-pointer group/remit")}
+                            className={cn(
+                              "flex flex-col",
+                              m.status === "active" && "cursor-pointer group/remit"
+                            )}
                             onClick={(e) => {
                               if (m.status === "active") {
                                 e.stopPropagation();
@@ -1834,13 +2347,27 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               }
                             }}
                           >
-                            <span className="text-xxs text-slate-400 uppercase tracking-wider group-hover/remit:text-[#151936] transition-colors">Fee / Remittance</span>
+                            <span className="text-xxs text-slate-400 uppercase tracking-wider group-hover/remit:text-[#151936] transition-colors">
+                              Fee / Remittance
+                            </span>
                             <span className="font-mono text-xs font-medium text-slate-900">
-                              {(parseFloat(m.mandateRate) * 100).toFixed(1)}% · <span className={cn(m.status === "active" && collected > 0 ? "text-emerald-600 group-hover/remit:underline" : "text-slate-500")}>{remittanceDisplay}</span>
+                              {(parseFloat(m.mandateRate) * 100).toFixed(1)}% ·{" "}
+                              <span
+                                className={cn(
+                                  m.status === "active" && collected > 0
+                                    ? "text-emerald-600 group-hover/remit:underline"
+                                    : "text-slate-500"
+                                )}
+                              >
+                                {remittanceDisplay}
+                              </span>
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                          <div
+                            className="flex items-center gap-1.5"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             {m.paperworkStatus === "pending_upload" ? (
                               <button
                                 type="button"
@@ -1851,7 +2378,8 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               </button>
                             ) : (
                               <span className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 text-xxs font-medium text-emerald-700">
-                                <IconFileCheck size={11} className="shrink-0 text-emerald-600" /> Letter On File
+                                <IconFileCheck size={11} className="shrink-0 text-emerald-600" />{" "}
+                                Letter On File
                               </span>
                             )}
                           </div>
@@ -1869,13 +2397,37 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                       const rate = parseFloat(m.mandateRate) || 0.08;
                       const collected = m.currentPeriodCollected ?? 0;
                       const remittanceDue = collected * (1 - rate);
-                      const remittanceDisplay = m.status === "active" && collected > 0 ? formatCompactKES(remittanceDue) : "—";
-                      const statusLabel = m.status === "pending_approval"
-                        ? (m.id.charCodeAt(0) % 2 === 0 ? "PENDING GM" : "PENDING CEO")
-                        : (MANDATE_STATUS_LABEL[m.status] ?? m.status).toUpperCase();
+                      const remittanceDisplay =
+                        m.status === "active" && collected > 0
+                          ? formatCompactKES(remittanceDue)
+                          : "—";
+                      const statusLabel =
+                        m.status === "pending_approval"
+                          ? m.id.charCodeAt(0) % 2 === 0
+                            ? "PENDING GM"
+                            : "PENDING CEO"
+                          : (MANDATE_STATUS_LABEL[m.status] ?? m.status).toUpperCase();
                       const pmInitials = m.managerName ? getInitials(m.managerName) : "??";
-                      const pctColor = pct >= 100 ? "bg-emerald-500" : pct >= 80 ? "bg-emerald-400" : pct >= 50 ? "bg-amber-400" : pct > 0 ? "bg-red-400" : "bg-slate-200";
-                      const pctTextColor = pct >= 100 ? "text-emerald-600" : pct >= 80 ? "text-emerald-500" : pct >= 50 ? "text-amber-500" : pct > 0 ? "text-red-500" : "text-slate-600";
+                      const pctColor =
+                        pct >= 100
+                          ? "bg-emerald-500"
+                          : pct >= 80
+                            ? "bg-emerald-400"
+                            : pct >= 50
+                              ? "bg-amber-400"
+                              : pct > 0
+                                ? "bg-red-400"
+                                : "bg-slate-200";
+                      const pctTextColor =
+                        pct >= 100
+                          ? "text-emerald-600"
+                          : pct >= 80
+                            ? "text-emerald-500"
+                            : pct >= 50
+                              ? "text-amber-500"
+                              : pct > 0
+                                ? "text-red-500"
+                                : "text-slate-600";
 
                       return (
                         <div
@@ -1889,7 +2441,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               <div className="flex items-center gap-3 min-w-0">
                                 {m.propertyMedia?.[0]?.url ? (
                                   <div className="size-11 rounded-[16px] overflow-hidden shrink-0 shadow-2xs relative border border-slate-100">
-                                    <Image src={m.propertyMedia[0].url} alt={m.propertyName} fill className="object-cover" sizes="44px" />
+                                    <Image
+                                      src={m.propertyMedia[0].url}
+                                      alt={m.propertyName}
+                                      fill
+                                      className="object-cover"
+                                      sizes="44px"
+                                    />
                                   </div>
                                 ) : (
                                   <div className="size-11 rounded-[16px] bg-slate-50 border border-slate-100 shrink-0 flex items-center justify-center text-slate-400 shadow-2xs">
@@ -1897,7 +2455,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                   </div>
                                 )}
                                 <div className="flex flex-col min-w-0">
-                                  <h4 className="text-sm font-medium text-slate-900 leading-tight truncate group-hover:text-[#151936] transition-colors">{m.propertyName}</h4>
+                                  <h4 className="text-sm font-medium text-slate-900 leading-tight truncate group-hover:text-[#151936] transition-colors">
+                                    {m.propertyName}
+                                  </h4>
                                   <div className="flex items-center gap-1.5 mt-1">
                                     <Badge tone="neutral">{getMandateDisplayCode(m)}</Badge>
                                   </div>
@@ -1907,30 +2467,81 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               <div className="flex items-center gap-1.5 shrink-0">
                                 <button
                                   type="button"
-                                  onClick={(e) => { e.stopPropagation(); handleToggleFeature(m.propertyId, !!m.isFeatured); }}
-                                  aria-label={m.isFeatured ? "Remove from featured" : "Add to featured"}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleFeature(m.propertyId, !!m.isFeatured);
+                                  }}
+                                  aria-label={
+                                    m.isFeatured ? "Remove from featured" : "Add to featured"
+                                  }
                                   aria-pressed={!!m.isFeatured}
-                                  className={cn("flex size-7 items-center justify-center rounded-lg transition-all border border-slate-100/80 hover:bg-slate-50", m.isFeatured ? "text-amber-400 border-amber-200 bg-amber-50/50" : "text-slate-300 hover:text-amber-400")}
+                                  className={cn(
+                                    "flex size-7 items-center justify-center rounded-lg transition-all border border-slate-100/80 hover:bg-slate-50",
+                                    m.isFeatured
+                                      ? "text-amber-400 border-amber-200 bg-amber-50/50"
+                                      : "text-slate-300 hover:text-amber-400"
+                                  )}
                                 >
-                                  {m.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
+                                  {m.isFeatured ? (
+                                    <IconStarFilled size={15} />
+                                  ) : (
+                                    <IconStar size={15} />
+                                  )}
                                 </button>
-                                <Badge tone={m.status === "active" ? "success" : m.status === "pending_approval" ? "warning" : "neutral"}>
+                                <Badge
+                                  tone={
+                                    m.status === "active"
+                                      ? "success"
+                                      : m.status === "pending_approval"
+                                        ? "warning"
+                                        : "neutral"
+                                  }
+                                >
                                   {statusLabel}
                                 </Badge>
                                 <div onClick={(e) => e.stopPropagation()}>
-                                  <DropdownMenu label="Mandate actions" align="right" trigger={
-                                    <span className="size-7 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors shadow-2xs">
-                                      <IconDotsVertical size={15} />
-                                    </span>
-                                  }>
-                                    <DropdownItem icon={m.isFeatured ? IconStarFilled : IconStar} onClick={() => handleToggleFeature(m.propertyId, !!m.isFeatured)}>
+                                  <DropdownMenu
+                                    label="Mandate actions"
+                                    align="right"
+                                    trigger={
+                                      <span className="size-7 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors shadow-2xs">
+                                        <IconDotsVertical size={15} />
+                                      </span>
+                                    }
+                                  >
+                                    <DropdownItem
+                                      icon={m.isFeatured ? IconStarFilled : IconStar}
+                                      onClick={() =>
+                                        handleToggleFeature(m.propertyId, !!m.isFeatured)
+                                      }
+                                    >
                                       {m.isFeatured ? "Unfeature Mandate" : "Feature Mandate"}
                                     </DropdownItem>
-                                    <DropdownItem icon={IconUserCircle} onClick={() => openLandlordProfile(m)}>Landlord Profile</DropdownItem>
-                                    <Link href="/admin/messages"><DropdownItem icon={IconMessageCircle}>Message Manager</DropdownItem></Link>
-                                    <DropdownItem icon={IconReceipt2} onClick={() => openRemittanceAdvice(m)}>Remittance Advice</DropdownItem>
+                                    <DropdownItem
+                                      icon={IconUserCircle}
+                                      onClick={() => openLandlordProfile(m)}
+                                    >
+                                      Landlord Profile
+                                    </DropdownItem>
+                                    <Link href="/admin/messages">
+                                      <DropdownItem icon={IconMessageCircle}>
+                                        Message Manager
+                                      </DropdownItem>
+                                    </Link>
+                                    <DropdownItem
+                                      icon={IconReceipt2}
+                                      onClick={() => openRemittanceAdvice(m)}
+                                    >
+                                      Remittance Advice
+                                    </DropdownItem>
                                     {(m.status === "active" || m.status === "pending_approval") && (
-                                      <DropdownItem icon={IconBan} variant="danger" onClick={() => setTerminatingMandate(m)}>Terminate Mandate</DropdownItem>
+                                      <DropdownItem
+                                        icon={IconBan}
+                                        variant="danger"
+                                        onClick={() => setTerminatingMandate(m)}
+                                      >
+                                        Terminate Mandate
+                                      </DropdownItem>
                                     )}
                                   </DropdownMenu>
                                 </div>
@@ -1940,33 +2551,57 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                             {/* Actors Info Strip */}
                             <div className="flex items-center justify-between gap-2 mb-4 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
                               <div className="flex items-center gap-2 min-w-0">
-                                <Avatar src={m.landlordAvatarUrl || undefined} fallback={getInitials(m.landlordName)} className="size-8 text-xs bg-white text-slate-800 border border-slate-200/80 shrink-0 shadow-2xs" />
+                                <Avatar
+                                  src={m.landlordAvatarUrl || undefined}
+                                  fallback={getInitials(m.landlordName)}
+                                  className="size-8 text-xs bg-white text-slate-800 border border-slate-200/80 shrink-0 shadow-2xs"
+                                />
                                 <div className="flex flex-col min-w-0">
-                                  <span className="text-xs font-medium text-slate-900 truncate">{m.landlordName}</span>
+                                  <span className="text-xs font-medium text-slate-900 truncate">
+                                    {m.landlordName}
+                                  </span>
                                   <span className="text-xs text-slate-400 font-mono">Landlord</span>
                                 </div>
                               </div>
                               {m.managerName ? (
                                 <div className="flex items-center gap-2 pl-3 border-l border-slate-200/60 shrink-0">
-                                  <Avatar src={m.managerAvatarUrl || undefined} fallback={pmInitials} className="size-7 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs" />
+                                  <Avatar
+                                    src={m.managerAvatarUrl || undefined}
+                                    fallback={pmInitials}
+                                    className="size-7 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
+                                  />
                                   <div className="flex flex-col min-w-0 max-w-[85px]">
-                                    <span className="text-xs font-medium text-slate-800 truncate">{m.managerName}</span>
+                                    <span className="text-xs font-medium text-slate-800 truncate">
+                                      {m.managerName}
+                                    </span>
                                     <span className="text-xs text-slate-400 font-mono">PM</span>
                                   </div>
                                 </div>
                               ) : (
-                                <span className="text-xs text-slate-400 italic font-mono pl-3 border-l border-slate-200/60">Unassigned</span>
+                                <span className="text-xs text-slate-400 italic font-mono pl-3 border-l border-slate-200/60">
+                                  Unassigned
+                                </span>
                               )}
                             </div>
 
                             {/* Data Viz: Collection MTD */}
                             <div className="flex flex-col gap-1.5 mb-4 bg-slate-50/50 p-3 rounded-xl border border-slate-100/60">
                               <div className="flex items-center justify-between text-xs font-mono">
-                                <span className="font-medium text-slate-500 uppercase tracking-wider">Collection MTD</span>
-                                <span className={cn("font-medium", pctTextColor)}>{pct}% ({formatCompactKES(collected)})</span>
+                                <span className="font-medium text-slate-500 uppercase tracking-wider">
+                                  Collection MTD
+                                </span>
+                                <span className={cn("font-medium", pctTextColor)}>
+                                  {pct}% ({formatCompactKES(collected)})
+                                </span>
                               </div>
                               <div className="h-1.5 w-full bg-slate-200/70 rounded-full overflow-hidden">
-                                <div style={{ width: `${pct}%` }} className={cn("h-full rounded-full transition-all duration-500", pctColor)} />
+                                <div
+                                  style={{ width: `${pct}%` }}
+                                  className={cn(
+                                    "h-full rounded-full transition-all duration-500",
+                                    pctColor
+                                  )}
+                                />
                               </div>
                             </div>
                           </div>
@@ -1974,11 +2609,18 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                           {/* Financials Footer */}
                           <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3 mt-2">
                             <div className="flex flex-col">
-                              <span className="text-xs text-slate-400 uppercase tracking-wider font-mono block">Mgmt Fee Rate</span>
-                              <span className="font-mono text-base font-medium text-slate-900 mt-0.5">{(parseFloat(m.mandateRate) * 100).toFixed(1)}%</span>
+                              <span className="text-xs text-slate-400 uppercase tracking-wider font-mono block">
+                                Mgmt Fee Rate
+                              </span>
+                              <span className="font-mono text-base font-medium text-slate-900 mt-0.5">
+                                {(parseFloat(m.mandateRate) * 100).toFixed(1)}%
+                              </span>
                             </div>
 
-                            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            <div
+                              className="flex items-center gap-2"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               {m.paperworkStatus === "pending_upload" ? (
                                 <button
                                   type="button"
@@ -1991,15 +2633,27 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                 <Badge tone="success">Letter On File</Badge>
                               )}
                               <div
-                                className={cn("flex flex-col items-end text-right", m.status === "active" && "cursor-pointer group/remit")}
+                                className={cn(
+                                  "flex flex-col items-end text-right",
+                                  m.status === "active" && "cursor-pointer group/remit"
+                                )}
                                 onClick={() => {
                                   if (m.status === "active") {
                                     openRemittanceAdvice(m);
                                   }
                                 }}
                               >
-                                <span className="text-xs text-slate-400 uppercase tracking-wider font-mono block group-hover/remit:text-[#151936] transition-colors">Remittance</span>
-                                <span className={cn("font-mono text-base font-medium transition-colors mt-0.5", m.status === "active" && collected > 0 ? "text-emerald-600 group-hover/remit:underline" : "text-slate-400")}>
+                                <span className="text-xs text-slate-400 uppercase tracking-wider font-mono block group-hover/remit:text-[#151936] transition-colors">
+                                  Remittance
+                                </span>
+                                <span
+                                  className={cn(
+                                    "font-mono text-base font-medium transition-colors mt-0.5",
+                                    m.status === "active" && collected > 0
+                                      ? "text-emerald-600 group-hover/remit:underline"
+                                      : "text-slate-400"
+                                  )}
+                                >
                                   {remittanceDisplay}
                                 </span>
                               </div>
@@ -2012,184 +2666,267 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 ) : (
                   <div className="hidden lg:block overflow-hidden rounded-[24px] border border-slate-200/80 shadow-[0_4px_25px_rgb(0,0,0,0.02)] bg-white">
                     <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full min-w-[900px] text-left text-body-regular">
-                      <thead>
-                        <tr className="border-b border-slate-200/80 bg-slate-50/60 label-caps text-slate-500 py-3.5">
-                          <th className="w-8 pl-4 pr-0 py-3.5"></th>
-                          <th className="px-4 py-3.5">Landlord</th>
-                          <th className="px-4 py-3.5">Property</th>
-                          <th className="px-4 py-3.5">Manager</th>
-                          <th className="px-4 py-3.5">Fee Rate</th>
-                          <th className="px-4 py-3.5">Collection MTD</th>
-                          <th className="px-4 py-3.5 text-right">Remittance</th>
-                          <th className="px-4 py-3.5 text-center">Status</th>
-                          <th className="px-4 py-3.5 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {visibleMandates.map((m) => {
-                          const pct = getMandatePct(m);
-                          const rate = parseFloat(m.mandateRate) || 0.08;
-                          const collected = m.currentPeriodCollected ?? 0;
-                          const remittanceDue = collected * (1 - rate);
-                          const remittanceDisplay = m.status === "active" && collected > 0 ? formatCompactKES(remittanceDue) : "—";
-                          const statusLabel = m.status === "pending_approval"
-                            ? (m.id.charCodeAt(0) % 2 === 0 ? "PENDING GM" : "PENDING CEO")
-                            : (MANDATE_STATUS_LABEL[m.status] ?? m.status).toUpperCase();
+                      <table className="w-full min-w-[900px] text-left text-body-regular">
+                        <thead>
+                          <tr className="border-b border-slate-200/80 bg-slate-50/60 label-caps text-slate-500 py-3.5">
+                            <th className="w-8 pl-4 pr-0 py-3.5"></th>
+                            <th className="px-4 py-3.5">Landlord</th>
+                            <th className="px-4 py-3.5">Property</th>
+                            <th className="px-4 py-3.5">Manager</th>
+                            <th className="px-4 py-3.5">Fee Rate</th>
+                            <th className="px-4 py-3.5">Collection MTD</th>
+                            <th className="px-4 py-3.5 text-right">Remittance</th>
+                            <th className="px-4 py-3.5 text-center">Status</th>
+                            <th className="px-4 py-3.5 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {visibleMandates.map((m) => {
+                            const pct = getMandatePct(m);
+                            const rate = parseFloat(m.mandateRate) || 0.08;
+                            const collected = m.currentPeriodCollected ?? 0;
+                            const remittanceDue = collected * (1 - rate);
+                            const remittanceDisplay =
+                              m.status === "active" && collected > 0
+                                ? formatCompactKES(remittanceDue)
+                                : "—";
+                            const statusLabel =
+                              m.status === "pending_approval"
+                                ? m.id.charCodeAt(0) % 2 === 0
+                                  ? "PENDING GM"
+                                  : "PENDING CEO"
+                                : (MANDATE_STATUS_LABEL[m.status] ?? m.status).toUpperCase();
 
-                          return (
-                            <tr key={m.id} onClick={() => setDrawerMandate(m)} className="transition-colors hover:bg-slate-50/60 group cursor-pointer">
-                              {/* Star Column */}
-                              <td className="w-8 pl-4 pr-0 py-4" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleToggleFeature(m.propertyId, !!m.isFeatured)}
-                                  aria-label={m.isFeatured ? "Remove from featured" : "Add to featured"}
-                                  aria-pressed={!!m.isFeatured}
-                                  className={cn(
-                                    "flex size-7 items-center justify-center rounded-lg transition-all",
-                                    m.isFeatured
-                                      ? "text-amber-400"
-                                      : "text-slate-300 opacity-0 group-hover:opacity-100 hover:text-amber-400"
-                                  )}
+                            return (
+                              <tr
+                                key={m.id}
+                                onClick={() => setDrawerMandate(m)}
+                                className="transition-colors hover:bg-slate-50/60 group cursor-pointer"
+                              >
+                                {/* Star Column */}
+                                <td
+                                  className="w-8 pl-4 pr-0 py-4"
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  {m.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
-                                </button>
-                              </td>
-
-                              {/* Landlord Column */}
-                              <td className="px-4 py-4">
-                                <div className="flex items-center gap-3">
-                                  <Avatar
-                                    src={m.landlordAvatarUrl || undefined}
-                                    fallback={getInitials(m.landlordName)}
-                                    className="size-9 bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200/80 shrink-0 shadow-2xs"
-                                  />
-                                  <div className="flex flex-col gap-0.5">
-                                    <p className="text-sm font-medium text-slate-900 leading-snug">{m.landlordName}</p>
-                                    <Badge tone="neutral">{(m.landlordCompanyName || "Individual Landlord")}</Badge>
-                                  </div>
-                                </div>
-                              </td>
-
-                              {/* Property Column */}
-                              <td className="px-4 py-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="size-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0 overflow-hidden relative shadow-2xs">
-                                    {m.propertyMedia?.[0]?.url ? (
-                                      <Image
-                                        src={m.propertyMedia[0].url}
-                                        alt={m.propertyName}
-                                        fill
-                                        sizes="40px"
-                                        className="object-cover"
-                                      />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleToggleFeature(m.propertyId, !!m.isFeatured)
+                                    }
+                                    aria-label={
+                                      m.isFeatured ? "Remove from featured" : "Add to featured"
+                                    }
+                                    aria-pressed={!!m.isFeatured}
+                                    className={cn(
+                                      "flex size-7 items-center justify-center rounded-lg transition-all",
+                                      m.isFeatured
+                                        ? "text-amber-400"
+                                        : "text-slate-300 opacity-0 group-hover:opacity-100 hover:text-amber-400"
+                                    )}
+                                  >
+                                    {m.isFeatured ? (
+                                      <IconStarFilled size={15} />
                                     ) : (
-                                      <IconBuildingCommunity size={18} stroke={1.5} />
+                                      <IconStar size={15} />
                                     )}
-                                  </div>
-                                  <div className="flex flex-col gap-0.5">
-                                    <p className="text-sm font-medium text-slate-900 leading-snug">{m.propertyName}</p>
-                                    <div className="flex items-center gap-1.5">
-                                      <Badge tone="neutral">{getMandateDisplayCode(m)}</Badge>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
+                                  </button>
+                                </td>
 
-                              {/* Manager Column */}
-                              <td className="px-4 py-4">
-                                <div className="flex items-center gap-2.5">
-                                  {m.managerName ? (
-                                    <div className="flex items-center gap-2">
-                                      <Avatar
-                                        src={m.managerAvatarUrl || undefined}
-                                        fallback={getInitials(m.managerName)}
-                                        className="size-7 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
-                                      />
-                                      <span className="text-xs text-slate-800 font-medium">{m.managerName}</span>
-                                    </div>
-                                  ) : (
-                                    <span className="text-slate-400 italic text-xs font-mono">Unassigned</span>
-                                  )}
-                                </div>
-                              </td>
-
-                              {/* Rate Column */}
-                              <td className="px-4 py-4 text-sm font-mono font-medium text-slate-900">{(parseFloat(m.mandateRate) * 100).toFixed(1)}%</td>
-
-                              {/* Collection Column (Progress bar) */}
-                              <td className="px-4 py-4">
-                                <div className="w-36">
-                                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-1">
-                                    <div
-                                      style={{ width: `${pct}%` }}
-                                      className={cn(
-                                        "h-full rounded-full transition-all",
-                                        pct >= 100 ? "bg-emerald-500" : pct > 0 ? "bg-amber-500" : "bg-slate-200"
-                                      )}
+                                {/* Landlord Column */}
+                                <td className="px-4 py-4">
+                                  <div className="flex items-center gap-3">
+                                    <Avatar
+                                      src={m.landlordAvatarUrl || undefined}
+                                      fallback={getInitials(m.landlordName)}
+                                      className="size-9 bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200/80 shrink-0 shadow-2xs"
                                     />
+                                    <div className="flex flex-col gap-0.5">
+                                      <p className="text-sm font-medium text-slate-900 leading-snug">
+                                        {m.landlordName}
+                                      </p>
+                                      <Badge tone="neutral">
+                                        {m.landlordCompanyName || "Individual Landlord"}
+                                      </Badge>
+                                    </div>
                                   </div>
-                                  <div className="flex items-center justify-between text-xs font-mono text-slate-600">
-                                    <span>{pct}%</span>
-                                    <span>{m.status === "active" ? formatCompactKES(m.currentPeriodCollected ?? 0) : "KES 0"}</span>
+                                </td>
+
+                                {/* Property Column */}
+                                <td className="px-4 py-4">
+                                  <div className="flex items-center gap-3">
+                                    <div className="size-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0 overflow-hidden relative shadow-2xs">
+                                      {m.propertyMedia?.[0]?.url ? (
+                                        <Image
+                                          src={m.propertyMedia[0].url}
+                                          alt={m.propertyName}
+                                          fill
+                                          sizes="40px"
+                                          className="object-cover"
+                                        />
+                                      ) : (
+                                        <IconBuildingCommunity size={18} stroke={1.5} />
+                                      )}
+                                    </div>
+                                    <div className="flex flex-col gap-0.5">
+                                      <p className="text-sm font-medium text-slate-900 leading-snug">
+                                        {m.propertyName}
+                                      </p>
+                                      <div className="flex items-center gap-1.5">
+                                        <Badge tone="neutral">{getMandateDisplayCode(m)}</Badge>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
+                                </td>
 
-                              {/* Remittance Column */}
-                              <td className="px-4 py-4 text-right font-mono text-sm font-medium text-slate-900">
-                                {remittanceDisplay}
-                              </td>
-
-                              {/* Status Column */}
-                              <td className="px-4 py-4 text-center">
-                                <Badge tone={m.status === "active" ? "success" : m.status === "pending_approval" ? "warning" : "neutral"}>
-                                  {statusLabel}
-                                </Badge>
-                              </td>
-
-                              {/* Actions Column */}
-                              <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
-                                <div className="flex items-center justify-end gap-2">
-                                  {m.paperworkStatus === "pending_upload" ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => setLetterModalTarget(m)}
-                                      className="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 border border-amber-200/60 px-2.5 py-1 text-xs font-medium text-amber-700 hover:bg-amber-100 transition-colors shadow-2xs"
-                                    >
-                                      <IconFileUpload size={13} className="shrink-0" /> Attach Letter
-                                    </button>
-                                  ) : (
-                                    <Badge tone="success">Letter On File</Badge>
-                                  )}
-                                  {m.status === "pending_approval" && (
-                                    <Link href="/admin/approvals" className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 border border-slate-200/80 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors shadow-2xs">
-                                      Review
-                                    </Link>
-                                  )}
-                                  <DropdownMenu label="Mandate actions" align="right" trigger={
-                                    <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100 shadow-2xs">
-                                      <IconDotsVertical size={16} />
-                                    </span>
-                                  }>
-                                    <DropdownItem icon={m.isFeatured ? IconStarFilled : IconStar} onClick={() => handleToggleFeature(m.propertyId, !!m.isFeatured)}>
-                                      {m.isFeatured ? "Unfeature Mandate" : "Feature Mandate"}
-                                    </DropdownItem>
-                                    <DropdownItem icon={IconUserCircle} onClick={() => openLandlordProfile(m)}>Landlord Profile</DropdownItem>
-                                    <Link href="/admin/messages"><DropdownItem icon={IconMessageCircle}>Message Manager</DropdownItem></Link>
-                                    <DropdownItem icon={IconReceipt2} onClick={() => openRemittanceAdvice(m)}>Remittance Advice</DropdownItem>
-                                    {(m.status === "active" || m.status === "pending_approval") && (
-                                      <DropdownItem icon={IconBan} variant="danger" onClick={() => setTerminatingMandate(m)}>Terminate Mandate</DropdownItem>
+                                {/* Manager Column */}
+                                <td className="px-4 py-4">
+                                  <div className="flex items-center gap-2.5">
+                                    {m.managerName ? (
+                                      <div className="flex items-center gap-2">
+                                        <Avatar
+                                          src={m.managerAvatarUrl || undefined}
+                                          fallback={getInitials(m.managerName)}
+                                          className="size-7 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
+                                        />
+                                        <span className="text-xs text-slate-800 font-medium">
+                                          {m.managerName}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <span className="text-slate-400 italic text-xs font-mono">
+                                        Unassigned
+                                      </span>
                                     )}
-                                  </DropdownMenu>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                                  </div>
+                                </td>
+
+                                {/* Rate Column */}
+                                <td className="px-4 py-4 text-sm font-mono font-medium text-slate-900">
+                                  {(parseFloat(m.mandateRate) * 100).toFixed(1)}%
+                                </td>
+
+                                {/* Collection Column (Progress bar) */}
+                                <td className="px-4 py-4">
+                                  <div className="w-36">
+                                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-1">
+                                      <div
+                                        style={{ width: `${pct}%` }}
+                                        className={cn(
+                                          "h-full rounded-full transition-all",
+                                          pct >= 100
+                                            ? "bg-emerald-500"
+                                            : pct > 0
+                                              ? "bg-amber-500"
+                                              : "bg-slate-200"
+                                        )}
+                                      />
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs font-mono text-slate-600">
+                                      <span>{pct}%</span>
+                                      <span>
+                                        {m.status === "active"
+                                          ? formatCompactKES(m.currentPeriodCollected ?? 0)
+                                          : "KES 0"}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                {/* Remittance Column */}
+                                <td className="px-4 py-4 text-right font-mono text-sm font-medium text-slate-900">
+                                  {remittanceDisplay}
+                                </td>
+
+                                {/* Status Column */}
+                                <td className="px-4 py-4 text-center">
+                                  <Badge
+                                    tone={
+                                      m.status === "active"
+                                        ? "success"
+                                        : m.status === "pending_approval"
+                                          ? "warning"
+                                          : "neutral"
+                                    }
+                                  >
+                                    {statusLabel}
+                                  </Badge>
+                                </td>
+
+                                {/* Actions Column */}
+                                <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                                  <div className="flex items-center justify-end gap-2">
+                                    {m.paperworkStatus === "pending_upload" ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => setLetterModalTarget(m)}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 border border-amber-200/60 px-2.5 py-1 text-xs font-medium text-amber-700 hover:bg-amber-100 transition-colors shadow-2xs"
+                                      >
+                                        <IconFileUpload size={13} className="shrink-0" /> Attach
+                                        Letter
+                                      </button>
+                                    ) : (
+                                      <Badge tone="success">Letter On File</Badge>
+                                    )}
+                                    {m.status === "pending_approval" && (
+                                      <Link
+                                        href="/admin/approvals"
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 border border-slate-200/80 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors shadow-2xs"
+                                      >
+                                        Review
+                                      </Link>
+                                    )}
+                                    <DropdownMenu
+                                      label="Mandate actions"
+                                      align="right"
+                                      trigger={
+                                        <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100 shadow-2xs">
+                                          <IconDotsVertical size={16} />
+                                        </span>
+                                      }
+                                    >
+                                      <DropdownItem
+                                        icon={m.isFeatured ? IconStarFilled : IconStar}
+                                        onClick={() =>
+                                          handleToggleFeature(m.propertyId, !!m.isFeatured)
+                                        }
+                                      >
+                                        {m.isFeatured ? "Unfeature Mandate" : "Feature Mandate"}
+                                      </DropdownItem>
+                                      <DropdownItem
+                                        icon={IconUserCircle}
+                                        onClick={() => openLandlordProfile(m)}
+                                      >
+                                        Landlord Profile
+                                      </DropdownItem>
+                                      <Link href="/admin/messages">
+                                        <DropdownItem icon={IconMessageCircle}>
+                                          Message Manager
+                                        </DropdownItem>
+                                      </Link>
+                                      <DropdownItem
+                                        icon={IconReceipt2}
+                                        onClick={() => openRemittanceAdvice(m)}
+                                      >
+                                        Remittance Advice
+                                      </DropdownItem>
+                                      {(m.status === "active" ||
+                                        m.status === "pending_approval") && (
+                                        <DropdownItem
+                                          icon={IconBan}
+                                          variant="danger"
+                                          onClick={() => setTerminatingMandate(m)}
+                                        >
+                                          Terminate Mandate
+                                        </DropdownItem>
+                                      )}
+                                    </DropdownMenu>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
@@ -2214,12 +2951,18 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   />
                   <input
                     value={query}
-                    onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setPage(1);
+                    }}
                     placeholder="Search leases by tenant, property, or code..."
                     className="w-full bg-slate-50 border border-slate-200/60 rounded-xl pl-10 pr-4 py-2.5 body-sm text-slate-900 outline-none placeholder:text-slate-600 focus:bg-white focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30 transition-all shadow-sm"
                   />
                   {query && (
-                    <button onClick={() => setQuery("")} className="absolute right-3 text-slate-300 hover:text-slate-600 transition-colors">
+                    <button
+                      onClick={() => setQuery("")}
+                      className="absolute right-3 text-slate-300 hover:text-slate-600 transition-colors"
+                    >
                       <IconX size={14} />
                     </button>
                   )}
@@ -2227,20 +2970,43 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
               </div>
               <div className="flex items-center gap-3 overflow-x-auto custom-scrollbar pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
                 <div className="flex bg-slate-100 p-1 rounded-xl shrink-0">
-                  {([
-                    { key: "all", label: "All", count: leases.length },
-                    { key: "active", label: "Active", count: leases.filter((l) => l.isActive).length },
-                    { key: "terminated", label: "Terminated", count: leases.filter((l) => !l.isActive).length },
-                  ] as const).map((pill) => (
+                  {(
+                    [
+                      { key: "all", label: "All", count: leases.length },
+                      {
+                        key: "active",
+                        label: "Active",
+                        count: leases.filter((l) => l.isActive).length,
+                      },
+                      {
+                        key: "terminated",
+                        label: "Terminated",
+                        count: leases.filter((l) => !l.isActive).length,
+                      },
+                    ] as const
+                  ).map((pill) => (
                     <button
                       key={pill.key}
-                      onClick={() => { setStatusFilter(pill.key); setPage(1); }}
+                      onClick={() => {
+                        setStatusFilter(pill.key);
+                        setPage(1);
+                      }}
                       className={cn(
                         "px-3 py-1.5 text-xs rounded-lg transition-colors whitespace-nowrap font-medium flex items-center gap-1.5",
-                        statusFilter === pill.key ? "bg-[#151936] text-white shadow-sm font-medium" : "text-slate-600 hover:text-slate-700"
+                        statusFilter === pill.key
+                          ? "bg-[#151936] text-white shadow-sm font-medium"
+                          : "text-slate-600 hover:text-slate-700"
                       )}
                     >
-                      {pill.label} <span className={cn("text-xxs font-mono px-1 py-0.2 rounded bg-slate-200/80 text-slate-600", statusFilter === pill.key && "bg-white/20 text-white")}>{pill.count}</span>
+                      {pill.label}{" "}
+                      <span
+                        className={cn(
+                          "text-xxs font-mono px-1 py-0.2 rounded bg-slate-200/80 text-slate-600",
+                          statusFilter === pill.key && "bg-white/20 text-white"
+                        )}
+                      >
+                        {pill.count}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -2266,7 +3032,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     onClick={() => setLeaseViewMode("grid")}
                     className={cn(
                       "p-1.5 rounded-lg transition-colors",
-                      leaseViewMode === "grid" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700"
+                      leaseViewMode === "grid"
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-600 hover:text-slate-700"
                     )}
                     aria-label="Grid view"
                   >
@@ -2276,7 +3044,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                     onClick={() => setLeaseViewMode("list")}
                     className={cn(
                       "p-1.5 rounded-lg transition-colors",
-                      leaseViewMode === "list" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-700"
+                      leaseViewMode === "list"
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-600 hover:text-slate-700"
                     )}
                     aria-label="List view"
                   >
@@ -2296,7 +3066,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   <select
                     id="prop-type-filter"
                     value={typeFilter}
-                    onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }}
+                    onChange={(e) => {
+                      setTypeFilter(e.target.value);
+                      setPage(1);
+                    }}
                     className="bg-white border border-slate-200 rounded-xl px-3 py-2 body-sm outline-none focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30"
                   >
                     <option value="all">All types</option>
@@ -2314,7 +3087,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   <select
                     id="expiry-filter"
                     value={expiryFilter}
-                    onChange={(e) => { setExpiryFilter(e.target.value as "all" | "30" | "60" | "90"); setPage(1); }}
+                    onChange={(e) => {
+                      setExpiryFilter(e.target.value as "all" | "30" | "60" | "90");
+                      setPage(1);
+                    }}
                     className="bg-white border border-slate-200 rounded-xl px-3 py-2 body-sm outline-none focus:ring-2 focus:ring-[#151936]/10 focus:border-[#151936]/30"
                   >
                     <option value="all">Any duration</option>
@@ -2327,7 +3103,12 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   <div className="sm:col-span-2 flex justify-end">
                     <button
                       type="button"
-                      onClick={() => { setStatusFilter("all"); setTypeFilter("all"); setExpiryFilter("all"); setPage(1); }}
+                      onClick={() => {
+                        setStatusFilter("all");
+                        setTypeFilter("all");
+                        setExpiryFilter("all");
+                        setPage(1);
+                      }}
                       className="inline-flex items-center gap-1 px-3 py-1.5 body-sm text-slate-500 hover:text-rose-600 transition-colors"
                     >
                       <IconX size={14} /> Clear All Filters
@@ -2354,8 +3135,22 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                   {visible.map((l) => {
                     const tenurePct = getLeaseTenurePct(l);
                     const daysLeft = getDaysRemaining(l.endsAt);
-                    const tenurePctColor = !l.isActive ? "bg-slate-300" : tenurePct <= 50 ? "bg-emerald-500" : tenurePct <= 75 ? "bg-amber-400" : tenurePct <= 90 ? "bg-orange-400" : "bg-red-400";
-                    const tenurePctTextColor = !l.isActive ? "text-slate-600" : tenurePct <= 50 ? "text-emerald-600" : tenurePct <= 75 ? "text-amber-500" : "text-red-500";
+                    const tenurePctColor = !l.isActive
+                      ? "bg-slate-300"
+                      : tenurePct <= 50
+                        ? "bg-emerald-500"
+                        : tenurePct <= 75
+                          ? "bg-amber-400"
+                          : tenurePct <= 90
+                            ? "bg-orange-400"
+                            : "bg-red-400";
+                    const tenurePctTextColor = !l.isActive
+                      ? "text-slate-600"
+                      : tenurePct <= 50
+                        ? "text-emerald-600"
+                        : tenurePct <= 75
+                          ? "text-amber-500"
+                          : "text-red-500";
                     return (
                       <div
                         key={l.id}
@@ -2367,7 +3162,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                           <div className="flex items-center gap-3 min-w-0">
                             {l.propertyMedia?.[0]?.url ? (
                               <div className="size-11 rounded-[14px] overflow-hidden shrink-0 shadow-2xs relative border border-slate-100">
-                                <Image src={l.propertyMedia[0].url} alt={l.propertyName} fill className="object-cover" sizes="44px" />
+                                <Image
+                                  src={l.propertyMedia[0].url}
+                                  alt={l.propertyName}
+                                  fill
+                                  className="object-cover"
+                                  sizes="44px"
+                                />
                               </div>
                             ) : (
                               <div className="size-11 rounded-[14px] bg-slate-50 border border-slate-100 shrink-0 flex items-center justify-center text-slate-400 shadow-2xs">
@@ -2375,12 +3176,19 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               </div>
                             )}
                             <div className="flex flex-col min-w-0">
-                              <h4 className="text-base font-medium text-slate-900 leading-snug truncate">{l.propertyName}</h4>
-                              <span className="text-xs font-mono text-slate-500 mt-0.5 tracking-wider uppercase">{l.id.slice(0, 8)}</span>
+                              <h4 className="text-base font-medium text-slate-900 leading-snug truncate">
+                                {l.propertyName}
+                              </h4>
+                              <span className="text-xs font-mono text-slate-500 mt-0.5 tracking-wider uppercase">
+                                {l.id.slice(0, 8)}
+                              </span>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                          <div
+                            className="flex items-center gap-1 shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               type="button"
                               onClick={() => handleToggleFeature(l.propertyId, !!l.isFeatured)}
@@ -2388,7 +3196,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               aria-pressed={!!l.isFeatured}
                               className={cn(
                                 "flex size-7 items-center justify-center rounded-lg transition-all",
-                                l.isFeatured ? "text-amber-400" : "text-slate-300 hover:text-amber-400"
+                                l.isFeatured
+                                  ? "text-amber-400"
+                                  : "text-slate-300 hover:text-amber-400"
                               )}
                             >
                               {l.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
@@ -2396,23 +3206,57 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                             <Badge tone={l.isActive ? "success" : "neutral"}>
                               {l.isActive ? "Active" : "Terminated"}
                             </Badge>
-                            <DropdownMenu label="Lease actions" align="right" trigger={
-                              <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors shadow-2xs">
-                                <IconDotsVertical size={16} />
-                              </span>
-                            }>
-                              <DropdownItem icon={l.isFeatured ? IconStarFilled : IconStar} onClick={() => handleToggleFeature(l.propertyId, !!l.isFeatured)}>
+                            <DropdownMenu
+                              label="Lease actions"
+                              align="right"
+                              trigger={
+                                <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors shadow-2xs">
+                                  <IconDotsVertical size={16} />
+                                </span>
+                              }
+                            >
+                              <DropdownItem
+                                icon={l.isFeatured ? IconStarFilled : IconStar}
+                                onClick={() => handleToggleFeature(l.propertyId, !!l.isFeatured)}
+                              >
                                 {l.isFeatured ? "Unfeature Property" : "Feature Property"}
                               </DropdownItem>
-                              <DropdownItem icon={IconUserCircle} onClick={() => setTenantDrawerId(l.tenantContactId)}>Tenant Profile</DropdownItem>
-                              <Link href="/admin/messages"><DropdownItem icon={IconMessageCircle}>Message Manager</DropdownItem></Link>
-                              <Link href={`/admin/leases/${l.id}`}><DropdownItem icon={IconFileText}>View Lease File</DropdownItem></Link>
+                              <DropdownItem
+                                icon={IconUserCircle}
+                                onClick={() => setTenantDrawerId(l.tenantContactId)}
+                              >
+                                Tenant Profile
+                              </DropdownItem>
+                              <Link href="/admin/messages">
+                                <DropdownItem icon={IconMessageCircle}>
+                                  Message Manager
+                                </DropdownItem>
+                              </Link>
+                              <Link href={`/admin/leases/${l.id}`}>
+                                <DropdownItem icon={IconFileText}>View Lease File</DropdownItem>
+                              </Link>
                               {l.isActive && (
-                                <DropdownItem icon={IconRefresh} onClick={() => setRenewingLease(l)}>Renew Lease</DropdownItem>
+                                <DropdownItem
+                                  icon={IconRefresh}
+                                  onClick={() => setRenewingLease(l)}
+                                >
+                                  Renew Lease
+                                </DropdownItem>
                               )}
-                              <DropdownItem icon={IconCalendarClock} onClick={() => setEditingLease(l)}>Edit Lease</DropdownItem>
+                              <DropdownItem
+                                icon={IconCalendarClock}
+                                onClick={() => setEditingLease(l)}
+                              >
+                                Edit Lease
+                              </DropdownItem>
                               {l.isActive && (
-                                <DropdownItem icon={IconBan} variant="danger" onClick={() => setTerminatingLease(l)}>Terminate Lease</DropdownItem>
+                                <DropdownItem
+                                  icon={IconBan}
+                                  variant="danger"
+                                  onClick={() => setTerminatingLease(l)}
+                                >
+                                  Terminate Lease
+                                </DropdownItem>
                               )}
                             </DropdownMenu>
                           </div>
@@ -2420,46 +3264,77 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
 
                         {/* Actors Strip */}
                         <div className="flex items-center gap-3 bg-slate-50/80 p-2.5 rounded-2xl border border-slate-100">
-                          <Avatar src={l.tenantAvatarUrl || undefined} fallback={getInitials(l.tenantName)} className="size-7 text-xs bg-white text-slate-800 border border-slate-200/80 shrink-0 shadow-2xs" />
+                          <Avatar
+                            src={l.tenantAvatarUrl || undefined}
+                            fallback={getInitials(l.tenantName)}
+                            className="size-7 text-xs bg-white text-slate-800 border border-slate-200/80 shrink-0 shadow-2xs"
+                          />
                           <div className="flex flex-col min-w-0 flex-1">
-                            <span className="text-xs font-medium text-slate-900 truncate">{l.tenantName}</span>
-                            <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider">Tenant</span>
+                            <span className="text-xs font-medium text-slate-900 truncate">
+                              {l.tenantName}
+                            </span>
+                            <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider">
+                              Tenant
+                            </span>
                           </div>
                           {l.managerName ? (
                             <div className="flex items-center gap-1.5 pl-2.5 border-l border-slate-200/60">
-                              <Avatar src={l.managerAvatarUrl || undefined} fallback={getInitials(l.managerName)} className="size-6 text-xxs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs" />
-                              <span className="text-xs font-medium text-slate-800 truncate max-w-[80px]">{l.managerName}</span>
+                              <Avatar
+                                src={l.managerAvatarUrl || undefined}
+                                fallback={getInitials(l.managerName)}
+                                className="size-6 text-xxs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
+                              />
+                              <span className="text-xs font-medium text-slate-800 truncate max-w-[80px]">
+                                {l.managerName}
+                              </span>
                             </div>
                           ) : (
-                            <span className="text-xxs text-slate-400 italic pl-2.5 border-l border-slate-200/60">Unassigned</span>
+                            <span className="text-xxs text-slate-400 italic pl-2.5 border-l border-slate-200/60">
+                              Unassigned
+                            </span>
                           )}
                         </div>
 
                         {/* Tenure Progress */}
                         <div className="flex flex-col gap-1 bg-slate-50/40 p-2.5 rounded-xl border border-slate-100/60">
                           <div className="flex items-center justify-between text-xxs font-mono">
-                            <span className="text-slate-500 uppercase tracking-wider">Lease Tenure</span>
-                            <span className={cn("font-medium", tenurePctTextColor)}>{l.isActive ? `${daysLeft}d left` : "Ended"}</span>
+                            <span className="text-slate-500 uppercase tracking-wider">
+                              Lease Tenure
+                            </span>
+                            <span className={cn("font-medium", tenurePctTextColor)}>
+                              {l.isActive ? `${daysLeft}d left` : "Ended"}
+                            </span>
                           </div>
                           <div className="h-1.5 w-full bg-slate-200/60 rounded-full overflow-hidden">
-                            <div style={{ width: `${tenurePct}%` }} className={cn("h-full rounded-full transition-all", tenurePctColor)} />
+                            <div
+                              style={{ width: `${tenurePct}%` }}
+                              className={cn("h-full rounded-full transition-all", tenurePctColor)}
+                            />
                           </div>
                         </div>
 
                         {/* Mobile Footer */}
                         <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                           <div className="flex flex-col">
-                            <span className="text-xxs text-slate-400 uppercase tracking-wider">Contracted Rent</span>
+                            <span className="text-xxs text-slate-400 uppercase tracking-wider">
+                              Contracted Rent
+                            </span>
                             <span className="font-mono text-xs font-medium text-slate-900">
                               {formatCompactKES(parseFloat(l.monthlyRentKes))}/mo
                             </span>
                           </div>
                           <div className="flex flex-col items-end text-right">
-                            <span className="text-xxs text-slate-400 uppercase tracking-wider">Balance Status</span>
+                            <span className="text-xxs text-slate-400 uppercase tracking-wider">
+                              Balance Status
+                            </span>
                             {(l.balanceKes ?? 0) > 0 ? (
-                              <span className="font-mono text-xs font-medium text-rose-600">{formatCompactKES(l.balanceKes ?? 0)} overdue</span>
+                              <span className="font-mono text-xs font-medium text-rose-600">
+                                {formatCompactKES(l.balanceKes ?? 0)} overdue
+                              </span>
                             ) : (
-                              <span className="text-xxs font-medium text-emerald-600 uppercase tracking-wider">Up to date</span>
+                              <span className="text-xxs font-medium text-emerald-600 uppercase tracking-wider">
+                                Up to date
+                              </span>
                             )}
                           </div>
                         </div>
@@ -2472,7 +3347,12 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 {leaseViewMode === "grid" ? (
                   <div className="hidden lg:grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
                     {visiblePropertyGroups.map((pg) => {
-                      const occupancyColor = pg.occupancyPct >= 90 ? "bg-emerald-500" : pg.occupancyPct >= 70 ? "bg-amber-400" : "bg-red-400";
+                      const occupancyColor =
+                        pg.occupancyPct >= 90
+                          ? "bg-emerald-500"
+                          : pg.occupancyPct >= 70
+                            ? "bg-amber-400"
+                            : "bg-red-400";
                       const unitTypeEntries = Object.entries(pg.unitTypeCounts);
                       const MAX_GRID_AVATARS = 5;
                       const hasArrears = pg.overdueBalance > 0;
@@ -2494,7 +3374,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                               <div className="flex items-center gap-3 min-w-0">
                                 {pg.propertyMedia?.[0]?.url ? (
                                   <div className="size-11 rounded-[16px] overflow-hidden shrink-0 shadow-2xs relative border border-slate-100">
-                                    <Image src={pg.propertyMedia[0].url} alt={pg.propertyName} fill className="object-cover" sizes="44px" />
+                                    <Image
+                                      src={pg.propertyMedia[0].url}
+                                      alt={pg.propertyName}
+                                      fill
+                                      className="object-cover"
+                                      sizes="44px"
+                                    />
                                   </div>
                                 ) : (
                                   <div className="size-11 rounded-[16px] bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-100 shrink-0 flex items-center justify-center text-slate-400 shadow-2xs">
@@ -2502,22 +3388,43 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                   </div>
                                 )}
                                 <div className="flex flex-col min-w-0">
-                                  <h4 className="text-sm font-medium text-slate-900 leading-tight truncate group-hover:text-[#151936] transition-colors">{pg.propertyName}</h4>
+                                  <h4 className="text-sm font-medium text-slate-900 leading-tight truncate group-hover:text-[#151936] transition-colors">
+                                    {pg.propertyName}
+                                  </h4>
                                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                                     <Badge tone="neutral">{pg.propertyCode}</Badge>
-                                    {pg.propertyType && <Badge tone="primary">{pg.propertyType}</Badge>}
+                                    {pg.propertyType && (
+                                      <Badge tone="primary">{pg.propertyType}</Badge>
+                                    )}
                                   </div>
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+                              <div
+                                className="flex items-center gap-1.5 shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <button
                                   type="button"
-                                  onClick={(e) => { e.stopPropagation(); handleToggleFeature(pg.propertyId, !!pg.isFeatured); }}
-                                  aria-label={pg.isFeatured ? "Remove from featured" : "Add to featured"}
-                                  className={cn("flex size-7 items-center justify-center rounded-lg transition-all border border-slate-100/80 hover:bg-slate-50", pg.isFeatured ? "text-amber-400 border-amber-200 bg-amber-50/50" : "text-slate-300 hover:text-amber-400")}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleFeature(pg.propertyId, !!pg.isFeatured);
+                                  }}
+                                  aria-label={
+                                    pg.isFeatured ? "Remove from featured" : "Add to featured"
+                                  }
+                                  className={cn(
+                                    "flex size-7 items-center justify-center rounded-lg transition-all border border-slate-100/80 hover:bg-slate-50",
+                                    pg.isFeatured
+                                      ? "text-amber-400 border-amber-200 bg-amber-50/50"
+                                      : "text-slate-300 hover:text-amber-400"
+                                  )}
                                 >
-                                  {pg.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
+                                  {pg.isFeatured ? (
+                                    <IconStarFilled size={15} />
+                                  ) : (
+                                    <IconStar size={15} />
+                                  )}
                                 </button>
                                 <Badge tone={pg.activeLeases.length > 0 ? "success" : "neutral"}>
                                   {pg.activeLeases.length > 0 ? "Active" : "Vacant"}
@@ -2528,11 +3435,21 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                             {/* Occupancy & Unit Mix Panel */}
                             <div className="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 mb-4 flex flex-col gap-2">
                               <div className="flex items-center justify-between text-xs font-mono">
-                                <span className="font-medium text-slate-500 uppercase tracking-wider">Occupancy</span>
-                                <span className="font-medium text-slate-900">{pg.activeLeases.length} / {pg.totalUnits} units</span>
+                                <span className="font-medium text-slate-500 uppercase tracking-wider">
+                                  Occupancy
+                                </span>
+                                <span className="font-medium text-slate-900">
+                                  {pg.activeLeases.length} / {pg.totalUnits} units
+                                </span>
                               </div>
                               <div className="h-1.5 w-full bg-slate-200/70 rounded-full overflow-hidden">
-                                <div style={{ width: `${pg.occupancyPct}%` }} className={cn("h-full rounded-full transition-all duration-500", occupancyColor)} />
+                                <div
+                                  style={{ width: `${pg.occupancyPct}%` }}
+                                  className={cn(
+                                    "h-full rounded-full transition-all duration-500",
+                                    occupancyColor
+                                  )}
+                                />
                               </div>
                               <div className="flex items-center justify-between text-xs font-mono pt-0.5">
                                 <span className="text-slate-500">{pg.occupancyPct}% occupied</span>
@@ -2548,7 +3465,8 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                 <div className="flex flex-wrap gap-1 mt-1.5 pt-2 border-t border-slate-200/50">
                                   {unitTypeEntries.map(([type, count]) => (
                                     <Badge key={type} tone="data">
-                                      {type} <span className="font-mono font-medium ml-0.5">×{count}</span>
+                                      {type}{" "}
+                                      <span className="font-mono font-medium ml-0.5">×{count}</span>
                                     </Badge>
                                   ))}
                                 </div>
@@ -2558,10 +3476,13 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                             {/* Tenants Roster & Unit Breakdown */}
                             <div className="my-8">
                               <div className="flex items-center justify-between mb-2">
-                                <span className="text-xxs font-medium text-slate-500 uppercase tracking-wider">Active Tenants</span>
+                                <span className="text-xxs font-medium text-slate-500 uppercase tracking-wider">
+                                  Active Tenants
+                                </span>
                                 {hasArrears && (
                                   <Badge tone="risk">
-                                    <IconAlertTriangle size={11} className="mr-1 inline-block" /> Arrears
+                                    <IconAlertTriangle size={11} className="mr-1 inline-block" />{" "}
+                                    Arrears
                                   </Badge>
                                 )}
                               </div>
@@ -2586,7 +3507,9 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                           fallback={getInitials(l.tenantName)}
                                           className={cn(
                                             "size-8 text-xs border-2 border-white shadow-2xs transition-all duration-200 group-hover/av:scale-110",
-                                            (l.balanceKes ?? 0) > 0 ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-700"
+                                            (l.balanceKes ?? 0) > 0
+                                              ? "bg-rose-100 text-rose-700"
+                                              : "bg-slate-100 text-slate-700"
                                           )}
                                         />
                                         {(l.balanceKes ?? 0) > 0 && (
@@ -2617,14 +3540,20 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                           fallback={getInitials(l.tenantName)}
                                           className="size-6 text-xs bg-slate-100 text-slate-700 border border-slate-200/60 shrink-0"
                                         />
-                                        <span className="text-xs font-medium text-slate-900 truncate group-hover/row:text-[#151936]">{l.tenantName}</span>
+                                        <span className="text-xs font-medium text-slate-900 truncate group-hover/row:text-[#151936]">
+                                          {l.tenantName}
+                                        </span>
                                       </div>
                                       <div className="flex items-center gap-1.5 shrink-0">
                                         {l.unitLabel && <Badge tone="brand">{l.unitLabel}</Badge>}
                                         {(l.balanceKes ?? 0) > 0 ? (
-                                          <Badge tone="risk">{formatCompactKES(l.balanceKes ?? 0)}</Badge>
+                                          <Badge tone="risk">
+                                            {formatCompactKES(l.balanceKes ?? 0)}
+                                          </Badge>
                                         ) : (
-                                          <span className="text-xs font-mono text-slate-700">{formatCompactKES(parseFloat(l.monthlyRentKes))}</span>
+                                          <span className="text-xs font-mono text-slate-700">
+                                            {formatCompactKES(parseFloat(l.monthlyRentKes))}
+                                          </span>
                                         )}
                                       </div>
                                     </div>
@@ -2641,10 +3570,18 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                           {/* Card Footer: Rent Roll & PM Action */}
                           <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3 mt-2">
                             <div>
-                              <span className="text-xs text-slate-400 uppercase tracking-wider font-mono block">Contracted Rent Roll</span>
-                              <p className="font-mono text-lg font-medium text-slate-900 mt-0.5">{formatCompactKES(pg.totalRentPool)}<span className="text-xs text-slate-400 font-mono">/mo</span></p>
+                              <span className="text-xs text-slate-400 uppercase tracking-wider font-mono block">
+                                Contracted Rent Roll
+                              </span>
+                              <p className="font-mono text-lg font-medium text-slate-900 mt-0.5">
+                                {formatCompactKES(pg.totalRentPool)}
+                                <span className="text-xs text-slate-400 font-mono">/mo</span>
+                              </p>
                             </div>
-                            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            <div
+                              className="flex items-center gap-2"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               {pg.managerName && (
                                 <button
                                   type="button"
@@ -2672,7 +3609,8 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                                 }}
                                 className="bg-[#151936] text-white hover:bg-[#151936]/90 px-3 h-8 text-xs font-medium rounded-xl flex items-center gap-1 shadow-2xs"
                               >
-                                {primaryLeaseId ? "Open Lease" : "View Property"} <IconArrowRight size={13} />
+                                {primaryLeaseId ? "Open Lease" : "View Property"}{" "}
+                                <IconArrowRight size={13} />
                               </Button>
                             </div>
                           </div>
@@ -2683,180 +3621,261 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
                 ) : (
                   <div className="hidden lg:block overflow-hidden rounded-[24px] border border-slate-200/80 shadow-[0_4px_25px_rgb(0,0,0,0.02)] bg-white">
                     <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full min-w-[980px] text-left text-body-regular">
-                      <thead>
-                        <tr className="border-b border-slate-200/80 bg-slate-50/60 label-caps text-slate-500 py-3.5">
-                          <th className="w-8 pl-4 pr-0 py-3.5"></th>
-                          <th className="px-4 py-3.5">Tenant</th>
-                          <th className="px-4 py-3.5">Property Unit</th>
-                          <th className="px-4 py-3.5">Manager</th>
-                          <th className="px-4 py-3.5">Tenure</th>
-                          <th className="px-4 py-3.5 text-right">Rent Rate</th>
-                          <th className="px-4 py-3.5 text-right">Balance</th>
-                          <th className="px-4 py-3.5 text-right">Deposit</th>
-                          <th className="px-4 py-3.5 text-center">Status</th>
-                          <th className="px-4 py-3.5 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {visible.map((l) => {
-                          const tenurePct = getLeaseTenurePct(l);
-                          const daysLeft = getDaysRemaining(l.endsAt);
-                          return (
-                            <tr key={l.id} onClick={() => router.push(`/admin/leases/${l.id}`)} className="transition-colors hover:bg-slate-50/60 group cursor-pointer">
-                              {/* Star Column */}
-                              <td className="w-8 pl-4 pr-0 py-4" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleToggleFeature(l.propertyId, !!l.isFeatured)}
-                                  aria-label={l.isFeatured ? "Remove from featured" : "Add to featured"}
-                                  aria-pressed={!!l.isFeatured}
-                                  className={cn(
-                                    "flex size-7 items-center justify-center rounded-lg transition-all",
-                                    l.isFeatured
-                                      ? "text-amber-400"
-                                      : "text-slate-300 opacity-0 group-hover:opacity-100 hover:text-amber-400"
-                                  )}
+                      <table className="w-full min-w-[980px] text-left text-body-regular">
+                        <thead>
+                          <tr className="border-b border-slate-200/80 bg-slate-50/60 label-caps text-slate-500 py-3.5">
+                            <th className="w-8 pl-4 pr-0 py-3.5"></th>
+                            <th className="px-4 py-3.5">Tenant</th>
+                            <th className="px-4 py-3.5">Property Unit</th>
+                            <th className="px-4 py-3.5">Manager</th>
+                            <th className="px-4 py-3.5">Tenure</th>
+                            <th className="px-4 py-3.5 text-right">Rent Rate</th>
+                            <th className="px-4 py-3.5 text-right">Balance</th>
+                            <th className="px-4 py-3.5 text-right">Deposit</th>
+                            <th className="px-4 py-3.5 text-center">Status</th>
+                            <th className="px-4 py-3.5 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {visible.map((l) => {
+                            const tenurePct = getLeaseTenurePct(l);
+                            const daysLeft = getDaysRemaining(l.endsAt);
+                            return (
+                              <tr
+                                key={l.id}
+                                onClick={() => router.push(`/admin/leases/${l.id}`)}
+                                className="transition-colors hover:bg-slate-50/60 group cursor-pointer"
+                              >
+                                {/* Star Column */}
+                                <td
+                                  className="w-8 pl-4 pr-0 py-4"
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  {l.isFeatured ? <IconStarFilled size={15} /> : <IconStar size={15} />}
-                                </button>
-                              </td>
-
-                              {/* Tenant Column */}
-                              <td className="px-4 py-4">
-                                <div className="flex items-center gap-3">
-                                  <Avatar
-                                    src={l.tenantAvatarUrl || undefined}
-                                    fallback={getInitials(l.tenantName)}
-                                    className="size-9 bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200/80 shrink-0 shadow-2xs"
-                                  />
-                                  <div>
-                                    <p className="body-md text-slate-900 font-medium leading-snug">{l.tenantName}</p>
-                                    <p className="text-xxs text-slate-500 font-mono tracking-wide mt-0.5">{l.tenantEmail || l.tenantPhone || "No contact info"}</p>
-                                  </div>
-                                </div>
-                              </td>
-
-                              {/* Property Column */}
-                              <td className="px-4 py-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="size-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0 overflow-hidden relative shadow-2xs">
-                                    {l.propertyMedia?.[0]?.url ? (
-                                      <Image src={l.propertyMedia[0].url} alt={l.propertyName} fill sizes="40px" className="object-cover" />
-                                    ) : (
-                                      <IconBuildingCommunity size={18} stroke={1.5} />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleToggleFeature(l.propertyId, !!l.isFeatured)
+                                    }
+                                    aria-label={
+                                      l.isFeatured ? "Remove from featured" : "Add to featured"
+                                    }
+                                    aria-pressed={!!l.isFeatured}
+                                    className={cn(
+                                      "flex size-7 items-center justify-center rounded-lg transition-all",
+                                      l.isFeatured
+                                        ? "text-amber-400"
+                                        : "text-slate-300 opacity-0 group-hover:opacity-100 hover:text-amber-400"
                                     )}
-                                  </div>
-                                  <div className="flex flex-col gap-1">
-                                    <p className="text-sm font-medium text-slate-900 leading-snug">{l.propertyName}</p>
-                                    <div className="flex items-center gap-1.5 flex-wrap">
-                                      <Badge tone="neutral">{l.propertyCode}</Badge>
-                                      {(l.unitLabel || l.unitType) && (
-                                        <Badge tone="data">
-                                          {[l.unitLabel, l.unitType].filter(Boolean).join(" · ")}
-                                        </Badge>
-                                      )}
+                                  >
+                                    {l.isFeatured ? (
+                                      <IconStarFilled size={15} />
+                                    ) : (
+                                      <IconStar size={15} />
+                                    )}
+                                  </button>
+                                </td>
+
+                                {/* Tenant Column */}
+                                <td className="px-4 py-4">
+                                  <div className="flex items-center gap-3">
+                                    <Avatar
+                                      src={l.tenantAvatarUrl || undefined}
+                                      fallback={getInitials(l.tenantName)}
+                                      className="size-9 bg-slate-50 text-slate-800 text-xs font-medium border border-slate-200/80 shrink-0 shadow-2xs"
+                                    />
+                                    <div>
+                                      <p className="body-md text-slate-900 font-medium leading-snug">
+                                        {l.tenantName}
+                                      </p>
+                                      <p className="text-xxs text-slate-500 font-mono tracking-wide mt-0.5">
+                                        {l.tenantEmail || l.tenantPhone || "No contact info"}
+                                      </p>
                                     </div>
                                   </div>
-                                </div>
-                              </td>
+                                </td>
 
-                              {/* Manager Column */}
-                              <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
-                                <div className="flex items-center gap-2.5">
-                                  {l.managerName ? (
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        if (l.managerId) setManagerDrawerId(l.managerId);
-                                      }}
-                                      className="flex items-center gap-2.5 hover:bg-slate-50 p-1 rounded-xl text-left group/pm transition-colors border border-transparent hover:border-slate-100"
-                                    >
-                                      <Avatar
-                                        src={l.managerAvatarUrl || undefined}
-                                        fallback={getInitials(l.managerName)}
-                                        className="size-7 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
-                                      />
-                                      <span className="text-xs text-slate-800 font-medium group-hover/pm:text-[#151936]">{l.managerName}</span>
-                                    </button>
-                                  ) : (
-                                    <span className="text-slate-400 italic text-xs font-mono">Unassigned</span>
-                                  )}
-                                </div>
-                              </td>
-
-                              {/* Tenure Column */}
-                              <td className="px-4 py-4">
-                                <div className="w-36">
-                                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-1">
-                                    <div
-                                      style={{ width: `${tenurePct}%` }}
-                                      className={cn(
-                                        "h-full rounded-full transition-all",
-                                        !l.isActive ? "bg-slate-300" : tenurePct <= 75 ? "bg-emerald-500" : tenurePct <= 90 ? "bg-amber-500" : "bg-red-400"
+                                {/* Property Column */}
+                                <td className="px-4 py-4">
+                                  <div className="flex items-center gap-3">
+                                    <div className="size-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0 overflow-hidden relative shadow-2xs">
+                                      {l.propertyMedia?.[0]?.url ? (
+                                        <Image
+                                          src={l.propertyMedia[0].url}
+                                          alt={l.propertyName}
+                                          fill
+                                          sizes="40px"
+                                          className="object-cover"
+                                        />
+                                      ) : (
+                                        <IconBuildingCommunity size={18} stroke={1.5} />
                                       )}
-                                    />
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                      <p className="text-sm font-medium text-slate-900 leading-snug">
+                                        {l.propertyName}
+                                      </p>
+                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                        <Badge tone="neutral">{l.propertyCode}</Badge>
+                                        {(l.unitLabel || l.unitType) && (
+                                          <Badge tone="data">
+                                            {[l.unitLabel, l.unitType].filter(Boolean).join(" · ")}
+                                          </Badge>
+                                        )}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="flex items-center justify-between text-xs text-slate-600 font-mono">
-                                    <span>{formatDate(l.startsAt)}</span>
-                                    <span>{l.isActive ? `${daysLeft}d left` : "Ended"}</span>
+                                </td>
+
+                                {/* Manager Column */}
+                                <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                                  <div className="flex items-center gap-2.5">
+                                    {l.managerName ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (l.managerId) setManagerDrawerId(l.managerId);
+                                        }}
+                                        className="flex items-center gap-2.5 hover:bg-slate-50 p-1 rounded-xl text-left group/pm transition-colors border border-transparent hover:border-slate-100"
+                                      >
+                                        <Avatar
+                                          src={l.managerAvatarUrl || undefined}
+                                          fallback={getInitials(l.managerName)}
+                                          className="size-7 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
+                                        />
+                                        <span className="text-xs text-slate-800 font-medium group-hover/pm:text-[#151936]">
+                                          {l.managerName}
+                                        </span>
+                                      </button>
+                                    ) : (
+                                      <span className="text-slate-400 italic text-xs font-mono">
+                                        Unassigned
+                                      </span>
+                                    )}
                                   </div>
-                                </div>
-                              </td>
+                                </td>
 
-                              {/* Rent Rate Column */}
-                              <td className="px-4 py-4 text-right font-mono text-sm font-medium text-slate-900">
-                                {formatCompactKES(parseFloat(l.monthlyRentKes))}<span className="text-xs text-slate-400 font-mono">/mo</span>
-                              </td>
+                                {/* Tenure Column */}
+                                <td className="px-4 py-4">
+                                  <div className="w-36">
+                                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-1">
+                                      <div
+                                        style={{ width: `${tenurePct}%` }}
+                                        className={cn(
+                                          "h-full rounded-full transition-all",
+                                          !l.isActive
+                                            ? "bg-slate-300"
+                                            : tenurePct <= 75
+                                              ? "bg-emerald-500"
+                                              : tenurePct <= 90
+                                                ? "bg-amber-500"
+                                                : "bg-red-400"
+                                        )}
+                                      />
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs text-slate-600 font-mono">
+                                      <span>{formatDate(l.startsAt)}</span>
+                                      <span>{l.isActive ? `${daysLeft}d left` : "Ended"}</span>
+                                    </div>
+                                  </div>
+                                </td>
 
-                              {/* Balance Column */}
-                              <td className="px-4 py-4 text-right">
-                                {(l.balanceKes ?? 0) > 0 ? (
-                                  <Badge tone="risk">{formatCompactKES(l.balanceKes ?? 0)} Overdue</Badge>
-                                ) : (
-                                  <Badge tone="success">Current</Badge>
-                                )}
-                              </td>
+                                {/* Rent Rate Column */}
+                                <td className="px-4 py-4 text-right font-mono text-sm font-medium text-slate-900">
+                                  {formatCompactKES(parseFloat(l.monthlyRentKes))}
+                                  <span className="text-xs text-slate-400 font-mono">/mo</span>
+                                </td>
 
-                              {/* Deposit Column */}
-                              <td className="px-4 py-4 text-right font-mono text-sm font-medium text-slate-600">
-                                {l.depositKes ? formatCompactKES(parseFloat(l.depositKes)) : "—"}
-                              </td>
-
-                              {/* Status Column */}
-                              <td className="px-4 py-4 text-center">
-                                <Badge tone={l.isActive ? "success" : "neutral"}>
-                                  {l.isActive ? "Active" : "Terminated"}
-                                </Badge>
-                              </td>
-
-                              {/* Actions Column */}
-                              <td className="px-4 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                                <DropdownMenu label="Lease actions" align="right" trigger={
-                                  <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 inline-flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100 shadow-2xs">
-                                    <IconDotsVertical size={16} />
-                                  </span>
-                                }>
-                                  <DropdownItem icon={l.isFeatured ? IconStarFilled : IconStar} onClick={() => handleToggleFeature(l.propertyId, !!l.isFeatured)}>
-                                    {l.isFeatured ? "Unfeature Property" : "Feature Property"}
-                                  </DropdownItem>
-                                  <DropdownItem icon={IconUserCircle} onClick={() => setTenantDrawerId(l.tenantContactId)}>Tenant Profile</DropdownItem>
-                                  <Link href="/admin/messages"><DropdownItem icon={IconMessageCircle}>Message Manager</DropdownItem></Link>
-                                  <Link href={`/admin/leases/${l.id}`}><DropdownItem icon={IconFileText}>View Lease File</DropdownItem></Link>
-                                  {l.isActive && (
-                                    <DropdownItem icon={IconRefresh} onClick={() => setRenewingLease(l)}>Renew Lease</DropdownItem>
+                                {/* Balance Column */}
+                                <td className="px-4 py-4 text-right">
+                                  {(l.balanceKes ?? 0) > 0 ? (
+                                    <Badge tone="risk">
+                                      {formatCompactKES(l.balanceKes ?? 0)} Overdue
+                                    </Badge>
+                                  ) : (
+                                    <Badge tone="success">Current</Badge>
                                   )}
-                                  <DropdownItem icon={IconCalendarClock} onClick={() => setEditingLease(l)}>Edit Lease</DropdownItem>
-                                  {l.isActive && (
-                                    <DropdownItem icon={IconBan} variant="danger" onClick={() => setTerminatingLease(l)}>Terminate Lease</DropdownItem>
-                                  )}
-                                </DropdownMenu>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                                </td>
+
+                                {/* Deposit Column */}
+                                <td className="px-4 py-4 text-right font-mono text-sm font-medium text-slate-600">
+                                  {l.depositKes ? formatCompactKES(parseFloat(l.depositKes)) : "—"}
+                                </td>
+
+                                {/* Status Column */}
+                                <td className="px-4 py-4 text-center">
+                                  <Badge tone={l.isActive ? "success" : "neutral"}>
+                                    {l.isActive ? "Active" : "Terminated"}
+                                  </Badge>
+                                </td>
+
+                                {/* Actions Column */}
+                                <td
+                                  className="px-4 py-4 text-right"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <DropdownMenu
+                                    label="Lease actions"
+                                    align="right"
+                                    trigger={
+                                      <span className="size-8 rounded-xl bg-slate-50 border border-slate-200/80 inline-flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100 shadow-2xs">
+                                        <IconDotsVertical size={16} />
+                                      </span>
+                                    }
+                                  >
+                                    <DropdownItem
+                                      icon={l.isFeatured ? IconStarFilled : IconStar}
+                                      onClick={() =>
+                                        handleToggleFeature(l.propertyId, !!l.isFeatured)
+                                      }
+                                    >
+                                      {l.isFeatured ? "Unfeature Property" : "Feature Property"}
+                                    </DropdownItem>
+                                    <DropdownItem
+                                      icon={IconUserCircle}
+                                      onClick={() => setTenantDrawerId(l.tenantContactId)}
+                                    >
+                                      Tenant Profile
+                                    </DropdownItem>
+                                    <Link href="/admin/messages">
+                                      <DropdownItem icon={IconMessageCircle}>
+                                        Message Manager
+                                      </DropdownItem>
+                                    </Link>
+                                    <Link href={`/admin/leases/${l.id}`}>
+                                      <DropdownItem icon={IconFileText}>
+                                        View Lease File
+                                      </DropdownItem>
+                                    </Link>
+                                    {l.isActive && (
+                                      <DropdownItem
+                                        icon={IconRefresh}
+                                        onClick={() => setRenewingLease(l)}
+                                      >
+                                        Renew Lease
+                                      </DropdownItem>
+                                    )}
+                                    <DropdownItem
+                                      icon={IconCalendarClock}
+                                      onClick={() => setEditingLease(l)}
+                                    >
+                                      Edit Lease
+                                    </DropdownItem>
+                                    {l.isActive && (
+                                      <DropdownItem
+                                        icon={IconBan}
+                                        variant="danger"
+                                        onClick={() => setTerminatingLease(l)}
+                                      >
+                                        Terminate Lease
+                                      </DropdownItem>
+                                    )}
+                                  </DropdownMenu>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
@@ -2890,42 +3909,74 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           <div className="flex flex-col gap-5 mb-6">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-medium text-slate-800 flex items-center gap-2">
-                <IconClock size={16} className="text-slate-600" stroke={2} /> Recent Mandate Activity
+                <IconClock size={16} className="text-slate-600" stroke={2} /> Recent Mandate
+                Activity
               </h3>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <div className="relative flex-1">
-                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input type="text" placeholder="Search activity logs..." value={mandateActivitySearchQuery}
-                  onChange={(e) => { setMandateActivitySearchQuery(e.target.value); setMandateActivityPage(1); }}
-                  className="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all placeholder:text-slate-400" />
+                <IconSearch
+                  size={16}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+                <input
+                  type="text"
+                  placeholder="Search activity logs..."
+                  value={mandateActivitySearchQuery}
+                  onChange={(e) => {
+                    setMandateActivitySearchQuery(e.target.value);
+                    setMandateActivityPage(1);
+                  }}
+                  className="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all placeholder:text-slate-400"
+                />
               </div>
               <div className="relative shrink-0">
-                <IconFilter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                <select value={mandateActivityFilter} onChange={(e) => { setMandateActivityFilter(e.target.value); setMandateActivityPage(1); }}
-                  className="appearance-none bg-white border border-slate-200 text-sm font-medium text-slate-700 rounded-xl pl-8 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all cursor-pointer">
+                <IconFilter
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
+                <select
+                  value={mandateActivityFilter}
+                  onChange={(e) => {
+                    setMandateActivityFilter(e.target.value);
+                    setMandateActivityPage(1);
+                  }}
+                  className="appearance-none bg-white border border-slate-200 text-sm font-medium text-slate-700 rounded-xl pl-8 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all cursor-pointer"
+                >
                   <option value="all">All Events</option>
                   <option value="edits">Modifications</option>
                   <option value="terminations">Terminations</option>
                   <option value="system">System Actions</option>
                 </select>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"><IconChevronRight size={14} className="text-slate-400 rotate-90" /></div>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <IconChevronRight size={14} className="text-slate-400 rotate-90" />
+                </div>
               </div>
             </div>
           </div>
           {mandateActivityLoading ? (
-            <div className="flex items-center justify-center py-12"><LoadingSpinner size="md" /></div>
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="md" />
+            </div>
           ) : mandateActivity.length === 0 ? (
             <div className="flex flex-col items-center text-center gap-4 py-12 bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
-              <div className="size-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center mb-1"><IconMoodEmpty size={32} className="text-slate-300" /></div>
-              <h3 className="text-sm font-medium text-slate-700">No recorded mandate activity yet.</h3>
-              <p className="text-slate-400 max-w-sm text-xs">Status changes, edits, and mandate events will safely log here.</p>
+              <div className="size-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center mb-1">
+                <IconMoodEmpty size={32} className="text-slate-300" />
+              </div>
+              <h3 className="text-sm font-medium text-slate-700">
+                No recorded mandate activity yet.
+              </h3>
+              <p className="text-slate-400 max-w-sm text-xs">
+                Status changes, edits, and mandate events will safely log here.
+              </p>
             </div>
           ) : paginatedMandateActivity.length === 0 ? (
             <div className="flex flex-col items-center py-12 text-center">
               <IconSearch size={24} className="text-slate-300 mb-3" />
               <p className="text-sm font-medium text-slate-700">No logs match your filter</p>
-              <p className="text-xs text-slate-400 mt-1">Try adjusting the search query or dropdown.</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Try adjusting the search query or dropdown.
+              </p>
             </div>
           ) : (
             <div className="flex flex-col gap-6 relative ml-1">
@@ -2933,16 +3984,45 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
               {paginatedMandateActivity.map((entry) => {
                 const toneColor = getActivityTone(entry.summary);
                 return (
-                  <div key={entry.id} className="relative flex items-start lg:items-center gap-4 z-10 group">
-                    <div className={cn("size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs", toneColor)} />
-                    <Link href={entry.associatedId ? `/admin/mandates/${entry.associatedId}` : "#"}
-                      className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 hover:bg-slate-50/50 -my-1.5 -mx-3 p-1.5 px-3 rounded-xl transition-colors cursor-pointer">
+                  <div
+                    key={entry.id}
+                    className="relative flex items-start lg:items-center gap-4 z-10 group"
+                  >
+                    <div
+                      className={cn(
+                        "size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs",
+                        toneColor
+                      )}
+                    />
+                    <Link
+                      href={entry.associatedId ? `/admin/mandates/${entry.associatedId}` : "#"}
+                      className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 hover:bg-slate-50/50 -my-1.5 -mx-3 p-1.5 px-3 rounded-xl transition-colors cursor-pointer"
+                    >
                       <p className="text-sm text-slate-500 leading-snug group-hover:text-slate-700 transition-colors flex-1 min-w-0 pr-4">
-                        {entry.actorName ? (<><span className="font-medium text-slate-700">{entry.actorName}</span> {entry.summary.replace(entry.actorName, "").replace(/^ - |^ — /, "").trim()}</>) : entry.summary}
+                        {entry.actorName ? (
+                          <>
+                            <span className="font-medium text-slate-700">{entry.actorName}</span>{" "}
+                            {entry.summary
+                              .replace(entry.actorName, "")
+                              .replace(/^ - |^ — /, "")
+                              .trim()}
+                          </>
+                        ) : (
+                          entry.summary
+                        )}
                       </p>
                       <div className="flex items-center gap-3 shrink-0">
                         <p className="text-xs text-slate-400 font-mono tracking-wider hidden lg:block">
-                          {new Date(entry.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}, {new Date(entry.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          ,{" "}
+                          {new Date(entry.createdAt).toLocaleTimeString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </p>
                         <Badge tone="neutral">{relativeTime(entry.createdAt)}</Badge>
                       </div>
@@ -2954,10 +4034,31 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           )}
           {mandateActivityTotalPages > 1 && (
             <div className="flex items-center justify-between pt-6 mt-6 border-t border-slate-100">
-              <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">Page {safeMandateActivityPage} of {mandateActivityTotalPages} · {filteredMandateActivity.length} logs</span>
+              <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
+                Page {safeMandateActivityPage} of {mandateActivityTotalPages} ·{" "}
+                {filteredMandateActivity.length} logs
+              </span>
               <div className="flex items-center gap-1.5">
-                <button type="button" onClick={() => setMandateActivityPage(Math.max(1, safeMandateActivityPage - 1))} disabled={safeMandateActivityPage <= 1} className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"><IconChevronLeft size={15} /></button>
-                <button type="button" onClick={() => setMandateActivityPage(Math.min(mandateActivityTotalPages, safeMandateActivityPage + 1))} disabled={safeMandateActivityPage >= mandateActivityTotalPages} className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"><IconChevronRight size={15} /></button>
+                <button
+                  type="button"
+                  onClick={() => setMandateActivityPage(Math.max(1, safeMandateActivityPage - 1))}
+                  disabled={safeMandateActivityPage <= 1}
+                  className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  <IconChevronLeft size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMandateActivityPage(
+                      Math.min(mandateActivityTotalPages, safeMandateActivityPage + 1)
+                    )
+                  }
+                  disabled={safeMandateActivityPage >= mandateActivityTotalPages}
+                  className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  <IconChevronRight size={15} />
+                </button>
               </div>
             </div>
           )}
@@ -2975,37 +4076,68 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <div className="relative flex-1">
-                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input type="text" placeholder="Search activity logs..." value={leaseActivitySearchQuery}
-                  onChange={(e) => { setLeaseActivitySearchQuery(e.target.value); setLeaseActivityPage(1); }}
-                  className="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all placeholder:text-slate-400" />
+                <IconSearch
+                  size={16}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+                <input
+                  type="text"
+                  placeholder="Search activity logs..."
+                  value={leaseActivitySearchQuery}
+                  onChange={(e) => {
+                    setLeaseActivitySearchQuery(e.target.value);
+                    setLeaseActivityPage(1);
+                  }}
+                  className="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all placeholder:text-slate-400"
+                />
               </div>
               <div className="relative shrink-0">
-                <IconFilter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                <select value={leaseActivityFilter} onChange={(e) => { setLeaseActivityFilter(e.target.value); setLeaseActivityPage(1); }}
-                  className="appearance-none bg-white border border-slate-200 text-sm font-medium text-slate-700 rounded-xl pl-8 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all cursor-pointer">
+                <IconFilter
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
+                <select
+                  value={leaseActivityFilter}
+                  onChange={(e) => {
+                    setLeaseActivityFilter(e.target.value);
+                    setLeaseActivityPage(1);
+                  }}
+                  className="appearance-none bg-white border border-slate-200 text-sm font-medium text-slate-700 rounded-xl pl-8 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[#151936]/20 transition-all cursor-pointer"
+                >
                   <option value="all">All Events</option>
                   <option value="edits">Modifications</option>
                   <option value="terminations">Terminations</option>
                   <option value="system">System Actions</option>
                 </select>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"><IconChevronRight size={14} className="text-slate-400 rotate-90" /></div>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <IconChevronRight size={14} className="text-slate-400 rotate-90" />
+                </div>
               </div>
             </div>
           </div>
           {leaseActivityLoading ? (
-            <div className="flex items-center justify-center py-12"><LoadingSpinner size="md" /></div>
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="md" />
+            </div>
           ) : leaseActivity.length === 0 ? (
             <div className="flex flex-col items-center text-center gap-4 py-12 bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
-              <div className="size-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center mb-1"><IconMoodEmpty size={32} className="text-slate-300" /></div>
-              <h3 className="text-sm font-medium text-slate-700">No recorded lease activity yet.</h3>
-              <p className="text-slate-400 max-w-sm text-xs">Status changes, edits, and lease events will safely log here.</p>
+              <div className="size-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center mb-1">
+                <IconMoodEmpty size={32} className="text-slate-300" />
+              </div>
+              <h3 className="text-sm font-medium text-slate-700">
+                No recorded lease activity yet.
+              </h3>
+              <p className="text-slate-400 max-w-sm text-xs">
+                Status changes, edits, and lease events will safely log here.
+              </p>
             </div>
           ) : paginatedLeaseActivity.length === 0 ? (
             <div className="flex flex-col items-center py-12 text-center">
               <IconSearch size={24} className="text-slate-300 mb-3" />
               <p className="text-sm font-medium text-slate-700">No logs match your filter</p>
-              <p className="text-xs text-slate-400 mt-1">Try adjusting the search query or dropdown.</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Try adjusting the search query or dropdown.
+              </p>
             </div>
           ) : (
             <div className="flex flex-col gap-6 relative ml-1">
@@ -3013,16 +4145,45 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
               {paginatedLeaseActivity.map((entry) => {
                 const toneColor = getActivityTone(entry.summary);
                 return (
-                  <div key={entry.id} className="relative flex items-start lg:items-center gap-4 z-10 group">
-                    <div className={cn("size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs", toneColor)} />
-                    <Link href={entry.associatedId ? `/admin/leases/${entry.associatedId}` : "#"}
-                      className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 hover:bg-slate-50/50 -my-1.5 -mx-3 p-1.5 px-3 rounded-xl transition-colors cursor-pointer">
+                  <div
+                    key={entry.id}
+                    className="relative flex items-start lg:items-center gap-4 z-10 group"
+                  >
+                    <div
+                      className={cn(
+                        "size-[8px] rounded-full mt-1.5 lg:mt-0 shrink-0 ring-4 shadow-xs",
+                        toneColor
+                      )}
+                    />
+                    <Link
+                      href={entry.associatedId ? `/admin/leases/${entry.associatedId}` : "#"}
+                      className="flex-1 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-6 hover:bg-slate-50/50 -my-1.5 -mx-3 p-1.5 px-3 rounded-xl transition-colors cursor-pointer"
+                    >
                       <p className="text-sm text-slate-500 leading-snug group-hover:text-slate-700 transition-colors flex-1 min-w-0 pr-4">
-                        {entry.actorName ? (<><span className="font-medium text-slate-700">{entry.actorName}</span> {entry.summary.replace(entry.actorName, "").replace(/^ - |^ — /, "").trim()}</>) : entry.summary}
+                        {entry.actorName ? (
+                          <>
+                            <span className="font-medium text-slate-700">{entry.actorName}</span>{" "}
+                            {entry.summary
+                              .replace(entry.actorName, "")
+                              .replace(/^ - |^ — /, "")
+                              .trim()}
+                          </>
+                        ) : (
+                          entry.summary
+                        )}
                       </p>
                       <div className="flex items-center gap-3 shrink-0">
                         <p className="text-xs text-slate-400 font-mono tracking-wider hidden lg:block">
-                          {new Date(entry.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}, {new Date(entry.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          ,{" "}
+                          {new Date(entry.createdAt).toLocaleTimeString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </p>
                         <Badge tone="neutral">{relativeTime(entry.createdAt)}</Badge>
                       </div>
@@ -3034,37 +4195,54 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           )}
           {leaseActivityTotalPages > 1 && (
             <div className="flex items-center justify-between pt-6 mt-6 border-t border-slate-100">
-              <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">Page {safeLeaseActivityPage} of {leaseActivityTotalPages} · {filteredLeaseActivity.length} logs</span>
+              <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-md border border-slate-100">
+                Page {safeLeaseActivityPage} of {leaseActivityTotalPages} ·{" "}
+                {filteredLeaseActivity.length} logs
+              </span>
               <div className="flex items-center gap-1.5">
-                <button type="button" onClick={() => setLeaseActivityPage(Math.max(1, safeLeaseActivityPage - 1))} disabled={safeLeaseActivityPage <= 1} className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"><IconChevronLeft size={15} /></button>
-                <button type="button" onClick={() => setLeaseActivityPage(Math.min(leaseActivityTotalPages, safeLeaseActivityPage + 1))} disabled={safeLeaseActivityPage >= leaseActivityTotalPages} className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"><IconChevronRight size={15} /></button>
+                <button
+                  type="button"
+                  onClick={() => setLeaseActivityPage(Math.max(1, safeLeaseActivityPage - 1))}
+                  disabled={safeLeaseActivityPage <= 1}
+                  className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  <IconChevronLeft size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setLeaseActivityPage(
+                      Math.min(leaseActivityTotalPages, safeLeaseActivityPage + 1)
+                    )
+                  }
+                  disabled={safeLeaseActivityPage >= leaseActivityTotalPages}
+                  className="size-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  <IconChevronRight size={15} />
+                </button>
               </div>
             </div>
           )}
         </div>
       )}
 
-      {
-        isModalOpen && (
-          <LeaseFormModal
-            open={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onSubmit={loadLeases}
-          />
-        )
-      }
+      {isModalOpen && (
+        <LeaseFormModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={loadLeases}
+        />
+      )}
 
-      {
-        editingLease && (
-          <LeaseFormModal
-            open={!!editingLease}
-            mode="edit"
-            lease={leaseToEditTarget(editingLease)}
-            onClose={() => setEditingLease(null)}
-            onSubmit={loadLeases}
-          />
-        )
-      }
+      {editingLease && (
+        <LeaseFormModal
+          open={!!editingLease}
+          mode="edit"
+          lease={leaseToEditTarget(editingLease)}
+          onClose={() => setEditingLease(null)}
+          onSubmit={loadLeases}
+        />
+      )}
 
       <LeaseRenewModal
         open={!!renewingLease}
@@ -3073,16 +4251,14 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
         onRenewed={loadLeases}
       />
 
-      {
-        mandateModalOpen && (
-          <MandateFormModal
-            open={mandateModalOpen}
-            entityId={entityId}
-            onClose={() => setMandateModalOpen(false)}
-            onCreated={loadMandates}
-          />
-        )
-      }
+      {mandateModalOpen && (
+        <MandateFormModal
+          open={mandateModalOpen}
+          entityId={entityId}
+          onClose={() => setMandateModalOpen(false)}
+          onCreated={loadMandates}
+        />
+      )}
 
       {letterModalTarget && (
         <MandateLetterModal
@@ -3094,13 +4270,20 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           landlordName={letterModalTarget.landlordName}
           hasExistingLetter={false}
           onClose={() => setLetterModalTarget(null)}
-          onAttached={() => { setLetterModalTarget(null); loadMandates(); }}
+          onAttached={() => {
+            setLetterModalTarget(null);
+            loadMandates();
+          }}
         />
       )}
 
       <ConfirmDialog
         open={!!terminatingMandate}
-        onClose={() => { setTerminatingMandate(null); setTerminateNotes(""); setTerminateNotesErr(false); }}
+        onClose={() => {
+          setTerminatingMandate(null);
+          setTerminateNotes("");
+          setTerminateNotesErr(false);
+        }}
         onConfirm={handleTerminateMandate}
         title="Terminate Mandate"
         description="This cannot be undone. Rent collection under this mandate stops, and the final landlord remittance is queued for review."
@@ -3111,7 +4294,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           label: "Termination reason",
           placeholder: "Why is this mandate being terminated?",
           value: terminateNotes,
-          onChange: (v) => { setTerminateNotes(v); setTerminateNotesErr(false); },
+          onChange: (v) => {
+            setTerminateNotes(v);
+            setTerminateNotesErr(false);
+          },
           required: true,
           error: terminateNotesErr ? "A reason is required." : undefined,
         }}
@@ -3119,7 +4305,11 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
 
       <ConfirmDialog
         open={!!terminatingLease}
-        onClose={() => { setTerminatingLease(null); setLeaseTerminateNotes(""); setLeaseTerminateNotesErr(false); }}
+        onClose={() => {
+          setTerminatingLease(null);
+          setLeaseTerminateNotes("");
+          setLeaseTerminateNotesErr(false);
+        }}
         onConfirm={handleTerminateLease}
         title="Terminate Lease"
         description="This cannot be undone. The tenancy is set to inactive and the unit becomes available immediately."
@@ -3130,7 +4320,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           label: "Termination reason",
           placeholder: "Why is this lease being terminated?",
           value: leaseTerminateNotes,
-          onChange: (v) => { setLeaseTerminateNotes(v); setLeaseTerminateNotesErr(false); },
+          onChange: (v) => {
+            setLeaseTerminateNotes(v);
+            setLeaseTerminateNotesErr(false);
+          },
           required: true,
           error: leaseTerminateNotesErr ? "A reason is required." : undefined,
         }}
@@ -3138,7 +4331,11 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
 
       <ConfirmDialog
         open={!!terminatingMandate}
-        onClose={() => { setTerminatingMandate(null); setTerminateNotes(""); setTerminateNotesErr(false); }}
+        onClose={() => {
+          setTerminatingMandate(null);
+          setTerminateNotes("");
+          setTerminateNotesErr(false);
+        }}
         onConfirm={handleTerminateMandate}
         title="Terminate Management Mandate"
         description="Are you sure you want to terminate this mandate? This action will set the mandate status to terminated and log the event in the corporate audit trail."
@@ -3149,7 +4346,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           label: "Termination reason",
           placeholder: "Why is this mandate being terminated?",
           value: terminateNotes,
-          onChange: (v) => { setTerminateNotes(v); setTerminateNotesErr(false); },
+          onChange: (v) => {
+            setTerminateNotes(v);
+            setTerminateNotesErr(false);
+          },
           required: true,
           error: terminateNotesErr ? "A reason is required." : undefined,
         }}
@@ -3161,7 +4361,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
         entityId={entityId}
         ownerContactId={ownerDrawer.ownerContactId}
         properties={ownerDrawer.properties}
-        onOpenProperty={(p) => { setOwnerDrawer({ open: false, ownerContactId: null, properties: [] }); router.push(`/admin/properties/${p.id}`); }}
+        onOpenProperty={(p) => {
+          setOwnerDrawer({ open: false, ownerContactId: null, properties: [] });
+          router.push(`/admin/properties/${p.id}`);
+        }}
       />
 
       {remittanceAdviceModal && (
@@ -3170,7 +4373,10 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           remittance={selectedRemittance}
           landlordName={remittanceAdviceModal.landlordName}
           propertyName={remittanceAdviceModal.propertyName}
-          onClose={() => { setRemittanceAdviceModal(null); setSelectedRemittance(null); }}
+          onClose={() => {
+            setRemittanceAdviceModal(null);
+            setSelectedRemittance(null);
+          }}
           onDecided={loadMandates}
         />
       )}
@@ -3214,7 +4420,7 @@ export function LeasesBoard({ entityId }: { entityId: string }) {
           setTerminatingMandate(m);
         }}
       />
-    </PageTransition >
+    </PageTransition>
   );
 }
 

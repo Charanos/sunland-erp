@@ -11,25 +11,51 @@
 // deliberately distinct from the generic Badge component's tone palette, and
 // pill-only (no border), matching the mockup's own `pill(bg, fg)` recipe.
 
-export type MaintenanceStatus = "reported" | "awaiting_approval" | "scheduled" | "in_progress" | "done";
+export type MaintenanceStatus =
+  | "reported"
+  | "awaiting_approval"
+  | "scheduled"
+  | "in_progress"
+  | "done";
 // Column name stays `priority`; UI label is "Severity" per the design.
 export type MaintenancePriority = "routine" | "urgent" | "critical";
 export type MaintenanceCategory = "reactive" | "planned" | "compliance";
 
-export const STATUS_META: Record<MaintenanceStatus, { label: string; pill: string; dot: string }> = {
-  reported: { label: "Reported", pill: "bg-[#f1f5f9] text-[#64748b]", dot: "bg-[#94a3b8]" },
-  awaiting_approval: {
-    label: "Awaiting Approval",
-    pill: "bg-[rgba(245,158,11,0.14)] text-[#b45309]",
-    dot: "bg-[#f59e0b]",
-  },
-  scheduled: { label: "Scheduled", pill: "bg-[rgba(129,140,248,0.14)] text-[#4338ca]", dot: "bg-[#818cf8]" },
-  in_progress: { label: "In Progress", pill: "bg-[rgba(243,223,39,0.22)] text-[#151936]", dot: "bg-[#f3df27]" },
-  done: { label: "Completed", pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]", dot: "bg-[#10b981]" },
-};
+export const STATUS_META: Record<MaintenanceStatus, { label: string; pill: string; dot: string }> =
+  {
+    reported: { label: "Reported", pill: "bg-[#f1f5f9] text-[#64748b]", dot: "bg-[#94a3b8]" },
+    awaiting_approval: {
+      label: "Awaiting Approval",
+      pill: "bg-[rgba(245,158,11,0.14)] text-[#b45309]",
+      dot: "bg-[#f59e0b]",
+    },
+    scheduled: {
+      label: "Scheduled",
+      pill: "bg-[rgba(129,140,248,0.14)] text-[#4338ca]",
+      dot: "bg-[#818cf8]",
+    },
+    in_progress: {
+      label: "In Progress",
+      pill: "bg-[rgba(243,223,39,0.22)] text-[#151936]",
+      dot: "bg-[#f3df27]",
+    },
+    done: {
+      label: "Completed",
+      pill: "bg-[rgba(16,185,129,0.12)] text-[#047857]",
+      dot: "bg-[#10b981]",
+    },
+  };
 
-export const PRIORITY_META: Record<MaintenancePriority, { label: string; pill: string; dot: string; rail: string }> = {
-  routine: { label: "Routine", pill: "bg-[#f1f5f9] text-[#64748b]", dot: "bg-[#64748b]", rail: "bg-[#cbd5e1]" },
+export const PRIORITY_META: Record<
+  MaintenancePriority,
+  { label: string; pill: string; dot: string; rail: string }
+> = {
+  routine: {
+    label: "Routine",
+    pill: "bg-[#f1f5f9] text-[#64748b]",
+    dot: "bg-[#64748b]",
+    rail: "bg-[#cbd5e1]",
+  },
   urgent: {
     label: "Urgent",
     pill: "bg-[rgba(245,158,11,0.14)] text-[#b45309]",
@@ -72,7 +98,8 @@ export function slaStateFor(input: {
     : new Date();
   const hoursElapsed = Math.max(0, (end.getTime() - created.getTime()) / 3_600_000);
   const hoursRemaining = input.targetHours - hoursElapsed;
-  const state: SlaState = hoursRemaining < 0 ? "breached" : hoursRemaining <= input.targetHours * 0.2 ? "at_risk" : "ok";
+  const state: SlaState =
+    hoursRemaining < 0 ? "breached" : hoursRemaining <= input.targetHours * 0.2 ? "at_risk" : "ok";
   return { state, hoursElapsed, hoursRemaining };
 }
 

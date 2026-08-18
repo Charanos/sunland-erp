@@ -33,7 +33,11 @@ export function usePresence(entityId: string | null, selfId: string | null): Set
         if (!channel) return;
         const members = await channel.presence.get();
         if (cancelled) return;
-        setOnline(new Set(members.map((m) => (typeof m.clientId === "string" ? m.clientId : "")).filter(Boolean)));
+        setOnline(
+          new Set(
+            members.map((m) => (typeof m.clientId === "string" ? m.clientId : "")).filter(Boolean)
+          )
+        );
       } catch {
         // no-op - keep whatever we last had
       }
@@ -43,7 +47,10 @@ export function usePresence(entityId: string | null, selfId: string | null): Set
       const client = getClient();
       channel = client.channels.get(`presence-entity-${entityId}`);
       channel.presence.subscribe(refresh);
-      channel.presence.enter({ id: selfId }).then(refresh).catch(() => { });
+      channel.presence
+        .enter({ id: selfId })
+        .then(refresh)
+        .catch(() => {});
     } catch {
       // No presence for this session - REST last-active still renders.
     }
@@ -52,7 +59,7 @@ export function usePresence(entityId: string | null, selfId: string | null): Set
       cancelled = true;
       try {
         channel?.presence.unsubscribe();
-        channel?.presence.leave().catch(() => { });
+        channel?.presence.leave().catch(() => {});
       } catch {
         // ignore teardown errors
       }

@@ -27,7 +27,12 @@ import { Modal } from "@/components/ui/modal";
 import { Drawer } from "@/components/ui/drawer";
 import { FinanceModuleNav } from "@/components/finance/finance-module-nav";
 import { FinanceQrProof } from "@/components/finance/finance-qr-proof";
-import { BoardHeader, BoardPanel, Button, PaginationControls } from "@/components/ui/erp-primitives";
+import {
+  BoardHeader,
+  BoardPanel,
+  Button,
+  PaginationControls,
+} from "@/components/ui/erp-primitives";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -35,7 +40,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip
+  Tooltip,
 } from "recharts";
 import { formatCompactKES } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
@@ -58,7 +63,12 @@ interface ChequeRecord {
   auditLog: string[];
   reconciliationDate?: string;
   ledgerJournal?: string;
-  returnReason?: "Insufficient Funds" | "Signature Mismatch" | "Post-Dated" | "Refer to Drawer" | "Other";
+  returnReason?:
+    | "Insufficient Funds"
+    | "Signature Mismatch"
+    | "Post-Dated"
+    | "Refer to Drawer"
+    | "Other";
   followUpAction?: "Re-presented" | "Voided" | "Tenant Notified";
   approvalStatus?: "Pending Approval";
   approvalRef?: string;
@@ -78,7 +88,11 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
     description: "Office rent settlement for Riverside Annex - Suite 3B",
     source: "Front Office",
     holder: "Finance Head + GM",
-    auditLog: ["Cheque deposited by Front Office", "Bank confirmation pending", "Above threshold review required"]
+    auditLog: [
+      "Cheque deposited by Front Office",
+      "Bank confirmation pending",
+      "Above threshold review required",
+    ],
   },
   {
     id: "c2",
@@ -93,7 +107,7 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
     holder: "Finance Officer",
     auditLog: ["Cheque deposited", "Bank credit confirmed", "Journal JE-1038 posted"],
     reconciliationDate: "2026-06-19",
-    ledgerJournal: "JE-1038"
+    ledgerJournal: "JE-1038",
   },
   {
     id: "c3",
@@ -109,7 +123,7 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
     auditLog: ["Cheque deposited", "Bank returned cheque", "Tenant follow-up task opened"],
     reconciliationDate: "2026-06-16",
     returnReason: "Signature Mismatch",
-    followUpAction: "Tenant Notified"
+    followUpAction: "Tenant Notified",
   },
   {
     id: "c4",
@@ -124,7 +138,7 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
     holder: "Finance Officer",
     auditLog: ["Cheque deposited", "Bank credit confirmed", "Journal JE-1033 posted"],
     reconciliationDate: "2026-06-14",
-    ledgerJournal: "JE-1033"
+    ledgerJournal: "JE-1033",
   },
   {
     id: "c5",
@@ -137,7 +151,7 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
     description: "Property repair contribution split",
     source: "Front Office",
     holder: "Bank Clearing Desk",
-    auditLog: ["Cheque deposited", "Deposit slip matched", "Awaiting bank credit stamp"]
+    auditLog: ["Cheque deposited", "Deposit slip matched", "Awaiting bank credit stamp"],
   },
   {
     id: "c6",
@@ -152,8 +166,8 @@ const INITIAL_CHEQUES: ChequeRecord[] = [
     holder: "Finance Officer",
     auditLog: ["Cheque deposited", "Bank credit confirmed", "Journal JE-1025 posted"],
     reconciliationDate: "2026-06-10",
-    ledgerJournal: "JE-1025"
-  }
+    ledgerJournal: "JE-1025",
+  },
 ];
 
 const INITIAL_CHART_DATA = [
@@ -162,7 +176,7 @@ const INITIAL_CHART_DATA = [
   { month: "Mar", Cleared: 2200000, Returned: 125000 },
   { month: "Apr", Cleared: 1950000, Returned: 0 },
   { month: "May", Cleared: 2400000, Returned: 68000 },
-  { month: "Jun", Cleared: 695000, Returned: 45000 }
+  { month: "Jun", Cleared: 695000, Returned: 45000 },
 ];
 
 const ROWS_PER_PAGE = 5;
@@ -170,9 +184,14 @@ const CHEQUE_APPROVAL_THRESHOLD = 500000;
 const WORK_DATE = new Date("2026-06-22T00:00:00");
 const formatMoney = (value: number) => formatCompactKES(value);
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat("en-KE", { month: "short", day: "numeric", year: "numeric" }).format(new Date(`${value}T00:00:00`));
+  new Intl.DateTimeFormat("en-KE", { month: "short", day: "numeric", year: "numeric" }).format(
+    new Date(`${value}T00:00:00`)
+  );
 const clearingAge = (value: string) =>
-  Math.max(0, Math.ceil((WORK_DATE.getTime() - new Date(`${value}T00:00:00`).getTime()) / 86_400_000));
+  Math.max(
+    0,
+    Math.ceil((WORK_DATE.getTime() - new Date(`${value}T00:00:00`).getTime()) / 86_400_000)
+  );
 
 export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }) {
   const { pushToast } = useToast();
@@ -201,8 +220,10 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
   const [clearJournalDesc, setClearJournalDesc] = useState("");
 
   // Form State - Return Cheque
-  const [retReason, setRetReason] = useState<NonNullable<ChequeRecord["returnReason"]>>("Insufficient Funds");
-  const [retAction, setRetAction] = useState<NonNullable<ChequeRecord["followUpAction"]>>("Tenant Notified");
+  const [retReason, setRetReason] =
+    useState<NonNullable<ChequeRecord["returnReason"]>>("Insufficient Funds");
+  const [retAction, setRetAction] =
+    useState<NonNullable<ChequeRecord["followUpAction"]>>("Tenant Notified");
 
   // ── Log New Cheque modal state ──────────────────────────────────────────────
   const [logOpen, setLogOpen] = useState(false);
@@ -243,19 +264,27 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
   // ── Log New Cheque handlers ─────────────────────────────────────────────────
 
   const stopCamera = useCallback(() => {
-    cameraStream?.getTracks().forEach(t => t.stop());
+    cameraStream?.getTracks().forEach((t) => t.stop());
     setCameraStream(null);
     setUsingCamera(false);
   }, [cameraStream]);
 
   const startCamera = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+      });
       setCameraStream(stream);
       setUsingCamera(true);
-      if (videoRef.current) { videoRef.current.srcObject = stream; }
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
     } catch {
-      pushToast({ tone: "warning", title: "Camera unavailable", body: "Could not access camera. Please upload a photo instead." });
+      pushToast({
+        tone: "warning",
+        title: "Camera unavailable",
+        body: "Could not access camera. Please upload a photo instead.",
+      });
     }
   }, [pushToast]);
 
@@ -275,7 +304,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = ev => setLogPhotoUrl(ev.target?.result as string);
+    reader.onload = (ev) => setLogPhotoUrl(ev.target?.result as string);
     reader.readAsDataURL(file);
   }, []);
 
@@ -287,7 +316,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
 
   const handleLogFinalize = async () => {
     setLogSubmitting(true);
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 800));
     // Generate a stable token at event-time (not during render)
     const stableToken = `CHQ-${Date.now()}`;
     const newRecord: ChequeRecord = {
@@ -301,14 +330,21 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
       description: logForm.description || `Cheque received from ${logForm.payerName}`,
       source: logForm.source,
       holder: "Finance Officer",
-      auditLog: ["Logged via Sunland ERP Cheque Board", logPhotoUrl ? "Cheque photo captured and attached" : "No photo attached"],
+      auditLog: [
+        "Logged via Sunland ERP Cheque Board",
+        logPhotoUrl ? "Cheque photo captured and attached" : "No photo attached",
+      ],
     };
-    setCheques(prev => [newRecord, ...prev]);
+    setCheques((prev) => [newRecord, ...prev]);
     setLogGenerated(newRecord);
     setLogQrToken(stableToken); // store for render-time use
     setLogStep("qr");
     setLogSubmitting(false);
-    pushToast({ tone: "success", title: "Cheque Logged", body: `${newRecord.chequeNumber} added to the deposited queue.` });
+    pushToast({
+      tone: "success",
+      title: "Cheque Logged",
+      body: `${newRecord.chequeNumber} added to the deposited queue.`,
+    });
   };
 
   const resetLogModal = () => {
@@ -318,7 +354,15 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     setLogPhotoUrl(null);
     setLogGenerated(null);
     setLogQrToken("");
-    setLogForm({ chequeNumber: "", payerName: "", bankName: "", amount: "", description: "", source: "Front Office", depositedDate: new Date().toISOString().split("T")[0] });
+    setLogForm({
+      chequeNumber: "",
+      payerName: "",
+      bankName: "",
+      amount: "",
+      description: "",
+      source: "Front Office",
+      depositedDate: new Date().toISOString().split("T")[0],
+    });
   };
 
   // --- Handlers ---
@@ -328,7 +372,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     if (!clearCheque) return;
     setIsSubmitting(true);
     // Simulate double-entry clearing validation
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     const todayStr = new Date().toISOString().split("T")[0];
     const mockJournal = "JE-" + Math.floor(1040 + Math.random() * 50);
@@ -337,15 +381,15 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     if (needsApproval) {
       const approvalRef = "APR-CHQ-" + clearCheque.chequeNumber.replace("CHQ-", "");
 
-      setCheques(prev =>
-        prev.map(c => {
+      setCheques((prev) =>
+        prev.map((c) => {
           if (c.id === clearCheque.id) {
             return {
               ...c,
               approvalStatus: "Pending Approval",
               approvalRef,
               holder: "GM / Finance Head",
-              auditLog: [`${approvalRef} routed for dual sign-off`, ...c.auditLog]
+              auditLog: [`${approvalRef} routed for dual sign-off`, ...c.auditLog],
             };
           }
           return c;
@@ -358,13 +402,13 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
       pushToast({
         tone: "warning",
         title: "Approval Hold Created",
-        body: `Cheque ${clearCheque.chequeNumber} exceeds ${formatMoney(CHEQUE_APPROVAL_THRESHOLD)}. ${approvalRef} routed for GM/CEO approval with no ledger posting yet.`
+        body: `Cheque ${clearCheque.chequeNumber} exceeds ${formatMoney(CHEQUE_APPROVAL_THRESHOLD)}. ${approvalRef} routed for GM/CEO approval with no ledger posting yet.`,
       });
       return;
     }
 
-    setCheques(prev =>
-      prev.map(c => {
+    setCheques((prev) =>
+      prev.map((c) => {
         if (c.id === clearCheque.id) {
           return {
             ...c,
@@ -374,7 +418,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
             approvalStatus: undefined,
             approvalRef: undefined,
             holder: "Finance Officer",
-            auditLog: [`Bank credit posted through ${mockJournal}`, ...c.auditLog]
+            auditLog: [`Bank credit posted through ${mockJournal}`, ...c.auditLog],
           };
         }
         return c;
@@ -382,8 +426,8 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     );
 
     // Update June chart cleared volumes reactively
-    setChartData(prev =>
-      prev.map(c => (c.month === "Jun" ? { ...c, Cleared: c.Cleared + clearCheque.amount } : c))
+    setChartData((prev) =>
+      prev.map((c) => (c.month === "Jun" ? { ...c, Cleared: c.Cleared + clearCheque.amount } : c))
     );
 
     setClearCheque(null);
@@ -392,7 +436,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     pushToast({
       tone: "success",
       title: "Cheque Cleared & Posted",
-      body: `Cheque ${clearCheque.chequeNumber} cleared. DR Cash Operating / CR Receivables of ${formatMoney(clearCheque.amount)}. Journal entry logged as ${mockJournal}.`
+      body: `Cheque ${clearCheque.chequeNumber} cleared. DR Cash Operating / CR Receivables of ${formatMoney(clearCheque.amount)}. Journal entry logged as ${mockJournal}.`,
     });
   };
 
@@ -401,12 +445,12 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     if (!returnCheque) return;
     setIsSubmitting(true);
     // Simulate check return workflow
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
     const todayStr = new Date().toISOString().split("T")[0];
 
-    setCheques(prev =>
-      prev.map(c => {
+    setCheques((prev) =>
+      prev.map((c) => {
         if (c.id === returnCheque.id) {
           return {
             ...c,
@@ -415,7 +459,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
             returnReason: retReason,
             followUpAction: retAction,
             holder: retAction,
-            auditLog: [`Returned by bank: ${retReason}. Follow-up: ${retAction}`, ...c.auditLog]
+            auditLog: [`Returned by bank: ${retReason}. Follow-up: ${retAction}`, ...c.auditLog],
           };
         }
         return c;
@@ -423,8 +467,10 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     );
 
     // Update June chart returned volumes reactively
-    setChartData(prev =>
-      prev.map(c => (c.month === "Jun" ? { ...c, Returned: c.Returned + returnCheque.amount } : c))
+    setChartData((prev) =>
+      prev.map((c) =>
+        c.month === "Jun" ? { ...c, Returned: c.Returned + returnCheque.amount } : c
+      )
     );
 
     setReturnCheque(null);
@@ -433,21 +479,29 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
     pushToast({
       tone: "error",
       title: "Cheque Dishonored / Returned",
-      body: `Cheque ${returnCheque.chequeNumber} flagged as Returned. Reason: ${retReason}. Follow up workflow: ${retAction}.`
+      body: `Cheque ${returnCheque.chequeNumber} flagged as Returned. Reason: ${retReason}. Follow up workflow: ${retAction}.`,
     });
   };
 
   // --- Calculations ---
 
   const metrics = useMemo(() => {
-    const depositedCount = cheques.filter(c => c.status === "Pending").length;
-    const depositedValue = cheques.filter(c => c.status === "Pending").reduce((sum, c) => sum + c.amount, 0);
+    const depositedCount = cheques.filter((c) => c.status === "Pending").length;
+    const depositedValue = cheques
+      .filter((c) => c.status === "Pending")
+      .reduce((sum, c) => sum + c.amount, 0);
 
-    const clearedValue = cheques.filter(c => c.status === "Credited").reduce((sum, c) => sum + c.amount, 0);
-    const returnedCount = cheques.filter(c => c.status === "Returned").length;
-    const approvalHeld = cheques.filter(c => c.approvalStatus === "Pending Approval").length;
-    const staleClearing = cheques.filter(c => c.status === "Pending" && clearingAge(c.depositedDate) > 5).length;
-    const returnValue = cheques.filter(c => c.status === "Returned").reduce((sum, c) => sum + c.amount, 0);
+    const clearedValue = cheques
+      .filter((c) => c.status === "Credited")
+      .reduce((sum, c) => sum + c.amount, 0);
+    const returnedCount = cheques.filter((c) => c.status === "Returned").length;
+    const approvalHeld = cheques.filter((c) => c.approvalStatus === "Pending Approval").length;
+    const staleClearing = cheques.filter(
+      (c) => c.status === "Pending" && clearingAge(c.depositedDate) > 5
+    ).length;
+    const returnValue = cheques
+      .filter((c) => c.status === "Returned")
+      .reduce((sum, c) => sum + c.amount, 0);
 
     return {
       depositedCount,
@@ -456,16 +510,22 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
       returnedCount,
       approvalHeld,
       staleClearing,
-      returnValue
+      returnValue,
     };
   }, [cheques]);
 
   const clearanceQueue = useMemo(() => {
     return cheques
-      .filter(c => c.status === "Pending" || c.status === "Returned")
+      .filter((c) => c.status === "Pending" || c.status === "Returned")
       .sort((a, b) => {
-        const aScore = (a.approvalStatus ? 100 : 0) + clearingAge(a.depositedDate) + (a.status === "Returned" ? 50 : 0);
-        const bScore = (b.approvalStatus ? 100 : 0) + clearingAge(b.depositedDate) + (b.status === "Returned" ? 50 : 0);
+        const aScore =
+          (a.approvalStatus ? 100 : 0) +
+          clearingAge(a.depositedDate) +
+          (a.status === "Returned" ? 50 : 0);
+        const bScore =
+          (b.approvalStatus ? 100 : 0) +
+          clearingAge(b.depositedDate) +
+          (b.status === "Returned" ? 50 : 0);
         return bScore - aScore;
       })
       .slice(0, 5);
@@ -473,14 +533,15 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
 
   // Filters and search logic
   const filteredRows = useMemo(() => {
-    const targetStatus = activeTab === "deposited" ? "Pending" : activeTab === "credited" ? "Credited" : "Returned";
-    return cheques.filter(c =>
-      c.status === targetStatus && (
-        c.chequeNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.payerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.bankName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    const targetStatus =
+      activeTab === "deposited" ? "Pending" : activeTab === "credited" ? "Credited" : "Returned";
+    return cheques.filter(
+      (c) =>
+        c.status === targetStatus &&
+        (c.chequeNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.payerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.bankName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   }, [cheques, activeTab, searchQuery]);
 
@@ -518,7 +579,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
             className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h30v30H0V0zm1 1h28v28H1V1z' fill='%23ffffff' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-              backgroundSize: "30px 30px"
+              backgroundSize: "30px 30px",
             }}
           />
 
@@ -528,7 +589,7 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
             style={{
               backgroundImage: `url(https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2564&auto=format&fit=crop)`,
               backgroundSize: "cover",
-              backgroundPosition: "center"
+              backgroundPosition: "center",
             }}
           />
 
@@ -541,24 +602,41 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               {/* Left Column: Context & Title */}
               <div className="max-w-xl space-y-5">
                 <div className="flex items-center gap-3">
-                  <Badge tone="primary" className="bg-slate-700/60 text-slate-200 border-slate-600/50 px-3 py-1 shadow-sm backdrop-blur-md">
+                  <Badge
+                    tone="primary"
+                    className="bg-slate-700/60 text-slate-200 border-slate-600/50 px-3 py-1 shadow-sm backdrop-blur-md"
+                  >
                     {activeEntity.name}
                   </Badge>
-                  <span className="label-caps tracking-wider text-meta-muted">Treasury Control Console</span>
+                  <span className="label-caps tracking-wider text-meta-muted">
+                    Treasury Control Console
+                  </span>
                 </div>
                 <div>
                   <h2 className="title-serif font-normal leading-tight tracking-tight text-white mb-3">
                     Cheque Clearance
                   </h2>
                   <p className="leading-relaxed text-slate-300 font-normal max-w-lg body-md">
-                    Track deposited cheques, verify bank credit status, and route transaction amounts exceeding the policy limit to the CEO/GM approval chain before posting ledger records.
+                    Track deposited cheques, verify bank credit status, and route transaction
+                    amounts exceeding the policy limit to the CEO/GM approval chain before posting
+                    ledger records.
                   </p>
                 </div>
 
                 <div className="pt-2 flex items-center gap-4">
                   <div className="flex -space-x-2.5">
-                    <div className="size-8 rounded-full border-2 border-slate-900 bg-slate-700 flex items-center justify-center font-medium text-white shadow-md transition-all duration-300 hover:scale-125 hover:z-10 hover:translate-y-[-2px] cursor-pointer text-sm" title="Clearing Agent: John Doe">JD</div>
-                    <div className="size-8 rounded-full border-2 border-slate-900 bg-slate-600 flex items-center justify-center font-medium text-white shadow-md transition-all duration-300 hover:scale-125 hover:z-10 hover:translate-y-[-2px] cursor-pointer text-sm" title="Clearing Agent: Alice M.">AM</div>
+                    <div
+                      className="size-8 rounded-full border-2 border-slate-900 bg-slate-700 flex items-center justify-center font-medium text-white shadow-md transition-all duration-300 hover:scale-125 hover:z-10 hover:translate-y-[-2px] cursor-pointer text-sm"
+                      title="Clearing Agent: John Doe"
+                    >
+                      JD
+                    </div>
+                    <div
+                      className="size-8 rounded-full border-2 border-slate-900 bg-slate-600 flex items-center justify-center font-medium text-white shadow-md transition-all duration-300 hover:scale-125 hover:z-10 hover:translate-y-[-2px] cursor-pointer text-sm"
+                      title="Clearing Agent: Alice M."
+                    >
+                      AM
+                    </div>
                     <div className="flex size-8 items-center justify-center rounded-full border-2 border-slate-900 bg-slate-800/80 font-medium text-slate-300 backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-125 hover:z-10 hover:translate-y-[-2px] cursor-pointer text-sm">
                       +2
                     </div>
@@ -593,7 +671,10 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                     {/* Proportional Limit Meter */}
                     {(() => {
                       const clearingVal = metrics.depositedValue;
-                      const thresholdPct = Math.min(100, Math.round((clearingVal / CHEQUE_APPROVAL_THRESHOLD) * 100));
+                      const thresholdPct = Math.min(
+                        100,
+                        Math.round((clearingVal / CHEQUE_APPROVAL_THRESHOLD) * 100)
+                      );
                       return (
                         <div className="space-y-1.5 pt-1">
                           <div className="flex items-center justify-between text-slate-400 label-caps">
@@ -603,7 +684,12 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                           <div className="h-1 w-full rounded-full bg-slate-900/80 overflow-hidden flex border border-white/[0.02]">
                             <div
                               style={{ width: `${thresholdPct}%` }}
-                              className={cn("h-full transition-all duration-500", clearingVal > CHEQUE_APPROVAL_THRESHOLD ? "bg-rose-500/80 animate-pulse" : "bg-amber-500/70")}
+                              className={cn(
+                                "h-full transition-all duration-500",
+                                clearingVal > CHEQUE_APPROVAL_THRESHOLD
+                                  ? "bg-rose-500/80 animate-pulse"
+                                  : "bg-amber-500/70"
+                              )}
                             />
                           </div>
                         </div>
@@ -617,15 +703,21 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                     <div className="grid grid-cols-3 divide-x divide-white/5 border border-white/5 rounded-lg bg-slate-950/20 text-center overflow-hidden">
                       <div className="py-2 px-1">
                         <div className="text-slate-400 label-caps">Approval</div>
-                        <div className="mt-0.5 text-slate-200 font-mono text-sm font-normal">{metrics.approvalHeld}</div>
+                        <div className="mt-0.5 text-slate-200 font-mono text-sm font-normal">
+                          {metrics.approvalHeld}
+                        </div>
                       </div>
                       <div className="py-2 px-1">
                         <div className="text-slate-400 label-caps">Stale</div>
-                        <div className="mt-0.5 text-slate-200 font-mono text-sm font-normal">{metrics.staleClearing}</div>
+                        <div className="mt-0.5 text-slate-200 font-mono text-sm font-normal">
+                          {metrics.staleClearing}
+                        </div>
                       </div>
                       <div className="py-2 px-1">
                         <div className="text-slate-400 label-caps">Returned</div>
-                        <div className="mt-0.5 text-slate-200 font-mono text-sm font-normal">{metrics.returnedCount}</div>
+                        <div className="mt-0.5 text-slate-200 font-mono text-sm font-normal">
+                          {metrics.returnedCount}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -639,10 +731,19 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
           <div className="border-b border-slate-100/80 p-6 bg-white z-10 relative">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h3 className="font-medium text-slate-900 tracking-tight font-sans text-xl">Clearance Queue</h3>
-                <p className="mt-1 text-desc-secondary">Highest-risk deposited and returned instruments.</p>
+                <h3 className="font-medium text-slate-900 tracking-tight font-sans text-xl">
+                  Clearance Queue
+                </h3>
+                <p className="mt-1 text-desc-secondary">
+                  Highest-risk deposited and returned instruments.
+                </p>
               </div>
-              <Badge tone={clearanceQueue.length > 0 ? "warning" : "success"} className="shadow-sm px-3 py-1.5">{clearanceQueue.length} Active</Badge>
+              <Badge
+                tone={clearanceQueue.length > 0 ? "warning" : "success"}
+                className="shadow-sm px-3 py-1.5"
+              >
+                {clearanceQueue.length} Active
+              </Badge>
             </div>
           </div>
           <div className="divide-y divide-slate-100/80 flex-1 overflow-y-auto bg-slate-50/30">
@@ -654,21 +755,46 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 className="flex w-full items-center gap-4 p-5 text-left transition-all duration-300 hover:bg-white hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] hover:-translate-y-[1px] relative group/item"
               >
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                <div className={cn(
-                  "flex size-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover/item:scale-110 shadow-sm",
-                  item.status === "Returned" ? "bg-rose-50 text-rose-600 group-hover/item:bg-rose-100" : item.approvalStatus ? "bg-amber-50 text-amber-600 group-hover/item:bg-amber-100" : "bg-slate-100/80 text-slate-400 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-600"
-                )}>
-                  {item.status === "Returned" ? <IconAlertTriangle size={20} stroke={2} /> : <IconBuildingBank size={20} stroke={2} />}
+                <div
+                  className={cn(
+                    "flex size-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover/item:scale-110 shadow-sm",
+                    item.status === "Returned"
+                      ? "bg-rose-50 text-rose-600 group-hover/item:bg-rose-100"
+                      : item.approvalStatus
+                        ? "bg-amber-50 text-amber-600 group-hover/item:bg-amber-100"
+                        : "bg-slate-100/80 text-slate-400 group-hover/item:bg-indigo-50 group-hover/item:text-indigo-600"
+                  )}
+                >
+                  {item.status === "Returned" ? (
+                    <IconAlertTriangle size={20} stroke={2} />
+                  ) : (
+                    <IconBuildingBank size={20} stroke={2} />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2.5 mb-1">
                     <span className="text-slate-900 mono-amount">{item.chequeNumber}</span>
-                    <Badge tone={item.status === "Returned" ? "risk" : item.approvalStatus ? "warning" : "data"} className="h-5 px-2 shadow-sm label-caps">
-                      {item.status === "Returned" ? item.returnReason : item.approvalStatus ?? `${clearingAge(item.depositedDate)} days`}
+                    <Badge
+                      tone={
+                        item.status === "Returned"
+                          ? "risk"
+                          : item.approvalStatus
+                            ? "warning"
+                            : "data"
+                      }
+                      className="h-5 px-2 shadow-sm label-caps"
+                    >
+                      {item.status === "Returned"
+                        ? item.returnReason
+                        : (item.approvalStatus ?? `${clearingAge(item.depositedDate)} days`)}
                     </Badge>
                   </div>
-                  <p className="truncate font-medium text-slate-800 leading-snug body-md">{item.payerName}</p>
-                  <p className="mt-0.5 truncate text-desc-secondary">{item.source} - {item.holder}</p>
+                  <p className="truncate font-medium text-slate-800 leading-snug body-md">
+                    {item.payerName}
+                  </p>
+                  <p className="mt-0.5 truncate text-desc-secondary">
+                    {item.source} - {item.holder}
+                  </p>
                 </div>
                 <div className="text-right shrink-0">
                   <span className="tracking-tight text-slate-900 group-hover/item:text-indigo-700 transition-colors font-mono font-medium">
@@ -764,8 +890,12 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
       <BoardPanel className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
           <div>
-            <h3 className="font-medium text-slate-900 tracking-tight body-md">Cheque Clearance Trends</h3>
-            <p className="text-sm text-slate-400 mt-0.5">Cleared values vs. returned values trend analysis</p>
+            <h3 className="font-medium text-slate-900 tracking-tight body-md">
+              Cheque Clearance Trends
+            </h3>
+            <p className="text-sm text-slate-400 mt-0.5">
+              Cleared values vs. returned values trend analysis
+            </p>
           </div>
           <div className="flex items-center gap-4 font-medium text-sm">
             <span className="flex items-center gap-1.5 text-indigo-600">
@@ -790,7 +920,13 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="month"
+                stroke="#94a3b8"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis
                 stroke="#94a3b8"
                 fontSize={10}
@@ -799,11 +935,30 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
               />
               <Tooltip
-                contentStyle={{ background: "#151936", border: "none", borderRadius: "12px", color: "#fff" }}
+                contentStyle={{
+                  background: "#151936",
+                  border: "none",
+                  borderRadius: "12px",
+                  color: "#fff",
+                }}
                 formatter={(value: unknown) => [formatMoney(Number(value)), ""]}
               />
-              <Area type="monotone" dataKey="Cleared" stroke="#6366f1" strokeWidth={2} fillOpacity={1} fill="url(#colorCleared)" />
-              <Area type="monotone" dataKey="Returned" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorReturned)" />
+              <Area
+                type="monotone"
+                dataKey="Cleared"
+                stroke="#6366f1"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#colorCleared)"
+              />
+              <Area
+                type="monotone"
+                dataKey="Returned"
+                stroke="#f43f5e"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#colorReturned)"
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -812,7 +967,8 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
       <div className="pt-6 border-t border-slate-200/60 my-2 animate-fade-in-up">
         <h2 className="title-serif text-slate-900 font-normal">Policy Gates & Ledger Impact</h2>
         <p className="text-desc-secondary mt-1">
-          Deposited cheques have zero statement impact; only credited cheques post to the ledger, while returns open debtor follow-up.
+          Deposited cheques have zero statement impact; only credited cheques post to the ledger,
+          while returns open debtor follow-up.
         </p>
       </div>
 
@@ -823,30 +979,38 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
             body: "Bank confirmation pending. No journal entry exists while the cheque is in transit.",
             value: `${metrics.depositedCount} items`,
             icon: IconBuildingBank,
-            tone: "border-amber-200/60 bg-gradient-to-b from-amber-50/80 to-white text-amber-700 hover:border-amber-300"
+            tone: "border-amber-200/60 bg-gradient-to-b from-amber-50/80 to-white text-amber-700 hover:border-amber-300",
           },
           {
             title: "Credited",
             body: "Posts DR Cash / CR Receivables after threshold and approval checks pass.",
             value: formatMoney(metrics.clearedValue),
             icon: IconTransfer,
-            tone: "border-emerald-200/60 bg-gradient-to-b from-emerald-50/80 to-white text-emerald-700 hover:border-emerald-300"
+            tone: "border-emerald-200/60 bg-gradient-to-b from-emerald-50/80 to-white text-emerald-700 hover:border-emerald-300",
           },
           {
             title: "Returned",
             body: "Does not post cash. Creates debtor follow-up and records return reason.",
             value: `${metrics.returnedCount} items`,
             icon: IconBan,
-            tone: "border-rose-200/60 bg-gradient-to-b from-rose-50/80 to-white text-rose-700 hover:border-rose-300"
+            tone: "border-rose-200/60 bg-gradient-to-b from-rose-50/80 to-white text-rose-700 hover:border-rose-300",
           },
         ].map((item) => {
           const ItemIcon = item.icon;
           return (
-            <BoardPanel key={item.title} className={cn("p-5 border transition-all duration-300 hover:-translate-y-1 hover:shadow-sm", item.tone)}>
+            <BoardPanel
+              key={item.title}
+              className={cn(
+                "p-5 border transition-all duration-300 hover:-translate-y-1 hover:shadow-sm",
+                item.tone
+              )}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="label-caps">{item.title}</p>
-                  <p className="mt-3 font-mono font-normal tracking-tight text-slate-900 text-2xl">{item.value}</p>
+                  <p className="mt-3 font-mono font-normal tracking-tight text-slate-900 text-2xl">
+                    {item.value}
+                  </p>
                 </div>
                 <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100/50">
                   <ItemIcon size={20} />
@@ -858,16 +1022,18 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
         })}
       </section>
 
-
       {/* ── 3. Segment Content Title & Queue ─────────────────────────────────── */}
       <div className="pt-2 my-2 animate-fade-in-up">
         <h2 className="title-serif text-slate-900 font-normal capitalize">
           {activeTab} Cheques Panel
         </h2>
         <p className="text-desc-secondary mt-1">
-          {activeTab === "deposited" && "Review cheques currently sitting in bank clearance queues awaiting credit notifications."}
-          {activeTab === "credited" && "Successfully posted banker's cheques marked as reconciled with general ledger impact logs."}
-          {activeTab === "returned" && "List of bounced or returned checks. Log dishonor reason or represent for clearing."}
+          {activeTab === "deposited" &&
+            "Review cheques currently sitting in bank clearance queues awaiting credit notifications."}
+          {activeTab === "credited" &&
+            "Successfully posted banker's cheques marked as reconciled with general ledger impact logs."}
+          {activeTab === "returned" &&
+            "List of bounced or returned checks. Log dishonor reason or represent for clearing."}
         </p>
       </div>
 
@@ -879,7 +1045,10 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               type="text"
               placeholder="Search by cheque number, payer, bank..."
               value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
               className="w-full bg-transparent text-slate-700 placeholder-slate-400 focus:outline-none text-base"
             />
           </div>
@@ -911,8 +1080,21 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                     <p className="text-title-primary leading-snug">{c.payerName}</p>
                     <p className="text-sm text-slate-400 mt-0.5">{c.description}</p>
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      <Badge tone="data" className="h-5 text-xxs ">{c.source}</Badge>
-                      <Badge tone={c.approvalStatus ? "warning" : c.status === "Returned" ? "risk" : "neutral"} className="h-5 text-xxs ">{c.holder}</Badge>
+                      <Badge tone="data" className="h-5 text-xxs ">
+                        {c.source}
+                      </Badge>
+                      <Badge
+                        tone={
+                          c.approvalStatus
+                            ? "warning"
+                            : c.status === "Returned"
+                              ? "risk"
+                              : "neutral"
+                        }
+                        className="h-5 text-xxs "
+                      >
+                        {c.holder}
+                      </Badge>
                     </div>
                     {c.approvalStatus ? (
                       <Badge tone="warning" className="mt-2 h-5 text-xxs ">
@@ -921,14 +1103,18 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                     ) : null}
                   </td>
                   <td className="px-5 py-3.5 text-slate-600 text-base">
-                    <span className="flex items-center gap-1"><IconBuildingBank size={12} /> {c.bankName}</span>
+                    <span className="flex items-center gap-1">
+                      <IconBuildingBank size={12} /> {c.bankName}
+                    </span>
                   </td>
                   <td className="px-5 py-3.5 text-right text-slate-900 mono-data">
                     {formatMoney(c.amount)}
                   </td>
                   <td className="px-5 py-3.5 text-slate-600 text-base">
                     <span className="font-mono">{formatDate(c.depositedDate)}</span>
-                    <p className="mt-1 text-sm text-slate-400">{clearingAge(c.depositedDate)} days in bank path</p>
+                    <p className="mt-1 text-sm text-slate-400">
+                      {clearingAge(c.depositedDate)} days in bank path
+                    </p>
                   </td>
                   {activeTab === "credited" && (
                     <td className="px-5 py-3.5">
@@ -985,18 +1171,24 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
-          label={`${filteredRows.length} of ${cheques.filter(c => c.status === (activeTab === "deposited" ? "Pending" : activeTab === "credited" ? "Credited" : "Returned")).length} records shown, ${ROWS_PER_PAGE} rows per page`}
+          label={`${filteredRows.length} of ${cheques.filter((c) => c.status === (activeTab === "deposited" ? "Pending" : activeTab === "credited" ? "Credited" : "Returned")).length} records shown, ${ROWS_PER_PAGE} rows per page`}
         />
       </BoardPanel>
 
       {/* ── 4. Confirm Clear Modal ─────────────────────────────────────────── */}
-      <Modal open={clearCheque !== null} onClose={() => setClearCheque(null)} title="Confirm Cheque Credit">
+      <Modal
+        open={clearCheque !== null}
+        onClose={() => setClearCheque(null)}
+        title="Confirm Cheque Credit"
+      >
         {clearCheque && (
           <form onSubmit={handleClearChequeSubmit} className="space-y-5 pt-1">
             <div className="relative overflow-hidden bg-gradient-to-r from-emerald-500/[0.02] to-indigo-500/[0.02] border border-slate-100 p-4 rounded-xl space-y-2.5 shadow-sm">
               <div className="flex justify-between items-center body-sm">
                 <span className="text-slate-400 font-normal">Cheque Reference</span>
-                <span className="font-mono font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded">{clearCheque.chequeNumber}</span>
+                <span className="font-mono font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
+                  {clearCheque.chequeNumber}
+                </span>
               </div>
               <div className="flex justify-between items-center body-sm">
                 <span className="text-slate-400 font-normal">Drawer / Payer</span>
@@ -1005,7 +1197,9 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               <div className="h-px bg-slate-100 my-1" />
               <div className="flex justify-between items-center body-sm">
                 <span className="text-slate-400 font-normal">Clearing Value</span>
-                <span className="font-mono font-normal text-emerald-700 bg-emerald-50/60 px-2.5 py-1 rounded-lg border border-emerald-100/30">{formatMoney(clearCheque.amount)}</span>
+                <span className="font-mono font-normal text-emerald-700 bg-emerald-50/60 px-2.5 py-1 rounded-lg border border-emerald-100/30">
+                  {formatMoney(clearCheque.amount)}
+                </span>
               </div>
             </div>
 
@@ -1014,7 +1208,8 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <IconAlertTriangle size={16} className="shrink-0 mt-0.5 text-amber-600" />
                 <div>
                   <span className="font-medium block mb-0.5">Threshold Escalation Active</span>
-                  This cheque exceeds the limit of {formatMoney(CHEQUE_APPROVAL_THRESHOLD)}. Submitting will route a GM/CEO approval hold with zero immediate ledger impact.
+                  This cheque exceeds the limit of {formatMoney(CHEQUE_APPROVAL_THRESHOLD)}.
+                  Submitting will route a GM/CEO approval hold with zero immediate ledger impact.
                 </div>
               </div>
             ) : (
@@ -1022,7 +1217,8 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <IconShieldCheck size={16} className="shrink-0 mt-0.5 text-emerald-600" />
                 <div>
                   <span className="font-medium block mb-0.5">Auto-Credit Path</span>
-                  This cheque is within approval limits. Submitting will immediately mark it as Credited and auto-post a ledger double-entry.
+                  This cheque is within approval limits. Submitting will immediately mark it as
+                  Credited and auto-post a ledger double-entry.
                 </div>
               </div>
             )}
@@ -1041,15 +1237,30 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                   className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 py-2 text-slate-700 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition-all font-medium text-base"
                 />
               </div>
-              <span className="text-slate-400 block leading-tight text-sm">Clearing will debit Cash Accounts (NCBA Bank) and credit Accounts Receivable.</span>
+              <span className="text-slate-400 block leading-tight text-sm">
+                Clearing will debit Cash Accounts (NCBA Bank) and credit Accounts Receivable.
+              </span>
             </div>
 
             <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-100">
-              <Button type="button" variant="secondary" onClick={() => setClearCheque(null)} className="h-9 px-4 text-base">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setClearCheque(null)}
+                className="h-9 px-4 text-base"
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="h-9 px-4 bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] font-medium rounded-lg text-base">
-                {isSubmitting ? "Processing..." : clearCheque.amount > CHEQUE_APPROVAL_THRESHOLD ? "Route Approval Request" : "Post & Reconcile Cash"}
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="h-9 px-4 bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] font-medium rounded-lg text-base"
+              >
+                {isSubmitting
+                  ? "Processing..."
+                  : clearCheque.amount > CHEQUE_APPROVAL_THRESHOLD
+                    ? "Route Approval Request"
+                    : "Post & Reconcile Cash"}
               </Button>
             </div>
           </form>
@@ -1057,13 +1268,19 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
       </Modal>
 
       {/* ── 5. Dishonor Cheque Modal ───────────────────────────────────────── */}
-      <Modal open={returnCheque !== null} onClose={() => setReturnCheque(null)} title="Flag Bounced / Returned Cheque">
+      <Modal
+        open={returnCheque !== null}
+        onClose={() => setReturnCheque(null)}
+        title="Flag Bounced / Returned Cheque"
+      >
         {returnCheque && (
           <form onSubmit={handleReturnChequeSubmit} className="space-y-5 pt-1">
             <div className="relative overflow-hidden bg-gradient-to-r from-rose-500/[0.02] to-amber-500/[0.02] border border-rose-100/50 p-4 rounded-xl space-y-2.5 shadow-sm">
               <div className="flex justify-between items-center body-sm">
                 <span className="text-slate-400 font-normal">Cheque Reference</span>
-                <span className="font-mono font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded">{returnCheque.chequeNumber}</span>
+                <span className="font-mono font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
+                  {returnCheque.chequeNumber}
+                </span>
               </div>
               <div className="flex justify-between items-center body-sm">
                 <span className="text-slate-400 font-normal">Payer</span>
@@ -1072,7 +1289,9 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               <div className="h-px bg-slate-100 my-1" />
               <div className="flex justify-between items-center body-sm">
                 <span className="text-slate-400 font-normal">Returned Sum</span>
-                <span className="font-mono font-normal text-rose-700 bg-rose-50/50 px-2.5 py-1 rounded-lg border border-rose-100/30">{formatMoney(returnCheque.amount)}</span>
+                <span className="font-mono font-normal text-rose-700 bg-rose-50/50 px-2.5 py-1 rounded-lg border border-rose-100/30">
+                  {formatMoney(returnCheque.amount)}
+                </span>
               </div>
             </div>
 
@@ -1081,7 +1300,9 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <label className="text-slate-400 block label-caps">Return Reason</label>
                 <select
                   value={retReason}
-                  onChange={(e) => setRetReason(e.target.value as NonNullable<ChequeRecord["returnReason"]>)}
+                  onChange={(e) =>
+                    setRetReason(e.target.value as NonNullable<ChequeRecord["returnReason"]>)
+                  }
                   className="w-full rounded-lg border border-slate-200 bg-white p-2 text-slate-700 focus:outline-none focus:border-rose-600 focus:ring-1 focus:ring-rose-600 transition-all font-medium text-base"
                 >
                   <option value="Insufficient Funds">Insufficient Funds</option>
@@ -1095,7 +1316,9 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <label className="text-slate-400 block label-caps">Follow-up Workflow</label>
                 <select
                   value={retAction}
-                  onChange={(e) => setRetAction(e.target.value as NonNullable<ChequeRecord["followUpAction"]>)}
+                  onChange={(e) =>
+                    setRetAction(e.target.value as NonNullable<ChequeRecord["followUpAction"]>)
+                  }
                   className="w-full rounded-lg border border-slate-200 bg-white p-2 text-slate-700 focus:outline-none focus:border-rose-600 focus:ring-1 focus:ring-rose-600 transition-all font-medium text-base"
                 >
                   <option value="Tenant Notified">Tenant/Client Notified</option>
@@ -1106,10 +1329,19 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
             </div>
 
             <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-100">
-              <Button type="button" variant="secondary" onClick={() => setReturnCheque(null)} className="h-9 px-4 text-base">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setReturnCheque(null)}
+                className="h-9 px-4 text-base"
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="h-9 px-4 bg-rose-600 text-white hover:bg-rose-700 font-medium rounded-lg text-base">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="h-9 px-4 bg-rose-600 text-white hover:bg-rose-700 font-medium rounded-lg text-base"
+              >
                 {isSubmitting ? "Flagging..." : "Confirm Returned Status"}
               </Button>
             </div>
@@ -1125,19 +1357,29 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
         footer={
           selectedCheque && (
             <div className="flex gap-2 justify-end">
-              <Button variant="secondary" onClick={() => setSelectedCheque(null)} className="h-9 text-base">
+              <Button
+                variant="secondary"
+                onClick={() => setSelectedCheque(null)}
+                className="h-9 text-base"
+              >
                 Close Panel
               </Button>
               {selectedCheque.status === "Pending" && (
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => { setSelectedCheque(null); openReturnModalFor(selectedCheque); }}
+                    onClick={() => {
+                      setSelectedCheque(null);
+                      openReturnModalFor(selectedCheque);
+                    }}
                     className="bg-rose-50/10 text-rose-700 hover:bg-rose-500/20 py-1.5 px-3 rounded-lg font-medium text-base"
                   >
                     Flag Bounced
                   </Button>
                   <Button
-                    onClick={() => { setSelectedCheque(null); openClearModalFor(selectedCheque); }}
+                    onClick={() => {
+                      setSelectedCheque(null);
+                      openClearModalFor(selectedCheque);
+                    }}
                     disabled={Boolean(selectedCheque.approvalStatus)}
                     className="bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] py-1.5 px-3 rounded-lg font-medium text-base"
                   >
@@ -1157,8 +1399,12 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <IconBuildingBank size={20} />
               </div>
               <div>
-                <h4 className="font-medium text-slate-900 leading-snug body-md">{selectedCheque.payerName}</h4>
-                <p className="text-slate-400 mt-0.5 text-sm">{selectedCheque.chequeNumber} · {selectedCheque.bankName}</p>
+                <h4 className="font-medium text-slate-900 leading-snug body-md">
+                  {selectedCheque.payerName}
+                </h4>
+                <p className="text-slate-400 mt-0.5 text-sm">
+                  {selectedCheque.chequeNumber} · {selectedCheque.bankName}
+                </p>
               </div>
             </div>
 
@@ -1167,15 +1413,23 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               <div className="relative border border-[#0f172a]/15 bg-gradient-to-r from-teal-50/70 via-indigo-50/30 to-teal-50/50 p-5 rounded-2xl flex flex-col justify-between overflow-hidden shadow-[inset_0_1px_3px_rgba(255,255,255,0.8),0_4px_12px_rgba(0,0,0,0.02)] h-[150px] select-none outline outline-4 outline-white/80 outline-offset-[-5px] font-sans">
                 {/* Slanted clearance stamp watermark */}
                 <div className="absolute right-10 top-6 select-none pointer-events-none opacity-[0.15] origin-center -rotate-12 border-2 border-dashed border-current px-3 py-1.5 font-black tracking-widest rounded transition-all duration-300 text-xl">
-                  {selectedCheque.status === "Credited" && <span className="text-emerald-600">CREDITED</span>}
-                  {selectedCheque.status === "Returned" && <span className="text-rose-600">RETURNED</span>}
-                  {selectedCheque.status === "Pending" && <span className="text-amber-600">CLEARING</span>}
+                  {selectedCheque.status === "Credited" && (
+                    <span className="text-emerald-600">CREDITED</span>
+                  )}
+                  {selectedCheque.status === "Returned" && (
+                    <span className="text-rose-600">RETURNED</span>
+                  )}
+                  {selectedCheque.status === "Pending" && (
+                    <span className="text-amber-600">CLEARING</span>
+                  )}
                 </div>
 
                 <div className="flex justify-between items-start text-slate-400 font-mono text-sm">
                   <div className="flex items-center gap-1">
                     <IconBuildingBank size={14} className="text-slate-400" />
-                    <span className="font-normal text-slate-700 tracking-wider">{selectedCheque.bankName}</span>
+                    <span className="font-normal text-slate-700 tracking-wider">
+                      {selectedCheque.bankName}
+                    </span>
                   </div>
                   <span>CHEQUE NO: {selectedCheque.chequeNumber.replace("CHQ-", "")}</span>
                 </div>
@@ -1195,38 +1449,54 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <div className="flex justify-between items-end text-slate-400 border-t border-slate-200/50 pt-2 font-mono text-sm">
                   <div>
                     <span className="text-slate-400">DRAWER:</span>{" "}
-                    <span className="text-slate-700 font-sans font-medium">{selectedCheque.payerName}</span>
+                    <span className="text-slate-700 font-sans font-medium">
+                      {selectedCheque.payerName}
+                    </span>
                   </div>
                   <div>
                     <span className="text-slate-400">DATE:</span>{" "}
-                    <span className="text-slate-700">{formatDate(selectedCheque.depositedDate)}</span>
+                    <span className="text-slate-700">
+                      {formatDate(selectedCheque.depositedDate)}
+                    </span>
                   </div>
                 </div>
 
                 {/* MICR Code lines */}
                 <div className="text-center tracking-[0.25em] font-mono text-slate-400/80 mt-1 select-none pointer-events-none text-sm">
-                  ⑈ {selectedCheque.chequeNumber.replace("CHQ-", "")} ⑈   01109288211 ⑈   0123849920 ⑈
+                  ⑈ {selectedCheque.chequeNumber.replace("CHQ-", "")} ⑈ 01109288211 ⑈ 0123849920 ⑈
                 </div>
               </div>
 
               <div className="space-y-1">
                 <span className="text-slate-400 label-caps">Allocation Memo</span>
-                <p className="text-slate-700 leading-relaxed bg-slate-50 border border-slate-100 p-3 rounded-xl text-base">{selectedCheque.description}</p>
+                <p className="text-slate-700 leading-relaxed bg-slate-50 border border-slate-100 p-3 rounded-xl text-base">
+                  {selectedCheque.description}
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
                 <div>
                   <span className="text-slate-400 label-caps">Deposited Date</span>
-                  <p className="text-slate-700 mt-1 mono-data">{formatDate(selectedCheque.depositedDate)}</p>
+                  <p className="text-slate-700 mt-1 mono-data">
+                    {formatDate(selectedCheque.depositedDate)}
+                  </p>
                 </div>
                 <div>
                   <span className="text-slate-400 label-caps">Clearing Status</span>
                   <div className="mt-1">
                     <Badge
-                      tone={selectedCheque.status === "Credited" ? "success" : selectedCheque.status === "Returned" ? "risk" : "warning"}
+                      tone={
+                        selectedCheque.status === "Credited"
+                          ? "success"
+                          : selectedCheque.status === "Returned"
+                            ? "risk"
+                            : "warning"
+                      }
                       className="px-2.5 py-0.5"
                     >
-                      {selectedCheque.status === "Pending" ? "Awaiting Bank Clearance" : selectedCheque.status}
+                      {selectedCheque.status === "Pending"
+                        ? "Awaiting Bank Clearance"
+                        : selectedCheque.status}
                     </Badge>
                   </div>
                 </div>
@@ -1235,15 +1505,21 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               <div className="grid grid-cols-3 gap-3 pt-2 border-t border-slate-100">
                 <div className="rounded-xl bg-slate-50/50 border border-slate-100/50 p-3">
                   <span className="text-slate-400 label-caps">Source</span>
-                  <p className="mt-0.5 font-medium text-slate-700 text-base">{selectedCheque.source}</p>
+                  <p className="mt-0.5 font-medium text-slate-700 text-base">
+                    {selectedCheque.source}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-slate-50/50 border border-slate-100/50 p-3">
                   <span className="text-slate-400 label-caps">Holder</span>
-                  <p className="mt-0.5 font-medium text-slate-700 text-base">{selectedCheque.holder}</p>
+                  <p className="mt-0.5 font-medium text-slate-700 text-base">
+                    {selectedCheque.holder}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-slate-50/50 border border-slate-100/50 p-3">
                   <span className="text-slate-400 label-caps">Clearing Age</span>
-                  <p className="mt-0.5 text-slate-700 mono-data">{clearingAge(selectedCheque.depositedDate)} days</p>
+                  <p className="mt-0.5 text-slate-700 mono-data">
+                    {clearingAge(selectedCheque.depositedDate)} days
+                  </p>
                 </div>
               </div>
 
@@ -1251,8 +1527,13 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <div className="rounded-xl border border-amber-200 bg-amber-50/40 p-4 leading-relaxed text-amber-800 flex gap-2.5 items-start body-sm">
                   <IconAlertTriangle size={16} className="shrink-0 mt-0.5 text-amber-600" />
                   <div>
-                    <p className="font-normal text-amber-900 mb-0.5">Approval Hold Active: {selectedCheque.approvalRef}</p>
-                    <p className="text-slate-600 leading-normal">No ledger journal has been posted. The cheque remains in Deposited until the GM/CEO approval is decided.</p>
+                    <p className="font-normal text-amber-900 mb-0.5">
+                      Approval Hold Active: {selectedCheque.approvalRef}
+                    </p>
+                    <p className="text-slate-600 leading-normal">
+                      No ledger journal has been posted. The cheque remains in Deposited until the
+                      GM/CEO approval is decided.
+                    </p>
                   </div>
                 </div>
               )}
@@ -1263,11 +1544,17 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                   <div className="grid grid-cols-2 gap-2 pt-0.5 body-sm">
                     <div>
                       <span className="text-slate-400">Reconciled Date:</span>
-                      <p className="font-mono font-medium text-slate-700 mt-0.5">{selectedCheque.reconciliationDate ? formatDate(selectedCheque.reconciliationDate) : "Pending"}</p>
+                      <p className="font-mono font-medium text-slate-700 mt-0.5">
+                        {selectedCheque.reconciliationDate
+                          ? formatDate(selectedCheque.reconciliationDate)
+                          : "Pending"}
+                      </p>
                     </div>
                     <div>
                       <span className="text-slate-400">Ledger Journal:</span>
-                      <p className="font-mono font-normal text-indigo-700 mt-0.5">{selectedCheque.ledgerJournal}</p>
+                      <p className="font-mono font-normal text-indigo-700 mt-0.5">
+                        {selectedCheque.ledgerJournal}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1279,15 +1566,23 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                   <div className="grid grid-cols-2 gap-2 pt-0.5 body-sm">
                     <div>
                       <span className="text-slate-400">Returned Date:</span>
-                      <p className="font-mono font-medium text-slate-700 mt-0.5">{selectedCheque.reconciliationDate ? formatDate(selectedCheque.reconciliationDate) : "Pending"}</p>
+                      <p className="font-mono font-medium text-slate-700 mt-0.5">
+                        {selectedCheque.reconciliationDate
+                          ? formatDate(selectedCheque.reconciliationDate)
+                          : "Pending"}
+                      </p>
                     </div>
                     <div>
                       <span className="text-slate-400">Dispute Reason:</span>
-                      <p className="font-normal text-rose-700 mt-0.5">{selectedCheque.returnReason}</p>
+                      <p className="font-normal text-rose-700 mt-0.5">
+                        {selectedCheque.returnReason}
+                      </p>
                     </div>
                     <div className="col-span-2 pt-2 border-t border-rose-100/30">
                       <span className="text-slate-400">Follow-up Workflow Action:</span>
-                      <p className="font-medium text-slate-700 mt-0.5">{selectedCheque.followUpAction}</p>
+                      <p className="font-medium text-slate-700 mt-0.5">
+                        {selectedCheque.followUpAction}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1298,8 +1593,16 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                 <div className="pt-1.5">
                   <FinanceQrProof
                     compact={true}
-                    artifactRef={selectedCheque.status === "Credited" ? selectedCheque.ledgerJournal || "Awaiting Post" : `RTN-${selectedCheque.chequeNumber}`}
-                    artifactType={selectedCheque.status === "Credited" ? "Cheque Credit Receipt" : "Returned Cheque Notice"}
+                    artifactRef={
+                      selectedCheque.status === "Credited"
+                        ? selectedCheque.ledgerJournal || "Awaiting Post"
+                        : `RTN-${selectedCheque.chequeNumber}`
+                    }
+                    artifactType={
+                      selectedCheque.status === "Credited"
+                        ? "Cheque Credit Receipt"
+                        : "Returned Cheque Notice"
+                    }
                     entityName={activeEntity.name}
                     generatedAt={selectedCheque.reconciliationDate || "2026-06-22"}
                     token={`sunland_chq_${selectedCheque.status.toLowerCase()}_${selectedCheque.chequeNumber.replace("CHQ-", "")}`}
@@ -1315,8 +1618,12 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                     <div key={`${selectedCheque.id}-${entry}`} className="flex gap-2.5">
                       <span className="mt-1.5 size-1.5 rounded-full bg-slate-400 shrink-0" />
                       <div>
-                        <p className="text-slate-700 leading-normal font-medium text-base">{entry}</p>
-                        <p className="font-mono text-slate-400 mt-0.5 text-sm">Step {selectedCheque.auditLog.length - index}</p>
+                        <p className="text-slate-700 leading-normal font-medium text-base">
+                          {entry}
+                        </p>
+                        <p className="font-mono text-slate-400 mt-0.5 text-sm">
+                          Step {selectedCheque.auditLog.length - index}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -1334,29 +1641,40 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
 
           <div className="relative z-10 w-full max-w-lg animate-scale-in">
             <div className="rounded-2xl border border-slate-200/80 bg-white shadow-2xl overflow-hidden">
-
               {/* Header */}
               <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                 <div className="flex items-center gap-3">
                   {/* Breadcrumb steps */}
                   {(["Form", "Photo", "QR"] as const).map((s, i) => (
                     <div key={s} className="flex items-center gap-1.5">
-                      <div className={cn(
-                        "size-5 rounded-full flex items-center justify-center text-xxs transition-all",
-                        (logStep === "form" && i === 0) || (logStep === "photo" && i === 1) || (logStep === "qr" && i === 2)
-                          ? "bg-[var(--sidebar)] text-white"
-                          : (i === 0 && logStep !== "form") || (i === 1 && logStep === "qr")
-                            ? "bg-emerald-500 text-white"
-                            : "bg-slate-100 text-slate-400"
-                      )}>
-                        {((i === 0 && logStep !== "form") || (i === 1 && logStep === "qr")) ? <IconCheck size={10} stroke={3} /> : i + 1}
+                      <div
+                        className={cn(
+                          "size-5 rounded-full flex items-center justify-center text-xxs transition-all",
+                          (logStep === "form" && i === 0) ||
+                            (logStep === "photo" && i === 1) ||
+                            (logStep === "qr" && i === 2)
+                            ? "bg-[var(--sidebar)] text-white"
+                            : (i === 0 && logStep !== "form") || (i === 1 && logStep === "qr")
+                              ? "bg-emerald-500 text-white"
+                              : "bg-slate-100 text-slate-400"
+                        )}
+                      >
+                        {(i === 0 && logStep !== "form") || (i === 1 && logStep === "qr") ? (
+                          <IconCheck size={10} stroke={3} />
+                        ) : (
+                          i + 1
+                        )}
                       </div>
                       <span className="text-tiny text-slate-400 hidden sm:inline">{s}</span>
                       {i < 2 && <IconArrowRight size={11} className="text-slate-300" />}
                     </div>
                   ))}
                 </div>
-                <button type="button" onClick={resetLogModal} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <button
+                  type="button"
+                  onClick={resetLogModal}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
                   <IconX size={18} />
                 </button>
               </div>
@@ -1365,54 +1683,88 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               {logStep === "form" && (
                 <form onSubmit={handleLogSubmit} className="p-6 space-y-4">
                   <h2 className="headline-md text-slate-900 mb-1">Log New Cheque</h2>
-                  <p className="text-tiny text-slate-400 mb-4">Enter cheque details then attach a photo.</p>
+                  <p className="text-tiny text-slate-400 mb-4">
+                    Enter cheque details then attach a photo.
+                  </p>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="label-caps text-slate-400 mb-1.5 block">Cheque Number</label>
-                      <input required value={logForm.chequeNumber}
-                        onChange={e => setLogForm(p => ({ ...p, chequeNumber: e.target.value }))}
+                      <label className="label-caps text-slate-400 mb-1.5 block">
+                        Cheque Number
+                      </label>
+                      <input
+                        required
+                        value={logForm.chequeNumber}
+                        onChange={(e) =>
+                          setLogForm((p) => ({ ...p, chequeNumber: e.target.value }))
+                        }
                         placeholder="CHQ-XXXX"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all" />
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all"
+                      />
                     </div>
                     <div>
                       <label className="label-caps text-slate-400 mb-1.5 block">Amount (KES)</label>
-                      <input required value={logForm.amount}
-                        onChange={e => setLogForm(p => ({ ...p, amount: e.target.value }))}
+                      <input
+                        required
+                        value={logForm.amount}
+                        onChange={(e) => setLogForm((p) => ({ ...p, amount: e.target.value }))}
                         placeholder="e.g. 250,000"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption font-mono text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all" />
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption font-mono text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all"
+                      />
                     </div>
                   </div>
 
                   <div>
-                    <label className="label-caps text-slate-400 mb-1.5 block">Payer / Drawer Name</label>
-                    <input required value={logForm.payerName}
-                      onChange={e => setLogForm(p => ({ ...p, payerName: e.target.value }))}
+                    <label className="label-caps text-slate-400 mb-1.5 block">
+                      Payer / Drawer Name
+                    </label>
+                    <input
+                      required
+                      value={logForm.payerName}
+                      onChange={(e) => setLogForm((p) => ({ ...p, payerName: e.target.value }))}
                       placeholder="Company or individual name"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all" />
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="label-caps text-slate-400 mb-1.5 block">Clearing Bank</label>
-                      <input required value={logForm.bankName}
-                        onChange={e => setLogForm(p => ({ ...p, bankName: e.target.value }))}
+                      <label className="label-caps text-slate-400 mb-1.5 block">
+                        Clearing Bank
+                      </label>
+                      <input
+                        required
+                        value={logForm.bankName}
+                        onChange={(e) => setLogForm((p) => ({ ...p, bankName: e.target.value }))}
                         placeholder="NCBA, Equity…"
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all" />
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all"
+                      />
                     </div>
                     <div>
                       <label className="label-caps text-slate-400 mb-1.5 block">Deposit Date</label>
-                      <input type="date" value={logForm.depositedDate}
-                        onChange={e => setLogForm(p => ({ ...p, depositedDate: e.target.value }))}
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all" />
+                      <input
+                        type="date"
+                        value={logForm.depositedDate}
+                        onChange={(e) =>
+                          setLogForm((p) => ({ ...p, depositedDate: e.target.value }))
+                        }
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all"
+                      />
                     </div>
                   </div>
 
                   <div>
                     <label className="label-caps text-slate-400 mb-1.5 block">Source</label>
-                    <select value={logForm.source}
-                      onChange={e => setLogForm(p => ({ ...p, source: e.target.value as ChequeRecord["source"] }))}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:outline-none transition-all">
+                    <select
+                      value={logForm.source}
+                      onChange={(e) =>
+                        setLogForm((p) => ({
+                          ...p,
+                          source: e.target.value as ChequeRecord["source"],
+                        }))
+                      }
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:outline-none transition-all"
+                    >
                       <option>Front Office</option>
                       <option>Finance</option>
                       <option>Rentals</option>
@@ -1420,20 +1772,29 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                   </div>
 
                   <div>
-                    <label className="label-caps text-slate-400 mb-1.5 block">Description (optional)</label>
-                    <input value={logForm.description}
-                      onChange={e => setLogForm(p => ({ ...p, description: e.target.value }))}
+                    <label className="label-caps text-slate-400 mb-1.5 block">
+                      Description (optional)
+                    </label>
+                    <input
+                      value={logForm.description}
+                      onChange={(e) => setLogForm((p) => ({ ...p, description: e.target.value }))}
                       placeholder="e.g. Rent settlement for Unit 4B"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all" />
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-caption text-slate-800 focus:border-[var(--sidebar)] focus:outline-none transition-all"
+                    />
                   </div>
 
                   <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                    <button type="button" onClick={resetLogModal}
-                      className="px-4 py-2 rounded-xl border border-slate-200 text-caption text-slate-600 hover:bg-slate-50 transition-colors">
+                    <button
+                      type="button"
+                      onClick={resetLogModal}
+                      className="px-4 py-2 rounded-xl border border-slate-200 text-caption text-slate-600 hover:bg-slate-50 transition-colors"
+                    >
                       Cancel
                     </button>
-                    <button type="submit"
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 transition-all">
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 transition-all"
+                    >
                       Next: Attach Photo <IconArrowRight size={13} />
                     </button>
                   </div>
@@ -1444,25 +1805,45 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
               {logStep === "photo" && (
                 <div className="p-6 space-y-4">
                   <h2 className="headline-md text-slate-900">Attach Cheque Photo</h2>
-                  <p className="text-tiny text-slate-400">Capture or upload a photo of the physical cheque for audit trail.</p>
+                  <p className="text-tiny text-slate-400">
+                    Capture or upload a photo of the physical cheque for audit trail.
+                  </p>
 
                   {/* Camera/Photo area */}
                   <div className="relative rounded-2xl border-2 border-dashed border-slate-200 overflow-hidden bg-slate-50 min-h-[220px] flex items-center justify-center">
                     {usingCamera ? (
                       <div className="relative w-full">
-                        <video ref={videoRef} autoPlay playsInline muted className="w-full rounded-xl" />
+                        <video
+                          ref={videoRef}
+                          autoPlay
+                          playsInline
+                          muted
+                          className="w-full rounded-xl"
+                        />
                         <canvas ref={canvasRef} className="hidden" />
-                        <button type="button" onClick={capturePhoto}
-                          className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-white px-5 py-2 text-caption text-slate-800 shadow-lg hover:bg-slate-50 transition-colors">
+                        <button
+                          type="button"
+                          onClick={capturePhoto}
+                          className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-white px-5 py-2 text-caption text-slate-800 shadow-lg hover:bg-slate-50 transition-colors"
+                        >
                           <IconCamera size={14} />
                           Capture Photo
                         </button>
                       </div>
                     ) : logPhotoUrl ? (
                       <div className="relative w-full">
-                        <Image src={logPhotoUrl} width={800} height={250} alt="Cheque" className="w-full rounded-xl object-contain max-h-[250px]" />
-                        <button type="button" onClick={() => setLogPhotoUrl(null)}
-                          className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors">
+                        <Image
+                          src={logPhotoUrl}
+                          width={800}
+                          height={250}
+                          alt="Cheque"
+                          className="w-full rounded-xl object-contain max-h-[250px]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setLogPhotoUrl(null)}
+                          className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                        >
                           <IconX size={14} />
                         </button>
                       </div>
@@ -1472,41 +1853,70 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                           <IconCamera size={24} className="text-slate-400" />
                         </div>
                         <div>
-                          <p className="text-caption text-slate-700">Capture or upload a cheque photo</p>
-                          <p className="text-tiny text-slate-400 mt-0.5">JPEG or PNG · Recommended: full cheque visible</p>
+                          <p className="text-caption text-slate-700">
+                            Capture or upload a cheque photo
+                          </p>
+                          <p className="text-tiny text-slate-400 mt-0.5">
+                            JPEG or PNG · Recommended: full cheque visible
+                          </p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <button type="button" onClick={startCamera}
-                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-caption text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                          <button
+                            type="button"
+                            onClick={startCamera}
+                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-caption text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+                          >
                             <IconCamera size={14} />
                             Use Camera
                           </button>
-                          <button type="button" onClick={() => fileInputRef.current?.click()}
-                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-caption text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-caption text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+                          >
                             <IconUpload size={14} />
                             Upload Photo
                           </button>
                         </div>
-                        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                        />
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                    <button type="button" onClick={() => setLogStep("form")}
-                      className="px-4 py-2 rounded-xl border border-slate-200 text-caption text-slate-600 hover:bg-slate-50 transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => setLogStep("form")}
+                      className="px-4 py-2 rounded-xl border border-slate-200 text-caption text-slate-600 hover:bg-slate-50 transition-colors"
+                    >
                       Back
                     </button>
                     <div className="flex gap-2">
-                      <button type="button" onClick={handleLogFinalize}
+                      <button
+                        type="button"
+                        onClick={handleLogFinalize}
                         disabled={logSubmitting}
-                        className="px-4 py-2 rounded-xl border border-slate-200 text-caption text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50">
+                        className="px-4 py-2 rounded-xl border border-slate-200 text-caption text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                      >
                         Skip Photo
                       </button>
-                      <button type="button" onClick={handleLogFinalize}
+                      <button
+                        type="button"
+                        onClick={handleLogFinalize}
                         disabled={!logPhotoUrl || logSubmitting}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 transition-all disabled:opacity-40">
-                        {logSubmitting ? <span className="size-4 rounded-full border-2 border-white/40 border-t-white animate-spin" /> : <IconQrcode size={14} />}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 transition-all disabled:opacity-40"
+                      >
+                        {logSubmitting ? (
+                          <span className="size-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                        ) : (
+                          <IconQrcode size={14} />
+                        )}
                         Generate QR
                       </button>
                     </div>
@@ -1520,7 +1930,9 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                   <div className="flex items-start justify-between">
                     <div>
                       <h2 className="headline-md text-slate-900">Cheque QR Generated</h2>
-                      <p className="text-tiny text-slate-400 mt-0.5">{logGenerated.chequeNumber} · {logGenerated.bankName}</p>
+                      <p className="text-tiny text-slate-400 mt-0.5">
+                        {logGenerated.chequeNumber} · {logGenerated.bankName}
+                      </p>
                     </div>
                     <span className="badge-pill badge-tone-success">Logged</span>
                   </div>
@@ -1530,7 +1942,13 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                     {logPhotoUrl && (
                       <div className="shrink-0">
                         <p className="label-caps text-slate-400 mb-1.5">Cheque Photo</p>
-                        <Image src={logPhotoUrl} width={128} height={80} alt="Cheque" className="w-32 h-20 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                        <Image
+                          src={logPhotoUrl}
+                          width={128}
+                          height={80}
+                          alt="Cheque"
+                          className="w-32 h-20 object-cover rounded-xl border border-slate-200 shadow-sm"
+                        />
                       </div>
                     )}
                     <div className="flex-1">
@@ -1564,17 +1982,30 @@ export function ChequesClearanceBoard({ tabId = "deposited" }: { tabId: string }
                       { label: "Amount", value: formatMoney(logGenerated.amount), mono: true },
                       { label: "Bank", value: logGenerated.bankName },
                       { label: "Source", value: logGenerated.source },
-                    ].map(item => (
-                      <div key={item.label} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                    ].map((item) => (
+                      <div
+                        key={item.label}
+                        className="rounded-xl border border-slate-100 bg-slate-50 p-3"
+                      >
                         <p className="label-caps text-slate-400">{item.label}</p>
-                        <p className={cn("text-caption text-slate-800 mt-0.5", item.mono && "font-mono")}>{item.value}</p>
+                        <p
+                          className={cn(
+                            "text-caption text-slate-800 mt-0.5",
+                            item.mono && "font-mono"
+                          )}
+                        >
+                          {item.value}
+                        </p>
                       </div>
                     ))}
                   </div>
 
                   <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                    <button type="button" onClick={resetLogModal}
-                      className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 transition-all">
+                    <button
+                      type="button"
+                      onClick={resetLogModal}
+                      className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[var(--sidebar)] text-caption text-white hover:opacity-90 transition-all"
+                    >
                       <IconCheck size={14} />
                       Done
                     </button>

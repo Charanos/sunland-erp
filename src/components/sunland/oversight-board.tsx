@@ -29,10 +29,20 @@ import { ReportsSection } from "./oversight-reports-section";
 import { SystemSection } from "./oversight-system-section";
 
 export interface OversightPulse {
-  approvals: { pending: number; pendingValueKes: number; aboveThreshold: number; thresholdKes: number };
+  approvals: {
+    pending: number;
+    pendingValueKes: number;
+    aboveThreshold: number;
+    thresholdKes: number;
+  };
   complaints: { open: number; escalated: number; total: number };
   tickets: { open: number; breached: number; total: number };
-  system: { healthPct: number | null; measuredServices: number; totalServices: number; degraded: number };
+  system: {
+    healthPct: number | null;
+    measuredServices: number;
+    totalServices: number;
+    degraded: number;
+  };
   generatedAt: string;
 }
 
@@ -62,7 +72,9 @@ export function OversightBoard({
   const [section, setSection] = useState<OversightSection>(startSection);
   const [pulse, setPulse] = useState<OversightPulse | null>(null);
   const [counts, setCounts] = useState<Counts | null>(null);
-  const [me, setMe] = useState<{ name: string; role: string; avatarUrl: string | null } | null>(null);
+  const [me, setMe] = useState<{ name: string; role: string; avatarUrl: string | null } | null>(
+    null
+  );
   const [tick, setTick] = useState(0);
 
   const loadPulse = useCallback(() => {
@@ -72,7 +84,7 @@ export function OversightBoard({
         if (d.pulse) setPulse(d.pulse);
         if (d.counts) setCounts(d.counts);
       })
-      .catch(() => { });
+      .catch(() => {});
   }, [scopeEntityId]);
 
   useEffect(() => {
@@ -81,9 +93,10 @@ export function OversightBoard({
       fetch("/api/auth/me")
         .then((r) => r.json())
         .then((d) => {
-          if (d?.user) setMe({ name: d.user.name, role: d.user.role, avatarUrl: d.user.avatarUrl ?? null });
+          if (d?.user)
+            setMe({ name: d.user.name, role: d.user.role, avatarUrl: d.user.avatarUrl ?? null });
         })
-        .catch(() => { });
+        .catch(() => {});
     });
   }, [loadPulse]);
 
@@ -109,9 +122,10 @@ export function OversightBoard({
         kind: "stat" as const,
         label: "Awaiting your decision",
         value: String(pulse.approvals.pending),
-        note: pulse.approvals.aboveThreshold > 0
-          ? `${pulse.approvals.aboveThreshold} over threshold`
-          : formatCompactKES(pulse.approvals.pendingValueKes),
+        note:
+          pulse.approvals.aboveThreshold > 0
+            ? `${pulse.approvals.aboveThreshold} over threshold`
+            : formatCompactKES(pulse.approvals.pendingValueKes),
         tone: pulse.approvals.aboveThreshold > 0 ? "gold" : "emerald",
         icon: IconChecklist,
         onClick: () => setSection("approvals"),
@@ -121,7 +135,10 @@ export function OversightBoard({
         kind: "stat" as const,
         label: "Open complaints",
         value: String(pulse.complaints.open),
-        note: pulse.complaints.escalated > 0 ? `${pulse.complaints.escalated} escalated` : "none escalated",
+        note:
+          pulse.complaints.escalated > 0
+            ? `${pulse.complaints.escalated} escalated`
+            : "none escalated",
         tone: pulse.complaints.escalated > 0 ? "rose" : "emerald",
         icon: IconAlertTriangle,
         onClick: () => setSection("complaints"),
@@ -131,7 +148,8 @@ export function OversightBoard({
         kind: "stat" as const,
         label: "Open tickets",
         value: String(pulse.tickets.open),
-        note: pulse.tickets.breached > 0 ? `${pulse.tickets.breached} SLA breached` : "all within SLA",
+        note:
+          pulse.tickets.breached > 0 ? `${pulse.tickets.breached} SLA breached` : "all within SLA",
         tone: pulse.tickets.breached > 0 ? "rose" : "emerald",
         icon: IconLifebuoy,
         onClick: () => setSection("tickets"),
@@ -142,9 +160,10 @@ export function OversightBoard({
         label: "Service health",
         // Never a reassuring 100% before anything was measured.
         value: pulse.system.healthPct === null ? "—" : `${pulse.system.healthPct}%`,
-        note: pulse.system.healthPct === null
-          ? "not yet measured"
-          : `${pulse.system.measuredServices}/${pulse.system.totalServices} services checked`,
+        note:
+          pulse.system.healthPct === null
+            ? "not yet measured"
+            : `${pulse.system.measuredServices}/${pulse.system.totalServices} services checked`,
         pct: pulse.system.healthPct ?? 0,
         icon: IconServerBolt,
         onClick: () => setSection("system"),
@@ -152,12 +171,13 @@ export function OversightBoard({
     ];
   }, [pulse]);
 
-  const tabs: Array<{ key: OversightSection; label: string; icon: Icon; badge: number }> = OVERSIGHT_SECTIONS.map((s) => ({
-    key: s,
-    label: SECTION_META[s].label,
-    icon: SECTION_META[s].icon,
-    badge: counts?.[s] ?? 0,
-  }));
+  const tabs: Array<{ key: OversightSection; label: string; icon: Icon; badge: number }> =
+    OVERSIGHT_SECTIONS.map((s) => ({
+      key: s,
+      label: SECTION_META[s].label,
+      icon: SECTION_META[s].icon,
+      badge: counts?.[s] ?? 0,
+    }));
 
   return (
     <PageTransition className="mx-auto flex max-w-[98rem] flex-col gap-4">
@@ -167,10 +187,16 @@ export function OversightBoard({
         description={meta.sub}
         actions={
           <div className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl pl-1.5 pr-4 py-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-            <Avatar src={me?.avatarUrl ?? undefined} fallback={initialsOf(me?.name ?? "?")} className="size-10 rounded-xl" />
+            <Avatar
+              src={me?.avatarUrl ?? undefined}
+              fallback={initialsOf(me?.name ?? "?")}
+              className="size-10 rounded-xl"
+            />
             <div className="leading-tight">
               <p className="text-sm font-medium text-slate-900">{me?.name ?? "—"}</p>
-              <p className="text-xs text-slate-400 capitalize">{(me?.role ?? "").replace(/_/g, " ")}</p>
+              <p className="text-xs text-slate-400 capitalize">
+                {(me?.role ?? "").replace(/_/g, " ")}
+              </p>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xxs font-medium uppercase tracking-wide bg-[rgba(18,42,32,0.07)] border border-[rgba(18,42,32,0.14)] text-[#122a20]">
               <IconShieldCheck size={12} /> Super-admin
@@ -190,15 +216,19 @@ export function OversightBoard({
               aria-pressed={active}
               className={cn(
                 "inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors whitespace-nowrap",
-                active ? "bg-[#151936] text-white shadow-sm" : "text-slate-500 hover:text-slate-900",
+                active ? "bg-[#151936] text-white shadow-sm" : "text-slate-500 hover:text-slate-900"
               )}
             >
               <t.icon size={15} /> {t.label}
               {t.badge > 0 && (
-                <span className={cn(
-                  "min-w-[18px] h-[18px] px-1.5 rounded-full inline-flex items-center justify-center text-xxs font-mono font-medium",
-                  active ? "bg-[#f3df27] text-[#151936]" : "bg-slate-200 text-slate-600",
-                )}>{t.badge}</span>
+                <span
+                  className={cn(
+                    "min-w-[18px] h-[18px] px-1.5 rounded-full inline-flex items-center justify-center text-xxs font-mono font-medium",
+                    active ? "bg-[#f3df27] text-[#151936]" : "bg-slate-200 text-slate-600"
+                  )}
+                >
+                  {t.badge}
+                </span>
               )}
             </button>
           );
@@ -207,9 +237,14 @@ export function OversightBoard({
 
       {/* Oversight pulse */}
       <div className="flex items-center gap-3 mt-1.5 mb-1">
-        <span className="text-xxs font-medium uppercase tracking-[0.12em] text-slate-400 whitespace-nowrap">Oversight Pulse</span>
+        <span className="text-xxs font-medium uppercase tracking-[0.12em] text-slate-400 whitespace-nowrap">
+          Oversight Pulse
+        </span>
         <span className="flex-1 h-px bg-slate-200" />
-        <span key={tick} className="inline-flex items-center gap-1.5 text-xs text-slate-400 whitespace-nowrap">
+        <span
+          key={tick}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-400 whitespace-nowrap"
+        >
           <span className="size-1.5 rounded-full bg-emerald-500" />
           Live · updated {relativeAge(pulse?.generatedAt ?? null)}
         </span>
@@ -222,59 +257,89 @@ export function OversightBoard({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {pulseCells.length === 0
             ? Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className={cn("px-6 py-5 h-[116px]", i > 0 && "border-l border-white/[0.08]")}>
-                <div className="h-3 w-24 rounded bg-white/10" />
-                <div className="mt-4 h-7 w-16 rounded bg-white/10" />
-              </div>
-            ))
+                <div
+                  key={i}
+                  className={cn("px-6 py-5 h-[116px]", i > 0 && "border-l border-white/[0.08]")}
+                >
+                  <div className="h-3 w-24 rounded bg-white/10" />
+                  <div className="mt-4 h-7 w-16 rounded bg-white/10" />
+                </div>
+              ))
             : pulseCells.map((cell, i) => (
-              <button
-                key={cell.key}
-                onClick={cell.onClick}
-                className={cn(
-                  "relative px-6 py-5 flex flex-col gap-3 overflow-hidden text-left transition-colors hover:bg-white/[0.04]",
-                  i > 0 && "border-l border-white/[0.08]",
-                )}
-              >
-                {cell.kind === "stat" ? (
-                  <>
-                    <cell.icon
-                      size={92}
-                      className="absolute -right-2.5 -bottom-4 pointer-events-none"
-                      style={{ color: cell.tone === "gold" ? "rgba(243,223,39,0.09)" : cell.tone === "rose" ? "rgba(251,113,133,0.09)" : "rgba(255,255,255,0.05)" }}
-                    />
-                    <p className="relative text-sm font-medium text-white/55">{cell.label}</p>
-                    <div className="relative flex items-end justify-between gap-2.5">
-                      <span className="font-mono font-medium text-3xl text-white leading-none">{cell.value}</span>
-                      <span className={cn(
-                        "text-xxs font-medium uppercase tracking-wide",
-                        cell.tone === "gold" ? "text-[#f3df27]" : cell.tone === "rose" ? "text-rose-300" : "text-emerald-300",
-                      )}>{cell.note}</span>
+                <button
+                  key={cell.key}
+                  onClick={cell.onClick}
+                  className={cn(
+                    "relative px-6 py-5 flex flex-col gap-3 overflow-hidden text-left transition-colors hover:bg-white/[0.04]",
+                    i > 0 && "border-l border-white/[0.08]"
+                  )}
+                >
+                  {cell.kind === "stat" ? (
+                    <>
+                      <cell.icon
+                        size={92}
+                        className="absolute -right-2.5 -bottom-4 pointer-events-none"
+                        style={{
+                          color:
+                            cell.tone === "gold"
+                              ? "rgba(243,223,39,0.09)"
+                              : cell.tone === "rose"
+                                ? "rgba(251,113,133,0.09)"
+                                : "rgba(255,255,255,0.05)",
+                        }}
+                      />
+                      <p className="relative text-sm font-medium text-white/55">{cell.label}</p>
+                      <div className="relative flex items-end justify-between gap-2.5">
+                        <span className="font-mono font-medium text-3xl text-white leading-none">
+                          {cell.value}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-xxs font-medium uppercase tracking-wide",
+                            cell.tone === "gold"
+                              ? "text-[#f3df27]"
+                              : cell.tone === "rose"
+                                ? "text-rose-300"
+                                : "text-emerald-300"
+                          )}
+                        >
+                          {cell.note}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      <RingGauge pct={cell.pct ?? 0} color={scoreColor(cell.pct ?? 0)} />
+                      <div>
+                        <p className="text-sm font-medium text-white/55">{cell.label}</p>
+                        <p className="font-mono font-medium text-2xl text-white leading-none mt-0.5">
+                          {cell.value}
+                        </p>
+                        <p className="mt-1.5 text-xxs font-medium uppercase tracking-wide text-emerald-300">
+                          {cell.note}
+                        </p>
+                      </div>
                     </div>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <RingGauge pct={cell.pct ?? 0} color={scoreColor(cell.pct ?? 0)} />
-                    <div>
-                      <p className="text-sm font-medium text-white/55">{cell.label}</p>
-                      <p className="font-mono font-medium text-2xl text-white leading-none mt-0.5">{cell.value}</p>
-                      <p className="mt-1.5 text-xxs font-medium uppercase tracking-wide text-emerald-300">{cell.note}</p>
-                    </div>
-                  </div>
-                )}
-              </button>
-            ))}
+                  )}
+                </button>
+              ))}
         </div>
       </div>
 
       {/* Active section divider */}
       <div className="flex items-center gap-3 mt-2 mb-1">
-        <span className="text-xxs font-medium uppercase tracking-[0.12em] text-slate-400 whitespace-nowrap">{meta.divider}</span>
+        <span className="text-xxs font-medium uppercase tracking-[0.12em] text-slate-400 whitespace-nowrap">
+          {meta.divider}
+        </span>
         <span className="flex-1 h-px bg-slate-200" />
       </div>
 
-      {section === "approvals" && <ApprovalsSection entityId={scopeEntityId} pulse={pulse} onChanged={loadPulse} />}
-      {section === "complaints" && <ComplaintsSection entityId={scopeEntityId} onChanged={loadPulse} />}
+      {section === "approvals" && (
+        <ApprovalsSection entityId={scopeEntityId} pulse={pulse} onChanged={loadPulse} />
+      )}
+      {section === "complaints" && (
+        <ComplaintsSection entityId={scopeEntityId} onChanged={loadPulse} />
+      )}
       {section === "tickets" && <TicketsSection entityId={scopeEntityId} onChanged={loadPulse} />}
       {section === "reports" && <ReportsSection entityId={scopeEntityId} />}
       {section === "system" && <SystemSection entityId={scopeEntityId} onChanged={loadPulse} />}

@@ -127,31 +127,54 @@ export function ApprovalQueue({ onActionComplete }: { onActionComplete?: () => v
               >
                 <div className="flex flex-col gap-4 w-full">
                   <div className="flex items-center gap-3 mb-1">
-                    <Badge tone="neutral" className="px-2 py-0.5 text-xxs tracking-widest uppercase shadow-sm">
+                    <Badge
+                      tone="neutral"
+                      className="px-2 py-0.5 text-xxs tracking-widest uppercase shadow-sm"
+                    >
                       {req.requestType ? req.requestType.replace(/_/g, " ") : "GENERAL"}
                     </Badge>
-                    <span className="text-meta-muted text-xs">ID: <span className="mono-data ml-1">{req.id.split("-")[0]}</span></span>
+                    <span className="text-meta-muted text-xs">
+                      ID: <span className="mono-data ml-1">{req.id.split("-")[0]}</span>
+                    </span>
                     <span className="text-slate-300 mx-1 hidden sm:inline">•</span>
-                    <span className="text-meta-muted text-xs font-medium hidden sm:inline">{new Date(req.requestedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                    <span className="text-meta-muted text-xs font-medium hidden sm:inline">
+                      {new Date(req.requestedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
                   </div>
 
                   <div className="flex items-center flex-wrap gap-x-12 gap-y-5">
                     <div className="flex flex-col min-w-[140px]">
                       <span className="label-caps text-slate-400 mb-1.5">Entity</span>
-                      <span className="text-sm font-medium text-slate-800 tracking-tight">{req.entityId === "group" ? "Sunland Group" : req.entityId.toUpperCase()}</span>
+                      <span className="text-sm font-medium text-slate-800 tracking-tight">
+                        {req.entityId === "group" ? "Sunland Group" : req.entityId.toUpperCase()}
+                      </span>
                     </div>
 
                     <div className="flex flex-col min-w-[140px]">
                       <span className="label-caps text-slate-400 mb-1.5">Requested By</span>
                       <div className="flex items-center gap-2.5">
-                        <Image src={`https://i.pravatar.cc/150?u=${req.requestedByName}`} alt="Avatar" width={24} height={24} className="size-6 rounded-full object-cover ring-2 ring-white shadow-sm" />
-                        <span className="text-sm font-medium text-slate-800 tracking-tight">{req.requestedByName || "System"}</span>
+                        <Image
+                          src={`https://i.pravatar.cc/150?u=${req.requestedByName}`}
+                          alt="Avatar"
+                          width={24}
+                          height={24}
+                          className="size-6 rounded-full object-cover ring-2 ring-white shadow-sm"
+                        />
+                        <span className="text-sm font-medium text-slate-800 tracking-tight">
+                          {req.requestedByName || "System"}
+                        </span>
                       </div>
                     </div>
 
                     <div className="flex flex-col">
                       <span className="label-caps text-slate-400 mb-1">Amount</span>
-                      <span className="mono-amount text-slate-900 text-xl font-medium leading-none">{formatKES(parseFloat(req.amountKes) || 0)}</span>
+                      <span className="mono-amount text-slate-900 text-xl font-medium leading-none">
+                        {formatKES(parseFloat(req.amountKes) || 0)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -159,14 +182,20 @@ export function ApprovalQueue({ onActionComplete }: { onActionComplete?: () => v
                 <div className="flex items-center gap-3 shrink-0 justify-end mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-t-0 border-slate-100 w-full sm:w-auto">
                   <button
                     disabled={actioningId === req.id}
-                    onClick={(e) => { e.stopPropagation(); handleDecision(req.id, "rejected"); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDecision(req.id, "rejected");
+                    }}
                     className="flex-1 sm:flex-none flex items-center justify-center h-9 px-4 rounded-lg bg-white text-slate-600 border border-slate-200 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 transition-all shadow-sm font-medium text-sm"
                   >
                     <IconX size={16} /> <span className="hidden sm:inline ml-1.5">Reject</span>
                   </button>
                   <button
                     disabled={actioningId === req.id}
-                    onClick={(e) => { e.stopPropagation(); handleDecision(req.id, "approved"); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDecision(req.id, "approved");
+                    }}
                     className="flex-1 sm:flex-none flex items-center justify-center h-9 px-5 rounded-lg bg-[#f3df27] text-[#151936] hover:bg-[#e6d220] transition-all border border-[#f3df27] hover:border-[#e6d220] shadow-sm font-medium text-sm"
                   >
                     <IconCheck size={16} className="mr-1.5" /> Approve
@@ -181,7 +210,9 @@ export function ApprovalQueue({ onActionComplete }: { onActionComplete?: () => v
               <IconInbox size={28} stroke={1.5} className="text-slate-400" />
             </div>
             <p className="text-body-primary font-medium text-slate-700">Queue is clear</p>
-            <p className="text-meta-muted mt-1.5 max-w-sm">No pending sign-offs required at this time. Great job staying on top of approvals!</p>
+            <p className="text-meta-muted mt-1.5 max-w-sm">
+              No pending sign-offs required at this time. Great job staying on top of approvals!
+            </p>
           </div>
         )}
       </div>
@@ -201,26 +232,51 @@ export function ApprovalQueue({ onActionComplete }: { onActionComplete?: () => v
               </div>
               <div>
                 <h3 className="text-title-primary">Request {selectedRequest.id.split("-")[0]}</h3>
-                <p className="text-meta-muted">Submitted on {new Date(selectedRequest.requestedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+                <p className="text-meta-muted">
+                  Submitted on{" "}
+                  {new Date(selectedRequest.requestedAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">Entity</span>
-                <span className="text-body-primary font-medium">{selectedRequest.entityId === "group" ? "Sunland Group" : selectedRequest.entityId.toUpperCase()}</span>
+                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">
+                  Entity
+                </span>
+                <span className="text-body-primary font-medium">
+                  {selectedRequest.entityId === "group"
+                    ? "Sunland Group"
+                    : selectedRequest.entityId.toUpperCase()}
+                </span>
               </div>
               <div>
-                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">Approver Role</span>
-                <span className="label-caps px-2 py-0.5 rounded border bg-slate-50">{selectedRequest.requiredApproverRole}</span>
+                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">
+                  Approver Role
+                </span>
+                <span className="label-caps px-2 py-0.5 rounded border bg-slate-50">
+                  {selectedRequest.requiredApproverRole}
+                </span>
               </div>
               <div>
-                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">Amount</span>
-                <span className="mono-amount text-slate-900 text-lg">{formatKES(parseFloat(selectedRequest.amountKes) || 0)}</span>
+                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">
+                  Amount
+                </span>
+                <span className="mono-amount text-slate-900 text-lg">
+                  {formatKES(parseFloat(selectedRequest.amountKes) || 0)}
+                </span>
               </div>
               <div>
-                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">Requested By</span>
-                <span className="text-body-primary">{selectedRequest.requestedByName || "System"}</span>
+                <span className="text-meta-muted-strong block mb-1 text-xs uppercase tracking-wider">
+                  Requested By
+                </span>
+                <span className="text-body-primary">
+                  {selectedRequest.requestedByName || "System"}
+                </span>
               </div>
               {selectedRequest.decisionNotes && (
                 <div className="col-span-2">

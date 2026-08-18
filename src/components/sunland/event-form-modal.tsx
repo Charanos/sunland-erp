@@ -6,10 +6,22 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { cn } from "@/lib/utils/cn";
 
 const EVENT_TYPES = [
-  { value: "internal", label: "Internal Meeting", color: "bg-teal-50 text-teal-700 border-teal-200" },
+  {
+    value: "internal",
+    label: "Internal Meeting",
+    color: "bg-teal-50 text-teal-700 border-teal-200",
+  },
   { value: "external", label: "Client Viewing", color: "bg-sky-50 text-sky-700 border-sky-200" },
-  { value: "legal", label: "Legal / Escrow", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
-  { value: "maintenance", label: "Site Inspection", color: "bg-amber-50 text-amber-700 border-amber-200" },
+  {
+    value: "legal",
+    label: "Legal / Escrow",
+    color: "bg-indigo-50 text-indigo-700 border-indigo-200",
+  },
+  {
+    value: "maintenance",
+    label: "Site Inspection",
+    color: "bg-amber-50 text-amber-700 border-amber-200",
+  },
 ];
 
 interface EventFormData {
@@ -81,7 +93,7 @@ export function EventFormModal({
   return (
     <Modal
       open={open}
-      onClose={isSubmitting ? () => { } : onClose}
+      onClose={isSubmitting ? () => {} : onClose}
       title={mode === "create" ? "Schedule Event" : "Edit Event"}
       description="Add a new appointment to the executive itinerary."
       size="md"
@@ -93,7 +105,9 @@ export function EventFormModal({
           <input
             className={cn(
               "w-full h-10 rounded-lg border px-3 text-sm font-medium placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
-              errors.title ? "border-red-300 bg-red-50/30" : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white"
+              errors.title
+                ? "border-red-300 bg-red-50/30"
+                : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white"
             )}
             placeholder="e.g. HNW Viewing - Karen Ridge"
             value={form.title}
@@ -106,19 +120,39 @@ export function EventFormModal({
         <div>
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
             <div className="size-5 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-slate-500"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
             </div>
             <h4 className="label-caps text-slate-700 m-0">Schedule Details</h4>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="text-xxs font-medium text-slate-400 uppercase tracking-widest mb-1 block">Date</label>
+              <label className="text-xxs font-medium text-slate-400 uppercase tracking-widest mb-1 block">
+                Date
+              </label>
               <input
                 type="date"
                 min={new Date().toISOString().split("T")[0]}
                 className={cn(
                   "w-full h-10 rounded-lg border px-3 text-sm font-medium focus:outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
-                  errors.date ? "border-red-300 bg-red-50/30" : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white"
+                  errors.date
+                    ? "border-red-300 bg-red-50/30"
+                    : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white"
                 )}
                 value={form.date}
                 onChange={(e) => updateField("date", e.target.value)}
@@ -126,26 +160,34 @@ export function EventFormModal({
               {errors.date && <p className="text-xs text-red-500 mt-1">{errors.date}</p>}
             </div>
             <div>
-              <label className="text-xxs font-medium text-slate-400 uppercase tracking-widest mb-1 block">Time</label>
+              <label className="text-xxs font-medium text-slate-400 uppercase tracking-widest mb-1 block">
+                Time
+              </label>
               <input
                 type="time"
                 className={cn(
                   "w-full h-10 rounded-lg border px-3 mono-data text-sm focus:outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]",
-                  errors.time ? "border-red-300 bg-red-50/30" : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white"
+                  errors.time
+                    ? "border-red-300 bg-red-50/30"
+                    : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white"
                 )}
                 value={form.time}
                 onChange={(e) => updateField("time", e.target.value)}
               />
             </div>
             <div>
-              <label className="text-xxs font-medium text-slate-400 uppercase tracking-widest mb-1 block">Duration</label>
+              <label className="text-xxs font-medium text-slate-400 uppercase tracking-widest mb-1 block">
+                Duration
+              </label>
               <select
                 className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50/50 hover:bg-slate-50 focus:bg-white px-3 text-sm font-medium focus:outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-100 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                 value={form.duration}
                 onChange={(e) => updateField("duration", e.target.value)}
               >
                 {["30m", "1h", "1.5h", "2h", "3h", "4h", "All Day"].map((d) => (
-                  <option key={d} value={d}>{d}</option>
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
                 ))}
               </select>
             </div>
@@ -169,7 +211,9 @@ export function EventFormModal({
                 )}
               >
                 <span>{t.label}</span>
-                {form.type === t.value && <div className="size-1.5 rounded-full bg-current opacity-80" />}
+                {form.type === t.value && (
+                  <div className="size-1.5 rounded-full bg-current opacity-80" />
+                )}
               </button>
             ))}
           </div>
@@ -205,8 +249,10 @@ export function EventFormModal({
                 <LoadingSpinner className="mr-2 size-3.5" />
                 Scheduling...
               </>
+            ) : mode === "create" ? (
+              "Confirm & Schedule"
             ) : (
-              mode === "create" ? "Confirm & Schedule" : "Save Changes"
+              "Save Changes"
             )}
           </button>
         </div>

@@ -52,18 +52,15 @@ export const maintenanceCategory = pgEnum("maintenance_category", [
   "compliance",
 ]);
 
-export const unitStatus = pgEnum("unit_status", [
-  "vacant",
-  "occupied",
-  "reserved",
-  "maintenance",
-]);
+export const unitStatus = pgEnum("unit_status", ["vacant", "occupied", "reserved", "maintenance"]);
 
 export const properties = pgTable(
   "properties",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
     propertyCode: text("property_code").notNull(),
     name: text("name").notNull(),
     propertyType: text("property_type").notNull(),
@@ -83,7 +80,9 @@ export const properties = pgTable(
     // Marketing/context blurb rendered on the property full view - the board
     // was already designed to show it; the column just didn't exist yet.
     description: text("description"),
-    media: jsonb("media").$type<Array<{ url: string; alt?: string; isPrimary?: boolean }>>().default([]),
+    media: jsonb("media")
+      .$type<Array<{ url: string; alt?: string; isPrimary?: boolean }>>()
+      .default([]),
     // For multi-unit properties (apartment blocks, hostels): the mix of unit
     // types making up the property - e.g. 10 bedsitters + 6 one-bedrooms.
     // A jsonb array rather than a relational `units` table: the master doc
@@ -97,21 +96,25 @@ export const properties = pgTable(
     ...timestamps,
   },
   (table) => ({
-    propertyCodeIdx: uniqueIndex("properties_property_code_idx").on(
-      table.propertyCode,
-    ),
+    propertyCodeIdx: uniqueIndex("properties_property_code_idx").on(table.propertyCode),
     statusIdx: index("properties_status_idx").on(table.status),
     entityIdx: index("properties_entity_idx").on(table.entityId),
-  }),
+  })
 );
 
 export const leases = pgTable(
   "leases",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    propertyId: uuid("property_id").references(() => properties.id).notNull(),
-    tenantContactId: uuid("tenant_contact_id").references(() => contacts.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    propertyId: uuid("property_id")
+      .references(() => properties.id)
+      .notNull(),
+    tenantContactId: uuid("tenant_contact_id")
+      .references(() => contacts.id)
+      .notNull(),
     // Nullable - single-unit properties don't need an explicit unit
     // assignment; multi-unit properties can tie a lease to one specific
     // property_units row so the Units & Tenants tab can show which real
@@ -133,15 +136,19 @@ export const leases = pgTable(
     entityIdx: index("leases_entity_idx").on(table.entityId),
     expiryIdx: index("leases_expiry_idx").on(table.endsAt),
     unitIdx: index("leases_unit_idx").on(table.unitId),
-  }),
+  })
 );
 
 export const propertyUnits = pgTable(
   "property_units",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    propertyId: uuid("property_id").references(() => properties.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    propertyId: uuid("property_id")
+      .references(() => properties.id)
+      .notNull(),
     unitLabel: text("unit_label").notNull(),
     // Matches unitBreakdown's unitType vocabulary (e.g. "Bedsitter", "1 Bedroom").
     unitType: text("unit_type"),
@@ -158,15 +165,19 @@ export const propertyUnits = pgTable(
   (table) => ({
     propertyIdx: index("property_units_property_idx").on(table.propertyId),
     entityIdx: index("property_units_entity_idx").on(table.entityId),
-  }),
+  })
 );
 
 export const maintenanceRequests = pgTable(
   "maintenance_requests",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    entityId: uuid("entity_id").references(() => entities.id).notNull(),
-    propertyId: uuid("property_id").references(() => properties.id).notNull(),
+    entityId: uuid("entity_id")
+      .references(() => entities.id)
+      .notNull(),
+    propertyId: uuid("property_id")
+      .references(() => properties.id)
+      .notNull(),
     reportedByContactId: uuid("reported_by_contact_id").references(() => contacts.id),
     assignedContractorId: uuid("assigned_contractor_id").references(() => contacts.id),
     title: text("title").notNull(),
@@ -190,5 +201,5 @@ export const maintenanceRequests = pgTable(
     entityIdx: index("maintenance_entity_idx").on(table.entityId),
     priorityIdx: index("maintenance_priority_idx").on(table.priority),
     categoryIdx: index("maintenance_category_idx").on(table.category),
-  }),
+  })
 );

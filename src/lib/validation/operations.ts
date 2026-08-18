@@ -51,9 +51,11 @@ export const toggleMilestoneSchema = z.object({
  * The kanban's four columns map onto (status, atRisk) rather than a 6th status
  * value, so a drag writes both together.
  */
-export const setProjectBoardStateSchema = z.object({
-  status: statusSchema.optional(),
-  atRisk: z.boolean().optional(),
-}).refine((v) => v.status !== undefined || v.atRisk !== undefined, {
-  message: "Provide status, atRisk, or both",
-});
+export const setProjectBoardStateSchema = z
+  .object({
+    status: statusSchema.optional(),
+    atRisk: z.boolean().optional(),
+  })
+  .refine((v) => v.status !== undefined || v.atRisk !== undefined, {
+    message: "Provide status, atRisk, or both",
+  });

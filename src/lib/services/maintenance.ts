@@ -1,7 +1,19 @@
 import { and, desc, eq, getTableColumns } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "@/db";
-import { approvalRequests, calendarEvents, contacts, maintenanceCategory, maintenancePriority, maintenanceRequests, maintenanceStatus, properties, propertyMandates, transactions, users } from "@/db/schema";
+import {
+  approvalRequests,
+  calendarEvents,
+  contacts,
+  maintenanceCategory,
+  maintenancePriority,
+  maintenanceRequests,
+  maintenanceStatus,
+  properties,
+  propertyMandates,
+  transactions,
+  users,
+} from "@/db/schema";
 import { authorize } from "@/lib/authz/can";
 import { writeAudit } from "@/lib/authz/audit";
 import { ConflictError, DomainValidationError, NotFoundError } from "@/lib/authz/errors";
@@ -11,7 +23,11 @@ import { getGroupSettingValue } from "@/lib/services/settings";
 import { toISOStringSafe } from "@/lib/services/properties";
 import { appendSystemMessage, resolveUserIdsByTiers } from "@/lib/services/messaging";
 import type { CallerContext } from "@/lib/services/types";
-import { type CostApprovalTier, costApprovalTierFor, slaStateFor } from "@/components/sunland/maintenance-constants";
+import {
+  type CostApprovalTier,
+  costApprovalTierFor,
+  slaStateFor,
+} from "@/components/sunland/maintenance-constants";
 import {
   createMaintenanceRequestSchema,
   scheduleMaintenanceVisitSchema,
@@ -27,7 +43,10 @@ const SLA_HOURS_BY_PRIORITY: Record<string, string> = {
 };
 const SLA_HOURS_FALLBACK: Record<string, number> = { critical: 6, urgent: 24, routine: 72 };
 
-async function getCostApprovalTier(propertyId: string, costKes: number): Promise<{
+async function getCostApprovalTier(
+  propertyId: string,
+  costKes: number
+): Promise<{
   tier: CostApprovalTier;
   maintenanceAuthorityKes: number | null;
 }> {
@@ -35,13 +54,22 @@ async function getCostApprovalTier(propertyId: string, costKes: number): Promise
     db
       .select({ maintenanceAuthorityKes: propertyMandates.maintenanceAuthorityKes })
       .from(propertyMandates)
-      .where(and(eq(propertyMandates.propertyId, propertyId), eq(propertyMandates.status, "active")))
+      .where(
+        and(eq(propertyMandates.propertyId, propertyId), eq(propertyMandates.status, "active"))
+      )
       .limit(1),
     getGroupSettingValue("maintenance_cost_gm_threshold_kes", 25000),
     getGroupSettingValue("maintenance_cost_ceo_threshold_kes", 100000),
   ]);
-  const maintenanceAuthorityKes = activeMandate?.maintenanceAuthorityKes ? parseFloat(activeMandate.maintenanceAuthorityKes) : null;
-  const tier = costApprovalTierFor({ costKes, maintenanceAuthorityKes, gmThresholdKes: gmThreshold, ceoThresholdKes: ceoThreshold });
+  const maintenanceAuthorityKes = activeMandate?.maintenanceAuthorityKes
+    ? parseFloat(activeMandate.maintenanceAuthorityKes)
+    : null;
+  const tier = costApprovalTierFor({
+    costKes,
+    maintenanceAuthorityKes,
+    gmThresholdKes: gmThreshold,
+    ceoThresholdKes: ceoThreshold,
+  });
   return { tier, maintenanceAuthorityKes };
 }
 
@@ -50,7 +78,7 @@ const contractorContacts = alias(contacts, "contractor_contacts");
 
 export async function listMaintenanceRequests(
   ctx: CallerContext,
-  filters: { status?: string; priority?: string; category?: string; propertyId?: string } = {},
+  filters: { status?: string; priority?: string; category?: string; propertyId?: string } = {}
 ) {
   if (!ctx.entityId) throw new DomainValidationError("entityId is required");
   const entityId = await resolveEntityId(ctx.entityId);
@@ -58,14 +86,38 @@ export async function listMaintenanceRequests(
 
   const conditions = [eq(maintenanceRequests.entityId, entityId)];
   if (filters.propertyId) conditions.push(eq(maintenanceRequests.propertyId, filters.propertyId));
-  if (filters.status && (maintenanceStatus.enumValues as readonly string[]).includes(filters.status)) {
-    conditions.push(eq(maintenanceRequests.status, filters.status as (typeof maintenanceStatus.enumValues)[number]));
+  if (
+    filters.status &&
+    (maintenanceStatus.enumValues as readonly string[]).includes(filters.status)
+  ) {
+    conditions.push(
+      eq(
+        maintenanceRequests.status,
+        filters.status as (typeof maintenanceStatus.enumValues)[number]
+      )
+    );
   }
-  if (filters.priority && (maintenancePriority.enumValues as readonly string[]).includes(filters.priority)) {
-    conditions.push(eq(maintenanceRequests.priority, filters.priority as (typeof maintenancePriority.enumValues)[number]));
+  if (
+    filters.priority &&
+    (maintenancePriority.enumValues as readonly string[]).includes(filters.priority)
+  ) {
+    conditions.push(
+      eq(
+        maintenanceRequests.priority,
+        filters.priority as (typeof maintenancePriority.enumValues)[number]
+      )
+    );
   }
-  if (filters.category && (maintenanceCategory.enumValues as readonly string[]).includes(filters.category)) {
-    conditions.push(eq(maintenanceRequests.category, filters.category as (typeof maintenanceCategory.enumValues)[number]));
+  if (
+    filters.category &&
+    (maintenanceCategory.enumValues as readonly string[]).includes(filters.category)
+  ) {
+    conditions.push(
+      eq(
+        maintenanceRequests.category,
+        filters.category as (typeof maintenanceCategory.enumValues)[number]
+      )
+    );
   }
 
   return db
@@ -94,7 +146,10 @@ export async function listMaintenanceRequests(
     .from(maintenanceRequests)
     .innerJoin(properties, eq(maintenanceRequests.propertyId, properties.id))
     .leftJoin(reporterContacts, eq(maintenanceRequests.reportedByContactId, reporterContacts.id))
-    .leftJoin(contractorContacts, eq(maintenanceRequests.assignedContractorId, contractorContacts.id))
+    .leftJoin(
+      contractorContacts,
+      eq(maintenanceRequests.assignedContractorId, contractorContacts.id)
+    )
     .where(and(...conditions))
     .orderBy(desc(maintenanceRequests.createdAt));
 }
@@ -119,7 +174,10 @@ export async function createMaintenanceRequest(ctx: CallerContext, rawInput: unk
     .limit(1);
   if (!property) throw new NotFoundError("Property not found");
 
-  const costTier = input.estimatedCostKes !== undefined ? await getCostApprovalTier(input.propertyId, input.estimatedCostKes) : null;
+  const costTier =
+    input.estimatedCostKes !== undefined
+      ? await getCostApprovalTier(input.propertyId, input.estimatedCostKes)
+      : null;
   const needsApproval = costTier !== null && costTier.tier !== "auto";
 
   return db.transaction(async (tx) => {
@@ -136,7 +194,8 @@ export async function createMaintenanceRequest(ctx: CallerContext, rawInput: unk
         category: input.category,
         status: needsApproval ? "awaiting_approval" : "reported",
         dueAt: input.dueAt ? new Date(input.dueAt) : null,
-        estimatedCostKes: input.estimatedCostKes !== undefined ? input.estimatedCostKes.toString() : null,
+        estimatedCostKes:
+          input.estimatedCostKes !== undefined ? input.estimatedCostKes.toString() : null,
         actualCostKes: costTier?.tier === "auto" ? input.estimatedCostKes!.toString() : null,
       })
       .returning();
@@ -167,7 +226,11 @@ export async function createMaintenanceRequest(ctx: CallerContext, rawInput: unk
   });
 }
 
-export async function updateMaintenanceRequest(ctx: CallerContext, requestId: string, rawInput: unknown) {
+export async function updateMaintenanceRequest(
+  ctx: CallerContext,
+  requestId: string,
+  rawInput: unknown
+) {
   const input = parseInput(updateMaintenanceRequestSchema, rawInput);
 
   const [existing] = await db
@@ -187,7 +250,8 @@ export async function updateMaintenanceRequest(ctx: CallerContext, requestId: st
   if (input.dueAt !== undefined) updatable.dueAt = input.dueAt ? new Date(input.dueAt) : null;
   if (input.estimatedCostKes !== undefined) updatable.estimatedCostKes = input.estimatedCostKes;
   if (input.actualCostKes !== undefined) updatable.actualCostKes = input.actualCostKes;
-  if (input.assignedContractorId !== undefined) updatable.assignedContractorId = input.assignedContractorId;
+  if (input.assignedContractorId !== undefined)
+    updatable.assignedContractorId = input.assignedContractorId;
 
   if (input.status !== undefined) {
     updatable.status = input.status;
@@ -215,7 +279,12 @@ export async function updateMaintenanceRequest(ctx: CallerContext, requestId: st
       await tx
         .update(calendarEvents)
         .set({ outcome: "completed", updatedAt: new Date() })
-        .where(and(eq(calendarEvents.maintenanceRequestId, requestId), eq(calendarEvents.outcome, "pending")));
+        .where(
+          and(
+            eq(calendarEvents.maintenanceRequestId, requestId),
+            eq(calendarEvents.outcome, "pending")
+          )
+        );
     }
 
     await writeAudit(tx, ctx, {
@@ -252,7 +321,11 @@ export async function updateMaintenanceRequest(ctx: CallerContext, requestId: st
 }
 
 const MAINT_STATUS_LABELS: Record<string, string> = {
-  reported: "Reported", awaiting_approval: "Awaiting Approval", scheduled: "Scheduled", in_progress: "In Progress", done: "Completed",
+  reported: "Reported",
+  awaiting_approval: "Awaiting Approval",
+  scheduled: "Scheduled",
+  in_progress: "In Progress",
+  done: "Completed",
 };
 
 /** Named single-field cases (status move, contractor assignment) read like a
@@ -260,18 +333,29 @@ const MAINT_STATUS_LABELS: Record<string, string> = {
 function describeMaintenanceUpdate(
   changedKeys: string[],
   before: typeof maintenanceRequests.$inferSelect,
-  after: typeof maintenanceRequests.$inferSelect,
+  after: typeof maintenanceRequests.$inferSelect
 ): string {
   if (changedKeys.length === 1 && changedKeys[0] === "status") {
     return `Moved "${after.title}" from ${MAINT_STATUS_LABELS[before.status] ?? before.status} to ${MAINT_STATUS_LABELS[after.status] ?? after.status}`;
   }
-  if (changedKeys.includes("assignedContractorId") && after.assignedContractorId && !before.assignedContractorId) {
+  if (
+    changedKeys.includes("assignedContractorId") &&
+    after.assignedContractorId &&
+    !before.assignedContractorId
+  ) {
     return `Assigned a contractor to "${after.title}"${changedKeys.includes("status") ? ` (status: ${MAINT_STATUS_LABELS[after.status] ?? after.status})` : ""}`;
   }
   const FIELD_LABELS: Record<string, string> = {
-    title: "title", description: "description", priority: "severity", category: "category", dueAt: "due date",
-    assignedContractorId: "assigned contractor", status: "status", resolvedAt: "resolution date",
-    estimatedCostKes: "estimated cost", actualCostKes: "actual cost",
+    title: "title",
+    description: "description",
+    priority: "severity",
+    category: "category",
+    dueAt: "due date",
+    assignedContractorId: "assigned contractor",
+    status: "status",
+    resolvedAt: "resolution date",
+    estimatedCostKes: "estimated cost",
+    actualCostKes: "actual cost",
   };
   const labels = changedKeys.filter((k) => k !== "resolvedAt").map((k) => FIELD_LABELS[k] ?? k);
   return `Updated ${labels.length > 0 ? labels.join(", ") : "details"} for "${after.title}"`;
@@ -307,7 +391,10 @@ export async function getMaintenanceRequestWithDetails(ctx: CallerContext, reque
     .from(maintenanceRequests)
     .innerJoin(properties, eq(maintenanceRequests.propertyId, properties.id))
     .leftJoin(reporterContacts, eq(maintenanceRequests.reportedByContactId, reporterContacts.id))
-    .leftJoin(contractorContacts, eq(maintenanceRequests.assignedContractorId, contractorContacts.id))
+    .leftJoin(
+      contractorContacts,
+      eq(maintenanceRequests.assignedContractorId, contractorContacts.id)
+    )
     .where(eq(maintenanceRequests.id, requestId))
     .limit(1);
 
@@ -317,26 +404,51 @@ export async function getMaintenanceRequestWithDetails(ctx: CallerContext, reque
 
   const [[activeMandate], [pendingApproval], slaHours, [linkedEvent]] = await Promise.all([
     db
-      .select({ maintenanceAuthorityKes: propertyMandates.maintenanceAuthorityKes, assignedPmId: propertyMandates.assignedPmId, pmName: users.name })
+      .select({
+        maintenanceAuthorityKes: propertyMandates.maintenanceAuthorityKes,
+        assignedPmId: propertyMandates.assignedPmId,
+        pmName: users.name,
+      })
       .from(propertyMandates)
       .leftJoin(users, eq(users.id, propertyMandates.assignedPmId))
-      .where(and(eq(propertyMandates.propertyId, row.propertyId), eq(propertyMandates.status, "active")))
+      .where(
+        and(eq(propertyMandates.propertyId, row.propertyId), eq(propertyMandates.status, "active"))
+      )
       .limit(1),
     db
-      .select({ id: approvalRequests.id, requiredApproverRole: approvalRequests.requiredApproverRole, amountKes: approvalRequests.amountKes })
+      .select({
+        id: approvalRequests.id,
+        requiredApproverRole: approvalRequests.requiredApproverRole,
+        amountKes: approvalRequests.amountKes,
+      })
       .from(approvalRequests)
-      .where(and(eq(approvalRequests.relatedTable, "maintenance_requests"), eq(approvalRequests.relatedId, requestId), eq(approvalRequests.status, "pending")))
+      .where(
+        and(
+          eq(approvalRequests.relatedTable, "maintenance_requests"),
+          eq(approvalRequests.relatedId, requestId),
+          eq(approvalRequests.status, "pending")
+        )
+      )
       .limit(1),
     getGroupSettingValue(SLA_HOURS_BY_PRIORITY[row.priority], SLA_HOURS_FALLBACK[row.priority]),
     db
-      .select({ id: calendarEvents.id, startsAt: calendarEvents.startsAt, endsAt: calendarEvents.endsAt, outcome: calendarEvents.outcome })
+      .select({
+        id: calendarEvents.id,
+        startsAt: calendarEvents.startsAt,
+        endsAt: calendarEvents.endsAt,
+        outcome: calendarEvents.outcome,
+      })
       .from(calendarEvents)
       .where(eq(calendarEvents.maintenanceRequestId, requestId))
       .orderBy(desc(calendarEvents.startsAt))
       .limit(1),
   ]);
 
-  const sla = slaStateFor({ createdAt: row.createdAt, resolvedAt: row.resolvedAt, targetHours: slaHours });
+  const sla = slaStateFor({
+    createdAt: row.createdAt,
+    resolvedAt: row.resolvedAt,
+    targetHours: slaHours,
+  });
 
   return {
     ...row,
@@ -346,12 +458,20 @@ export async function getMaintenanceRequestWithDetails(ctx: CallerContext, reque
     resolvedAt: toISOStringSafe(row.resolvedAt),
     estimatedCostKes: row.estimatedCostKes ? parseFloat(row.estimatedCostKes) : null,
     actualCostKes: row.actualCostKes ? parseFloat(row.actualCostKes) : null,
-    contractorSpecialty: (row.assignedContractorMetadata as Record<string, unknown> | null)?.specialty ?? null,
-    maintenanceAuthorityKes: activeMandate?.maintenanceAuthorityKes ? parseFloat(activeMandate.maintenanceAuthorityKes) : null,
+    contractorSpecialty:
+      (row.assignedContractorMetadata as Record<string, unknown> | null)?.specialty ?? null,
+    maintenanceAuthorityKes: activeMandate?.maintenanceAuthorityKes
+      ? parseFloat(activeMandate.maintenanceAuthorityKes)
+      : null,
     propertyManagerName: activeMandate?.pmName ?? null,
     pendingApproval: pendingApproval ?? null,
     scheduledVisit: linkedEvent
-      ? { id: linkedEvent.id, startsAt: toISOStringSafe(linkedEvent.startsAt) ?? "", endsAt: toISOStringSafe(linkedEvent.endsAt) ?? "", outcome: linkedEvent.outcome }
+      ? {
+          id: linkedEvent.id,
+          startsAt: toISOStringSafe(linkedEvent.startsAt) ?? "",
+          endsAt: toISOStringSafe(linkedEvent.endsAt) ?? "",
+          outcome: linkedEvent.outcome,
+        }
       : null,
     sla: { ...sla, targetHours: slaHours },
   };
@@ -366,20 +486,35 @@ export async function getMaintenanceRequestWithDetails(ctx: CallerContext, reque
  * through the same real approvalRequests/decideApprovalRequest path every
  * other approval-gated action in this app already uses.
  */
-export async function submitMaintenanceCostForApproval(ctx: CallerContext, requestId: string, rawInput: unknown) {
+export async function submitMaintenanceCostForApproval(
+  ctx: CallerContext,
+  requestId: string,
+  rawInput: unknown
+) {
   const input = parseInput(submitMaintenanceCostSchema, rawInput);
   const entityId = await resolveEntityId(input.entityId);
   await authorize(ctx, "properties.maintenance.write", entityId);
 
-  const [existing] = await db.select().from(maintenanceRequests).where(and(eq(maintenanceRequests.id, requestId), eq(maintenanceRequests.entityId, entityId))).limit(1);
+  const [existing] = await db
+    .select()
+    .from(maintenanceRequests)
+    .where(and(eq(maintenanceRequests.id, requestId), eq(maintenanceRequests.entityId, entityId)))
+    .limit(1);
   if (!existing) throw new NotFoundError("Maintenance request not found");
 
   const [existingPending] = await db
     .select({ id: approvalRequests.id })
     .from(approvalRequests)
-    .where(and(eq(approvalRequests.relatedTable, "maintenance_requests"), eq(approvalRequests.relatedId, requestId), eq(approvalRequests.status, "pending")))
+    .where(
+      and(
+        eq(approvalRequests.relatedTable, "maintenance_requests"),
+        eq(approvalRequests.relatedId, requestId),
+        eq(approvalRequests.status, "pending")
+      )
+    )
     .limit(1);
-  if (existingPending) throw new ConflictError("A cost approval is already pending for this request.");
+  if (existingPending)
+    throw new ConflictError("A cost approval is already pending for this request.");
 
   const { tier } = await getCostApprovalTier(existing.propertyId, input.costKes);
 
@@ -467,7 +602,11 @@ export async function submitMaintenanceCostForApproval(ctx: CallerContext, reque
  * booking is only valid from "reported" - it doesn't make sense to schedule
  * a visit for a request still awaiting a cost decision.
  */
-export async function scheduleMaintenanceVisit(ctx: CallerContext, requestId: string, rawInput: unknown) {
+export async function scheduleMaintenanceVisit(
+  ctx: CallerContext,
+  requestId: string,
+  rawInput: unknown
+) {
   const input = parseInput(scheduleMaintenanceVisitSchema, rawInput);
   const entityId = await resolveEntityId(input.entityId);
   await authorize(ctx, "properties.maintenance.write", entityId);
@@ -483,7 +622,11 @@ export async function scheduleMaintenanceVisit(ctx: CallerContext, requestId: st
   const endsAt = new Date(input.endsAt);
   if (endsAt <= startsAt) throw new DomainValidationError("endsAt must be after startsAt");
 
-  const [property] = await db.select({ name: properties.name }).from(properties).where(eq(properties.id, existing.propertyId)).limit(1);
+  const [property] = await db
+    .select({ name: properties.name })
+    .from(properties)
+    .where(eq(properties.id, existing.propertyId))
+    .limit(1);
 
   const [linkedEvent] = await db
     .select()
@@ -507,11 +650,20 @@ export async function scheduleMaintenanceVisit(ctx: CallerContext, requestId: st
     };
 
     const [event] = linkedEvent
-      ? await tx.update(calendarEvents).set(eventValues).where(eq(calendarEvents.id, linkedEvent.id)).returning()
+      ? await tx
+          .update(calendarEvents)
+          .set(eventValues)
+          .where(eq(calendarEvents.id, linkedEvent.id))
+          .returning()
       : await tx
-        .insert(calendarEvents)
-        .values({ ...eventValues, entityId, organizerId: ctx.user.id, maintenanceRequestId: requestId })
-        .returning();
+          .insert(calendarEvents)
+          .values({
+            ...eventValues,
+            entityId,
+            organizerId: ctx.user.id,
+            maintenanceRequestId: requestId,
+          })
+          .returning();
 
     await writeAudit(tx, ctx, {
       action: linkedEvent ? "scheduling.event.update" : "scheduling.event.create",

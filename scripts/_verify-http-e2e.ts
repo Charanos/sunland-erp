@@ -47,7 +47,11 @@ function check(label: string, condition: boolean, detail?: unknown) {
 
 async function main() {
   const [groupEntity] = await db.select().from(entities).where(eq(entities.slug, "group")).limit(1);
-  const [commEntity] = await db.select().from(entities).where(eq(entities.slug, "commercial")).limit(1);
+  const [commEntity] = await db
+    .select()
+    .from(entities)
+    .where(eq(entities.slug, "commercial"))
+    .limit(1);
 
   // --- Auth ---
   const ceoCookie = await emulate("ceo");
@@ -61,22 +65,24 @@ async function main() {
   const usersList = await call("GET", `/api/identity/users?entityId=${groupEntity.id}`, ceoCookie);
   check(
     "GET /api/identity/users (group) returns the 5 group-scoped seeded users",
-    usersList.status === 200 && Array.isArray(usersList.json?.users) && usersList.json.users.length === 5,
-    usersList,
+    usersList.status === 200 &&
+      Array.isArray(usersList.json?.users) &&
+      usersList.json.users.length === 5,
+    usersList
   );
 
   const rolesList = await call("GET", "/api/identity/roles", ceoCookie);
   check(
     "GET /api/identity/roles returns 16 system roles",
     rolesList.status === 200 && rolesList.json?.roles?.length === 16,
-    rolesList.json?.roles?.length,
+    rolesList.json?.roles?.length
   );
 
   const permsList = await call("GET", "/api/identity/permissions", ceoCookie);
   check(
     "GET /api/identity/permissions returns 24 permissions",
     permsList.status === 200 && permsList.json?.permissions?.length === 24,
-    permsList.json?.permissions?.length,
+    permsList.json?.permissions?.length
   );
 
   // --- Settings ---
@@ -84,19 +90,23 @@ async function main() {
   check(
     "GET /api/settings (group) returns 4 seeded thresholds",
     settingsRes.status === 200 && settingsRes.json?.settings?.length === 4,
-    settingsRes.json,
+    settingsRes.json
   );
 
   // --- Audit ---
   const auditRes = await call("GET", `/api/audit?entityId=${groupEntity.id}&limit=5`, ceoCookie);
-  check("GET /api/audit (group) returns entries", auditRes.status === 200 && Array.isArray(auditRes.json?.entries), auditRes.json);
+  check(
+    "GET /api/audit (group) returns entries",
+    auditRes.status === 200 && Array.isArray(auditRes.json?.entries),
+    auditRes.json
+  );
 
   // --- Sessions ---
   const sessionsRes = await call("GET", "/api/identity/sessions", ceoCookie);
   check(
     "GET /api/identity/sessions (own) returns at least the current session",
     sessionsRes.status === 200 && sessionsRes.json?.sessions?.length >= 1,
-    sessionsRes.json,
+    sessionsRes.json
   );
 
   // --- Finance approvals: full deny/allow chain through real HTTP ---
@@ -109,14 +119,22 @@ async function main() {
     amountKes: 3000,
     requiredApproverRole: "department_head",
   });
-  check("POST create approval as finance_officer succeeds", created.status === 200 && created.json?.success, created.json);
+  check(
+    "POST create approval as finance_officer succeeds",
+    created.status === 200 && created.json?.success,
+    created.json
+  );
   const requestId = created.json?.request?.id;
 
   const deniedDecide = await call("POST", "/api/finance/approvals/decide", officerCookie, {
     requestId,
     status: "approved",
   });
-  check("POST decide as finance_officer -> 403 (officer records, doesn't approve)", deniedDecide.status === 403, deniedDecide.json);
+  check(
+    "POST decide as finance_officer -> 403 (officer records, doesn't approve)",
+    deniedDecide.status === 403,
+    deniedDecide.json
+  );
 
   const headCookie = await emulate("finance_head");
   const decided = await call("POST", "/api/finance/approvals/decide", headCookie, {
@@ -124,31 +142,47 @@ async function main() {
     status: "approved",
     decisionNotes: "HTTP e2e verification",
   });
-  check("POST decide as finance_head succeeds", decided.status === 200 && decided.json?.request?.status === "approved", decided.json);
+  check(
+    "POST decide as finance_head succeeds",
+    decided.status === 200 && decided.json?.request?.status === "approved",
+    decided.json
+  );
 
   const auditForRequest = await call(
     "GET",
     `/api/audit?entityId=${commEntity.id}&associatedType=approval_request&limit=10`,
-    ceoCookie,
+    ceoCookie
   );
-  const matching = (auditForRequest.json?.entries ?? []).filter((e: { associatedId: string }) => e.associatedId === requestId);
-  check("Audit log has 2 entries for this approval request (create + decide)", matching.length === 2, matching);
+  const matching = (auditForRequest.json?.entries ?? []).filter(
+    (e: { associatedId: string }) => e.associatedId === requestId
+  );
+  check(
+    "Audit log has 2 entries for this approval request (create + decide)",
+    matching.length === 2,
+    matching
+  );
 
   // --- isLastSuperAdmin guard through real HTTP ---
   const ceoMe = await call("GET", "/api/auth/me", ceoCookie);
   const ceoId = ceoMe.json?.user?.id;
-  const deactivateAttempt = await call("PATCH", `/api/identity/users/${ceoId}/access`, ceoCookie, { isActive: false });
+  const deactivateAttempt = await call("PATCH", `/api/identity/users/${ceoId}/access`, ceoCookie, {
+    isActive: false,
+  });
   check(
     "PATCH deactivate the last active CEO via HTTP -> blocked (409)",
     deactivateAttempt.status === 409,
-    deactivateAttempt.json,
+    deactivateAttempt.json
   );
 
   // --- Real session revocation through logout ---
   const logoutRes = await call("POST", "/api/auth/logout", ceoCookie);
   check("POST /api/auth/logout succeeds", logoutRes.status === 200, logoutRes.json);
   const meAfterLogout = await call("GET", "/api/auth/me", ceoCookie);
-  check("GET /api/auth/me with the now-revoked cookie -> user is null", meAfterLogout.json?.user === null, meAfterLogout.json);
+  check(
+    "GET /api/auth/me with the now-revoked cookie -> user is null",
+    meAfterLogout.json?.user === null,
+    meAfterLogout.json
+  );
 
   console.log(`\n${passCount} passed, ${failCount} failed.`);
   process.exit(failCount > 0 ? 1 : 0);

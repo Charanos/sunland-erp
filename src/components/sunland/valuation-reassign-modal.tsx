@@ -41,13 +41,22 @@ export function ValuationReassignModal({
     Promise.resolve().then(() => setManagerId(""));
     fetch(`/api/identity/users?entityId=${entityId}&role=property_manager`)
       .then((r) => r.json())
-      .then((d) => { if (Array.isArray(d.users)) setManagers(d.users.map((u: { id: string; name: string }) => ({ id: u.id, name: u.name }))); })
-      .catch(() => { });
+      .then((d) => {
+        if (Array.isArray(d.users))
+          setManagers(
+            d.users.map((u: { id: string; name: string }) => ({ id: u.id, name: u.name }))
+          );
+      })
+      .catch(() => {});
   }, [open, entityId]);
 
   const handleSubmit = async () => {
     if (!managerId) {
-      pushToast({ tone: "warning", title: "Pick a manager", body: "Select who these prospects should be reassigned to." });
+      pushToast({
+        tone: "warning",
+        title: "Pick a manager",
+        body: "Select who these prospects should be reassigned to.",
+      });
       return;
     }
     setIsSaving(true);
@@ -58,19 +67,31 @@ export function ValuationReassignModal({
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ entityId, assignedManagerId: managerId }),
-          }),
-        ),
+          })
+        )
       );
       const failed = results.filter((r) => !r.ok).length;
       const managerName = managers.find((m) => m.id === managerId)?.name ?? "the selected manager";
       if (failed > 0) {
-        pushToast({ tone: "warning", title: "Partially reassigned", body: `${valuationIds.length - failed} of ${valuationIds.length} reassigned to ${managerName}.` });
+        pushToast({
+          tone: "warning",
+          title: "Partially reassigned",
+          body: `${valuationIds.length - failed} of ${valuationIds.length} reassigned to ${managerName}.`,
+        });
       } else {
-        pushToast({ tone: "success", title: "Reassigned", body: `${valuationIds.length} prospect${valuationIds.length === 1 ? "" : "s"} reassigned to ${managerName}.` });
+        pushToast({
+          tone: "success",
+          title: "Reassigned",
+          body: `${valuationIds.length} prospect${valuationIds.length === 1 ? "" : "s"} reassigned to ${managerName}.`,
+        });
       }
       onReassigned();
     } catch (err) {
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Failed to reassign" });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Failed to reassign",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -94,14 +115,25 @@ export function ValuationReassignModal({
           >
             <option value="">-- Select manager --</option>
             {managers.map((m) => (
-              <option key={m.id} value={m.id}>{m.name}</option>
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
             ))}
           </select>
         </div>
         <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
-          <Button variant="secondary" onClick={onClose} disabled={isSaving}>Cancel</Button>
+          <Button variant="secondary" onClick={onClose} disabled={isSaving}>
+            Cancel
+          </Button>
           <Button onClick={handleSubmit} disabled={isSaving}>
-            {isSaving ? (<><LoadingSpinner size="sm" /><span className="ml-2">Reassigning…</span></>) : "Reassign"}
+            {isSaving ? (
+              <>
+                <LoadingSpinner size="sm" />
+                <span className="ml-2">Reassigning…</span>
+              </>
+            ) : (
+              "Reassign"
+            )}
           </Button>
         </div>
       </div>

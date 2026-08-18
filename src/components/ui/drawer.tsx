@@ -26,7 +26,7 @@ export function Drawer({
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
-    () => false,
+    () => false
   );
 
   useEffect(() => {
@@ -64,9 +64,7 @@ export function Drawer({
       <aside
         className={cn(
           "absolute top-0 h-full overflow-y-auto bg-white shadow-[0_0_60px_rgba(0,0,0,0.10)] flex flex-col",
-          side === "left"
-            ? "left-0 animate-slide-in-right"
-            : "right-0 animate-slide-in-right",
+          side === "left" ? "left-0 animate-slide-in-right" : "right-0 animate-slide-in-right"
         )}
         style={{ width: `min(${width}, 100vw)` }}
       >
@@ -78,9 +76,7 @@ export function Drawer({
           </IconButton>
         </div>
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar">{children}</div>
         {/* Footer */}
         {footer ? (
           <div className="sticky bottom-0 border-t border-slate-100 bg-white px-5 py-3.5">
@@ -89,6 +85,6 @@ export function Drawer({
         ) : null}
       </aside>
     </div>,
-    document.body,
+    document.body
   );
 }

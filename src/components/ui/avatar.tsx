@@ -24,7 +24,7 @@ export function Avatar({
       className={cn(
         "relative inline-flex size-10 shrink-0 items-center justify-center bg-slate-100 text-slate-700 border border-slate-200/80 text-sm font-medium",
         shapeClass,
-        className,
+        className
       )}
     >
       {src ? (
@@ -52,7 +52,7 @@ export function Avatar({
             "border-[1.5px] border-[var(--sidebar)] z-20",
             status === "online" && "bg-[var(--success)]",
             status === "busy" && "bg-[var(--error)]",
-            status === "away" && "bg-[var(--warning)]",
+            status === "away" && "bg-[var(--warning)]"
           )}
         />
       ) : null}

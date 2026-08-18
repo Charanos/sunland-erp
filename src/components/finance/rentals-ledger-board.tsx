@@ -15,7 +15,7 @@ import {
   IconUser,
   IconCheck,
   IconMail,
-  IconPhone
+  IconPhone,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast-provider";
@@ -23,17 +23,14 @@ import { cn } from "@/lib/utils/cn";
 import { Modal } from "@/components/ui/modal";
 import { Drawer } from "@/components/ui/drawer";
 import { FinanceModuleNav } from "@/components/finance/finance-module-nav";
-import { BoardHeader, BoardPanel, Button, PaginationControls } from "@/components/ui/erp-primitives";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip
-} from "recharts";
+  BoardHeader,
+  BoardPanel,
+  Button,
+  PaginationControls,
+} from "@/components/ui/erp-primitives";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -82,8 +79,14 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     status: "Posted",
     period: "June 2026",
     payments: [
-      { id: "tx1", date: "2026-06-05", amount: 125000, method: "Bank Transfer", reference: "FT-26156-NCBA" }
-    ]
+      {
+        id: "tx1",
+        date: "2026-06-05",
+        amount: 125000,
+        method: "Bank Transfer",
+        reference: "FT-26156-NCBA",
+      },
+    ],
   },
   {
     id: "r2",
@@ -97,7 +100,7 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     arrearsAge: 45,
     status: "Overdue",
     period: "June 2026",
-    payments: []
+    payments: [],
   },
   {
     id: "r3",
@@ -112,8 +115,14 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     status: "Pending",
     period: "June 2026",
     payments: [
-      { id: "tx2", date: "2026-06-10", amount: 100000, method: "M-Pesa", reference: "MP-RF425G-KES" }
-    ]
+      {
+        id: "tx2",
+        date: "2026-06-10",
+        amount: 100000,
+        method: "M-Pesa",
+        reference: "MP-RF425G-KES",
+      },
+    ],
   },
   {
     id: "r4",
@@ -127,7 +136,7 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     arrearsAge: 0,
     status: "Vacant",
     period: "June 2026",
-    payments: []
+    payments: [],
   },
   {
     id: "r5",
@@ -142,8 +151,14 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     status: "Posted",
     period: "June 2026",
     payments: [
-      { id: "tx3", date: "2026-06-03", amount: 250000, method: "Bank Transfer", reference: "FT-99102-KCB" }
-    ]
+      {
+        id: "tx3",
+        date: "2026-06-03",
+        amount: 250000,
+        method: "Bank Transfer",
+        reference: "FT-99102-KCB",
+      },
+    ],
   },
   {
     id: "r6",
@@ -157,7 +172,7 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     arrearsAge: 95,
     status: "Overdue",
     period: "June 2026",
-    payments: []
+    payments: [],
   },
   {
     id: "r7",
@@ -171,8 +186,8 @@ const INITIAL_RENTAL_UNITS: RentalUnit[] = [
     arrearsAge: 32,
     status: "Overdue",
     period: "June 2026",
-    payments: []
-  }
+    payments: [],
+  },
 ];
 
 const INITIAL_HISTORIC_CHART_DATA = [
@@ -181,7 +196,7 @@ const INITIAL_HISTORIC_CHART_DATA = [
   { month: "Mar", Expected: 9100000, Collected: 8750000 },
   { month: "Apr", Expected: 9400000, Collected: 8900000 },
   { month: "May", Expected: 9600000, Collected: 9200000 },
-  { month: "Jun", Expected: 9800000, Collected: 8960000 }
+  { month: "Jun", Expected: 9800000, Collected: 8960000 },
 ];
 
 const ROWS_PER_PAGE = 5;
@@ -228,7 +243,7 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
   // Sync dropdown/form unit selection when selecting a row unit first
   const openPayModalFor = (unitId: string) => {
     setPayUnitId(unitId);
-    const unit = units.find(u => u.id === unitId);
+    const unit = units.find((u) => u.id === unitId);
     if (unit) {
       setPayAmount(String(unit.deficit > 0 ? unit.deficit : unit.expectedRent));
     }
@@ -237,7 +252,7 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
 
   const openPlanModalFor = (unitId: string) => {
     setPlanUnitId(unitId);
-    const unit = units.find(u => u.id === unitId);
+    const unit = units.find((u) => u.id === unitId);
     if (unit) {
       setPlanInstallment(String(Math.round(unit.deficit / 6)));
     }
@@ -250,18 +265,22 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
   const handleLogPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!payUnitId || !payAmount || parseFloat(payAmount) <= 0) {
-      pushToast({ tone: "error", title: "Validation Error", body: "Please select a unit and enter a valid amount." });
+      pushToast({
+        tone: "error",
+        title: "Validation Error",
+        body: "Please select a unit and enter a valid amount.",
+      });
       return;
     }
 
     setIsSubmitting(true);
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
     const amountNum = parseFloat(payAmount);
 
-    setUnits(prev =>
-      prev.map(unit => {
+    setUnits((prev) =>
+      prev.map((unit) => {
         if (unit.id === payUnitId) {
           const newCollected = unit.collectedRent + amountNum;
           const newDeficit = Math.max(0, unit.expectedRent - newCollected);
@@ -272,7 +291,8 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
             date: new Date().toISOString().split("T")[0],
             amount: amountNum,
             method: payMethod,
-            reference: payRef || `MOCK-TXN-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+            reference:
+              payRef || `MOCK-TXN-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
           };
 
           return {
@@ -280,7 +300,7 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
             collectedRent: newCollected,
             deficit: newDeficit,
             status: newStatus,
-            payments: [newTx, ...unit.payments]
+            payments: [newTx, ...unit.payments],
           };
         }
         return unit;
@@ -288,8 +308,8 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
     );
 
     // Update June chart collection data reactively
-    setChartData(prev =>
-      prev.map(c => (c.month === "Jun" ? { ...c, Collected: c.Collected + amountNum } : c))
+    setChartData((prev) =>
+      prev.map((c) => (c.month === "Jun" ? { ...c, Collected: c.Collected + amountNum } : c))
     );
 
     setIsPayModalOpen(false);
@@ -301,25 +321,29 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
     pushToast({
       tone: "success",
       title: "Rent Payment Logged",
-      body: `KES ${amountNum.toLocaleString()} applied to unit ledger.`
+      body: `KES ${amountNum.toLocaleString()} applied to unit ledger.`,
     });
   };
 
   const handleSetPaymentPlan = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!planUnitId || !planInstallment) {
-      pushToast({ tone: "error", title: "Validation Error", body: "Please fill in all plan parameters." });
+      pushToast({
+        tone: "error",
+        title: "Validation Error",
+        body: "Please fill in all plan parameters.",
+      });
       return;
     }
 
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const instNum = parseFloat(planInstallment);
     const durationNum = parseInt(planWeeks);
 
-    setUnits(prev =>
-      prev.map(unit => {
+    setUnits((prev) =>
+      prev.map((unit) => {
         if (unit.id === planUnitId) {
           return {
             ...unit,
@@ -327,8 +351,8 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               installment: instNum,
               durationWeeks: durationNum,
               startDate: planStartDate,
-              active: true
-            }
+              active: true,
+            },
           };
         }
         return unit;
@@ -343,19 +367,19 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
     pushToast({
       tone: "success",
       title: "Payment Plan Activated",
-      body: `Arrears plan structured at KES ${instNum.toLocaleString()} weekly for ${durationNum} weeks.`
+      body: `Arrears plan structured at KES ${instNum.toLocaleString()} weekly for ${durationNum} weeks.`,
     });
   };
 
   const handleEscalateLeasing = async () => {
     if (!escalateUnit) return;
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     pushToast({
       tone: "info",
       title: "Vacancy Escalated",
-      body: `Unit ${escalateUnit.unitCode} handover sent to Property Management (Esther Howard).`
+      body: `Unit ${escalateUnit.unitCode} handover sent to Property Management (Esther Howard).`,
     });
 
     setEscalateUnit(null);
@@ -365,10 +389,15 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
   // --- Calculations ---
 
   const metrics = useMemo(() => {
-    const totalExpected = units.reduce((sum, u) => sum + (u.status !== "Vacant" ? u.expectedRent : 0), 0);
+    const totalExpected = units.reduce(
+      (sum, u) => sum + (u.status !== "Vacant" ? u.expectedRent : 0),
+      0
+    );
     const totalCollected = units.reduce((sum, u) => sum + u.collectedRent, 0);
     const totalDeficits = units.reduce((sum, u) => sum + u.deficit, 0);
-    const activeDefaulters = units.filter(u => u.status === "Overdue" || u.deficit > 100000).length;
+    const activeDefaulters = units.filter(
+      (u) => u.status === "Overdue" || u.deficit > 100000
+    ).length;
     const rate = totalExpected > 0 ? (totalCollected / totalExpected) * 100 : 0;
 
     return {
@@ -376,17 +405,18 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
       expected: totalExpected,
       deficits: totalDeficits,
       defaulters: activeDefaulters,
-      vacantCount: units.filter(u => u.status === "Vacant").length
+      vacantCount: units.filter((u) => u.status === "Vacant").length,
     };
   }, [units]);
 
   // Scoped rows based on active segment tab
   const filteredRows = useMemo(() => {
-    return units.filter(unit => {
+    return units.filter((unit) => {
       // Tab-specific filters
       if (activeTab === "deficits" && unit.deficit <= 0) return false;
       if (activeTab === "vacancies" && unit.status !== "Vacant") return false;
-      if (activeTab === "defaulters" && unit.arrearsAge <= 30 && unit.deficit < 100000) return false;
+      if (activeTab === "defaulters" && unit.arrearsAge <= 30 && unit.deficit < 100000)
+        return false;
 
       // Query filter
       const matchesSearch =
@@ -408,7 +438,6 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
 
   return (
     <div className="mx-auto flex max-w-[98rem] flex-col gap-4 animate-fade-in pb-12">
-
       {/* ── 1. Header & Actions ──────────────────────────────────────────────── */}
       <BoardHeader
         eyebrow={<Badge tone="primary">Property Revenue</Badge>}
@@ -425,7 +454,10 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               <IconSearch size={14} className="text-slate-400" />
               <input
                 value={searchQuery}
-                onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
                 placeholder="Search unit, property, or tenant..."
                 className="w-full bg-transparent text-slate-700 outline-none placeholder:text-slate-400 text-base"
               />
@@ -448,7 +480,10 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
       <FinanceModuleNav />
 
       {/* ── 3. KPI Segment Cards ─────────────────────────────────────────────── */}
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Rentals key metrics">
+      <section
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+        aria-label="Rentals key metrics"
+      >
         <BoardPanel className="p-5 flex flex-col justify-between h-[135px] relative overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-emerald-200 bg-gradient-to-b from-white to-emerald-50/10">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity translate-x-4 -translate-y-4">
             <IconCoins size={100} stroke={1} />
@@ -517,7 +552,8 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
           </div>
           <div className="flex flex-col mt-auto relative z-10">
             <span className="font-mono font-normal tracking-tight text-[#151936] text-3xl">
-              {metrics.vacantCount} <span className="text-slate-400 text-xl">/</span> {metrics.defaulters}
+              {metrics.vacantCount} <span className="text-slate-400 text-xl">/</span>{" "}
+              {metrics.defaulters}
             </span>
             <span className="mt-1 text-desc-secondary">Critical queues</span>
           </div>
@@ -529,7 +565,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="text-heading-primary">Rent Performance Trends</h3>
-            <p className="text-base text-slate-400">Expected monthly rental projections compared with committed collections.</p>
+            <p className="text-base text-slate-400">
+              Expected monthly rental projections compared with committed collections.
+            </p>
           </div>
           <div className="flex items-center gap-4 font-medium text-sm">
             <span className="flex items-center gap-1.5 text-indigo-600">
@@ -544,7 +582,13 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
           <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0}>
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="month"
+                stroke="#94a3b8"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis
                 stroke="#94a3b8"
                 fontSize={10}
@@ -553,8 +597,16 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                 tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
               />
               <Tooltip
-                contentStyle={{ background: "#151936", border: "none", borderRadius: "12px", color: "#fff" }}
-                formatter={(value: unknown) => [`KES ${parseInt(value as string).toLocaleString()}`, ""]}
+                contentStyle={{
+                  background: "#151936",
+                  border: "none",
+                  borderRadius: "12px",
+                  color: "#fff",
+                }}
+                formatter={(value: unknown) => [
+                  `KES ${parseInt(value as string).toLocaleString()}`,
+                  "",
+                ]}
               />
               <Bar dataKey="Expected" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={32} />
               <Bar dataKey="Collected" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={32} />
@@ -569,10 +621,14 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
           {activeTab.replace(/-/g, " ")} Ledger Panel
         </h2>
         <p className="text-desc-secondary mt-1">
-          {activeTab === "collections" && "Registry detailing collections book for expected rent, collected rent, and reconciliation status."}
-          {activeTab === "deficits" && "Filtered audit queue focusing on units with outstanding tenant deficit balances."}
-          {activeTab === "vacancies" && "Pipeline monitoring vacant units with property manager handovers."}
-          {activeTab === "defaulters" && "Arrears ledger detailing 30/60/90 day aging queues and active repayment plans."}
+          {activeTab === "collections" &&
+            "Registry detailing collections book for expected rent, collected rent, and reconciliation status."}
+          {activeTab === "deficits" &&
+            "Filtered audit queue focusing on units with outstanding tenant deficit balances."}
+          {activeTab === "vacancies" &&
+            "Pipeline monitoring vacant units with property manager handovers."}
+          {activeTab === "defaulters" &&
+            "Arrears ledger detailing 30/60/90 day aging queues and active repayment plans."}
         </p>
       </div>
 
@@ -580,7 +636,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-white">
           <div>
             <h3 className="text-title-primary">Active Accounts Queue</h3>
-            <p className="mt-0.5 text-sm  text-slate-400">Click any row to reveal detailed ledger cards and historical statements.</p>
+            <p className="mt-0.5 text-sm  text-slate-400">
+              Click any row to reveal detailed ledger cards and historical statements.
+            </p>
           </div>
           <Button variant="secondary" size="sm" className="bg-white border-slate-200">
             <IconChevronDown size={14} /> Export Queue
@@ -596,8 +654,12 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                     <th className="px-5 py-3">Unit Code</th>
                     <th className="px-5 py-3">Property / Location</th>
                     <th className="px-5 py-3">Tenant</th>
-                    {activeTab !== "vacancies" && <th className="px-5 py-3 text-right">Expected</th>}
-                    {activeTab !== "vacancies" && <th className="px-5 py-3 text-right">Collected</th>}
+                    {activeTab !== "vacancies" && (
+                      <th className="px-5 py-3 text-right">Expected</th>
+                    )}
+                    {activeTab !== "vacancies" && (
+                      <th className="px-5 py-3 text-right">Collected</th>
+                    )}
                     {activeTab !== "vacancies" && <th className="px-5 py-3 text-right">Deficit</th>}
                     {activeTab === "defaulters" && <th className="px-5 py-3">Age</th>}
                     <th className="px-5 py-3">Status</th>
@@ -612,9 +674,7 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                       onClick={() => setSelectedUnit(row)}
                       className="transition-colors hover:bg-slate-50/80 cursor-pointer"
                     >
-                      <td className="px-5 py-3.5 text-slate-900 mono-data">
-                        {row.unitCode}
-                      </td>
+                      <td className="px-5 py-3.5 text-slate-900 mono-data">{row.unitCode}</td>
                       <td className="px-5 py-3.5">
                         <p className="text-title-primary leading-snug">{row.property}</p>
                         <p className="text-sm  text-slate-400 mt-0.5 flex items-center gap-1">
@@ -623,7 +683,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                       </td>
                       <td className="px-5 py-3.5">
                         <p className="text-title-primary">{row.tenantName}</p>
-                        <span className="text-sm text-slate-400 font-medium">Period: {row.period}</span>
+                        <span className="text-sm text-slate-400 font-medium">
+                          Period: {row.period}
+                        </span>
                       </td>
                       {activeTab !== "vacancies" && (
                         <td className="px-5 py-3.5 text-right text-slate-900 mono-data">
@@ -636,20 +698,27 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                         </td>
                       )}
                       {activeTab !== "vacancies" && (
-                        <td className={cn(
-                          "px-5 py-3.5 text-right font-mono text-sm font-medium",
-                          row.deficit > 0 ? "text-rose-600 bg-rose-50/30" : "text-slate-400"
-                        )}>
+                        <td
+                          className={cn(
+                            "px-5 py-3.5 text-right font-mono text-sm font-medium",
+                            row.deficit > 0 ? "text-rose-600 bg-rose-50/30" : "text-slate-400"
+                          )}
+                        >
                           {row.deficit > 0 ? `KES ${row.deficit.toLocaleString()}` : "-"}
                         </td>
                       )}
                       {activeTab === "defaulters" && (
                         <td className="px-5 py-3.5">
-                          <span className={cn(
-                            "px-2 py-0.5 rounded text-sm font-medium",
-                            row.arrearsAge > 90 ? "bg-red-100 text-red-800" :
-                              row.arrearsAge > 30 ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-800"
-                          )}>
+                          <span
+                            className={cn(
+                              "px-2 py-0.5 rounded text-sm font-medium",
+                              row.arrearsAge > 90
+                                ? "bg-red-100 text-red-800"
+                                : row.arrearsAge > 30
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-slate-100 text-slate-800"
+                            )}
+                          >
                             {row.arrearsAge} Days
                           </span>
                         </td>
@@ -657,9 +726,13 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                       <td className="px-5 py-3.5">
                         <Badge
                           tone={
-                            row.status === "Posted" ? "success" :
-                              row.status === "Overdue" ? "risk" :
-                                row.status === "Vacant" ? "warning" : "data"
+                            row.status === "Posted"
+                              ? "success"
+                              : row.status === "Overdue"
+                                ? "risk"
+                                : row.status === "Vacant"
+                                  ? "warning"
+                                  : "data"
                           }
                         >
                           {row.status}
@@ -669,10 +742,13 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                         <td className="px-5 py-3.5">
                           {row.paymentPlan?.active ? (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">
-                              <IconCheck size={11} /> KES {row.paymentPlan.installment.toLocaleString()}/wk
+                              <IconCheck size={11} /> KES{" "}
+                              {row.paymentPlan.installment.toLocaleString()}/wk
                             </span>
                           ) : (
-                            <span className="text-slate-400 font-medium text-sm">None structured</span>
+                            <span className="text-slate-400 font-medium text-sm">
+                              None structured
+                            </span>
                           )}
                         </td>
                       )}
@@ -735,7 +811,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
           </>
         ) : (
           <div className="p-12 text-center bg-white">
-            <p className="text-sm  text-slate-450 font-medium">No rentals matched your search or tab filter.</p>
+            <p className="text-sm  text-slate-450 font-medium">
+              No rentals matched your search or tab filter.
+            </p>
           </div>
         )}
       </BoardPanel>
@@ -751,7 +829,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
       >
         <form onSubmit={handleLogPayment} className="space-y-4">
           <div>
-            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Select Rental Unit</label>
+            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+              Select Rental Unit
+            </label>
             <select
               value={payUnitId}
               onChange={(e) => openPayModalFor(e.target.value)}
@@ -769,7 +849,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Payment Amount (KES)</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Payment Amount (KES)
+              </label>
               <input
                 type="number"
                 required
@@ -780,7 +862,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               />
             </div>
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Payment Method</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Payment Method
+              </label>
               <select
                 value={payMethod}
                 onChange={(e) => setPayMethod(e.target.value as PaymentRecord["method"])}
@@ -795,7 +879,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
           </div>
 
           <div>
-            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Transaction/Bank Reference</label>
+            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+              Transaction/Bank Reference
+            </label>
             <input
               type="text"
               placeholder="e.g. MP-REF105-NBO"
@@ -809,7 +895,11 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
             <Button type="button" variant="secondary" onClick={() => setIsPayModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="bg-[#f3df27] text-[#151936] hover:bg-[#e6d220]">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#f3df27] text-[#151936] hover:bg-[#e6d220]"
+            >
               {isSubmitting ? "Logging..." : "Log Credit"}
             </Button>
           </div>
@@ -825,7 +915,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
       >
         <form onSubmit={handleSetPaymentPlan} className="space-y-4">
           <div>
-            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Defaulter Unit</label>
+            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+              Defaulter Unit
+            </label>
             <select
               value={planUnitId}
               onChange={(e) => setPlanUnitId(e.target.value)}
@@ -833,17 +925,21 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-base text-slate-700 focus:outline-none"
             >
               <option value="">-- Choose Account --</option>
-              {units.filter(u => u.deficit > 0).map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.unitCode} - {u.tenantName} (Arrears: KES {u.deficit.toLocaleString()})
-                </option>
-              ))}
+              {units
+                .filter((u) => u.deficit > 0)
+                .map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.unitCode} - {u.tenantName} (Arrears: KES {u.deficit.toLocaleString()})
+                  </option>
+                ))}
             </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Weekly Installment (KES)</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Weekly Installment (KES)
+              </label>
               <input
                 type="number"
                 required
@@ -853,7 +949,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               />
             </div>
             <div>
-              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Plan Duration</label>
+              <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+                Plan Duration
+              </label>
               <select
                 value={planWeeks}
                 onChange={(e) => setPlanWeeks(e.target.value)}
@@ -868,7 +966,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
           </div>
 
           <div>
-            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">Start Date</label>
+            <label className="uppercase tracking-wider block mb-1 text-desc-secondary">
+              Start Date
+            </label>
             <input
               type="date"
               required
@@ -882,7 +982,11 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
             <Button type="button" variant="secondary" onClick={() => setIsPlanModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="bg-[#151936] text-white hover:bg-slate-800">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#151936] text-white hover:bg-slate-800"
+            >
               {isSubmitting ? "Activating..." : "Activate Repayment Plan"}
             </Button>
           </div>
@@ -936,7 +1040,6 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
       >
         {selectedUnit && (
           <div className="space-y-6">
-
             {/* Top Property Profile */}
             <div className="flex flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-start justify-between">
@@ -948,9 +1051,13 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                 </div>
                 <Badge
                   tone={
-                    selectedUnit.status === "Posted" ? "success" :
-                      selectedUnit.status === "Overdue" ? "risk" :
-                        selectedUnit.status === "Vacant" ? "warning" : "data"
+                    selectedUnit.status === "Posted"
+                      ? "success"
+                      : selectedUnit.status === "Overdue"
+                        ? "risk"
+                        : selectedUnit.status === "Vacant"
+                          ? "warning"
+                          : "data"
                   }
                 >
                   {selectedUnit.status}
@@ -960,18 +1067,24 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               <div className="mt-4 grid grid-cols-3 gap-3 border-t border-slate-100 pt-3">
                 <div>
                   <span className="text-sm  text-slate-400 uppercase font-medium">Expected</span>
-                  <p className="text-slate-800 mt-0.5 mono-data">KES {selectedUnit.expectedRent.toLocaleString()}</p>
+                  <p className="text-slate-800 mt-0.5 mono-data">
+                    KES {selectedUnit.expectedRent.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-sm  text-slate-400 uppercase font-medium">Collected</span>
-                  <p className="text-emerald-700 mt-0.5 mono-data">KES {selectedUnit.collectedRent.toLocaleString()}</p>
+                  <p className="text-emerald-700 mt-0.5 mono-data">
+                    KES {selectedUnit.collectedRent.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-sm  text-slate-400 uppercase font-medium">Arrears</span>
-                  <p className={cn(
-                    "text-base font-mono font-medium mt-0.5",
-                    selectedUnit.deficit > 0 ? "text-rose-600" : "text-slate-400"
-                  )}>
+                  <p
+                    className={cn(
+                      "text-base font-mono font-medium mt-0.5",
+                      selectedUnit.deficit > 0 ? "text-rose-600" : "text-slate-400"
+                    )}
+                  >
                     KES {selectedUnit.deficit.toLocaleString()}
                   </p>
                 </div>
@@ -987,7 +1100,9 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                     <IconUser size={18} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-title-primary leading-none mb-1">{selectedUnit.tenantName}</p>
+                    <p className="text-title-primary leading-none mb-1">
+                      {selectedUnit.tenantName}
+                    </p>
                     <p className="text-sm text-slate-400 leading-none">Active Leaseholder</p>
                   </div>
                   <div className="flex items-center gap-1">
@@ -1005,10 +1120,14 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
             {/* Active Plan details */}
             {selectedUnit.paymentPlan?.active && (
               <div className="border border-indigo-100 rounded-xl p-4 bg-indigo-50/20">
-                <p className="text-indigo-700 font-normal mb-2 label-caps">Active Arrears Payment Plan</p>
+                <p className="text-indigo-700 font-normal mb-2 label-caps">
+                  Active Arrears Payment Plan
+                </p>
                 <div className="flex justify-between text-slate-700 mt-1 text-sm">
                   <span>Weekly Installment:</span>
-                  <span className="font-mono font-medium">KES {selectedUnit.paymentPlan.installment.toLocaleString()}</span>
+                  <span className="font-mono font-medium">
+                    KES {selectedUnit.paymentPlan.installment.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-slate-700 mt-1 text-sm">
                   <span>Duration structured:</span>
@@ -1027,10 +1146,15 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
               {selectedUnit.payments.length > 0 ? (
                 <div className="space-y-2">
                   {selectedUnit.payments.map((p) => (
-                    <div key={p.id} className="flex items-center justify-between border border-slate-100 bg-white rounded-lg p-3 shadow-xs">
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between border border-slate-100 bg-white rounded-lg p-3 shadow-xs"
+                    >
                       <div>
                         <p className="text-title-primary">KES {p.amount.toLocaleString()}</p>
-                        <p className="text-sm text-slate-450 mt-0.5">Ref: {p.reference} ({p.method})</p>
+                        <p className="text-sm text-slate-450 mt-0.5">
+                          Ref: {p.reference} ({p.method})
+                        </p>
                       </div>
                       <div className="text-right">
                         <span className="text-sm text-slate-400 font-mono">{p.date}</span>
@@ -1040,11 +1164,12 @@ export function RentalsLedgerBoard({ tabId = "collections" }: { tabId: string })
                 </div>
               ) : (
                 <div className="text-center py-6 border border-slate-100 border-dashed rounded-lg bg-slate-50/50">
-                  <p className="text-slate-400 font-medium text-sm">No rent payments received in this cycle.</p>
+                  <p className="text-slate-400 font-medium text-sm">
+                    No rent payments received in this cycle.
+                  </p>
                 </div>
               )}
             </div>
-
           </div>
         )}
       </Drawer>

@@ -16,14 +16,24 @@ export async function seedPermissionCatalog() {
       .values(p)
       .onConflictDoUpdate({
         target: permissions.key,
-        set: { module: p.module, resource: p.resource, action: p.action, description: p.description },
+        set: {
+          module: p.module,
+          resource: p.resource,
+          action: p.action,
+          description: p.description,
+        },
       });
   }
 
   for (const roleDef of SYSTEM_ROLES) {
     const [role] = await db
       .insert(roles)
-      .values({ slug: roleDef.slug, name: roleDef.name, isSystem: true, scopeType: roleDef.scopeType })
+      .values({
+        slug: roleDef.slug,
+        name: roleDef.name,
+        isSystem: true,
+        scopeType: roleDef.scopeType,
+      })
       .onConflictDoUpdate({
         target: roles.slug,
         set: { name: roleDef.name, isSystem: true, scopeType: roleDef.scopeType },
@@ -39,7 +49,10 @@ export async function seedPermissionCatalog() {
     await db.delete(rolePermissions).where(eq(rolePermissions.roleId, role.id));
     if (roleDef.permissions.length > 0) {
       await db.insert(rolePermissions).values(
-        roleDef.permissions.map((key) => ({ roleId: role.id, permissionId: permIdByKey.get(key)! })),
+        roleDef.permissions.map((key) => ({
+          roleId: role.id,
+          permissionId: permIdByKey.get(key)!,
+        }))
       );
     }
   }
@@ -51,7 +64,11 @@ export async function seedPermissionCatalog() {
  * indexes, so two "global" grants (entityId null) for the same user+role
  * would not be recognized as a conflict and would silently duplicate.
  */
-export async function grantUserRole(userId: string, roleSlug: string, entityId: string | null = null) {
+export async function grantUserRole(
+  userId: string,
+  roleSlug: string,
+  entityId: string | null = null
+) {
   const [role] = await db.select().from(roles).where(eq(roles.slug, roleSlug)).limit(1);
   if (!role) throw new Error(`Unknown role slug: ${roleSlug}`);
 
@@ -62,8 +79,8 @@ export async function grantUserRole(userId: string, roleSlug: string, entityId: 
       and(
         eq(userRoles.userId, userId),
         eq(userRoles.roleId, role.id),
-        entityId ? eq(userRoles.entityId, entityId) : isNull(userRoles.entityId),
-      ),
+        entityId ? eq(userRoles.entityId, entityId) : isNull(userRoles.entityId)
+      )
     )
     .limit(1);
 

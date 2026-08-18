@@ -77,13 +77,19 @@ export function AssignManagerModal({
       pushToast({
         tone: "success",
         title: assignedPmId ? "Manager assigned" : "Manager unassigned",
-        body: assignedPmId ? "This mandate now routes to the selected manager." : "This mandate no longer has an assigned manager.",
+        body: assignedPmId
+          ? "This mandate now routes to the selected manager."
+          : "This mandate no longer has an assigned manager.",
       });
       onAssigned();
       onClose();
     } catch (err) {
       console.error(err);
-      pushToast({ tone: "warning", title: "Error", body: err instanceof Error ? err.message : "Could not update the property manager." });
+      pushToast({
+        tone: "warning",
+        title: "Error",
+        body: err instanceof Error ? err.message : "Could not update the property manager.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -92,7 +98,7 @@ export function AssignManagerModal({
   return (
     <Modal
       open={open}
-      onClose={submitting ? () => { } : onClose}
+      onClose={submitting ? () => {} : onClose}
       title="Assign Property Manager"
       description={propertyName}
       size="sm"
@@ -108,7 +114,8 @@ export function AssignManagerModal({
             <option value="">Unassigned</option>
             {managers.map((m) => (
               <option key={m.id} value={m.id}>
-                {m.name}{m.title ? ` · ${m.title}` : ""}
+                {m.name}
+                {m.title ? ` · ${m.title}` : ""}
               </option>
             ))}
           </select>

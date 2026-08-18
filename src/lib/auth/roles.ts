@@ -32,9 +32,7 @@ export const UNIVERSAL_PATHS = [
 // These are enforced in canAccess() with an early return, so nav filtering
 // via canAccess(role, href) will correctly exclude them from the sidebar.
 
-const CEO_ONLY_PATHS = [
-  "/admin/system",
-];
+const CEO_ONLY_PATHS = ["/admin/system"];
 
 // ─── HR Complaints - absent, not greyed, for anyone outside this tier ─────────
 // HR spec §6.2/§6.4: HR Head, GM, and CEO only. GM/CEO's actual visibility is
@@ -99,13 +97,7 @@ const roleAccess: Record<UserRole, string[]> = {
     "/admin/properties",
     "/admin/leases",
   ],
-  rentals_officer: [
-    "/fin",
-    "/fin/rentals",
-    "/fin/mandates",
-    "/admin/properties",
-    "/admin/leases",
-  ],
+  rentals_officer: ["/fin", "/fin/rentals", "/fin/mandates", "/admin/properties", "/admin/leases"],
   rentals_mandates_officer: [
     "/fin",
     "/fin/rentals",
@@ -172,11 +164,7 @@ const financeOverviewRoles: UserRole[] = [
 ];
 
 // Roles that can reach the Executive Approvals Queue and Reports Center
-const executiveOversightRoles: UserRole[] = [
-  "ceo",
-  "general_manager",
-  "auditor_compliance",
-];
+const executiveOversightRoles: UserRole[] = ["ceo", "general_manager", "auditor_compliance"];
 
 export function isUniversalPath(pathname: string): boolean {
   return UNIVERSAL_PATHS.some((p) => pathname.startsWith(p));
@@ -198,10 +186,7 @@ export function canAccess(role: UserRole, pathname: string): boolean {
   }
 
   // 3. Executive oversight paths (Approvals Queue, Reports Center)
-  if (
-    pathname.startsWith("/admin/approvals") ||
-    pathname.startsWith("/admin/reports")
-  ) {
+  if (pathname.startsWith("/admin/approvals") || pathname.startsWith("/admin/reports")) {
     return executiveOversightRoles.includes(role);
   }
 

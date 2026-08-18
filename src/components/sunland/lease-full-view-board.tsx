@@ -71,7 +71,15 @@ const LEASE_DOCUMENT_TYPE_LABEL: Record<string, string> = {
 
 interface PaymentEntry {
   id: string;
-  type: "rent" | "commission" | "valuation_fee" | "expense" | "deposit" | "other" | "agreement_fee" | "sales_commission";
+  type:
+    | "rent"
+    | "commission"
+    | "valuation_fee"
+    | "expense"
+    | "deposit"
+    | "other"
+    | "agreement_fee"
+    | "sales_commission";
   amountKes: string;
   occurredAt: string;
   notes: string | null;
@@ -133,8 +141,22 @@ interface Lease {
   tenantAvatarUrl?: string | null;
   balanceKes: number;
   unitLabel?: string | null;
-  landlord?: { id: string; name: string; email: string | null; phone: string | null; avatarUrl?: string | null; verifiedAt?: string | null; companyName?: string | null } | null;
-  manager?: { id: string; name: string | null; title: string | null; email: string | null; avatarUrl?: string | null } | null;
+  landlord?: {
+    id: string;
+    name: string;
+    email: string | null;
+    phone: string | null;
+    avatarUrl?: string | null;
+    verifiedAt?: string | null;
+    companyName?: string | null;
+  } | null;
+  manager?: {
+    id: string;
+    name: string | null;
+    title: string | null;
+    email: string | null;
+    avatarUrl?: string | null;
+  } | null;
   propertyUnits?: PropertyUnitItem[];
   propertyActiveLeases?: PropertyActiveLease[];
   unitTypeCounts?: Record<string, number>;
@@ -410,7 +432,11 @@ export function LeaseFullViewBoard({
       { key: "payments", label: "Payment History", icon: IconCash },
       { key: "documents", label: "Documents", icon: IconFileText },
       { key: "activity", label: "Activity Log", icon: IconHistory },
-    ] as { key: TabKey; label: string; icon: ComponentType<{ size?: number; className?: string }> }[];
+    ] as {
+      key: TabKey;
+      label: string;
+      icon: ComponentType<{ size?: number; className?: string }>;
+    }[];
   }, []);
 
   const filteredActivity = useMemo(() => {
@@ -423,8 +449,10 @@ export function LeaseFullViewBoard({
     if (activityFilter !== "all") {
       filtered = filtered.filter((a) => {
         const lower = a.summary.toLowerCase();
-        if (activityFilter === "edits") return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
-        if (activityFilter === "terminations") return lower.includes("terminat") || lower.includes("delet");
+        if (activityFilter === "edits")
+          return lower.includes("updat") || lower.includes("chang") || lower.includes("edit");
+        if (activityFilter === "terminations")
+          return lower.includes("terminat") || lower.includes("delet");
         if (activityFilter === "system") return lower.includes("system") || lower.includes("auto");
         return true;
       });
@@ -434,13 +462,20 @@ export function LeaseFullViewBoard({
 
   const activityTotalPages = Math.max(1, Math.ceil(filteredActivity.length / ACTIVITY_PER_PAGE));
   const safeActivityPage = Math.min(activityPage, activityTotalPages);
-  const paginatedActivity = filteredActivity.slice((safeActivityPage - 1) * ACTIVITY_PER_PAGE, safeActivityPage * ACTIVITY_PER_PAGE);
+  const paginatedActivity = filteredActivity.slice(
+    (safeActivityPage - 1) * ACTIVITY_PER_PAGE,
+    safeActivityPage * ACTIVITY_PER_PAGE
+  );
 
   const filteredDocuments = useMemo(() => {
     let filtered = leaseDocuments ?? [];
     if (docSearchQuery) {
       const q = docSearchQuery.toLowerCase();
-      filtered = filtered.filter((d) => d.title.toLowerCase().includes(q) || (LEASE_DOCUMENT_TYPE_LABEL[d.type] ?? d.type).toLowerCase().includes(q));
+      filtered = filtered.filter(
+        (d) =>
+          d.title.toLowerCase().includes(q) ||
+          (LEASE_DOCUMENT_TYPE_LABEL[d.type] ?? d.type).toLowerCase().includes(q)
+      );
     }
     if (docTypeFilter !== "all") {
       filtered = filtered.filter((d) => d.type === docTypeFilter);
@@ -450,7 +485,10 @@ export function LeaseFullViewBoard({
 
   const docTotalPages = Math.max(1, Math.ceil(filteredDocuments.length / DOC_PER_PAGE));
   const safeDocPage = Math.min(docPage, docTotalPages);
-  const paginatedDocuments = filteredDocuments.slice((safeDocPage - 1) * DOC_PER_PAGE, safeDocPage * DOC_PER_PAGE);
+  const paginatedDocuments = filteredDocuments.slice(
+    (safeDocPage - 1) * DOC_PER_PAGE,
+    safeDocPage * DOC_PER_PAGE
+  );
 
   const filteredPayments = useMemo(() => {
     let filtered = payments ?? [];
@@ -470,7 +508,10 @@ export function LeaseFullViewBoard({
 
   const paymentTotalPages = Math.max(1, Math.ceil(filteredPayments.length / PAYMENT_PER_PAGE));
   const safePaymentPage = Math.min(paymentPage, paymentTotalPages);
-  const paginatedPayments = filteredPayments.slice((safePaymentPage - 1) * PAYMENT_PER_PAGE, safePaymentPage * PAYMENT_PER_PAGE);
+  const paginatedPayments = filteredPayments.slice(
+    (safePaymentPage - 1) * PAYMENT_PER_PAGE,
+    safePaymentPage * PAYMENT_PER_PAGE
+  );
 
   const actionItems: ActionItem[] = useMemo(() => {
     if (!lease) return [];
@@ -514,7 +555,7 @@ export function LeaseFullViewBoard({
         badgeText: "EXPIRING SOON",
         badgeTone: "warning",
         title: `Lease Term Ending in ${daysLeft} Day${daysLeft === 1 ? "" : "s"}`,
-        meta: `Contract expires on ${new Date(lease.endsAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}. Initiate renewal terms or schedule move-out inspection.`,
+        meta: `Contract expires on ${new Date(lease.endsAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}. Initiate renewal terms or schedule move-out inspection.`,
         primaryCta: "Renew Contract",
         secondaryCta: "View Terms",
         onPrimaryClick: () => setRenewModalOpen(true),
@@ -557,7 +598,11 @@ export function LeaseFullViewBoard({
   }
 
   if (!lease) {
-    return <div className="p-8 text-center text-xs text-slate-400 font-mono">Lease agreement not found.</div>;
+    return (
+      <div className="p-8 text-center text-xs text-slate-400 font-mono">
+        Lease agreement not found.
+      </div>
+    );
   }
 
   const mediaList = lease.propertyMedia || [];
@@ -565,21 +610,31 @@ export function LeaseFullViewBoard({
   const monthlyRentNum = parseFloat(lease.monthlyRentKes);
   const depositNum = lease.depositKes ? parseFloat(lease.depositKes) : null;
   const collectedThisMonth = Math.max(0, monthlyRentNum - lease.balanceKes);
-  const paymentStatusPct = monthlyRentNum > 0 ? Math.round((collectedThisMonth / monthlyRentNum) * 100) : 0;
+  const paymentStatusPct =
+    monthlyRentNum > 0 ? Math.round((collectedThisMonth / monthlyRentNum) * 100) : 0;
   const paymentStatusPctDisplay = Math.min(100, paymentStatusPct);
-  const daysRemaining = Math.max(0, Math.ceil((new Date(lease.endsAt).getTime() - renderTimestamp) / 86_400_000));
+  const daysRemaining = Math.max(
+    0,
+    Math.ceil((new Date(lease.endsAt).getTime() - renderTimestamp) / 86_400_000)
+  );
   const tenurePct = getLeaseTenurePct(lease, renderTimestamp);
 
   // Property Multi-unit statistics derived from extended getLeaseById response
   const propActiveLeases = lease.propertyActiveLeases || [];
   const unitTypeEntries = Object.entries(lease.unitTypeCounts || {});
   const totalUnits = lease.totalUnits || Math.max(1, propActiveLeases.length);
-  const occupancyPct = lease.occupancyPct ?? (totalUnits > 0 ? Math.round((propActiveLeases.length / totalUnits) * 100) : 100);
+  const occupancyPct =
+    lease.occupancyPct ??
+    (totalUnits > 0 ? Math.round((propActiveLeases.length / totalUnits) * 100) : 100);
   const totalPropertyRentPool = lease.totalPropertyRentPool || monthlyRentNum;
 
   // Recharts donut pie data for rent settled gauge
   const rechartsPieData = [
-    { name: "Settled", value: paymentStatusPctDisplay, color: paymentStatusPct >= 90 ? "#10b981" : paymentStatusPct >= 70 ? "#f59e0b" : "#f43f5e" },
+    {
+      name: "Settled",
+      value: paymentStatusPctDisplay,
+      color: paymentStatusPct >= 90 ? "#10b981" : paymentStatusPct >= 70 ? "#f59e0b" : "#f43f5e",
+    },
     { name: "Remaining", value: Math.max(0, 100 - paymentStatusPctDisplay), color: "#f1f5f9" },
   ];
 
@@ -614,9 +669,17 @@ export function LeaseFullViewBoard({
     {
       label: lease.isActive ? "Days Remaining" : "Term Ended",
       value: lease.isActive ? `${daysRemaining}` : "—",
-      subText: lease.isActive ? (daysRemaining <= 30 ? "expiring soon" : "until expiry") : "lease terminated",
+      subText: lease.isActive
+        ? daysRemaining <= 30
+          ? "expiring soon"
+          : "until expiry"
+        : "lease terminated",
       badgeText: lease.isActive ? (daysRemaining <= 30 ? "RENEWAL DUE" : "ON TRACK") : "ENDED",
-      tone: lease.isActive ? (daysRemaining <= 30 ? ("amber" as VitalTone) : ("neutral" as VitalTone)) : ("neutral" as VitalTone),
+      tone: lease.isActive
+        ? daysRemaining <= 30
+          ? ("amber" as VitalTone)
+          : ("neutral" as VitalTone)
+        : ("neutral" as VitalTone),
       icon: IconClock,
       tab: "overview" as TabKey,
     },
@@ -638,7 +701,11 @@ export function LeaseFullViewBoard({
       setRefreshCount((c) => c + 1);
       setDeleteConfirmOpen(false);
     } catch (e: unknown) {
-      pushToast({ tone: "error", title: "Error", body: e instanceof Error ? e.message : "Failed to terminate" });
+      pushToast({
+        tone: "error",
+        title: "Error",
+        body: e instanceof Error ? e.message : "Failed to terminate",
+      });
     } finally {
       setIsDeleting(false);
     }
@@ -664,9 +731,7 @@ export function LeaseFullViewBoard({
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 px-1 mt-2 animate-fade-in-up">
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="title-serif text-slate-900 truncate">
-              {lease.propertyName}
-            </h1>
+            <h1 className="title-serif text-slate-900 truncate">{lease.propertyName}</h1>
             <Badge tone={lease.isActive ? "success" : "neutral"}>
               {lease.isActive ? "ACTIVE LEASE" : "TERMINATED"}
             </Badge>
@@ -679,11 +744,15 @@ export function LeaseFullViewBoard({
           <div className="flex items-center gap-3 text-slate-500 text-xs min-w-0 font-medium">
             <span className="flex items-center gap-1.5 min-w-0">
               <IconMapPin size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
-              <span className="truncate">{lease.propertyLocation || "Sunland Managed Property"}</span>
+              <span className="truncate">
+                {lease.propertyLocation || "Sunland Managed Property"}
+              </span>
             </span>
             <span className="text-slate-200 shrink-0">|</span>
             <span className="font-mono text-slate-500 shrink-0">
-              {lease.unitLabel ? `UNIT ${lease.unitLabel}` : `LSE-${lease.id.slice(0, 8).toUpperCase()}`}
+              {lease.unitLabel
+                ? `UNIT ${lease.unitLabel}`
+                : `LSE-${lease.id.slice(0, 8).toUpperCase()}`}
             </span>
           </div>
         </div>
@@ -716,12 +785,22 @@ export function LeaseFullViewBoard({
                 </div>
               }
             >
-              <DropdownItem icon={IconLink} onClick={handleCopyLink}>Copy deep link</DropdownItem>
+              <DropdownItem icon={IconLink} onClick={handleCopyLink}>
+                Copy deep link
+              </DropdownItem>
               {lease.manager && (
-                <DropdownItem icon={IconBell} onClick={() => setNotifyPmOpen(true)}>Notify Property Manager</DropdownItem>
+                <DropdownItem icon={IconBell} onClick={() => setNotifyPmOpen(true)}>
+                  Notify Property Manager
+                </DropdownItem>
               )}
               {lease.isActive && (
-                <DropdownItem icon={IconTrash} variant="danger" onClick={() => setDeleteConfirmOpen(true)}>Terminate lease</DropdownItem>
+                <DropdownItem
+                  icon={IconTrash}
+                  variant="danger"
+                  onClick={() => setDeleteConfirmOpen(true)}
+                >
+                  Terminate lease
+                </DropdownItem>
               )}
             </DropdownMenu>
           </div>
@@ -759,7 +838,10 @@ export function LeaseFullViewBoard({
           )}
           <div
             className="absolute inset-0 z-0"
-            style={{ background: "linear-gradient(180deg, rgba(12,15,32,0.4) 0%, rgba(12,15,32,0.15) 34%, rgba(10,13,28,0.65) 68%, rgba(8,10,22,0.94) 100%)" }}
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(12,15,32,0.4) 0%, rgba(12,15,32,0.15) 34%, rgba(10,13,28,0.65) 68%, rgba(8,10,22,0.94) 100%)",
+            }}
             aria-hidden="true"
           />
 
@@ -784,7 +866,10 @@ export function LeaseFullViewBoard({
               ))}
             </div>
 
-            <div className="flex flex-col items-end gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="flex flex-col items-end gap-2 shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="hidden sm:flex w-fit bg-white/95 backdrop-blur-md rounded-2xl p-2.5 px-3.5 shadow-xl items-center gap-3 border border-white/60 text-slate-900">
                 <div className="relative size-10 flex items-center justify-center shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
@@ -808,7 +893,9 @@ export function LeaseFullViewBoard({
                   </ResponsiveContainer>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium uppercase tracking-wider text-slate-500 font-mono">Rent Settled</p>
+                  <p className="text-xs font-medium uppercase tracking-wider text-slate-500 font-mono">
+                    Rent Settled
+                  </p>
                   <p className="text-base font-medium text-slate-900 mt-0.5 font-mono leading-none">
                     {paymentStatusPctDisplay}%
                   </p>
@@ -822,9 +909,13 @@ export function LeaseFullViewBoard({
             {/* Active Tenancies Strip */}
             <div className="flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between text-xs text-slate-300 font-mono">
-                <span className="uppercase tracking-wider">Property Active Tenancies ({propActiveLeases.length})</span>
+                <span className="uppercase tracking-wider">
+                  Property Active Tenancies ({propActiveLeases.length})
+                </span>
                 {lease.unitLabel && (
-                  <Badge tone="brand">Viewing Unit {lease.unitLabel} · {lease.tenantName}</Badge>
+                  <Badge tone="brand">
+                    Viewing Unit {lease.unitLabel} · {lease.tenantName}
+                  </Badge>
                 )}
               </div>
 
@@ -840,7 +931,9 @@ export function LeaseFullViewBoard({
                       }}
                       className={cn(
                         "bg-black/50 hover:bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-2xl flex items-center gap-2 border transition-all text-left",
-                        isCurrentLease ? "border-amber-300 ring-2 ring-amber-300/30 bg-black/70" : "border-white/10 hover:border-white/30"
+                        isCurrentLease
+                          ? "border-amber-300 ring-2 ring-amber-300/30 bg-black/70"
+                          : "border-white/10 hover:border-white/30"
                       )}
                     >
                       <Avatar
@@ -851,9 +944,15 @@ export function LeaseFullViewBoard({
                       <div className="text-left leading-none">
                         <p className="text-xs font-medium text-white flex items-center gap-1">
                           {al.tenantName}
-                          {al.unitLabel && <span className="text-amber-300 font-mono text-xs">({al.unitLabel})</span>}
+                          {al.unitLabel && (
+                            <span className="text-amber-300 font-mono text-xs">
+                              ({al.unitLabel})
+                            </span>
+                          )}
                         </p>
-                        <span className="text-xs text-slate-300/80 font-mono mt-0.5 block">{formatCompactKES(parseFloat(al.monthlyRentKes))}/mo</span>
+                        <span className="text-xs text-slate-300/80 font-mono mt-0.5 block">
+                          {formatCompactKES(parseFloat(al.monthlyRentKes))}/mo
+                        </span>
                       </div>
                     </button>
                   );
@@ -865,7 +964,14 @@ export function LeaseFullViewBoard({
             <div className="w-full mt-1 pr-8 lg:pr-12" onClick={(e) => e.stopPropagation()}>
               <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mb-2">
                 <div
-                  className={cn("h-full rounded-full transition-all duration-500", paymentStatusPct >= 90 ? "bg-emerald-400" : paymentStatusPct >= 70 ? "bg-amber-400" : "bg-red-400")}
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    paymentStatusPct >= 90
+                      ? "bg-emerald-400"
+                      : paymentStatusPct >= 70
+                        ? "bg-amber-400"
+                        : "bg-red-400"
+                  )}
                   style={{ width: `${Math.min(100, paymentStatusPct)}%` }}
                 />
               </div>
@@ -876,12 +982,20 @@ export function LeaseFullViewBoard({
             </div>
 
             {/* Balance line & View Property Button */}
-            <div className="mt-1 pt-3 border-t border-white/10 flex items-center justify-between gap-4 w-full" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="mt-1 pt-3 border-t border-white/10 flex items-center justify-between gap-4 w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-slate-300 font-mono">
                   {lease.balanceKes > 0 ? "Unit Balance due" : "Rent status"}
                 </p>
-                <p className={cn("font-mono font-medium text-2xl tracking-tight mt-0.5", lease.balanceKes > 0 ? "text-rose-300" : "text-white")}>
+                <p
+                  className={cn(
+                    "font-mono font-medium text-2xl tracking-tight mt-0.5",
+                    lease.balanceKes > 0 ? "text-rose-300" : "text-white"
+                  )}
+                >
                   {lease.balanceKes > 0 ? formatCompactKES(lease.balanceKes) : "Rent Current"}
                 </p>
               </div>
@@ -945,10 +1059,18 @@ export function LeaseFullViewBoard({
                 onClick={() => setActiveMediaIndex(index)}
                 className={cn(
                   "relative size-[60px] rounded-xl overflow-hidden border-2 shrink-0 transition-all duration-300",
-                  activeMediaIndex === index ? "border-slate-800 scale-95 shadow-2xs" : "border-slate-200/60 opacity-70 hover:opacity-100 hover:scale-95"
+                  activeMediaIndex === index
+                    ? "border-slate-800 scale-95 shadow-2xs"
+                    : "border-slate-200/60 opacity-70 hover:opacity-100 hover:scale-95"
                 )}
               >
-                <Image src={media.url} alt={media.alt || `Property photo ${index + 1}`} fill sizes="60px" className="object-cover" />
+                <Image
+                  src={media.url}
+                  alt={media.alt || `Property photo ${index + 1}`}
+                  fill
+                  sizes="60px"
+                  className="object-cover"
+                />
               </button>
             ))}
           </div>
@@ -978,15 +1100,32 @@ export function LeaseFullViewBoard({
             />
             <div className="flex items-start justify-between relative z-10">
               <div className="flex flex-col gap-1 max-w-[calc(100%-48px)]">
-                <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">{v.label}</span>
-                <span className={cn("font-mono font-medium text-2xl mt-1 leading-none", VITAL_TONE_VALUE[v.tone])}>
+                <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                  {v.label}
+                </span>
+                <span
+                  className={cn(
+                    "font-mono font-medium text-2xl mt-1 leading-none",
+                    VITAL_TONE_VALUE[v.tone]
+                  )}
+                >
                   {v.value}
                 </span>
               </div>
             </div>
             <div className="flex items-center justify-between mt-auto relative z-10">
               <div className="flex items-center gap-2">
-                <Badge tone={v.tone === "rose" ? "risk" : v.tone === "amber" ? "warning" : v.tone === "emerald" ? "success" : "neutral"}>
+                <Badge
+                  tone={
+                    v.tone === "rose"
+                      ? "risk"
+                      : v.tone === "amber"
+                        ? "warning"
+                        : v.tone === "emerald"
+                          ? "success"
+                          : "neutral"
+                  }
+                >
                   {v.badgeText}
                 </Badge>
                 <span className="text-xs text-slate-400 font-mono">{v.subText}</span>
@@ -1002,7 +1141,12 @@ export function LeaseFullViewBoard({
 
       {/* ── Action-required band ── */}
       {actionItems.length > 0 && (
-        <div className={cn("grid gap-4 animate-fade-in-up mt-1", actionItems.length > 1 ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1")}>
+        <div
+          className={cn(
+            "grid gap-4 animate-fade-in-up mt-1",
+            actionItems.length > 1 ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1"
+          )}
+        >
           {actionItems.map((item) => (
             <div
               key={item.key}
@@ -1038,7 +1182,9 @@ export function LeaseFullViewBoard({
                       </span>
                     )}
                   </div>
-                  <h4 className="text-sm font-medium text-slate-900 leading-tight truncate">{item.title}</h4>
+                  <h4 className="text-sm font-medium text-slate-900 leading-tight truncate">
+                    {item.title}
+                  </h4>
                   <p className="text-xs text-slate-500 leading-normal">{item.meta}</p>
                 </div>
               </div>
@@ -1079,7 +1225,11 @@ export function LeaseFullViewBoard({
       {/* ── Main: Tabbed Content + Context Rail ── */}
       <RailLayout gap="gap-6 lg:gap-3.5">
         <div className="flex flex-col min-w-0">
-          <div role="tablist" aria-label="Lease sections" className="flex bg-white border border-slate-200/80 p-1.5 rounded-[20px] shadow-[0_2px_15px_rgb(0,0,0,0.02)] gap-1 overflow-x-auto flex-nowrap mb-6">
+          <div
+            role="tablist"
+            aria-label="Lease sections"
+            className="flex bg-white border border-slate-200/80 p-1.5 rounded-[20px] shadow-[0_2px_15px_rgb(0,0,0,0.02)] gap-1 overflow-x-auto flex-nowrap mb-6"
+          >
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -1091,7 +1241,9 @@ export function LeaseFullViewBoard({
                 onClick={() => setActiveTab(tab.key)}
                 className={cn(
                   "px-4 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shrink-0 whitespace-nowrap text-xs font-medium",
-                  activeTab === tab.key ? "bg-[#151936] text-white shadow-2xs" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                  activeTab === tab.key
+                    ? "bg-[#151936] text-white shadow-2xs"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 )}
               >
                 <tab.icon size={15} aria-hidden="true" />
@@ -1107,9 +1259,12 @@ export function LeaseFullViewBoard({
                 <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
                     <div>
-                      <h3 className="text-base font-medium text-slate-900">Executive Tenancy Specifications</h3>
+                      <h3 className="text-base font-medium text-slate-900">
+                        Executive Tenancy Specifications
+                      </h3>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                        Contractual parameters and financial obligations for {lease.unitLabel ? `Unit ${lease.unitLabel}` : lease.propertyCode}
+                        Contractual parameters and financial obligations for{" "}
+                        {lease.unitLabel ? `Unit ${lease.unitLabel}` : lease.propertyCode}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 flex-wrap shrink-0">
@@ -1118,7 +1273,9 @@ export function LeaseFullViewBoard({
                       </Badge>
                       <Badge tone="neutral">LSE-{lease.id.slice(0, 8).toUpperCase()}</Badge>
                       <Badge tone={lease.balanceKes > 0 ? "risk" : "success"}>
-                        {lease.balanceKes > 0 ? `${formatCompactKES(lease.balanceKes)} ARREARS` : "RENT CURRENT"}
+                        {lease.balanceKes > 0
+                          ? `${formatCompactKES(lease.balanceKes)} ARREARS`
+                          : "RENT CURRENT"}
                       </Badge>
                     </div>
                   </div>
@@ -1126,86 +1283,140 @@ export function LeaseFullViewBoard({
                   <div className="grid grid-cols-1 sm:grid-cols-2 @board-md:grid-cols-4 gap-4">
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Monthly Rent</span>
+                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                          Monthly Rent
+                        </span>
                         <Badge tone="neutral">RENT</Badge>
                       </div>
-                      <p className="font-mono text-xl font-medium text-slate-900 mt-1">{formatCompactKES(monthlyRentNum)}</p>
+                      <p className="font-mono text-xl font-medium text-slate-900 mt-1">
+                        {formatCompactKES(monthlyRentNum)}
+                      </p>
                       <span className="text-xs text-slate-400 font-mono">KES / month</span>
                     </div>
 
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-indigo-50/40 border border-indigo-100/60 hover:border-indigo-200/80 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-indigo-700 uppercase tracking-wider font-mono">Security Deposit</span>
+                        <span className="text-xs font-medium text-indigo-700 uppercase tracking-wider font-mono">
+                          Security Deposit
+                        </span>
                         <Badge tone="primary">HELD ON FILE</Badge>
                       </div>
-                      <p className="font-mono text-xl font-medium text-indigo-950 mt-1">{depositNum ? formatCompactKES(depositNum) : "None"}</p>
-                      <span className="text-xs text-indigo-500/80 font-mono">Refundable escrow</span>
+                      <p className="font-mono text-xl font-medium text-indigo-950 mt-1">
+                        {depositNum ? formatCompactKES(depositNum) : "None"}
+                      </p>
+                      <span className="text-xs text-indigo-500/80 font-mono">
+                        Refundable escrow
+                      </span>
                     </div>
 
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Commencement</span>
+                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                          Commencement
+                        </span>
                         <Badge tone="neutral">START DATE</Badge>
                       </div>
                       <p className="font-mono text-sm font-medium text-slate-900 mt-1">
-                        {new Date(lease.startsAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        {new Date(lease.startsAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </p>
                       <span className="text-xs text-slate-400 font-mono">Tenancy effective</span>
                     </div>
 
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Expiration</span>
-                        <Badge tone={daysRemaining <= 30 ? "warning" : "neutral"}>EXPIRY DATE</Badge>
+                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                          Expiration
+                        </span>
+                        <Badge tone={daysRemaining <= 30 ? "warning" : "neutral"}>
+                          EXPIRY DATE
+                        </Badge>
                       </div>
                       <p className="font-mono text-sm font-medium text-slate-900 mt-1">
-                        {new Date(lease.endsAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        {new Date(lease.endsAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </p>
-                      <span className="text-xs text-slate-400 font-mono">{leaseTermLabel(lease)}</span>
+                      <span className="text-xs text-slate-400 font-mono">
+                        {leaseTermLabel(lease)}
+                      </span>
                     </div>
 
-                    <div className={cn(
-                      "flex flex-col gap-1.5 p-4 rounded-2xl border transition-colors",
-                      lease.balanceKes > 0 ? "bg-rose-50/50 border-rose-100 hover:border-rose-200" : "bg-emerald-50/40 border-emerald-100 hover:border-emerald-200"
-                    )}>
+                    <div
+                      className={cn(
+                        "flex flex-col gap-1.5 p-4 rounded-2xl border transition-colors",
+                        lease.balanceKes > 0
+                          ? "bg-rose-50/50 border-rose-100 hover:border-rose-200"
+                          : "bg-emerald-50/40 border-emerald-100 hover:border-emerald-200"
+                      )}
+                    >
                       <div className="flex items-center justify-between">
-                        <span className={cn("text-xs font-medium uppercase tracking-wider font-mono", lease.balanceKes > 0 ? "text-rose-700" : "text-emerald-700")}>
+                        <span
+                          className={cn(
+                            "text-xs font-medium uppercase tracking-wider font-mono",
+                            lease.balanceKes > 0 ? "text-rose-700" : "text-emerald-700"
+                          )}
+                        >
                           Account Status
                         </span>
                         <Badge tone={lease.balanceKes > 0 ? "risk" : "success"}>
                           {lease.balanceKes > 0 ? "ARREARS" : "CLEARED"}
                         </Badge>
                       </div>
-                      <p className={cn("font-mono text-xl font-medium mt-1", lease.balanceKes > 0 ? "text-rose-700" : "text-emerald-800")}>
+                      <p
+                        className={cn(
+                          "font-mono text-xl font-medium mt-1",
+                          lease.balanceKes > 0 ? "text-rose-700" : "text-emerald-800"
+                        )}
+                      >
                         {lease.balanceKes > 0 ? formatCompactKES(lease.balanceKes) : "Rent Current"}
                       </p>
-                      <span className="text-xs text-slate-500 font-mono">Current period balance</span>
+                      <span className="text-xs text-slate-500 font-mono">
+                        Current period balance
+                      </span>
                     </div>
 
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Tenure Elapsed</span>
+                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                          Tenure Elapsed
+                        </span>
                         <Badge tone="neutral">{tenurePct}%</Badge>
                       </div>
-                      <p className="font-mono text-sm font-medium text-slate-900 mt-1">{daysRemaining} days left</p>
+                      <p className="font-mono text-sm font-medium text-slate-900 mt-1">
+                        {daysRemaining} days left
+                      </p>
                       <span className="text-xs text-slate-400 font-mono">Term progression</span>
                     </div>
 
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Billing Cycle</span>
+                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                          Billing Cycle
+                        </span>
                         <Badge tone="neutral">MONTHLY</Badge>
                       </div>
-                      <p className="text-xs font-medium text-slate-900 mt-1">In advance (1st of month)</p>
+                      <p className="text-xs font-medium text-slate-900 mt-1">
+                        In advance (1st of month)
+                      </p>
                       <span className="text-xs text-slate-400 font-mono">Automated invoicing</span>
                     </div>
 
                     <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50/70 border border-slate-100 hover:border-slate-200 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Notice Period</span>
+                        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                          Notice Period
+                        </span>
                         <Badge tone="neutral">30 DAYS</Badge>
                       </div>
-                      <p className="text-xs font-medium text-slate-900 mt-1">Written notice required</p>
+                      <p className="text-xs font-medium text-slate-900 mt-1">
+                        Written notice required
+                      </p>
                       <span className="text-xs text-slate-400 font-mono">Standard covenant</span>
                     </div>
                   </div>
@@ -1213,9 +1424,12 @@ export function LeaseFullViewBoard({
                   <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
                     <span className="flex items-center gap-1.5">
                       <IconShield size={14} className="text-indigo-600 shrink-0" />
-                      Security deposits are held in a client escrow account in compliance with Sunland CRM standards.
+                      Security deposits are held in a client escrow account in compliance with
+                      Sunland CRM standards.
                     </span>
-                    <span className="font-mono text-slate-400 hidden sm:inline">REF: {lease.propertyCode}</span>
+                    <span className="font-mono text-slate-400 hidden sm:inline">
+                      REF: {lease.propertyCode}
+                    </span>
                   </div>
                 </div>
 
@@ -1224,14 +1438,19 @@ export function LeaseFullViewBoard({
                   <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
                       <div>
-                        <h3 className="text-base font-medium text-slate-900">Property Units & Active Tenancies</h3>
+                        <h3 className="text-base font-medium text-slate-900">
+                          Property Units & Active Tenancies
+                        </h3>
                         <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                          Overview of all active unit leases in {lease.propertyName} ({propActiveLeases.length} of {totalUnits} units active)
+                          Overview of all active unit leases in {lease.propertyName} (
+                          {propActiveLeases.length} of {totalUnits} units active)
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <Badge tone="data">{occupancyPct}% Property Occupancy</Badge>
-                        <Badge tone="neutral">TOTAL ROLL: {formatCompactKES(totalPropertyRentPool)}/mo</Badge>
+                        <Badge tone="neutral">
+                          TOTAL ROLL: {formatCompactKES(totalPropertyRentPool)}/mo
+                        </Badge>
                       </div>
                     </div>
 
@@ -1243,7 +1462,9 @@ export function LeaseFullViewBoard({
                             key={al.id}
                             className={cn(
                               "flex items-center justify-between py-3.5 px-3 rounded-2xl transition-all duration-300 min-w-[550px]",
-                              isCurrentLease ? "bg-amber-50/80 border border-amber-200/80 shadow-2xs" : "hover:bg-slate-50/80"
+                              isCurrentLease
+                                ? "bg-amber-50/80 border border-amber-200/80 shadow-2xs"
+                                : "hover:bg-slate-50/80"
                             )}
                           >
                             <div className="flex items-center gap-3.5">
@@ -1254,8 +1475,12 @@ export function LeaseFullViewBoard({
                               />
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <p className="text-xs font-medium text-slate-900 leading-snug">{al.tenantName}</p>
-                                  {isCurrentLease && <Badge tone="warning">CURRENTLY VIEWING</Badge>}
+                                  <p className="text-xs font-medium text-slate-900 leading-snug">
+                                    {al.tenantName}
+                                  </p>
+                                  {isCurrentLease && (
+                                    <Badge tone="warning">CURRENTLY VIEWING</Badge>
+                                  )}
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-1">
                                   {al.unitLabel && <Badge tone="brand">Unit {al.unitLabel}</Badge>}
@@ -1266,9 +1491,12 @@ export function LeaseFullViewBoard({
 
                             <div className="flex items-center gap-5">
                               <div className="flex flex-col items-end">
-                                <span className="font-mono text-xs font-medium text-[#151936]">{formatCompactKES(parseFloat(al.monthlyRentKes))}/mo</span>
+                                <span className="font-mono text-xs font-medium text-[#151936]">
+                                  {formatCompactKES(parseFloat(al.monthlyRentKes))}/mo
+                                </span>
                                 <span className="text-xs text-slate-400 font-mono mt-0.5">
-                                  {new Date(al.startsAt).getFullYear()} — {new Date(al.endsAt).getFullYear()}
+                                  {new Date(al.startsAt).getFullYear()} —{" "}
+                                  {new Date(al.endsAt).getFullYear()}
                                 </span>
                               </div>
                               {!isCurrentLease ? (
@@ -1280,7 +1508,9 @@ export function LeaseFullViewBoard({
                                   Open Lease <IconArrowUpRight size={13} />
                                 </button>
                               ) : (
-                                <span className="text-xs font-mono text-amber-800 font-medium px-3 py-1 bg-amber-100/90 border border-amber-200/80 rounded-xl">Active File</span>
+                                <span className="text-xs font-mono text-amber-800 font-medium px-3 py-1 bg-amber-100/90 border border-amber-200/80 rounded-xl">
+                                  Active File
+                                </span>
                               )}
                             </div>
                           </div>
@@ -1298,8 +1528,12 @@ export function LeaseFullViewBoard({
                         <IconFileText size={16} />
                       </div>
                       <div>
-                        <h3 className="text-base font-medium text-slate-900">Notes & Special Directives</h3>
-                        <p className="text-xs text-slate-500 font-medium">Operational instructions and special covenant terms for this tenancy</p>
+                        <h3 className="text-base font-medium text-slate-900">
+                          Notes & Special Directives
+                        </h3>
+                        <p className="text-xs text-slate-500 font-medium">
+                          Operational instructions and special covenant terms for this tenancy
+                        </p>
                       </div>
                     </div>
                     {canManage && (
@@ -1318,7 +1552,9 @@ export function LeaseFullViewBoard({
                     </div>
                   ) : (
                     <div className="p-6 rounded-2xl bg-slate-50/40 border border-slate-100 border-dashed flex flex-col items-center justify-center text-center gap-2">
-                      <p className="text-xs text-slate-400 font-medium">No special directives or notes recorded for this tenancy yet.</p>
+                      <p className="text-xs text-slate-400 font-medium">
+                        No special directives or notes recorded for this tenancy yet.
+                      </p>
                       {canManage && (
                         <button
                           type="button"
@@ -1340,44 +1576,73 @@ export function LeaseFullViewBoard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 @board-md:grid-cols-4 gap-4">
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Total Settled</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Total Settled
+                      </span>
                       <Badge tone="success">COLLECTED</Badge>
                     </div>
                     <p className="font-mono text-xl font-medium text-emerald-700 mt-2">
-                      {formatCompactKES(payments?.reduce((sum, p) => sum + (p.type === "rent" ? parseFloat(p.amountKes || "0") : 0), 0) ?? 0)}
+                      {formatCompactKES(
+                        payments?.reduce(
+                          (sum, p) =>
+                            sum + (p.type === "rent" ? parseFloat(p.amountKes || "0") : 0),
+                          0
+                        ) ?? 0
+                      )}
                     </p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Rent collected to date</span>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Rent collected to date
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Current Balance</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Current Balance
+                      </span>
                       <Badge tone={lease.balanceKes > 0 ? "risk" : "success"}>
                         {lease.balanceKes > 0 ? "OVERDUE" : "CLEARED"}
                       </Badge>
                     </div>
-                    <p className={cn("font-mono text-xl font-medium mt-2", lease.balanceKes > 0 ? "text-rose-700" : "text-slate-900")}>
+                    <p
+                      className={cn(
+                        "font-mono text-xl font-medium mt-2",
+                        lease.balanceKes > 0 ? "text-rose-700" : "text-slate-900"
+                      )}
+                    >
                       {formatCompactKES(lease.balanceKes)}
                     </p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Current period due</span>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Current period due
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Monthly Rate</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Monthly Rate
+                      </span>
                       <Badge tone="neutral">CONTRACTED</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">{formatCompactKES(monthlyRentNum)}</p>
+                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">
+                      {formatCompactKES(monthlyRentNum)}
+                    </p>
                     <span className="text-xs text-slate-400 font-mono mt-1">Per billing cycle</span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Ledger Entries</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Ledger Entries
+                      </span>
                       <Badge tone="data">{payments?.length ?? 0} RECORDS</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">{payments?.length ?? 0}</p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Total transactions</span>
+                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">
+                      {payments?.length ?? 0}
+                    </p>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Total transactions
+                    </span>
                   </div>
                 </div>
 
@@ -1385,9 +1650,12 @@ export function LeaseFullViewBoard({
                 <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-[0_2px_15px_rgb(0,0,0,0.02)] flex flex-col gap-5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                     <div>
-                      <h3 className="text-base font-medium text-slate-900">Rental Ledger & Financial Transactions</h3>
+                      <h3 className="text-base font-medium text-slate-900">
+                        Rental Ledger & Financial Transactions
+                      </h3>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                        Comprehensive audit of all rent payments, receipts, and deposits for {lease.unitLabel ? `Unit ${lease.unitLabel}` : lease.propertyName}
+                        Comprehensive audit of all rent payments, receipts, and deposits for{" "}
+                        {lease.unitLabel ? `Unit ${lease.unitLabel}` : lease.propertyName}
                       </p>
                     </div>
 
@@ -1409,15 +1677,20 @@ export function LeaseFullViewBoard({
                   </div>
 
                   {paymentsLoading ? (
-                    <div className="flex justify-center py-12"><LoadingSpinner size="md" /></div>
+                    <div className="flex justify-center py-12">
+                      <LoadingSpinner size="md" />
+                    </div>
                   ) : !payments || payments.length === 0 ? (
                     <div className="flex flex-col items-center text-center gap-3 py-14 bg-slate-50/40 rounded-2xl border border-slate-100 border-dashed">
                       <div className="size-14 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center shadow-2xs">
                         <IconCash size={28} className="text-slate-400" />
                       </div>
-                      <h4 className="text-sm font-medium text-slate-800">No payment transactions recorded</h4>
+                      <h4 className="text-sm font-medium text-slate-800">
+                        No payment transactions recorded
+                      </h4>
                       <p className="text-slate-400 max-w-sm text-xs font-medium">
-                        Rent receipts, deposit postings, and other financial transaction records for this lease will appear here.
+                        Rent receipts, deposit postings, and other financial transaction records for
+                        this lease will appear here.
                       </p>
                     </div>
                   ) : (
@@ -1425,31 +1698,49 @@ export function LeaseFullViewBoard({
                       {/* Filter Controls */}
                       <div className="flex flex-wrap items-center gap-3">
                         <div className="relative flex-1 min-w-[220px]">
-                          <IconSearch size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                          <IconSearch
+                            size={15}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                          />
                           <input
                             value={paymentSearchQuery}
-                            onChange={(e) => { setPaymentSearchQuery(e.target.value); setPaymentPage(1); }}
+                            onChange={(e) => {
+                              setPaymentSearchQuery(e.target.value);
+                              setPaymentPage(1);
+                            }}
                             placeholder="Search by note, type, or reference..."
                             className="w-full h-9 rounded-xl border border-slate-200 bg-slate-50/50 pl-9 pr-3 text-xs font-medium focus:outline-none focus:bg-white focus:border-[#151936]/40 transition-all shadow-2xs placeholder:text-slate-400"
                           />
                         </div>
                         <div className="relative shrink-0">
-                          <IconFilter size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                          <IconFilter
+                            size={13}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                          />
                           <select
                             value={paymentTypeFilter}
-                            onChange={(e) => { setPaymentTypeFilter(e.target.value); setPaymentPage(1); }}
+                            onChange={(e) => {
+                              setPaymentTypeFilter(e.target.value);
+                              setPaymentPage(1);
+                            }}
                             className="h-9 rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-xs focus:outline-none focus:border-[#151936]/40 transition-colors shadow-2xs appearance-none font-medium text-slate-700 cursor-pointer"
                           >
                             <option value="all">All Payment Types</option>
                             {Object.entries(PAYMENT_TYPE_LABEL).map(([value, label]) => (
-                              <option key={value} value={value}>{label}</option>
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
                             ))}
                           </select>
                         </div>
                         {(paymentSearchQuery || paymentTypeFilter !== "all") && (
                           <button
                             type="button"
-                            onClick={() => { setPaymentSearchQuery(""); setPaymentTypeFilter("all"); setPaymentPage(1); }}
+                            onClick={() => {
+                              setPaymentSearchQuery("");
+                              setPaymentTypeFilter("all");
+                              setPaymentPage(1);
+                            }}
                             className="text-xs text-slate-500 hover:text-slate-900 font-medium px-2 py-1 underline"
                           >
                             Clear filters
@@ -1492,7 +1783,11 @@ export function LeaseFullViewBoard({
                                     {formatCompactKES(parseFloat(p.amountKes))}
                                   </span>
                                   <span className="text-xs font-mono text-slate-400 mt-0.5">
-                                    {new Date(p.occurredAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                    {new Date(p.occurredAt).toLocaleDateString("en-GB", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
                                   </span>
                                 </div>
                               </div>
@@ -1504,7 +1799,8 @@ export function LeaseFullViewBoard({
                       {paymentTotalPages > 1 && (
                         <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                           <span className="text-xs font-medium text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 font-mono">
-                            Page {safePaymentPage} of {paymentTotalPages} · {filteredPayments.length} records
+                            Page {safePaymentPage} of {paymentTotalPages} ·{" "}
+                            {filteredPayments.length} records
                           </span>
                           <div className="flex items-center gap-1.5">
                             <button
@@ -1517,7 +1813,9 @@ export function LeaseFullViewBoard({
                             </button>
                             <button
                               type="button"
-                              onClick={() => setPaymentPage(Math.min(paymentTotalPages, safePaymentPage + 1))}
+                              onClick={() =>
+                                setPaymentPage(Math.min(paymentTotalPages, safePaymentPage + 1))
+                              }
                               disabled={safePaymentPage >= paymentTotalPages}
                               className="size-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-2xs"
                             >
@@ -1538,38 +1836,60 @@ export function LeaseFullViewBoard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 @board-md:grid-cols-4 gap-4">
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Total Units</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Total Units
+                      </span>
                       <Badge tone="data">{occupancyPct}% OCCUPIED</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">{totalUnits} Units</p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">{lease.propertyName}</span>
+                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">
+                      {totalUnits} Units
+                    </p>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      {lease.propertyName}
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Active Leases</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Active Leases
+                      </span>
                       <Badge tone="success">TENANTS</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-emerald-700 mt-2">{propActiveLeases.length} Active</p>
+                    <p className="font-mono text-xl font-medium text-emerald-700 mt-2">
+                      {propActiveLeases.length} Active
+                    </p>
                     <span className="text-xs text-slate-400 font-mono mt-1">Occupied units</span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Total Rent Roll</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Total Rent Roll
+                      </span>
                       <Badge tone="neutral">MONTHLY</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-[#151936] mt-2">{formatCompactKES(totalPropertyRentPool)}</p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Property rent pool</span>
+                    <p className="font-mono text-xl font-medium text-[#151936] mt-2">
+                      {formatCompactKES(totalPropertyRentPool)}
+                    </p>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Property rent pool
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Unit Categories</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Unit Categories
+                      </span>
                       <Badge tone="primary">MULTI-UNIT</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">{unitTypeEntries.length} Types</p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Layout configurations</span>
+                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">
+                      {unitTypeEntries.length} Types
+                    </p>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Layout configurations
+                    </span>
                   </div>
                 </div>
 
@@ -1577,9 +1897,12 @@ export function LeaseFullViewBoard({
                 <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-[0_2px_15px_rgb(0,0,0,0.02)] flex flex-col gap-5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                     <div>
-                      <h3 className="text-base font-medium text-slate-900">Property Unit & Tenancy Directory</h3>
+                      <h3 className="text-base font-medium text-slate-900">
+                        Property Unit & Tenancy Directory
+                      </h3>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                        Multi-unit occupancy roster and co-tenant lease details for {lease.propertyName}
+                        Multi-unit occupancy roster and co-tenant lease details for{" "}
+                        {lease.propertyName}
                       </p>
                     </div>
                     <Link
@@ -1598,7 +1921,9 @@ export function LeaseFullViewBoard({
                           key={al.id}
                           className={cn(
                             "flex items-center justify-between py-4 px-3 -mx-3 rounded-2xl transition-all duration-300 min-w-[600px]",
-                            isCurrentLease ? "bg-amber-50/80 border border-amber-200/80 shadow-2xs" : "hover:bg-slate-50/80"
+                            isCurrentLease
+                              ? "bg-amber-50/80 border border-amber-200/80 shadow-2xs"
+                              : "hover:bg-slate-50/80"
                           )}
                         >
                           <div className="flex items-center gap-3.5">
@@ -1609,7 +1934,9 @@ export function LeaseFullViewBoard({
                             />
                             <div>
                               <div className="flex items-center gap-2">
-                                <p className="text-xs font-medium text-slate-900 leading-snug">{al.tenantName}</p>
+                                <p className="text-xs font-medium text-slate-900 leading-snug">
+                                  {al.tenantName}
+                                </p>
                                 {isCurrentLease && <Badge tone="warning">CURRENTLY VIEWING</Badge>}
                               </div>
                               <div className="flex items-center gap-1.5 mt-1">
@@ -1624,9 +1951,19 @@ export function LeaseFullViewBoard({
 
                           <div className="flex items-center gap-6 shrink-0">
                             <div className="flex flex-col items-end">
-                              <span className="font-mono text-xs font-medium text-[#151936]">{formatCompactKES(parseFloat(al.monthlyRentKes))}/mo</span>
+                              <span className="font-mono text-xs font-medium text-[#151936]">
+                                {formatCompactKES(parseFloat(al.monthlyRentKes))}/mo
+                              </span>
                               <span className="text-xs text-slate-400 font-mono mt-0.5">
-                                {new Date(al.startsAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })} — {new Date(al.endsAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+                                {new Date(al.startsAt).toLocaleDateString("en-GB", {
+                                  month: "short",
+                                  year: "numeric",
+                                })}{" "}
+                                —{" "}
+                                {new Date(al.endsAt).toLocaleDateString("en-GB", {
+                                  month: "short",
+                                  year: "numeric",
+                                })}
                               </span>
                             </div>
                             {!isCurrentLease ? (
@@ -1657,44 +1994,71 @@ export function LeaseFullViewBoard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 @board-md:grid-cols-4 gap-4">
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Attached Files</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Attached Files
+                      </span>
                       <Badge tone="data">SECURE VAULT</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">{leaseDocuments?.length ?? 0} Documents</p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Encrypted repository</span>
+                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">
+                      {leaseDocuments?.length ?? 0} Documents
+                    </p>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Encrypted repository
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Lease Contract</span>
-                      <Badge tone={leaseDocuments?.some(d => d.type === "lease_agreement") ? "success" : "warning"}>
-                        {leaseDocuments?.some(d => d.type === "lease_agreement") ? "VERIFIED" : "MISSING"}
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Lease Contract
+                      </span>
+                      <Badge
+                        tone={
+                          leaseDocuments?.some((d) => d.type === "lease_agreement")
+                            ? "success"
+                            : "warning"
+                        }
+                      >
+                        {leaseDocuments?.some((d) => d.type === "lease_agreement")
+                          ? "VERIFIED"
+                          : "MISSING"}
                       </Badge>
                     </div>
                     <p className="font-mono text-xs font-medium text-slate-900 mt-2">
-                      {leaseDocuments?.some(d => d.type === "lease_agreement") ? "Contract on file" : "Needs attachment"}
+                      {leaseDocuments?.some((d) => d.type === "lease_agreement")
+                        ? "Contract on file"
+                        : "Needs attachment"}
                     </p>
                     <span className="text-xs text-slate-400 font-mono mt-1">Primary agreement</span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Tenant ID Records</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Tenant ID Records
+                      </span>
                       <Badge tone="neutral">KYC COMPLIANT</Badge>
                     </div>
                     <p className="font-mono text-xl font-medium text-slate-900 mt-2">
-                      {leaseDocuments?.filter(d => d.type === "identification").length ?? 0} ID Files
+                      {leaseDocuments?.filter((d) => d.type === "identification").length ?? 0} ID
+                      Files
                     </p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Identity documents</span>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Identity documents
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Total Size</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Total Size
+                      </span>
                       <Badge tone="neutral">FILE STORAGE</Badge>
                     </div>
                     <p className="font-mono text-xl font-medium text-[#151936] mt-2">
-                      {formatFileSize(leaseDocuments?.reduce((sum, d) => sum + (d.fileSizeBytes ?? 0), 0) ?? 0)}
+                      {formatFileSize(
+                        leaseDocuments?.reduce((sum, d) => sum + (d.fileSizeBytes ?? 0), 0) ?? 0
+                      )}
                     </p>
                     <span className="text-xs text-slate-400 font-mono mt-1">Cloud file volume</span>
                   </div>
@@ -1731,38 +2095,57 @@ export function LeaseFullViewBoard({
                       </div>
                       <h4 className="text-sm font-medium text-slate-800">No attached documents</h4>
                       <p className="text-slate-400 max-w-sm text-xs font-medium">
-                        Lease agreements, tenant ID copies, and rent statements attached to this file will appear here.
+                        Lease agreements, tenant ID copies, and rent statements attached to this
+                        file will appear here.
                       </p>
                     </div>
                   ) : (
                     <>
                       <div className="flex flex-wrap items-center gap-3">
                         <div className="relative flex-1 min-w-[220px]">
-                          <IconSearch size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                          <IconSearch
+                            size={15}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                          />
                           <input
                             value={docSearchQuery}
-                            onChange={(e) => { setDocSearchQuery(e.target.value); setDocPage(1); }}
+                            onChange={(e) => {
+                              setDocSearchQuery(e.target.value);
+                              setDocPage(1);
+                            }}
                             placeholder="Search by document title or type..."
                             className="w-full h-9 rounded-xl border border-slate-200 bg-slate-50/50 pl-9 pr-3 text-xs font-medium focus:outline-none focus:bg-white focus:border-[#151936]/40 transition-all shadow-2xs placeholder:text-slate-400"
                           />
                         </div>
                         <div className="relative shrink-0">
-                          <IconFilter size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                          <IconFilter
+                            size={13}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                          />
                           <select
                             value={docTypeFilter}
-                            onChange={(e) => { setDocTypeFilter(e.target.value); setDocPage(1); }}
+                            onChange={(e) => {
+                              setDocTypeFilter(e.target.value);
+                              setDocPage(1);
+                            }}
                             className="h-9 rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-xs focus:outline-none focus:border-[#151936]/40 transition-colors shadow-2xs appearance-none font-medium text-slate-700 cursor-pointer"
                           >
                             <option value="all">All Document Types</option>
                             {Object.entries(LEASE_DOCUMENT_TYPE_LABEL).map(([value, label]) => (
-                              <option key={value} value={value}>{label}</option>
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
                             ))}
                           </select>
                         </div>
                         {(docSearchQuery || docTypeFilter !== "all") && (
                           <button
                             type="button"
-                            onClick={() => { setDocSearchQuery(""); setDocTypeFilter("all"); setDocPage(1); }}
+                            onClick={() => {
+                              setDocSearchQuery("");
+                              setDocTypeFilter("all");
+                              setDocPage(1);
+                            }}
                             className="text-xs text-slate-500 hover:text-slate-900 font-medium px-2 py-1 underline"
                           >
                             Clear filters
@@ -1778,7 +2161,11 @@ export function LeaseFullViewBoard({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {paginatedDocuments.map((doc) => {
                             const sizeLabel = formatFileSize(doc.fileSizeBytes);
-                            const addedLabel = new Date(doc.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                            const addedLabel = new Date(doc.createdAt).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            });
                             return (
                               <div
                                 key={doc.id}
@@ -1790,16 +2177,22 @@ export function LeaseFullViewBoard({
                                       <IconFileText size={18} />
                                     </div>
                                     <div className="min-w-0">
-                                      <h4 className="text-xs font-medium text-slate-900 truncate leading-snug">{doc.title}</h4>
+                                      <h4 className="text-xs font-medium text-slate-900 truncate leading-snug">
+                                        {doc.title}
+                                      </h4>
                                       <div className="flex items-center gap-2 mt-1">
-                                        <Badge tone="neutral">{LEASE_DOCUMENT_TYPE_LABEL[doc.type] ?? doc.type}</Badge>
+                                        <Badge tone="neutral">
+                                          {LEASE_DOCUMENT_TYPE_LABEL[doc.type] ?? doc.type}
+                                        </Badge>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
 
                                 <div className="flex items-center justify-between pt-3 border-t border-slate-200/60 text-xs font-mono text-slate-400">
-                                  <span>{[sizeLabel, `Added ${addedLabel}`].filter(Boolean).join(" · ")}</span>
+                                  <span>
+                                    {[sizeLabel, `Added ${addedLabel}`].filter(Boolean).join(" · ")}
+                                  </span>
                                   <a
                                     href={doc.fileUrl}
                                     target="_blank"
@@ -1852,44 +2245,74 @@ export function LeaseFullViewBoard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 @board-md:grid-cols-4 gap-4">
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Logged Events</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Logged Events
+                      </span>
                       <Badge tone="data">AUDIT TRAIL</Badge>
                     </div>
-                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">{activityLog?.length ?? 0} Events</p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Immutable log history</span>
+                    <p className="font-mono text-xl font-medium text-slate-900 mt-2">
+                      {activityLog?.length ?? 0} Events
+                    </p>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Immutable log history
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Modifications</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Modifications
+                      </span>
                       <Badge tone="neutral">EDITS</Badge>
                     </div>
                     <p className="font-mono text-xl font-medium text-slate-900 mt-2">
-                      {activityLog?.filter(a => a.summary.toLowerCase().includes("updat") || a.summary.toLowerCase().includes("chang") || a.summary.toLowerCase().includes("edit")).length ?? 0}
+                      {activityLog?.filter(
+                        (a) =>
+                          a.summary.toLowerCase().includes("updat") ||
+                          a.summary.toLowerCase().includes("chang") ||
+                          a.summary.toLowerCase().includes("edit")
+                      ).length ?? 0}
                     </p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Terms & status edits</span>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Terms & status edits
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Financial Events</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Financial Events
+                      </span>
                       <Badge tone="success">TRANSACTIONS</Badge>
                     </div>
                     <p className="font-mono text-xl font-medium text-emerald-700 mt-2">
-                      {activityLog?.filter(a => a.summary.toLowerCase().includes("rent") || a.summary.toLowerCase().includes("pay") || a.summary.toLowerCase().includes("balance")).length ?? 0}
+                      {activityLog?.filter(
+                        (a) =>
+                          a.summary.toLowerCase().includes("rent") ||
+                          a.summary.toLowerCase().includes("pay") ||
+                          a.summary.toLowerCase().includes("balance")
+                      ).length ?? 0}
                     </p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Ledger & payment logs</span>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Ledger & payment logs
+                    </span>
                   </div>
 
                   <div className="bg-white border border-slate-200/80 rounded-[20px] p-4 flex flex-col justify-between shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">Audit Status</span>
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider font-mono">
+                        Audit Status
+                      </span>
                       <Badge tone="success">VERIFIED</Badge>
                     </div>
                     <p className="font-mono text-xs font-medium text-[#151936] mt-2">
-                      {activityLog && activityLog[0] ? relativeTime(activityLog[0].createdAt) : "No log"}
+                      {activityLog && activityLog[0]
+                        ? relativeTime(activityLog[0].createdAt)
+                        : "No log"}
                     </p>
-                    <span className="text-xs text-slate-400 font-mono mt-1">Most recent audit action</span>
+                    <span className="text-xs text-slate-400 font-mono mt-1">
+                      Most recent audit action
+                    </span>
                   </div>
                 </div>
 
@@ -1902,7 +2325,8 @@ export function LeaseFullViewBoard({
                         <Badge tone="success">VERIFIED AUDIT LOG</Badge>
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                        System-generated and user-initiated audit records for tenancy LSE-{lease.id.slice(0, 8).toUpperCase()}
+                        System-generated and user-initiated audit records for tenancy LSE-
+                        {lease.id.slice(0, 8).toUpperCase()}
                       </p>
                     </div>
                   </div>
@@ -1910,7 +2334,10 @@ export function LeaseFullViewBoard({
                   {/* Search and Filters */}
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="relative flex-1 min-w-[220px]">
-                      <IconSearch size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                      <IconSearch
+                        size={15}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                      />
                       <input
                         type="text"
                         placeholder="Search audit trail by keyword, actor, or action..."
@@ -1923,7 +2350,10 @@ export function LeaseFullViewBoard({
                       />
                     </div>
                     <div className="relative shrink-0">
-                      <IconFilter size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                      <IconFilter
+                        size={13}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                      />
                       <select
                         value={activityFilter}
                         onChange={(e) => {
@@ -1941,7 +2371,11 @@ export function LeaseFullViewBoard({
                     {(activitySearchQuery || activityFilter !== "all") && (
                       <button
                         type="button"
-                        onClick={() => { setActivitySearchQuery(""); setActivityFilter("all"); setActivityPage(1); }}
+                        onClick={() => {
+                          setActivitySearchQuery("");
+                          setActivityFilter("all");
+                          setActivityPage(1);
+                        }}
                         className="text-xs text-slate-500 hover:text-slate-900 font-medium px-2 py-1 underline"
                       >
                         Clear filters
@@ -1960,7 +2394,8 @@ export function LeaseFullViewBoard({
                       </div>
                       <h4 className="text-sm font-medium text-slate-800">No activity recorded</h4>
                       <p className="text-slate-400 max-w-sm text-xs font-medium">
-                        System events and tenancy file modifications will be logged automatically here.
+                        System events and tenancy file modifications will be logged automatically
+                        here.
                       </p>
                     </div>
                   ) : paginatedActivity.length === 0 ? (
@@ -1976,15 +2411,30 @@ export function LeaseFullViewBoard({
                         let iconStyle = "bg-indigo-50 text-indigo-700 border-indigo-200/80";
                         let catLabel = "Modification";
 
-                        if (lower.includes("rent") || lower.includes("pay") || lower.includes("kes") || lower.includes("balance") || lower.includes("deposit")) {
+                        if (
+                          lower.includes("rent") ||
+                          lower.includes("pay") ||
+                          lower.includes("kes") ||
+                          lower.includes("balance") ||
+                          lower.includes("deposit")
+                        ) {
                           IconComp = IconCash;
                           iconStyle = "bg-emerald-50 text-emerald-700 border-emerald-200/80";
                           catLabel = "Financial";
-                        } else if (lower.includes("terminat") || lower.includes("delet") || lower.includes("vacat")) {
+                        } else if (
+                          lower.includes("terminat") ||
+                          lower.includes("delet") ||
+                          lower.includes("vacat")
+                        ) {
                           IconComp = IconTrash;
                           iconStyle = "bg-rose-50 text-rose-700 border-rose-200/80";
                           catLabel = "Termination";
-                        } else if (lower.includes("doc") || lower.includes("agreement") || lower.includes("upload") || lower.includes("file")) {
+                        } else if (
+                          lower.includes("doc") ||
+                          lower.includes("agreement") ||
+                          lower.includes("upload") ||
+                          lower.includes("file")
+                        ) {
                           IconComp = IconFileText;
                           iconStyle = "bg-amber-50 text-amber-700 border-amber-200/80";
                           catLabel = "Document";
@@ -1995,12 +2445,23 @@ export function LeaseFullViewBoard({
                         }
 
                         const actionDetail = entry.actorName
-                          ? entry.summary.replace(entry.actorName, "").replace(/^ - |^ — /, "").trim()
+                          ? entry.summary
+                              .replace(entry.actorName, "")
+                              .replace(/^ - |^ — /, "")
+                              .trim()
                           : entry.summary;
 
                         return (
-                          <div key={entry.id} className="relative flex items-start gap-4 z-10 group">
-                            <div className={cn("size-10 rounded-2xl border shadow-2xs flex items-center justify-center shrink-0 z-10 transition-transform group-hover:scale-105", iconStyle)}>
+                          <div
+                            key={entry.id}
+                            className="relative flex items-start gap-4 z-10 group"
+                          >
+                            <div
+                              className={cn(
+                                "size-10 rounded-2xl border shadow-2xs flex items-center justify-center shrink-0 z-10 transition-transform group-hover:scale-105",
+                                iconStyle
+                              )}
+                            >
                               <IconComp size={18} />
                             </div>
                             <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-50/60 hover:bg-slate-50 border border-slate-200/80 rounded-2xl transition-all duration-300 shadow-2xs hover:shadow-xs">
@@ -2015,7 +2476,9 @@ export function LeaseFullViewBoard({
                                       {entry.actorName}
                                     </span>
                                   ) : (
-                                    <span className="text-xs font-medium text-slate-800 font-mono">System Engine</span>
+                                    <span className="text-xs font-medium text-slate-800 font-mono">
+                                      System Engine
+                                    </span>
                                   )}
                                   <Badge tone="neutral">{catLabel}</Badge>
                                 </div>
@@ -2025,7 +2488,16 @@ export function LeaseFullViewBoard({
                               </div>
                               <div className="flex flex-col items-start sm:items-end shrink-0 gap-1">
                                 <span className="text-xs text-slate-400 font-mono">
-                                  {new Date(entry.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} at {new Date(entry.createdAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                                  {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}{" "}
+                                  at{" "}
+                                  {new Date(entry.createdAt).toLocaleTimeString("en-GB", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
                                 </span>
                                 <Badge tone="neutral">{relativeTime(entry.createdAt)}</Badge>
                               </div>
@@ -2039,7 +2511,8 @@ export function LeaseFullViewBoard({
                   {activityTotalPages > 1 && (
                     <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                       <span className="text-xs font-medium text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 font-mono">
-                        Page {safeActivityPage} of {activityTotalPages} · {filteredActivity.length} logs
+                        Page {safeActivityPage} of {activityTotalPages} · {filteredActivity.length}{" "}
+                        logs
                       </span>
                       <div className="flex items-center gap-1.5">
                         <button
@@ -2052,7 +2525,9 @@ export function LeaseFullViewBoard({
                         </button>
                         <button
                           type="button"
-                          onClick={() => setActivityPage(Math.min(activityTotalPages, safeActivityPage + 1))}
+                          onClick={() =>
+                            setActivityPage(Math.min(activityTotalPages, safeActivityPage + 1))
+                          }
                           disabled={safeActivityPage >= activityTotalPages}
                           className="size-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 disabled:text-slate-200 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-2xs"
                         >
@@ -2073,14 +2548,21 @@ export function LeaseFullViewBoard({
           <div className="bg-white border border-slate-200/80 rounded-[24px] overflow-hidden shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
             <div className="relative h-52 w-full flex flex-col justify-between p-5 text-center">
               {lease.tenantAvatarUrl ? (
-                <Image src={lease.tenantAvatarUrl} alt={lease.tenantName} fill className="object-cover" />
+                <Image
+                  src={lease.tenantAvatarUrl}
+                  alt={lease.tenantName}
+                  fill
+                  className="object-cover"
+                />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-[#151936] to-[#0f132b]" />
               )}
               <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/15 to-black/60 z-0" />
 
               <div className="relative z-10 mt-2">
-                <h4 className="text-xl font-medium text-white tracking-tight">{lease.tenantName}</h4>
+                <h4 className="text-xl font-medium text-white tracking-tight">
+                  {lease.tenantName}
+                </h4>
                 <div className="flex items-center justify-center gap-1.5 mt-1.5">
                   <Badge tone="primary">
                     {lease.unitLabel ? `Tenant · Unit ${lease.unitLabel}` : "Principal Tenant"}
@@ -2116,7 +2598,9 @@ export function LeaseFullViewBoard({
                   </span>
                   <span className="text-xs font-medium text-slate-600 ml-2">Phone</span>
                 </div>
-                <span className="text-xs font-mono font-medium text-slate-900 pr-2 truncate">{lease.tenantPhone || "—"}</span>
+                <span className="text-xs font-mono font-medium text-slate-900 pr-2 truncate">
+                  {lease.tenantPhone || "—"}
+                </span>
               </div>
 
               <div className="flex items-center justify-between p-1.5 bg-white border border-slate-100/80 rounded-xl shadow-2xs">
@@ -2126,7 +2610,10 @@ export function LeaseFullViewBoard({
                   </span>
                   <span className="text-xs font-medium text-slate-600 ml-2">Mail</span>
                 </div>
-                <span className="text-xs font-mono font-medium text-slate-900 pr-2 truncate max-w-[150px]" title={lease.tenantEmail || ""}>
+                <span
+                  className="text-xs font-mono font-medium text-slate-900 pr-2 truncate max-w-[150px]"
+                  title={lease.tenantEmail || ""}
+                >
                   {lease.tenantEmail || "—"}
                 </span>
               </div>
@@ -2149,18 +2636,26 @@ export function LeaseFullViewBoard({
             <div className="bg-white border border-slate-200/80 rounded-[24px] overflow-hidden shadow-[0_2px_15px_rgb(0,0,0,0.02)]">
               <div className="relative h-52 w-full flex flex-col justify-between p-5 text-center">
                 {lease.landlord.avatarUrl ? (
-                  <Image src={lease.landlord.avatarUrl} alt={lease.landlord.name} fill className="object-cover" />
+                  <Image
+                    src={lease.landlord.avatarUrl}
+                    alt={lease.landlord.name}
+                    fill
+                    className="object-cover"
+                  />
                 ) : (
                   <div className="absolute inset-0 bg-gradient-to-br from-[#151936] to-[#0f132b]" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/15 to-black/60 z-0" />
 
                 <div className="relative z-10 mt-2">
-                  <h4 className="text-xl font-medium text-white tracking-tight">{lease.landlord.name}</h4>
+                  <h4 className="text-xl font-medium text-white tracking-tight">
+                    {lease.landlord.name}
+                  </h4>
                   <div className="flex items-center justify-center gap-1.5 mt-1.5">
                     {lease.landlord.verifiedAt ? (
                       <Badge tone="success">
-                        <IconCircleCheck size={12} className="mr-1 inline-block" /> Verified Landlord
+                        <IconCircleCheck size={12} className="mr-1 inline-block" /> Verified
+                        Landlord
                       </Badge>
                     ) : (
                       <Badge tone="neutral">Landlord</Badge>
@@ -2196,7 +2691,9 @@ export function LeaseFullViewBoard({
                     </span>
                     <span className="text-xs font-medium text-slate-600 ml-2">Phone</span>
                   </div>
-                  <span className="text-xs font-mono font-medium text-slate-900 pr-2 truncate">{lease.landlord.phone || "—"}</span>
+                  <span className="text-xs font-mono font-medium text-slate-900 pr-2 truncate">
+                    {lease.landlord.phone || "—"}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between p-1.5 bg-white border border-slate-100/80 rounded-xl shadow-2xs">
@@ -2206,7 +2703,10 @@ export function LeaseFullViewBoard({
                     </span>
                     <span className="text-xs font-medium text-slate-600 ml-2">Mail</span>
                   </div>
-                  <span className="text-xs font-mono font-medium text-slate-900 pr-2 truncate max-w-[150px]" title={lease.landlord.email || ""}>
+                  <span
+                    className="text-xs font-mono font-medium text-slate-900 pr-2 truncate max-w-[150px]"
+                    title={lease.landlord.email || ""}
+                  >
                     {lease.landlord.email || "—"}
                   </span>
                 </div>
@@ -2233,7 +2733,9 @@ export function LeaseFullViewBoard({
                     className="size-11 text-xs bg-[#151936] text-white border border-[#151936]/20 shrink-0 shadow-2xs"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium text-slate-900 leading-snug">{lease.manager.name || "Unassigned"}</h4>
+                    <h4 className="text-sm font-medium text-slate-900 leading-snug">
+                      {lease.manager.name || "Unassigned"}
+                    </h4>
                     <div className="flex items-center gap-1 mt-1">
                       <Badge tone="brand">Property Manager</Badge>
                     </div>
@@ -2271,17 +2773,36 @@ export function LeaseFullViewBoard({
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden w-full">
                 <div
                   style={{ width: `${tenurePct}%` }}
-                  className={cn("h-full rounded-full transition-all duration-500", tenurePct >= 90 ? "bg-rose-500" : tenurePct >= 70 ? "bg-amber-400" : "bg-emerald-500")}
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    tenurePct >= 90
+                      ? "bg-rose-500"
+                      : tenurePct >= 70
+                        ? "bg-amber-400"
+                        : "bg-emerald-500"
+                  )}
                 />
               </div>
               <div className="flex items-center justify-between mt-1">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-slate-400 font-mono uppercase">Commencement</span>
-                  <span className="font-mono text-xs font-medium text-slate-900">{new Date(lease.startsAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  <span className="font-mono text-xs font-medium text-slate-900">
+                    {new Date(lease.startsAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
                 </div>
                 <div className="flex flex-col gap-0.5 text-right">
                   <span className="text-xs text-slate-400 font-mono uppercase">Expiration</span>
-                  <span className="font-mono text-xs font-medium text-slate-900">{new Date(lease.endsAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  <span className="font-mono text-xs font-medium text-slate-900">
+                    {new Date(lease.endsAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -2293,7 +2814,9 @@ export function LeaseFullViewBoard({
             <div className="flex flex-col gap-3 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-slate-500 font-medium">Lease Ref</span>
-                <span className="font-mono font-medium text-slate-900">LSE-{new Date(lease.startsAt).getFullYear()}-{lease.id.slice(0, 3).toUpperCase()}</span>
+                <span className="font-mono font-medium text-slate-900">
+                  LSE-{new Date(lease.startsAt).getFullYear()}-{lease.id.slice(0, 3).toUpperCase()}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-500 font-medium">Property Code</span>
@@ -2307,7 +2830,15 @@ export function LeaseFullViewBoard({
                 <span className="text-slate-500 font-medium">Next Payment Due</span>
                 <span className="font-mono font-medium text-slate-900">
                   {lease.isActive
-                    ? new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+                    ? new Date(
+                        new Date().getFullYear(),
+                        new Date().getMonth() + 1,
+                        1
+                      ).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
                     : "—"}
                 </span>
               </div>
@@ -2371,7 +2902,7 @@ export function LeaseFullViewBoard({
           entityId={entityId || ""}
           ownerContactId={lease.landlord.id}
           properties={[]}
-          onOpenProperty={() => { }}
+          onOpenProperty={() => {}}
         />
       )}
 
@@ -2382,7 +2913,7 @@ export function LeaseFullViewBoard({
           entityId={entityId || ""}
           managerId={lease.manager.id}
           properties={[]}
-          onOpenProperty={() => { }}
+          onOpenProperty={() => {}}
         />
       )}
 

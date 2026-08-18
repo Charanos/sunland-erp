@@ -31,7 +31,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatCompactKES } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 
-const statusTone: Record<FinanceTableRow["status"], "success" | "warning" | "risk" | "data" | "neutral"> = {
+const statusTone: Record<
+  FinanceTableRow["status"],
+  "success" | "warning" | "risk" | "data" | "neutral"
+> = {
   Posted: "success",
   Pending: "warning",
   Approved: "success",
@@ -77,44 +80,32 @@ function tabDescription(sectionId: FinanceSectionId, tabId: string) {
       "Read-only as-of statement proving debit and credit totals remain in balance.",
     "ledger:balance-sheet":
       "Statement layout for assets, liabilities, and equity at a selected date.",
-    "ledger:cash-flow":
-      "Statement layout for operating, investing, and financing cash movement.",
+    "ledger:cash-flow": "Statement layout for operating, investing, and financing cash movement.",
     "rentals:collections":
       "Collections book for expected rent, collected rent, and reconciliation status.",
     "rentals:deficits":
       "Filtered view of rental ledger rows where the generated deficit is above zero.",
     "rentals:vacancies":
       "Vacant unit tracking and escalation handoff to the relevant property manager.",
-    "rentals:defaulters":
-      "Tenant arrears aging, payment plans, and collection escalation queue.",
+    "rentals:defaulters": "Tenant arrears aging, payment plans, and collection escalation queue.",
     "mandates:active":
       "Active mandate book with collections, fee computation, and remittance readiness.",
     "mandates:pending-approval":
       "Inline approval surface for GM and CEO decisions, backed by shared approval requests.",
-    "mandates:draft":
-      "Editable mandate terms before activation or approval routing.",
-    "mandates:terminated":
-      "Closed mandate history retained for audit and reporting.",
-    "payroll:runs":
-      "Payroll run lifecycle from HR-fed draft to GM-approved disbursement.",
-    "payroll:payslips":
-      "Payslip preview and PDF handoff for generated employee statements.",
-    "payroll:remittances":
-      "KRA, NSSF, SHIF, and Affordable Housing statutory remittance schedule.",
+    "mandates:draft": "Editable mandate terms before activation or approval routing.",
+    "mandates:terminated": "Closed mandate history retained for audit and reporting.",
+    "payroll:runs": "Payroll run lifecycle from HR-fed draft to GM-approved disbursement.",
+    "payroll:payslips": "Payslip preview and PDF handoff for generated employee statements.",
+    "payroll:remittances": "KRA, NSSF, SHIF, and Affordable Housing statutory remittance schedule.",
     "ap-ar:payables":
       "Vendor and contractor obligations with payment recording hooks into the ledger.",
     "ap-ar:receivables":
       "Client fee receivables only. Tenant arrears remain in Rentals > Defaulters.",
-    "cheques:deposited":
-      "Deposited cheques have no ledger impact until marked credited.",
-    "cheques:credited":
-      "Credited cheque history, where journal entries have been posted.",
-    "cheques:returned":
-      "Returned cheque reasons and debtor follow-up status.",
-    "fees:rules":
-      "Configurable service fee rules for revenue recognition.",
-    "fees:charges":
-      "Logged service fee charges linked back to their originating record.",
+    "cheques:deposited": "Deposited cheques have no ledger impact until marked credited.",
+    "cheques:credited": "Credited cheque history, where journal entries have been posted.",
+    "cheques:returned": "Returned cheque reasons and debtor follow-up status.",
+    "fees:rules": "Configurable service fee rules for revenue recognition.",
+    "fees:charges": "Logged service fee charges linked back to their originating record.",
     "commissions:deals":
       "Agent sales and letting commissions tracking closed deals, gross values, agent percentages, and withholding tax deductions.",
     "commissions:wht-filings":
@@ -123,10 +114,8 @@ function tabDescription(sectionId: FinanceSectionId, tabId: string) {
       "Monthly Affordable Housing Levy payroll statistics, remitted at 3.0% (1.5% employer and 1.5% employee shares).",
     "reports:generate":
       "Report generation form target for balance sheet, cash flow, mandate, payroll, and trial balance outputs.",
-    "reports:library":
-      "Canonical history of generated PDFs and verification tokens.",
-    "reports:verify":
-      "QR token verification panel for generated finance reports.",
+    "reports:library": "Canonical history of generated PDFs and verification tokens.",
+    "reports:verify": "QR token verification panel for generated finance reports.",
   };
 
   return descriptions[`${sectionId}:${tabId}`] ?? financeSectionById[sectionId].description;
@@ -140,29 +129,27 @@ function StatementPreview({ tabId }: { tabId: string }) {
   const sections =
     tabId === "cash-flow"
       ? [
-        ["Operating Activities", "Profit after tax", "KES 1.8M"],
-        ["Investing Activities", "Property improvements", "KES -620K"],
-        ["Financing Activities", "Owner distributions", "KES -240K"],
-      ]
+          ["Operating Activities", "Profit after tax", "KES 1.8M"],
+          ["Investing Activities", "Property improvements", "KES -620K"],
+          ["Financing Activities", "Owner distributions", "KES -240K"],
+        ]
       : tabId === "balance-sheet"
         ? [
-          ["Assets", "Cash and receivables", "KES 14.2M"],
-          ["Liabilities", "Landlord payables and AP", "KES 6.8M"],
-          ["Equity", "Retained earnings", "KES 7.4M"],
-        ]
+            ["Assets", "Cash and receivables", "KES 14.2M"],
+            ["Liabilities", "Landlord payables and AP", "KES 6.8M"],
+            ["Equity", "Retained earnings", "KES 7.4M"],
+          ]
         : [
-          ["Debit Balances", "Assets and expenses", "KES 18.4M"],
-          ["Credit Balances", "Liabilities, equity, revenue", "KES 18.4M"],
-          ["Variance", "Debit minus credit", "KES 0"],
-        ];
+            ["Debit Balances", "Assets and expenses", "KES 18.4M"],
+            ["Credit Balances", "Liabilities, equity, revenue", "KES 18.4M"],
+            ["Variance", "Debit minus credit", "KES 0"],
+          ];
 
   return (
     <BoardPanel className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="title-serif font-normal text-slate-900">
-            Statement Preview
-          </h2>
+          <h2 className="title-serif font-normal text-slate-900">Statement Preview</h2>
           <p className="mt-1 text-slate-400 text-base">
             Document-style layout scaffold for the computed finance statement.
           </p>
@@ -182,7 +169,10 @@ function StatementPreview({ tabId }: { tabId: string }) {
         </div>
         <div className="space-y-3">
           {sections.map(([group, label, value]) => (
-            <div key={group} className="grid gap-2 border-b border-slate-200/70 py-3 last:border-0 md:grid-cols-[180px_1fr_auto]">
+            <div
+              key={group}
+              className="grid gap-2 border-b border-slate-200/70 py-3 last:border-0 md:grid-cols-[180px_1fr_auto]"
+            >
               <p className="text-base font-medium text-[#151936]">{group}</p>
               <p className="text-base text-slate-600">{label}</p>
               <p className="text-slate-900 mono-data">{value}</p>
@@ -215,8 +205,8 @@ export function FinancePageScaffold({
 
     return scaffold.rows.filter((row) =>
       [row.ref, row.subject, row.detail, row.status, row.date].some((value) =>
-        String(value).toLowerCase().includes(normalized),
-      ),
+        String(value).toLowerCase().includes(normalized)
+      )
     );
   }, [query, scaffold.rows]);
 
@@ -266,8 +256,16 @@ export function FinancePageScaffold({
 
       {sectionId === "reports" && (
         <FinanceQrProof
-          artifactRef={tabId === "verify" ? "VERIFY-DEMO" : tabId === "library" ? "RPT-208" : "DRAFT-RPT"}
-          artifactType={tabId === "verify" ? "Token Verification Receipt" : tabId === "library" ? "Balance Sheet Snapshot" : "Generated Report Draft"}
+          artifactRef={
+            tabId === "verify" ? "VERIFY-DEMO" : tabId === "library" ? "RPT-208" : "DRAFT-RPT"
+          }
+          artifactType={
+            tabId === "verify"
+              ? "Token Verification Receipt"
+              : tabId === "library"
+                ? "Balance Sheet Snapshot"
+                : "Generated Report Draft"
+          }
           entityName={entityLabel(activeEntityId)}
           generatedAt="2026-06-22"
           token={tabId === "verify" ? "sunland_verify_demo_6f2a90" : "sunland_sheet_bs_394a8f"}
@@ -275,7 +273,10 @@ export function FinancePageScaffold({
         />
       )}
 
-      <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4" aria-label="Finance key metrics">
+      <section
+        className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4"
+        aria-label="Finance key metrics"
+      >
         {scaffold.metrics.map((metric) => (
           <KpiCard
             key={metric.label}
@@ -295,9 +296,7 @@ export function FinancePageScaffold({
         <BoardPanel className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-heading-primary">
-                {tab?.label ?? section.label} Work Queue
-              </h2>
+              <h2 className="text-heading-primary">{tab?.label ?? section.label} Work Queue</h2>
               <p className="mt-1 text-slate-400 text-base">
                 Production table scaffold with drawer row targets and 5-row pagination boundary.
               </p>
@@ -315,7 +314,10 @@ export function FinancePageScaffold({
                   <thead>
                     <tr className="border-b border-slate-100 text-slate-400 label-caps">
                       {scaffold.columns.map((column) => (
-                        <th key={column} className={cn("px-2 py-2.5", column === "Amount" && "text-right")}>
+                        <th
+                          key={column}
+                          className={cn("px-2 py-2.5", column === "Amount" && "text-right")}
+                        >
                           {column}
                         </th>
                       ))}
@@ -325,9 +327,7 @@ export function FinancePageScaffold({
                   <tbody className="divide-y divide-slate-100">
                     {visibleRows.map((row) => (
                       <tr key={row.ref} className="transition-colors hover:bg-slate-50/80">
-                        <td className="px-2 py-3 text-slate-900 mono-data">
-                          {row.ref}
-                        </td>
+                        <td className="px-2 py-3 text-slate-900 mono-data">{row.ref}</td>
                         <td className="px-2 py-3">
                           <p className="text-title-primary">{row.subject}</p>
                           <p className="mt-0.5 text-base text-slate-400">{row.detail}</p>
@@ -338,9 +338,7 @@ export function FinancePageScaffold({
                         <td className="px-2 py-3">
                           <Badge tone={statusTone[row.status]}>{row.status}</Badge>
                         </td>
-                        <td className="px-2 py-3 text-slate-400 mono-data">
-                          {row.date}
-                        </td>
+                        <td className="px-2 py-3 text-slate-400 mono-data">{row.date}</td>
                         <td className="px-2 py-3 text-right">
                           <button
                             type="button"

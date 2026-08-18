@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { DomainValidationError, handleRouteError } from "@/lib/authz/errors";
-import { assignMandateManager, getMandateWithDetails, terminateMandate, updateMandateTerms } from "@/lib/services/mandates";
+import {
+  assignMandateManager,
+  getMandateWithDetails,
+  terminateMandate,
+  updateMandateTerms,
+} from "@/lib/services/mandates";
 import { requireCallerContext } from "@/lib/services/types";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
