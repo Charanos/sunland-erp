@@ -337,28 +337,30 @@ button:disabled {
 
 /* Global Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: linear-gradient(to bottom, #090e17, #131b2f); /* Tertiary dark gradient */
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: #f3df27; /* Primary Yellow */
   border-radius: 9999px;
+  border: 2px solid #090e17; /* Matches track edge for floating look */
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: #ffe838;
 }
 
 /* Firefox scrollbar support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: #f3df27 #090e17;
 }
 
 /* Custom scrollbar utility class */

@@ -1,13 +1,18 @@
 "use client";
 
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { StatBlock, type WebStat } from "../primitives/stat-block";
-import { heroDefaults } from "./home.defaults";
+import { DUR, registerWebMotion, splitLines, STAGGER } from "@/lib/motion/web-motion";
+import {
+  PortfolioDial,
+  type DialFootnoteItem,
+  type DialSlice,
+} from "../primitives/portfolio-dial";
 import { HeroSearch } from "./hero-search";
+import { heroDefaults } from "./home.defaults";
 
 /**
  * 01 home.hero, cinematic full-bleed band.
@@ -32,51 +37,156 @@ import { HeroSearch } from "./hero-search";
  * only a tween can bring back.
  */
 export function HomeHero({
-  stats,
+  portfolio,
+  footnote,
   areas,
 }: {
-  /** Null hides the strip entirely rather than rendering zeros. */
-  stats: WebStat[] | null;
+  /** The property-type split. Empty hides the dial rather than drawing zero. */
+  portfolio: DialSlice[];
+  /** The row beneath the ring: a real count, and the explicit portal link. */
+  footnote: DialFootnoteItem[];
   areas: string[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const leadRef = useRef<HTMLParagraphElement>(null);
 
   useGSAP(
     () => {
+      registerWebMotion();
+
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        // clearProps everywhere is what stops the entrance from stranding an
+        // element. A from() tween writes inline styles for the START state; if
+        // it is killed, reverted or unmounted mid-flight those styles stay, and
+        // the element is left invisible. Clearing what GSAP touched means an
+        // interrupted entrance degrades to "no animation", never to "gone".
+        const tl = gsap.timeline({
+          defaults: { ease: "sun.rise", clearProps: "opacity,transform" },
+        });
 
-        // `from` rather than `fromTo`: the resting state is what the markup
-        // already renders, so GSAP only has to describe where things start.
-        // If this never runs, the hero is simply already correct.
-        tl.from(".gsap-bg", { scale: 1.08, opacity: 0, duration: 1.8, ease: "power2.out" })
+        // ── The scene ────────────────────────────────────────────────────────
+        // The photograph settles for nearly two seconds under everything else.
+        // It is the only element allowed to still be moving when the copy has
+        // finished arriving, which is what gives the band depth rather than the
+        // flat "everything lands at once" of a template.
+        tl.from(".gsap-bg", {
+          scale: 1.14,
+          opacity: 0,
+          duration: DUR.scene,
+          ease: "sun.settle",
+        });
+
+        // ── The rule, then the words it introduces ───────────────────────────
+        // The rule draws before the eyebrow moves, so it reads as the eyebrow's
+        // underline arriving first rather than as two things fading together.
+        tl.from(
+          ".gsap-eyebrow-line",
+          { scaleX: 0, transformOrigin: "left center", duration: DUR.base },
+          0.35
+        ).from(
+          ".gsap-eyebrow-text",
+          { opacity: 0, x: -14, duration: DUR.base * 0.8 },
+          "<0.18"
+        );
+
+        // ── The headline, masked ─────────────────────────────────────────────
+        // Words rise out of their own line box rather than fading in over the
+        // photograph. This is the hero's signature gesture and the reason for
+        // SplitText: a fade cannot be made to look authored, a mask can.
+        //
+        // The slight rotation is what stops six words rising in perfect
+        // parallel from reading as a lift rather than as type settling.
+        if (headlineRef.current) {
+          splitLines(headlineRef.current, (self) =>
+            tl.from(
+              self.words,
+              {
+                yPercent: 118,
+                rotate: 2.5,
+                opacity: 0,
+                duration: DUR.base * 1.25,
+                stagger: STAGGER.words,
+                ease: "sun.rise",
+              },
+              "<0.1"
+            )
+          );
+        }
+
+        // The lead moves by line, not by word: a paragraph animated per word
+        // draws attention to the animation instead of to the sentence.
+        if (leadRef.current) {
+          splitLines(leadRef.current, (self) =>
+            tl.from(
+              self.lines,
+              {
+                yPercent: 100,
+                opacity: 0,
+                duration: DUR.base,
+                stagger: STAGGER.tight,
+              },
+              "<0.34"
+            )
+          );
+        }
+
+        // ── The instrument panel ─────────────────────────────────────────────
+        // Enters from the right as one object, then its tiles resolve inside
+        // it. Animating the tiles alone would make the panel look assembled on
+        // screen; animating only the panel wastes the four figures inside it.
+        tl.from(
+          ".gsap-telemetry-hud",
+          { x: 44, opacity: 0, duration: DUR.panel, ease: "sun.settle" },
+          "<0.1"
+        );
+
+        // ── The search panel lands last ──────────────────────────────────────
+        // It is the page's primary action, so it arrives after the argument has
+        // been made, on the softer curve a large white surface needs.
+        tl.from(
+          ".gsap-search-panel",
+          { y: 34, scale: 0.985, opacity: 0, duration: DUR.panel, ease: "sun.settle" },
+          "<0.12"
+        )
+          // The one yellow element on the page is the final beat.
           .from(
-            ".gsap-eyebrow-line",
-            { scaleX: 0, transformOrigin: "left center", duration: 0.7 },
-            "-=1.1"
+            ".gsap-search-panel button[type='submit']",
+            { scale: 0.82, opacity: 0, duration: DUR.base, ease: "back.out(1.7)" },
+            "<0.3"
           )
-          .from(".gsap-eyebrow-text", { opacity: 0, x: -12, duration: 0.6 }, "-=0.5")
-          .from(".gsap-headline", { y: 35, opacity: 0, duration: 1.0, ease: "power4.out" }, "-=0.6")
-          .from(".gsap-search-panel", { y: 24, opacity: 0, duration: 0.85 }, "-=0.5")
           .from(
             ".gsap-pill",
-            { y: 12, opacity: 0, duration: 0.45, stagger: 0.05, ease: "back.out(1.5)" },
-            "-=0.4"
-          )
-          .from(".gsap-telemetry-hud", { x: 30, opacity: 0, duration: 0.9 }, "-=0.8")
-          .from(
-            ".stat-tile",
-            { y: 16, opacity: 0, duration: 0.5, stagger: 0.07, ease: "power2.out" },
-            "-=0.6"
+            { y: 14, opacity: 0, duration: DUR.base * 0.7, stagger: STAGGER.tight },
+            "<0.15"
           );
 
-        return () => tl.kill();
+        // ── Parallax on exit ─────────────────────────────────────────────────
+        // The photograph drifts slower than the page as the hero leaves, and
+        // the content lifts and dims slightly ahead of it. Scrubbed, so it is
+        // driven entirely by the scroll position and never plays on its own.
+        const drift = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.6,
+          },
+        });
+
+        drift
+          .to(".gsap-bg-media", { yPercent: 14, scale: 1.06, ease: "none" }, 0)
+          .to(".gsap-hero-content", { yPercent: -8, opacity: 0.55, ease: "none" }, 0);
+
+        // matchMedia().revert() below tears all of this down, including the
+        // ScrollTrigger and the SplitText wrappers.
       });
 
-      // Reduced motion: no branch registered, so nothing is ever set to
-      // opacity 0 and the hero renders at rest.
+      // Reduced motion: no branch is registered, so nothing is ever set to
+      // opacity 0, nothing is split, and no ScrollTrigger is created. The hero
+      // renders exactly as the markup describes it.
 
       return () => media.revert();
     },
@@ -91,20 +201,25 @@ export function HomeHero({
     >
       <div className="gsap-bg gsap-enter absolute inset-0 z-0">
         <Image
-          src="/images/hero-bg-4k.jpg"
+          src="/images/hero-bg.png"
           alt=""
           aria-hidden="true"
           fill
           priority
           // Explicit, because the browser picks a candidate before layout and
           // a full-width guess ships a 4K image to a 390px phone.
-          sizes="100vw"
-          quality={82}
-          className="object-cover object-center"
+          sizes="(max-aspect-ratio: 1/1) 300vw, 100vw"
+          quality={100}
+          className="gsap-bg-media object-cover object-center"
+        />
+        {/* Layered atmospheric scrims: Deep obsidian gradient on left for crystal-clear readability, warm twilight radiance on right */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-slate-950/34 via-slate-950/28 via-50% to-slate-950/20 lg:to-transparent"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-slate-950/65 via-slate-950/20 to-slate-950/92"
+          className="absolute inset-0 bg-gradient-to-b from-slate-950/12 via-transparent via-35% to-slate-950/52"
         />
       </div>
 
@@ -114,16 +229,16 @@ export function HomeHero({
 
       {/* Row 2: the content cluster. Top padding clears the transparent
           header, which is 72px on a phone and 96px above 640. */}
-      <div className="relative z-raised pb-10 pt-24 sm:pt-28 lg:pb-14">
+      <div className="gsap-hero-content relative z-raised pb-10 pt-24 sm:pt-28 lg:pb-14">
         <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
           {/* Upper row: the pitch on the left, the figures on the right. The
               search panel is deliberately NOT in this grid, because a search
               field is the widest control on the page and boxing it into 60% of
               the viewport shrinks the location input, which is the field
               everyone actually types in. */}
-          <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-[1.55fr_1fr] lg:gap-10 xl:grid-cols-[1.6fr_0.9fr]">
+          <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(250px,340px)] lg:gap-12 xl:gap-16">
             <div>
-              <div className="mb-3 flex items-center gap-3">
+              <div className="mb-0 flex items-center gap-3">
                 <span
                   aria-hidden="true"
                   className="gsap-eyebrow-line gsap-enter h-[2px] w-10 shrink-0 bg-[#f3df27]/90"
@@ -134,8 +249,9 @@ export function HomeHero({
               </div>
 
               <h1
+                ref={headlineRef}
                 id="hero-heading"
-                className="gsap-headline gsap-enter mb-4 font-editorial text-[clamp(2.5rem,5.2vw,5.5rem)] font-medium leading-[1.05] tracking-tight text-white lg:whitespace-nowrap"
+                className="gsap-headline gsap-enter mb-0 font-editorial text-[clamp(3.2rem,5.2vw,4.5rem)] font-medium  text-white text-balance xl:whitespace-nowrap"
                 style={{ textShadow: "0 4px 24px rgba(0,0,0,0.6)" }}
               >
                 {heroDefaults.headline}
@@ -144,15 +260,14 @@ export function HomeHero({
               {/* The lead was in the design and had been dropped. It is the
                   only place the hero says what the business actually does, and
                   a headline of three words cannot carry that alone. */}
-              <p className="gsap-headline gsap-enter mb-6 max-w-[54ch] text-[15px] leading-relaxed text-slate-200/90 sm:text-base">
+              <p className="gsap-lead gsap-enter mb-0 max-w-[66ch] text-pretty text-[15px] leading-[1.65] text-slate-200/90 sm:text-[17px]">
                 {heroDefaults.lead}
               </p>
-
             </div>
 
-            {stats && stats.length > 0 && (
-              <div className="gsap-telemetry-hud gsap-enter">
-                <StatBlock stats={stats} variant="hud" />
+            {portfolio.length > 0 && (
+              <div className="gsap-telemetry-hud gsap-enter w-full justify-self-end">
+                <PortfolioDial slices={portfolio} totalLabel="Listed" footnote={footnote} />
               </div>
             )}
           </div>
@@ -162,7 +277,7 @@ export function HomeHero({
             <HeroSearch areas={areas} />
           </div>
 
-          <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-2">
+          <div className="mt-5.5 flex flex-wrap items-center gap-x-2.5 gap-y-2">
             <span className="gsap-pill gsap-enter web-control text-[11px] font-medium uppercase tracking-[0.16em] text-slate-300">
               Popular:
             </span>

@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, gte, ilike, inArray, lte, ne, or, sql, type SQL } from "drizzle-orm";
 import { db } from "@/db";
 import { properties } from "@/db/schema/properties";
-import { toListingStatus } from "@/components/web/constants/listing-status";
+import { toListingStatus, type ListingStatus } from "@/components/web/constants/listing-status";
 import { generateListingSlug, type SortValue } from "@/components/web/constants/listing-taxonomy";
 import type { ListingCardData } from "@/components/web/primitives/listing-card";
 
@@ -366,5 +366,35 @@ export async function getSimilarListings(
   } catch (error) {
     console.error("[web/listings] similar lookup failed", error);
     return [];
+  }
+}
+
+/**
+ * Counts by public listing status, across every published property.
+ *
+ * Grouped with the exact same `toListingStatus()` mapping the card badge
+ * uses, so the hero's summary and an individual card can never disagree about
+ * what "available" means. `off_market` is excluded at the query, same as
+ * every other public read in this file: it is an internal state and never
+ * reaches a visitor in any form, aggregate or otherwise.
+ */
+export async function getListingStatusCounts(): Promise<Record<ListingStatus, number>> {
+  const empty: Record<ListingStatus, number> = { available: 0, under_offer: 0, let: 0, sold: 0 };
+
+  try {
+    const rows = await db
+      .select({ status: properties.status, listingType: properties.listingType })
+      .from(properties)
+      .where(ne(properties.status, "off_market"));
+
+    const counts = { ...empty };
+    for (const row of rows) {
+      const status = toListingStatus(row.status, row.listingType);
+      counts[status] += 1;
+    }
+    return counts;
+  } catch (error) {
+    console.error("[web/listings] status counts failed", error);
+    return empty;
   }
 }

@@ -4,6 +4,9 @@ import { HomeCta } from "@/components/web/home/home-cta";
 import { HomeFaq } from "@/components/web/home/home-faq";
 import { HomeFeatured } from "@/components/web/home/home-featured";
 import { HomeHero } from "@/components/web/home/home-hero";
+import type { DialFootnoteItem, DialSlice } from "@/components/web/primitives/portfolio-dial";
+import { CATEGORY_COLOR } from "@/components/web/constants/listing-taxonomy";
+import { WEB_AREAS } from "@/components/web/constants/locations.content";
 import { HomeInsights, type InsightPost } from "@/components/web/home/home-insights";
 import { HomeLandlords } from "@/components/web/home/home-landlords";
 import { HomeLocations } from "@/components/web/home/home-locations";
@@ -12,12 +15,10 @@ import { HomeServices } from "@/components/web/home/home-services";
 import {
   categoryDefaults,
   featuredDefaults,
-  heroDefaults,
   locationDefaults,
   type CategoryTile,
 } from "@/components/web/home/home.defaults";
 import type { ListingCardData } from "@/components/web/primitives/listing-card";
-import type { WebStat } from "@/components/web/primitives/stat-block";
 import {
   getAreasWithStock,
   getCategoryCounts,
@@ -109,14 +110,36 @@ export default async function HomePage() {
   // Doc 04 §1.1: if the stats query fails the strip hides entirely rather
   // than rendering zeros. The designed figures stand in only when the query
   // succeeded but the aggregate is genuinely a fresh install.
-  const stats: WebStat[] | null = aggregates
-    ? [
-        { value: aggregates.totalListings, label: "Properties listed" },
-        { value: aggregates.areasCovered, label: "Areas covered" },
-        { value: aggregates.propertyTypes, label: "Property types" },
-        { value: 2, label: "Live portals" },
-      ]
-    : [...heroDefaults.stats];
+  // The hero dial charts the one figure here that is genuinely a
+  // distribution: what is on the books, by type. The category tiles already
+  // resolve live counts against the same taxonomy, so the ring and the band
+  // below it can never disagree about how many apartments there are.
+  const portfolio: DialSlice[] = resolveCategoryTiles(categoryCounts)
+    .filter((tile) => tile.count > 0)
+    .map((tile) => {
+      // The href is /properties/{segment}; the segment is CATEGORY_COLOR's
+      // key, so the ring's colour and the facet page it links to can never
+      // drift apart from each other.
+      const segment = tile.href.split("/").pop() ?? "";
+      return {
+        label: tile.label,
+        href: tile.href,
+        count: tile.count,
+        icon: tile.icon,
+        color: CATEGORY_COLOR[segment] ?? "#0ea5e9",
+      };
+    });
+
+  // The row beneath the ring: one real count the ring cannot carry, and one
+  // link that says outright what the old bare "2" made a visitor guess at.
+  const heroFootnote: DialFootnoteItem[] = [
+    {
+      kind: "stat",
+      value: aggregates ? String(aggregates.areasCovered) : String(WEB_AREAS.length),
+      label: "Areas",
+    },
+    { kind: "link", label: "Owner & tenant sign-in", href: "/login" },
+  ];
 
   // The band hides below three cards. Falling back to the designed six when
   // the ERP holds fewer keeps the page whole while the catalogue migration
@@ -139,7 +162,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HomeHero stats={stats} areas={searchAreas} />
+      <HomeHero portfolio={portfolio} footnote={heroFootnote} areas={searchAreas} />
       <HomeCategories tiles={resolveCategoryTiles(categoryCounts)} />
       <HomeBudget />
       <HomeFeatured listings={listings} />

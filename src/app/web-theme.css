@@ -376,6 +376,27 @@
   animation: web-pulse 1200ms ease-in-out infinite;
 }
 
+
+/* ── SplitText line masks ───────────────────────────────────────────────────
+   `mask: "lines"` wraps each line in an overflow-clipped box so words can rise
+   out of their own baseline. The clip is exactly the line box, which cuts the
+   descenders off "Property" and "properly" the moment the mask is applied.
+
+   Padding the mask down and pulling the same amount back off the margin gives
+   the glyphs somewhere to hang without moving the line. The wrapper is
+   whichever element GSAP generated, so both the line and its mask are covered. */
+.sun-line,
+.sun-line-mask {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+/* A word carrying a rotation needs its own layer, or the browser rasterises it
+   against the line box and the edges crawl during the tween. */
+.sun-word {
+  will-change: transform;
+}
+
 /* prefers-reduced-motion is honoured everywhere: opacity survives, transforms
    do not, the media scale is removed entirely, and the skeleton becomes a
    static fill. */

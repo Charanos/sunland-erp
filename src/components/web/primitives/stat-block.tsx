@@ -112,7 +112,7 @@ export function StatBlock({
       <div
         ref={containerRef}
         className={cn(
-          "w-full rounded-[24px] sm:rounded-[28px] border border-white/20 bg-slate-950/40 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] overflow-hidden transition-all duration-300 hover:border-white/30 relative",
+          "w-full rounded-[18px] sm:rounded-[22px] border border-white/15 bg-slate-950/40 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.35)] overflow-hidden transition-all duration-300 hover:border-white/30 relative",
           className
         )}
       >
@@ -132,17 +132,17 @@ export function StatBlock({
             return (
               <div
                 key={stat.label}
-                className="stat-tile p-5 sm:p-6 flex flex-col justify-between hover:bg-white/[0.025] transition-colors"
+                className="stat-tile p-4 sm:p-[18px] flex flex-col justify-between hover:bg-white/[0.025] transition-colors"
               >
                 {/* Header row: Label */}
                 <div>
-                  <span className="text-[10.5px] uppercase tracking-[0.18em] font-mono font-medium text-slate-400 block truncate">
+                  <span className="text-[9.5px] uppercase tracking-[0.16em] font-mono font-medium text-slate-400/90 block truncate">
                     {stat.label}
                   </span>
                 </div>
 
                 {/* Big Metric Numeral */}
-                <p className="web-numeric text-3xl sm:text-[36px] text-white font-medium tracking-tight leading-none my-2">
+                <p className="web-numeric text-[26px] sm:text-[30px] text-white font-medium tracking-tight leading-none my-1.5">
                   <span aria-hidden="true">
                     {animate ? stat.value.toLocaleString("en-KE") : stat.value}
                     {stat.suffix}
@@ -154,14 +154,14 @@ export function StatBlock({
                 </p>
 
                 {/* Micro Subtitle */}
-                <p className="text-xs font-mono text-slate-400/90 truncate">{meta.sub}</p>
+                <p className="text-[11px] font-mono text-slate-400/80 truncate">{meta.sub}</p>
               </div>
             );
           })}
         </div>
 
         {/* Minimalist Integrated Footer */}
-        <div className="px-6 py-3.5 bg-black/30 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+        <div className="px-4 py-2.5 bg-black/25 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400/90">
           <span>Direct Landlord & Tenant Portals</span>
         </div>
       </div>

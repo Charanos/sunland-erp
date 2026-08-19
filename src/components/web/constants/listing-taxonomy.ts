@@ -87,6 +87,30 @@ export const CATEGORY_FACETS: ListingFacet[] = [
 export const ALL_FACETS: ListingFacet[] = [...STATUS_FACETS, ...CATEGORY_FACETS];
 
 /**
+ * Category colour, carried over from the ERP's own portfolio donut.
+ *
+ * `unified-market-board.tsx` colours a property-type pie: Apartment #0ea5e9,
+ * House #0f766e, Villa #d97706, Commercial #4f46e5, Land #8b5cf6. A landlord
+ * who signs in after visiting the public site sees the same hue mean the same
+ * thing in the dashboard, which is the actual point of matching it: colour
+ * becomes a second, wordless label that travels between the two surfaces.
+ *
+ * The web taxonomy has four categories against the ERP's five, because
+ * "Villas and houses" (web) covers what the ERP splits into Villa and House.
+ * It takes the ERP House teal rather than Villa amber: the web bucket is the
+ * broader, plainer "family home" grouping (townhouse, maisonette, bungalow
+ * included), which is what House means in the ERP, and the teal also sits
+ * better as a midpoint between Apartment's cool blue and Land's violet.
+ */
+export const CATEGORY_COLOR: Record<string, string> = {
+  apartments: "#0ea5e9",
+  villas: "#0f766e",
+  commercial: "#4f46e5",
+  land: "#8b5cf6",
+};
+
+
+/**
  * Every segment that may never be a listing slug.
  *
  * Includes the facet segments above plus the words a future facet is likely

@@ -5,7 +5,8 @@ import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { DUR, registerWebMotion } from "@/lib/motion/web-motion";
 import { cn } from "@/lib/utils/cn";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import { HEADER_NAV } from "../constants/site";
@@ -51,6 +52,8 @@ export function WebHeader() {
   const pillBgRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
   const hasMountedRef = useRef(false);
+  const navListRef = useRef<HTMLUListElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
 
   // Stable, so the drawer's effect does not re-run on every header render.
   const handleOpenChange = useCallback((open: boolean) => setDrawerOpen(open), []);
@@ -83,6 +86,8 @@ export function WebHeader() {
 
   useGSAP(
     () => {
+      registerWebMotion();
+
       const header = headerRef.current;
       const pill = pillBgRef.current;
       const logo = logoRef.current;
@@ -105,18 +110,20 @@ export function WebHeader() {
           return;
         }
 
+        // Leaving is quicker than arriving. A header that takes as long to go
+        // as it does to come back feels like it is arguing with the scroll.
         gsap.to(header, {
           yPercent: isHidden ? -130 : 0,
           opacity: isHidden ? 0 : 1,
-          duration: isHidden ? 0.42 : 0.5,
-          ease: isHidden ? "power3.inOut" : "power3.out",
+          duration: isHidden ? DUR.snap * 1.3 : DUR.base,
+          ease: isHidden ? "sun.glide" : "sun.rise",
           overwrite: "auto",
         });
 
         gsap
-          .timeline({ defaults: { ease: "power3.out", duration: 0.55 } })
+          .timeline({ defaults: { ease: "sun.glide", duration: DUR.panel } })
           .to(header, target.header, 0)
-          .to(pill, { ...target.pill, ease: isTransparent ? "power2.inOut" : "power3.out" }, 0)
+          .to(pill, target.pill, 0)
           .to(container, target.container, 0)
           .to(logo, target.logo, 0);
       });
@@ -138,6 +145,63 @@ export function WebHeader() {
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  /**
+   * The magnetic indicator.
+   *
+   * One pill that travels between nav items rather than six items each fading
+   * their own background in and out. The difference is that a single moving
+   * object gives the eye something to follow, so the nav reads as one control
+   * being operated rather than as six buttons reacting independently.
+   *
+   * It measures live from the DOM instead of tracking an index, because the
+   * items are variable width and the capsule's padding changes when the header
+   * condenses. Reading `offsetLeft` and `offsetWidth` at move time is always
+   * right; a cached table is right until the first font swap.
+   *
+   * Purely decorative: the accessible current-page signal is `aria-current`
+   * and the yellow rule, both of which stand on their own with this removed.
+   */
+  const moveIndicator = useCallback((target: HTMLElement | null, animate = true) => {
+    const indicator = indicatorRef.current;
+    const list = navListRef.current;
+    if (!indicator || !list) return;
+
+    if (!target) {
+      gsap.to(indicator, { opacity: 0, duration: DUR.snap, ease: "sun.snap" });
+      return;
+    }
+
+    gsap.to(indicator, {
+      x: target.offsetLeft,
+      width: target.offsetWidth,
+      opacity: 1,
+      duration: animate ? DUR.snap : 0,
+      ease: "sun.snap",
+      overwrite: "auto",
+    });
+  }, []);
+
+  /** Where the indicator rests: the current page, or nowhere. */
+  const restIndicator = useCallback(
+    (animate = true) => {
+      const list = navListRef.current;
+      if (!list) return;
+      moveIndicator(list.querySelector<HTMLElement>("[data-active='true']"), animate);
+    },
+    [moveIndicator]
+  );
+
+  // Settle on the active item once the capsule has its real width. Two frames:
+  // one for layout, one for the font. Without the wait the indicator lands on a
+  // fallback-font measurement and then visibly corrects itself.
+  useEffect(() => {
+    registerWebMotion();
+    const id = requestAnimationFrame(() => restIndicator(false));
+    const onFonts = () => restIndicator(false);
+    document.fonts?.ready.then(onFonts);
+    return () => cancelAnimationFrame(id);
+  }, [restIndicator]);
 
   return (
     <>
@@ -175,21 +239,38 @@ export function WebHeader() {
           </Link>
 
           <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center gap-1 rounded-full border border-white/20 bg-slate-950/40 px-3.5 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-2xl">
+            <ul
+              ref={navListRef}
+              onMouseLeave={() => restIndicator()}
+              onBlur={(event) => {
+                // Only rest when focus has actually left the capsule, not when
+                // it moves between two links inside it.
+                if (!event.currentTarget.contains(event.relatedTarget as Node)) restIndicator();
+              }}
+              className="relative flex items-center gap-1 rounded-full border border-white/20 bg-slate-950/40 px-3.5 py-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-2xl"
+            >
+              {/* Travels between items. Behind the links, so it never
+                  intercepts a pointer. */}
+              <span
+                ref={indicatorRef}
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-1 h-[calc(100%-0.5rem)] rounded-full bg-white/12 opacity-0"
+              />
               {HEADER_NAV.map((item) => {
                 const active = isActive(item.href);
 
                 return (
-                  <li key={item.href}>
+                  <li key={item.href} className="relative">
                     <Link
                       href={item.href}
+                      data-active={active ? "true" : undefined}
+                      onMouseEnter={(event) => moveIndicator(event.currentTarget)}
+                      onFocus={(event) => moveIndicator(event.currentTarget)}
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "relative block rounded-full px-4 py-1.5 font-mono text-[12.5px] font-medium uppercase transition-all duration-200",
                         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
-                        active
-                          ? "bg-white/12 text-white"
-                          : "text-slate-100/95 hover:bg-white/15 hover:text-white"
+                        active ? "text-white" : "text-slate-100/95 hover:text-white"
                       )}
                     >
                       {item.label}
