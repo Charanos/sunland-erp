@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import { cn } from "@/lib/utils/cn";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 
@@ -49,11 +50,13 @@ export function ListingGallery({ images, title }: { images: GalleryImage[]; titl
     [images.length]
   );
 
+  // Shared lock: preserves scroll position on iOS and compensates for the
+  // scrollbar on desktop, neither of which the bare overflow toggle did.
+  useBodyScrollLock(openIndex !== null);
+
   useEffect(() => {
     if (openIndex === null) return;
 
-    const { overflow } = document.body.style;
-    document.body.style.overflow = "hidden";
     dialogRef.current?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -82,10 +85,7 @@ export function ListingGallery({ images, title }: { images: GalleryImage[]; titl
     };
 
     document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = overflow;
-    };
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [openIndex, close, step]);
 
   const open = (index: number, event: React.MouseEvent<HTMLButtonElement>) => {
@@ -168,7 +168,7 @@ export function ListingGallery({ images, title }: { images: GalleryImage[]; titl
           aria-modal="true"
           aria-label={`${title}, photo ${openIndex + 1} of ${images.length}`}
           tabIndex={-1}
-          className="fixed inset-0 z-50 flex flex-col bg-brand-dark/96 backdrop-blur-sm"
+          className="fixed inset-0 z-overlay flex flex-col bg-brand-dark/96 backdrop-blur-sm"
         >
           <div className="flex items-center justify-between p-4">
             <p className="web-numeric text-sm text-on-dark">

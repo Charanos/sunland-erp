@@ -343,6 +343,18 @@
   }
 }
 
+@keyframes web-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* The scrim fades slightly faster than the panel slides, so the page behind
+   is already dimmed by the time the panel arrives rather than the two
+   competing for attention. */
+.web-fade-in {
+  animation: web-fade-in 200ms ease-out both;
+}
+
 .web-slide-in-right {
   animation: web-slide-in-right 260ms ease-out both;
 }
@@ -378,7 +390,8 @@
     animation: none;
   }
 
-  .web-slide-in-right {
+  .web-slide-in-right,
+  .web-fade-in {
     animation-name: none;
   }
 
@@ -387,5 +400,81 @@
   .web-root *::after {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
+  }
+}
+
+/* ── Layering ────────────────────────────────────────────────────────────────
+   One scale, named, because the marketing site stacks seven things that can
+   all be on screen at once. Before this every one of them used z-50 and the
+   winner was DOM order, which is why the mobile drawer rendered under the
+   floating contact button and the search dropdowns fought the header.
+
+   The values are spaced by 10 so a new layer can slot between two without a
+   renumber. Anything fixed or absolute that overlaps another component takes
+   one of these; nothing in the web tree should write a bare z-index again. */
+.web-root,
+.web-drawer-root {
+  --z-raised: 10; /* in-flow lift: card hover, sticky table head */
+  --z-sticky: 20; /* sticky rails, listing enquiry bar */
+  --z-dropdown: 30; /* hero search menus, sort menus */
+  --z-header: 40; /* the site header */
+  --z-float: 50; /* floating contact, back to top */
+  --z-overlay: 60; /* drawer scrim, filter sheet, lightbox */
+  --z-panel: 70; /* the panel that sits on an overlay */
+  --z-skip: 100; /* the skip link outranks everything */
+}
+
+.z-raised { z-index: var(--z-raised); }
+.z-sticky { z-index: var(--z-sticky); }
+.z-dropdown { z-index: var(--z-dropdown); }
+.z-header { z-index: var(--z-header); }
+.z-float { z-index: var(--z-float); }
+.z-overlay { z-index: var(--z-overlay); }
+.z-panel { z-index: var(--z-panel); }
+.z-skip { z-index: var(--z-skip); }
+
+/* ── Viewport height ─────────────────────────────────────────────────────────
+   `100vh` on a phone measures the viewport with the URL bar retracted, so a
+   full-height hero is taller than what you can actually see and its lowest
+   element, the search panel, sits under the fold until you scroll. `svh` is
+   the small viewport: the height with browser chrome showing, which is the
+   worst case and therefore the safe one. `vh` stays as the fallback for
+   anything old enough not to know `svh`. */
+.web-hero-shell {
+  height: 100vh;
+  height: 100svh;
+  max-height: 1020px;
+}
+
+/* Under 640px the hero stops trying to fill the screen. A 100svh hero on a
+   short phone squeezes the headline and the search panel into a strip; letting
+   it size to content and setting a floor reads better and puts the first
+   listing closer to the fold. */
+@media (max-width: 639px) {
+  .web-hero-shell {
+    height: auto;
+    min-height: 92svh;
+    max-height: none;
+  }
+}
+
+/* ── GSAP entrance, and the state before it runs ─────────────────────────────
+   Elements animated in from opacity 0 must not be hidden by CSS: if the
+   bundle fails, arrives late on a 3G connection, or the visitor has asked for
+   reduced motion, the page still has to be readable. So the markup ships
+   visible and GSAP sets the `from` state itself at the top of its own
+   timeline, inside a matchMedia branch that simply does not run when motion
+   is reduced.
+
+   This class marks those elements so the intent is greppable, and gives the
+   no-JS path an explicit home. */
+.gsap-enter {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gsap-enter {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

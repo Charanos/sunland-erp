@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useId, useState } from "react";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import { cn } from "@/lib/utils/cn";
 import {
   BEDROOM_OPTIONS,
@@ -48,6 +49,9 @@ export function FilterRail({
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const locationId = useId();
+
+  // The sheet is modal; the results behind it must hold still.
+  useBodyScrollLock(open);
   const minId = useId();
   const maxId = useId();
 
@@ -338,7 +342,7 @@ export function FilterRail({
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end lg:hidden">
+        <div className="fixed inset-0 z-overlay flex items-end lg:hidden">
           <button
             type="button"
             tabIndex={-1}

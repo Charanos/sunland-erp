@@ -133,7 +133,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
         ref={formRef}
         aria-label="Property search"
         onSubmit={handleSearchSubmit}
-        className="w-full rounded-2xl lg:rounded-full border border-white/90 bg-white/[0.96] backdrop-blur-3xl p-2 sm:p-2.5 shadow-[0_24px_70px_rgba(0,0,0,0.25)] transition-all duration-300 hover:bg-white/[0.98] relative z-30"
+        className="w-full rounded-2xl lg:rounded-full border border-white/90 bg-white/[0.96] backdrop-blur-3xl p-2 sm:p-2.5 shadow-[0_24px_70px_rgba(0,0,0,0.25)] transition-all duration-300 hover:bg-white/[0.98] relative z-raised"
       >
         <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-0 w-full">
           {/* 01. Status Toggle Capsule */}
@@ -194,7 +194,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
 
             {/* Custom Location Suggestions Popover */}
             {openDropdown === "location" && (
-              <div className="absolute left-0 bottom-full mb-3 w-full sm:w-[320px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-3 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+              <div className="absolute left-0 bottom-full mb-3 w-full sm:w-[320px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-3 z-dropdown animate-in fade-in slide-in-from-bottom-2 duration-150">
                 <p className="text-[10px] uppercase font-mono tracking-widest text-slate-400 font-medium px-2 mb-2">
                   Popular Locations
                 </p>
@@ -266,7 +266,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
 
             {/* Custom Type Popover */}
             {openDropdown === "type" && (
-              <div className="absolute left-0 bottom-full mb-3 w-[220px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150 space-y-0.5">
+              <div className="absolute left-0 bottom-full mb-3 w-[220px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-2 z-dropdown animate-in fade-in slide-in-from-bottom-2 duration-150 space-y-0.5">
                 {PROPERTY_TYPES.map((item) => {
                   const Icon = item.icon;
                   const isSelected = type === item.value;
@@ -329,7 +329,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
 
             {/* Custom Beds Popover */}
             {openDropdown === "beds" && (
-              <div className="absolute left-0 bottom-full mb-3 w-[160px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150 space-y-0.5">
+              <div className="absolute left-0 bottom-full mb-3 w-[160px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-2 z-dropdown animate-in fade-in slide-in-from-bottom-2 duration-150 space-y-0.5">
                 {BEDROOM_OPTIONS.map((item) => {
                   const isSelected = bedrooms === item.value;
                   return (
@@ -388,7 +388,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
 
             {/* Custom Budget Popover */}
             {openDropdown === "budget" && (
-              <div className="absolute left-0 lg:right-0 lg:left-auto bottom-full mb-3 w-[220px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150 space-y-0.5">
+              <div className="absolute left-0 lg:right-0 lg:left-auto bottom-full mb-3 w-[220px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-2 z-dropdown animate-in fade-in slide-in-from-bottom-2 duration-150 space-y-0.5">
                 {budgetOptions.map((item) => {
                   const isSelected = budget === item.value;
                   return (

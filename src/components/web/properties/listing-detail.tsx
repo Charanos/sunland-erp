@@ -239,7 +239,7 @@ export function ListingDetailView({
 
       {/* The mobile enquiry bar. Fixed rather than sticky-at-the-bottom-of-a-
           section, because on a phone the rail above is 2,000 pixels up. */}
-      <div className="sticky bottom-0 z-20 border-t border-dark-line bg-brand-dark/96 px-5 py-3 backdrop-blur-md lg:hidden">
+      <div className="sticky bottom-0 z-sticky border-t border-dark-line bg-brand-dark/96 px-5 py-3 backdrop-blur-md lg:hidden">
         <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-3">
           {listing.priceKes === null ? (
             <p className="text-sm text-on-dark-hi">Price on request</p>

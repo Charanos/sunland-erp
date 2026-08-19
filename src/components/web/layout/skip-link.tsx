@@ -10,7 +10,7 @@ export function SkipLink() {
   return (
     <a
       href="#content"
-      className="web-control sr-only rounded-web-full bg-brand-yellow px-5 py-3 text-xs uppercase tracking-[0.12em] text-brand-dark focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+      className="web-control sr-only rounded-web-full bg-brand-yellow px-5 py-3 text-xs uppercase tracking-[0.12em] text-brand-dark focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-skip"
     >
       Skip to content
     </a>

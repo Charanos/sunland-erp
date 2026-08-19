@@ -40,7 +40,7 @@ export function FloatingContact() {
       // the same phone number announced a third time from a floating region.
       aria-hidden="true"
       className={cn(
-        "fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2.5 sm:bottom-8 sm:right-8",
+        "fixed bottom-4 right-4 z-float flex flex-col items-end gap-2.5 sm:bottom-8 sm:right-8",
         "transition-all duration-200 ease-out",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"
       )}
