@@ -41,19 +41,27 @@ export type ListingCardData = {
 /**
  * The branded fallback for a listing with no usable photograph.
  *
- * Never a broken image glyph and never a stretched photo. A rejected image
- * falling through to this panel is the better of the two outcomes and should
- * be treated as acceptable rather than as a gap to fill.
- *
- * TODO: the design pass asks for the Sunland mark as a single-colour SVG.
- * Until that asset exists this stands in with the Cormorant "S", exactly as
- * the design templates do.
+ * Designed as a luxury architectural asset panel with deep midnight gradient,
+ * ambient radiance, and a refined gold-accented monogram.
  */
 function BrandedFallback() {
   return (
-    <div className="flex size-full items-center justify-center bg-surface-2">
-      <span aria-hidden="true" className="web-title-light select-none text-6xl text-brand-dark/20">
-        S
+    <div className="relative flex size-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#121630] via-[#181e45] to-[#0d1127] p-6 text-center select-none">
+      {/* Ambient glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(243,223,39,0.12),transparent_65%)]"
+      />
+
+      {/* Luxury Monogram */}
+      <div className="relative flex size-16 items-center justify-center rounded-2xl border border-white/15 bg-white/5 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+        <span className="font-editorial text-3xl font-medium tracking-wider text-white">S</span>
+        <span className="absolute -bottom-1 size-1.5 rounded-full bg-brand-yellow" />
+      </div>
+
+      {/* Discreet label */}
+      <span className="relative mt-3.5 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-slate-400">
+        Verified Portfolio Asset
       </span>
     </div>
   );
@@ -61,13 +69,8 @@ function BrandedFallback() {
 
 export function ListingCard({
   listing,
-  /** The component takes its heading level rather than guessing: h3 under a
-   *  section h2 on the home page, h2 under the page h1 on the index. */
   headingLevel = 3,
-  /** The first row on a page loads eagerly; everything below the fold is lazy. */
   priority = false,
-  /** On a tinted band the location line steps to ink-500, because ink-400 on
-   *  surface-2 fails contrast while ink-400 on surface-0 passes. */
   onTint = false,
   className,
 }: {
@@ -81,26 +84,22 @@ export function ListingCard({
   const status = LISTING_STATUS_CONFIG[listing.status];
   const isAvailable = status.isAvailable;
   const PinIcon = webIcons.pin;
+  const ArrowIcon = webIcons.arrow;
 
   return (
     <article
       className={cn(
-        "group relative rounded-web-card border border-line bg-surface-0 transition-all duration-200 ease-out",
-        "shadow-web-sm",
-        // Unavailable stock stays visible and indexed on facet pages for the
-        // price context that earns location pages their traffic, but it stops
-        // behaving like an offer: no lift, no hover shadow.
+        "group relative flex flex-col justify-between overflow-hidden rounded-[22px] border border-slate-200/90 bg-white transition-all duration-300 ease-out",
+        "shadow-[0_8px_24px_rgba(21,25,54,0.04),0_1px_2px_rgba(0,0,0,0.02)]",
         isAvailable &&
-          "hover:-translate-y-[3px] hover:border-line-strong hover:shadow-web-md focus-within:-translate-y-[3px] focus-within:shadow-web-md",
+          "hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_20px_45px_rgba(21,25,54,0.1),0_4px_12px_rgba(0,0,0,0.03)] focus-within:-translate-y-1.5 focus-within:shadow-[0_20px_45px_rgba(21,25,54,0.1)]",
         className
       )}
     >
-      {/* Media. Ratio locked by the container so nothing depends on trusting
-          the source, with a top scrim so the badge holds contrast over a
-          bright sky. */}
+      {/* Media */}
       <div
         className={cn(
-          "web-scrim-top relative aspect-[4/3] overflow-hidden rounded-t-web-card",
+          "web-scrim-top relative aspect-[16/11] overflow-hidden rounded-t-[21px] bg-slate-900",
           !isAvailable && "saturate-[0.55]"
         )}
       >
@@ -113,8 +112,8 @@ export function ListingCard({
             priority={priority}
             loading={priority ? undefined : "lazy"}
             className={cn(
-              "object-cover transition-transform duration-[400ms] ease-out motion-reduce:transition-none",
-              isAvailable && "group-hover:scale-[1.04] motion-reduce:group-hover:scale-100"
+              "object-cover transition-transform duration-500 ease-out motion-reduce:transition-none",
+              isAvailable && "group-hover:scale-[1.05] motion-reduce:group-hover:scale-100"
             )}
           />
         ) : (
@@ -123,61 +122,63 @@ export function ListingCard({
 
         <div className="absolute inset-x-3.5 top-3.5 z-10 flex items-start justify-between gap-2">
           <ListingStatusBadge status={listing.status} />
-          {listing.isFeatured && <WebMediaBadge>Featured</WebMediaBadge>}
+          {listing.isFeatured && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow px-2.5 py-1 font-mono text-[10.5px] font-semibold uppercase tracking-wider text-[#151936] shadow-xs">
+              Featured
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="p-5">
-        <Heading className="web-title-card text-web-h3 text-ink-900">
-          {/* The whole card is one link and its accessible name is the listing
-              title alone, not "Details". The overlay covers the card so the
-              media and specs are part of the target without nesting anything
-              interactive inside the anchor. */}
-          <Link href={`/properties/${listing.slug}`} className="after:absolute after:inset-0">
-            <span className="line-clamp-2">{listing.title}</span>
-          </Link>
-        </Heading>
+      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+        <div>
+          <Heading className="font-editorial text-[21px] sm:text-[23px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-700 min-h-[3.35rem]">
+            <Link href={`/properties/${listing.slug}`} className="after:absolute after:inset-0">
+              <span className="line-clamp-2">{listing.title}</span>
+            </Link>
+          </Heading>
 
-        <p
-          className={cn(
-            "web-subtitle mt-1.5 flex items-center gap-1.5 truncate text-sm",
-            onTint ? "text-ink-500" : "text-ink-400"
-          )}
-        >
-          <PinIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" className="shrink-0" />
-          <span className="truncate">{listing.location}</span>
-        </p>
+          <p className="mt-2 flex items-center gap-1.5 truncate text-xs text-slate-500 font-normal">
+            <PinIcon size={15} stroke={WEB_ICON_STROKE} aria-hidden="true" className="shrink-0 text-slate-400" />
+            <span className="truncate">{listing.location}</span>
+          </p>
+        </div>
 
-        <SpecRow className="mt-4">
-          <SpecChip icon="bed" value={listing.bedrooms} unit="bedrooms" />
-          <SpecChip icon="bath" value={listing.bathrooms} unit="bathrooms" />
-          <SpecChip icon="area" value={listing.area} unit="floor area" />
-          <SpecChip icon="parking" value={listing.parkingSpaces} unit="parking spaces" />
-        </SpecRow>
+        <div className="my-4 border-y border-slate-100 py-3 min-h-[46px] flex items-center">
+          <SpecRow className="w-full border-0 py-0 my-0">
+            <SpecChip icon="bed" value={listing.bedrooms} unit="bedrooms" />
+            <SpecChip icon="bath" value={listing.bathrooms} unit="bathrooms" />
+            <SpecChip icon="area" value={listing.area} unit="floor area" />
+            <SpecChip icon="parking" value={listing.parkingSpaces} unit="parking spaces" />
+          </SpecRow>
+        </div>
 
-        <div className="mt-4 flex items-baseline gap-1.5">
-          {listing.priceKes === null ? (
-            // The state that produced KShKShKSh on the live site. Prose, so it
-            // is set in Nunito: mono is reserved for figures you can rely on.
-            <p className={cn("text-web-lead", isAvailable ? "text-ink-500" : "text-ink-400")}>
-              Price on request
-            </p>
-          ) : (
-            <>
-              <p
-                className={cn(
-                  "web-numeric text-[22px] tracking-[-0.02em]",
-                  isAvailable ? "text-ink-900" : "text-ink-500"
-                )}
-              >
-                {formatKES(listing.priceKes)}
+        <div className="mt-auto flex items-center justify-between pt-1">
+          <div className="flex items-baseline gap-1.5">
+            {listing.priceKes === null ? (
+              <p className={cn("text-base font-medium", isAvailable ? "text-slate-600" : "text-slate-400")}>
+                Price on request
               </p>
-              {listing.priceSuffix && (
-                // A separate node so the suffix never wraps onto its own line.
-                <span className="text-sm text-ink-400">{listing.priceSuffix}</span>
-              )}
-            </>
-          )}
+            ) : (
+              <>
+                <p
+                  className={cn(
+                    "font-mono text-[22px] sm:text-[24px] font-medium tracking-tight",
+                    isAvailable ? "text-[#151936]" : "text-slate-500"
+                  )}
+                >
+                  {formatKES(listing.priceKes)}
+                </p>
+                {listing.priceSuffix && (
+                  <span className="text-xs text-slate-400">{listing.priceSuffix}</span>
+                )}
+              </>
+            )}
+          </div>
+
+          <div className="flex size-8.5 items-center justify-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-500 shadow-xs transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+            <ArrowIcon size={14} stroke={2} aria-hidden="true" />
+          </div>
         </div>
       </div>
     </article>

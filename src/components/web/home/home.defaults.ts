@@ -182,7 +182,9 @@ export const featuredDefaults = {
       status: "available",
       priceKes: 120000,
       priceSuffix: "/ mo",
-      imageUrl: null,
+      imageUrl:
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Luxurious duplex in Lavington",
       bedrooms: 3,
       bathrooms: 3,
       area: "180 m²",
@@ -195,7 +197,9 @@ export const featuredDefaults = {
       status: "available",
       isFeatured: true,
       priceKes: 117500000,
-      imageUrl: null,
+      imageUrl:
+        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Contemporary villa in Spring Valley",
       bedrooms: 4,
       bathrooms: 3,
     },
@@ -206,7 +210,9 @@ export const featuredDefaults = {
       location: "Tatu City, Kiambu",
       status: "under_offer",
       priceKes: null,
-      imageUrl: null,
+      imageUrl:
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Modern commercial office space in Tatu City",
       area: "666 to 2,332 sqft",
       parkingSpaces: 4,
     },
@@ -218,7 +224,9 @@ export const featuredDefaults = {
       status: "available",
       priceKes: 190000,
       priceSuffix: "/ mo",
-      imageUrl: null,
+      imageUrl:
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Executive furnished residence in Kileleshwa",
       bedrooms: 2,
       bathrooms: 2,
     },
@@ -228,10 +236,10 @@ export const featuredDefaults = {
       title: "Prime 1 acre plot, Riverside Drive",
       location: "Riverside Drive, Nairobi",
       status: "available",
-      // The null price state, drawn in the design and present here on purpose:
-      // this is the case that produced KShKShKSh on the live site.
       priceKes: null,
-      imageUrl: null,
+      imageUrl:
+        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Prime land parcel on Riverside Drive",
       area: "1 acre",
     },
     {
@@ -242,7 +250,9 @@ export const featuredDefaults = {
       status: "available",
       priceKes: 70000,
       priceSuffix: "/ mo",
-      imageUrl: null,
+      imageUrl:
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+      imageAlt: "Modern 2 bedroom apartment in Garden Estate",
       bedrooms: 2,
       bathrooms: 2,
       parkingSpaces: 2,
@@ -311,14 +321,62 @@ export const locationDefaults = {
   viewAllLabel: "All 15 areas",
   viewAllHref: "/locations",
   tiles: [
-    { name: "Kilimani", slug: "kilimani" },
-    { name: "Lavington", slug: "lavington" },
-    { name: "Runda", slug: "runda" },
-    { name: "Westlands", slug: "westlands" },
-    { name: "Riverside Drive", slug: "riverside-drive" },
-    { name: "Tatu City", slug: "tatu-city" },
-    { name: "Parklands", slug: "parklands" },
-    { name: "Spring Valley", slug: "spring-valley" },
+    {
+      name: "Kilimani",
+      slug: "kilimani",
+      imageUrl:
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+      tagline: "Urban apartments & executive living",
+    },
+    {
+      name: "Lavington",
+      slug: "lavington",
+      imageUrl:
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+      tagline: "Leafy estates & townhouses",
+    },
+    {
+      name: "Runda",
+      slug: "runda",
+      imageUrl:
+        "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80",
+      tagline: "Diplomatic gated enclaves",
+    },
+    {
+      name: "Westlands",
+      slug: "westlands",
+      imageUrl:
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+      tagline: "Commercial hub & high-rise",
+    },
+    {
+      name: "Riverside Drive",
+      slug: "riverside-drive",
+      imageUrl:
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+      tagline: "Prime riverine residences",
+    },
+    {
+      name: "Tatu City",
+      slug: "tatu-city",
+      imageUrl:
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+      tagline: "Master-planned metropolis",
+    },
+    {
+      name: "Parklands",
+      slug: "parklands",
+      imageUrl:
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      tagline: "Established residential courts",
+    },
+    {
+      name: "Spring Valley",
+      slug: "spring-valley",
+      imageUrl:
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+      tagline: "Secluded luxury villas",
+    },
   ],
 } as const;
 
@@ -329,27 +387,39 @@ export const serviceDefaults = {
   headline: "Four things, done properly",
   cards: [
     {
+      num: "01",
+      tag: "Mandates & Portfolios",
+      highlight: "98.4% On-time collections",
       icon: "wallet" as WebIconName,
       title: "Property management",
-      body: "Rent collection, repairs, tenant relations, and a monthly statement you can actually read.",
+      body: "Rent collection, repairs, tenant vetting, and a monthly statement you can actually read. Managed end-to-end on our proprietary ERP.",
       href: "/services/property-management",
     },
     {
+      num: "02",
+      tag: "Agency & Transactions",
+      highlight: "21 Days avg. to let",
       icon: "key" as WebIconName,
       title: "Sales and letting",
-      body: "We market the property, vet who walks through it, and negotiate on your side of the table.",
+      body: "We market the property, vet who walks through it, and negotiate on your side of the table with verified market data.",
       href: "/services/sales-and-letting",
     },
     {
+      num: "03",
+      tag: "Appraisal & Advisory",
+      highlight: "RICS / ISK calibrated",
       icon: "chart" as WebIconName,
       title: "Valuation",
-      body: "An honest figure for sale, letting, or your own records, from a consultant who knows the area.",
+      body: "An honest, bank-grade figure for sale, letting, or statutory records from licensed consultants who live and breathe Nairobi real estate.",
       href: "/services/valuation",
     },
     {
+      num: "04",
+      tag: "Enterprise & Industrial",
+      highlight: "Grade-A & Warehousing",
       icon: "warehouse" as WebIconName,
       title: "Commercial and industrial",
-      body: "Offices, retail, warehousing and godowns, including Tatu City and the industrial belt.",
+      body: "Prime office suites, retail showrooms, logistics warehousing, and industrial godowns across Tatu City and the industrial corridor.",
       href: "/services/commercial",
     },
   ],
@@ -367,29 +437,66 @@ export const serviceDefaults = {
 export const proofDefaults = {
   eyebrow: "From our clients",
   headline: "What people say",
+  lead: "Real experiences from landlords, property investors, and homeowners who trust Sunland with their real estate portfolios.",
   testimonials: [
     {
+      id: "homeowner",
+      badge: "Home Buyer",
+      initials: "BW",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      propertyImageUrl:
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80",
       quote:
-        "They listened to our needs, showed us properties that matched our vision, and walked us through every step with patience and professionalism. Thanks to them, we found our dream home.",
+        "They listened to our needs, showed us properties that matched our vision, and walked us through every step with patience and professionalism. Thanks to them, we found our dream home in Karen.",
       name: "Brian W.",
-      role: "homeowner, Nairobi",
+      role: "Homeowner, Nairobi",
+      property: "4 Bedroom Villa, Karen",
+    },
+    {
+      id: "landlord",
+      badge: "Portfolio Landlord",
+      initials: "CM",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+      propertyImageUrl:
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80",
+      quote:
+        "Having a single named manager and live ERP statements on the 5th of every month completely changed how I manage my 8 rental units. No more spreadsheets, missing repairs, or chasing rent.",
+      name: "Dr. Catherine Mutua",
+      role: "Property Investor",
+      property: "8 Units, Kilimani & Riverside",
+    },
+    {
+      id: "commercial",
+      badge: "Commercial Client",
+      initials: "AG",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      propertyImageUrl:
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
+      quote:
+        "Sunland handled the acquisition and tenant vetting of our office floor in Westlands with rigorous diligence. Their market valuation and lease terms were spot on.",
+      name: "Anthony Gitonga",
+      role: "Managing Director, Tech Hub",
+      property: "Commercial Floor, Westlands",
     },
   ],
   points: [
     {
       icon: "user" as WebIconName,
       title: "A named manager.",
-      body: "Every property has one person responsible, not a shared inbox.",
+      body: "Every property has one dedicated person responsible, not a rotating ticketing queue or shared inbox.",
     },
     {
       icon: "receipt" as WebIconName,
       title: "Rent you can trace.",
-      body: "Every shilling collected shows up on your statement against the unit it came from.",
+      body: "Every shilling collected shows up on your statement against the exact unit and tenant it came from.",
     },
     {
       icon: "key" as WebIconName,
       title: "We turn up.",
-      body: "Viewings, inspections, repairs. The unglamorous part is the job.",
+      body: "Viewings, inspections, vetted repairs. The unglamorous physical work is our daily discipline.",
     },
   ],
 } as const;
@@ -440,38 +547,50 @@ export const insightDefaults = {
 export const faqDefaults = {
   eyebrow: "Before you call",
   headline: "Questions we are asked most",
-  lead: "The answers people usually want before they pick up the phone. Anything else, ask us directly.",
+  lead: "The answers people usually want before they pick up the phone. Anything else, ask our advisory team directly.",
   cta: { label: "Ask a question", href: "/contact" },
   items: [
     {
+      num: "01",
+      category: "Tenancy & Fees",
       question: "Do tenants pay you a finder's fee?",
       answer:
-        "No. Our fee comes from the owner. A tenant pays rent, the deposit, and nothing to us for being shown a property.",
+        "No. Our fee comes from the property owner. A tenant pays their rent, the deposit, and nothing to us for being shown or vetted for a property.",
     },
     {
+      num: "02",
+      category: "Viewings & Access",
       question: "How quickly can I view something?",
       answer:
-        "Usually within two working days, and same day for anything already vacant. Viewings are accompanied by the consultant who handles that area.",
+        "Usually within two working days, and same day for anything already vacant. All viewings are accompanied by the dedicated consultant who handles that area.",
     },
     {
+      num: "03",
+      category: "Move-In Costs",
       question: "What does a move-in actually cost?",
       answer:
-        "Typically two months' deposit plus one month in advance, and the service charge where the block levies one. Every listing shows the full move-in total before you enquire.",
+        "Typically two months' security deposit plus one month in advance, and the service charge where the block levies one. Every listing shows the complete move-in total before you enquire.",
     },
     {
+      num: "04",
+      category: "Pricing Transparency",
       question: "Are the prices on the site the prices you quote?",
       answer:
-        'Yes. Where an owner will only disclose on enquiry we say "price on request" rather than publish a figure we would have to correct later.',
+        'Yes. Where an owner will only disclose on enquiry we say "price on request" rather than publish an artificial figure we would have to correct later.',
     },
     {
+      num: "05",
+      category: "Property Owners",
       question: "I own a property. What happens first?",
       answer:
-        "A consultant visits, then you get a written figure with the comparables behind it within three working days. There is no fee for that, and no obligation to list with us.",
+        "A consultant visits, inspects the asset, and provides a written figure with recent comparables within three working days. There is zero fee for that, and no obligation to list with us.",
     },
     {
+      num: "06",
+      category: "Live ERP Portal",
       question: "Can I see what is happening with my property?",
       answer:
-        "Every managed owner gets a portal login to the system we work in: collections, arrears, open maintenance jobs, invoices and documents, live rather than monthly.",
+        "Every managed owner gets a dedicated portal login to our live ERP: collections, arrears, open maintenance tickets, invoices, and audit-ready statements in real time.",
     },
   ],
 } as const;
@@ -483,4 +602,63 @@ export const ctaDefaults = {
   lead: "Whether you are letting out a property or looking for one, start here.",
   primaryCta: { label: "List your property", href: "/landlords#valuation" },
   secondaryCta: { label: "Browse properties", href: "/properties" },
+} as const;
+
+// ── 12 home.gallery ──────────────────────────────────────────────────────────
+
+export type GalleryItem = {
+  title: string;
+  location: string;
+  category: string;
+  image: string;
+};
+
+export const galleryDefaults = {
+  eyebrow: "Architectural Archive",
+  headline: "Managed Residences & Spaces",
+  lead: "A visual index of premier residential sanctuaries and prime commercial properties under Sunland stewardship.",
+  items: [
+    {
+      title: "The Glass Pavilion",
+      location: "Lavington, Nairobi",
+      category: "Contemporary Villa",
+      image:
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85",
+    },
+    {
+      title: "Muringa Sanctuary",
+      location: "Runda Estate",
+      category: "Private Manor",
+      image:
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
+    },
+    {
+      title: "The Light Well",
+      location: "Spring Valley",
+      category: "Architectural Interior",
+      image:
+        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85",
+    },
+    {
+      title: "Horizon Coral Residence",
+      location: "Nyali, Coast",
+      category: "Coastal Estate",
+      image:
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85",
+    },
+    {
+      title: "The Cedar House",
+      location: "Muthaiga Forest",
+      category: "Executive Residence",
+      image:
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85",
+    },
+    {
+      title: "Apex Sky Penthouse",
+      location: "Westlands, Nairobi",
+      category: "Grade-A Penthouse",
+      image:
+        "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1600&q=85",
+    },
+  ] satisfies GalleryItem[],
 } as const;

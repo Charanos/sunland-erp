@@ -6,65 +6,78 @@ import { Eyebrow } from "../primitives/eyebrow";
 import { landlordDefaults } from "./home.defaults";
 
 /**
- * 05 home.landlords, dark band on flat brand dark.
+ * 05 home.landlords, dark band on brand dark.
  *
- * The highest-value section on the site and the one the current site lacks
- * entirely. A property owner landing on sunland.co.ke today sees a tenant
- * facing catalogue and nothing addressed to them, despite being the audience
- * that produces mandates, which produce recurring management fees.
- *
- * Flat brand dark, not the tertiary gradient. The statement panel has to read
- * as a screenshot of a real system, and a gradient behind it undermines
- * exactly the argument the band exists to make. This is also where the page
- * spends its most valuable yellow: "Request a valuation".
- *
- * The reference set pins live system readouts over a clean architectural
- * render in the hero. We move it here instead. Ours is not a rendering with
- * invented metrics, it is the statement a real owner logs in to see, and
- * putting a dashboard in front of a tenant who wants a two bedroom in
- * Kileleshwa spends the fold on the lower value audience.
+ * Demonstrates systematic asset management and live landlord portal reporting.
  */
 export function HomeLandlords() {
   const PhoneIcon = webIcons.phone;
+  const CheckIcon = webIcons.check;
+  const ShieldIcon = webIcons.shield;
   const { statement } = landlordDefaults;
 
   return (
     <section
       aria-labelledby="landlords-heading"
-      className="web-dark relative overflow-hidden py-24 lg:py-32"
+      className="web-dark relative overflow-hidden py-24 lg:py-32 bg-[#151936]"
     >
+      {/* Ambient dusk radiance for depth and luxury */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_80%_45%,rgba(49,91,232,0.15),transparent_70%)]"
+      />
+
       <BandArtwork icon="chart" position="right" />
 
       <Container className="relative">
-        <div className="grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
-          <div>
-            <Eyebrow tone="dark">{landlordDefaults.eyebrow}</Eyebrow>
-            <h2 id="landlords-heading" className="web-title mt-4 text-web-h2 text-on-dark-hi">
-              {landlordDefaults.headline}
-            </h2>
-            <p className="web-subtitle mt-5 max-w-[62ch] text-web-lead text-on-dark">
-              {landlordDefaults.lead}
-            </p>
+        {/* Top: Uninhibited Wide Heading */}
+        <div className="max-w-5xl">
+          <Eyebrow tone="dark">{landlordDefaults.eyebrow}</Eyebrow>
+          <h2
+            id="landlords-heading"
+            className="mt-4 font-editorial text-[clamp(2.5rem,4.2vw,4rem)] font-medium leading-[1.08] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+          >
+            {landlordDefaults.headline}
+          </h2>
+          <p className="web-subtitle mt-4 max-w-[75ch] text-[15px] sm:text-base leading-relaxed text-slate-300/90">
+            {landlordDefaults.lead}
+          </p>
+        </div>
 
-            <ol className="mt-10">
+        {/* 2-Column Split: Uncarded Steps (Left) & White Statement Card (Right) */}
+        <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16 items-start">
+          {/* Left Column: Uncarded Numbered Timeline & CTAs */}
+          <div>
+            <ol className="divide-y divide-white/10">
               {landlordDefaults.steps.map((step) => (
                 <li
                   key={step.number}
-                  className="flex gap-5 border-t border-dark-line py-5 last:border-b"
+                  className="flex items-start gap-5 py-6 first:pt-0 last:pb-0"
                 >
-                  <span className="web-numeric shrink-0 text-sm text-brand-yellow">
+                  <span className="font-mono text-base font-semibold text-brand-yellow shrink-0 mt-0.5">
                     {step.number}
                   </span>
                   <div>
-                    <p className="web-title-card text-xl text-on-dark-hi">{step.title}</p>
-                    <p className="mt-1.5 text-sm leading-relaxed text-on-dark">{step.body}</p>
+                    <p className="font-editorial text-2xl font-medium text-white">
+                      {step.title}
+                    </p>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-slate-300/85">
+                      {step.body}
+                    </p>
                   </div>
                 </li>
               ))}
             </ol>
 
-            <div className="mt-9 flex flex-wrap gap-4">
-              <WebButtonLink href={landlordDefaults.primaryCta.href} variant="primary" size="lg">
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <WebButtonLink
+                href={landlordDefaults.primaryCta.href}
+                variant="primary"
+                size="lg"
+                icon="arrow"
+                iconTrailing
+                className="shadow-[0_4px_20px_rgba(243,223,39,0.25)] hover:scale-[1.02] active:scale-[0.98]"
+              >
                 {landlordDefaults.primaryCta.label}
               </WebButtonLink>
               <WebButtonLink
@@ -77,70 +90,107 @@ export function HomeLandlords() {
             </div>
           </div>
 
+          {/* Right Column: High-Contrast White ERP Statement Console */}
           <div>
-            {/* The raised glass panel only reads as a system on a dark ground,
-                which is the reason this band returns to dark at position five. */}
-            <div className="rounded-web-panel border border-dark-line bg-dark-raise p-5 shadow-web-lg backdrop-blur-md sm:p-7">
-              <div className="flex items-center justify-between border-b border-dark-line pb-4">
-                <span className="web-title-light text-xl tracking-[0.04em] text-on-dark-hi">
-                  Sunland
-                </span>
-                <span className="web-control text-[10px] uppercase tracking-[0.14em] text-on-dark-lo">
-                  {statement.portalLabel}
-                </span>
+            <div className="relative overflow-hidden rounded-[26px] border border-slate-200/90 bg-white p-7 sm:p-9 shadow-[0_24px_60px_rgba(0,0,0,0.35),0_2px_6px_rgba(0,0,0,0.06)] text-slate-900">
+              {/* Console Top Header */}
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="font-editorial text-2xl font-medium tracking-wide text-[#151936]">
+                    Sunland
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                    ERP Live
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                    {statement.portalLabel}
+                  </span>
+                </div>
               </div>
 
-              <div className="mt-5 flex items-start justify-between gap-4">
+              {/* Statement Title & Paid Status */}
+              <div className="mt-6 flex items-start justify-between gap-4">
                 <div>
-                  <p className="web-title-card text-lg text-on-dark-hi">{statement.title}</p>
-                  <p className="web-subtitle mt-0.5 text-[13px] text-on-dark-lo">
-                    {statement.subtitle}
+                  <p className="font-editorial text-2xl font-medium text-[#151936]">
+                    {statement.title}
+                  </p>
+                  <p className="font-mono mt-1 text-xs text-slate-500">
+                    {statement.subtitle} · Active Tenancy
                   </p>
                 </div>
-                <span className="web-control rounded-web-full bg-positive-bg px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-[var(--color-positive-fg)]">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-700 shadow-xs">
+                  <CheckIcon size={13} stroke={2.5} />
                   {statement.badge}
                 </span>
               </div>
 
-              <dl className="mt-6">
+              {/* Ledger Breakdown */}
+              <dl className="mt-6 space-y-1">
                 {statement.rows.map((row) => (
                   <div
                     key={row.label}
-                    className="flex items-baseline justify-between gap-4 border-t border-dark-line py-3"
+                    className="flex items-center justify-between gap-4 border-t border-slate-100 py-3.5"
                   >
-                    <dt className="text-sm text-on-dark">{row.label}</dt>
-                    <dd className="web-numeric text-sm text-on-dark-hi">{row.value}</dd>
+                    <dt className="text-[13.5px] text-slate-600">{row.label}</dt>
+                    <dd className="font-mono text-sm font-medium text-[#151936]">
+                      {row.value}
+                    </dd>
                   </div>
                 ))}
-                <div className="flex items-baseline justify-between gap-4 border-t border-dark-line pt-4">
-                  <dt className="web-subtitle text-sm text-on-dark-hi">{statement.total.label}</dt>
-                  <dd className="web-numeric text-xl text-on-dark-hi">{statement.total.value}</dd>
-                </div>
               </dl>
 
-              <div className="mt-6 flex items-center gap-3 rounded-web-card border border-dark-line bg-dark-raise p-3">
-                <span
-                  aria-hidden="true"
-                  className="web-numeric flex size-10 shrink-0 items-center justify-center rounded-web-full bg-dark-raise-hi text-[13px] text-on-dark-hi"
-                >
-                  {statement.manager.initials}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="web-subtitle truncate text-[13px] text-on-dark-hi">
-                    {statement.manager.name}
+              {/* Net Remittance Callout Box */}
+              <div className="mt-5 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4.5 shadow-xs">
+                <div>
+                  <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-800">
+                    {statement.total.label}
                   </p>
-                  <p className="web-numeric text-[13px] text-on-dark-lo">
-                    {statement.manager.phone}
+                  <p className="text-xs text-emerald-600/90 mt-0.5">
+                    Direct RTGS Disbursement
                   </p>
                 </div>
-                <span className="web-control inline-flex shrink-0 items-center gap-1.5 rounded-web-full border border-dark-line px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-on-dark-hi">
-                  <PhoneIcon size={14} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-                  Call
+                <span className="font-mono text-2xl font-semibold tracking-tight text-emerald-900">
+                  {statement.total.value}
                 </span>
+              </div>
+
+              {/* Property Manager Card */}
+              <div className="mt-6 flex items-center justify-between gap-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#151936] font-mono text-xs font-semibold text-white shadow-xs"
+                  >
+                    {statement.manager.initials}
+                  </span>
+                  <div className="min-w-0 truncate">
+                    <p className="truncate text-xs font-semibold text-[#151936]">
+                      {statement.manager.name}
+                    </p>
+                    <p className="font-mono text-xs text-slate-500">
+                      {statement.manager.phone}
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href={`tel:${statement.manager.phone.replace(/\s+/g, "")}`}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#151936] px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-white transition-all hover:bg-slate-800 shadow-xs"
+                >
+                  <PhoneIcon size={13} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+                  Call
+                </a>
               </div>
             </div>
 
-            <p className="mt-5 text-sm leading-relaxed text-on-dark-lo">{statement.caption}</p>
+            {/* Security / System Footnote */}
+            <p className="mt-5 flex items-center gap-2 text-xs leading-relaxed text-slate-400">
+              <ShieldIcon size={14} stroke={WEB_ICON_STROKE} className="text-emerald-400 shrink-0" />
+              <span>{statement.caption}</span>
+            </p>
           </div>
         </div>
       </Container>

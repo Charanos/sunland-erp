@@ -11,6 +11,7 @@ import { HomeInsights, type InsightPost } from "@/components/web/home/home-insig
 import { HomeLandlords } from "@/components/web/home/home-landlords";
 import { HomeLocations } from "@/components/web/home/home-locations";
 import { HomeProof } from "@/components/web/home/home-proof";
+import { HomeGallery } from "@/components/web/home/home-gallery";
 import { HomeServices } from "@/components/web/home/home-services";
 import {
   categoryDefaults,
@@ -170,6 +171,7 @@ export default async function HomePage() {
       <HomeLocations tiles={locationTiles} />
       <HomeServices />
       <HomeProof />
+      <HomeGallery />
       {/* Renders nothing until three posts exist. At launch this band is
           absent by design, and the sequence reads correctly without it. */}
       <HomeInsights posts={insightPosts} />

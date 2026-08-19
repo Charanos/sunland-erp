@@ -28,13 +28,13 @@ export function NewsletterForm() {
         event.preventDefault();
         setSubmitted(true);
       }}
-      className="flex flex-col gap-3 sm:flex-row sm:items-end"
+      className="flex flex-col gap-3 sm:flex-row sm:items-end relative"
     >
       <div className="flex-1">
         {/* Visible label above the input, never placeholder-only. */}
         <label
           htmlFor={emailId}
-          className="web-control block text-[10px] uppercase tracking-[0.14em] text-on-dark-lo"
+          className="font-mono block text-[10px] uppercase tracking-[0.16em] text-slate-400 mb-1.5"
         >
           Email address
         </label>
@@ -45,11 +45,16 @@ export function NewsletterForm() {
           autoComplete="email"
           required
           aria-describedby={submitted ? `${emailId}-status` : undefined}
-          className="mt-2 w-full rounded-web-full border border-dark-line bg-dark-raise px-5 py-2.5 text-sm text-on-dark-hi placeholder:text-on-dark-lo focus:border-on-dark-lo focus:outline-none"
+          className="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-slate-400 focus:border-brand-yellow focus:bg-white/10 focus:outline-none transition-all shadow-inner"
           placeholder="you@example.com"
         />
       </div>
-      <WebButton type="submit" variant="ghostDark" size="md">
+      <WebButton
+        type="submit"
+        variant="primary"
+        size="md"
+        className="shrink-0 shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
+      >
         Subscribe
       </WebButton>
 
@@ -57,7 +62,7 @@ export function NewsletterForm() {
         <p
           id={`${emailId}-status`}
           role="status"
-          className="text-sm text-on-dark sm:absolute sm:mt-20"
+          className="text-xs font-mono text-emerald-400 sm:absolute sm:-bottom-6 sm:left-0 mt-2"
         >
           The alert list opens with the new site. Call {SITE.phone} and we will add you now.
         </p>

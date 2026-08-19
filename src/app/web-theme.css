@@ -162,6 +162,7 @@
      A ground only: never type, never a control fill, at most twice per page,
      never on two adjacent bands. */
   --web-tertiary-gradient: linear-gradient(135deg, #0c1f24 0%, #122a20 50%, #1e1b4b 100%);
+  --web-tertiary-gradient-glass: linear-gradient(135deg, rgb(12 31 36 / 0.72) 0%, rgb(18 42 32 / 0.65) 50%, rgb(30 27 75 / 0.70) 100%);
 }
 
 /* ══ Web root ══
@@ -176,6 +177,51 @@
 .web-root ::selection {
   background: var(--color-brand-dark);
   color: var(--color-on-dark-hi);
+}
+
+/* ── Typography scale utilities ── */
+
+.text-web-display {
+  font-size: var(--text-web-display, clamp(2.875rem, 1.5rem + 5.8vw, 5.25rem));
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+
+.text-web-h1 {
+  font-size: var(--text-web-h1, clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem));
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.text-web-h2 {
+  font-size: var(--text-web-h2, clamp(1.875rem, 1.3rem + 2.2vw, 2.625rem));
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.text-web-h3 {
+  font-size: var(--text-web-h3, clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem));
+  line-height: 1.25;
+}
+
+.text-web-lead {
+  font-size: var(--text-web-lead, clamp(1.0625rem, 1rem + 0.4vw, 1.1875rem));
+  line-height: 1.6;
+}
+
+.text-web-body {
+  font-size: var(--text-web-body, 1rem);
+  line-height: 1.65;
+}
+
+.text-web-sm {
+  font-size: var(--text-web-sm, 0.9375rem);
+  line-height: 1.6;
+}
+
+.text-web-xs {
+  font-size: var(--text-web-xs, 0.8125rem);
+  line-height: 1.4;
 }
 
 /* ── Typography roles ── */
@@ -374,6 +420,24 @@
 .web-skeleton {
   background: var(--color-surface-2);
   animation: web-pulse 1200ms ease-in-out infinite;
+}
+
+@keyframes web-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-web-marquee {
+  animation: web-marquee 40s linear infinite;
+  will-change: transform;
+}
+
+.animate-web-marquee:hover {
+  animation-play-state: paused;
 }
 
 

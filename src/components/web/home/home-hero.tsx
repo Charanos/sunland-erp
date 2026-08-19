@@ -219,7 +219,12 @@ export function HomeHero({
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-slate-950/12 via-transparent via-35% to-slate-950/52"
+          className="absolute inset-0 bg-gradient-to-b from-slate-950/14 via-transparent via-40% to-transparent to-70%"
+        />
+        {/* Seamless bottom dissolve into #151936 Primary Blue of the section below */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-48 sm:h-64 lg:h-80 bg-gradient-to-b from-transparent via-[#151936]/60 via-55% to-[#151936]"
         />
       </div>
 

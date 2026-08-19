@@ -347,20 +347,20 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #f3df27; /* Primary Yellow */
+  background: #122a20; /* Tertiary Emerald */
   border-radius: 9999px;
   border: 2px solid #090e17; /* Matches track edge for floating look */
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffe838;
+  background: #1b3d2e;
 }
 
 /* Firefox scrollbar support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #f3df27 #090e17;
+  scrollbar-color: #122a20 #090e17;
 }
 
 /* Custom scrollbar utility class */
@@ -645,6 +645,10 @@ body.modal-open {
 /* ── Tertiary Dark Emerald/Forest Theme Utilities ── */
 .bg-tertiary-gradient {
   background: linear-gradient(135deg, #0c1f24 0%, #122a20 50%, #1e1b4b 100%);
+}
+
+.bg-tertiary-gradient-glass {
+  background: linear-gradient(135deg, rgba(12, 31, 36, 0.72) 0%, rgba(18, 42, 32, 0.65) 50%, rgba(30, 27, 75, 0.70) 100%);
 }
 
 .bg-tertiary-emerald {

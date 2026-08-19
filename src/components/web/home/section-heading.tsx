@@ -28,32 +28,40 @@ export function SectionHeading({
   lead?: string;
   action?: ReactNode;
   tone?: "light" | "dark";
-  /** `split` puts the action on the right at desktop; `stack` centres nothing. */
-  align?: "split" | "stack";
+  /** `split` puts action on right; `split-right` puts action on left and title on right; `stack` centres nothing. */
+  align?: "split" | "split-right" | "stack";
   className?: string;
 }) {
   const isDark = tone === "dark";
+  const isSplitRight = align === "split-right";
 
   return (
     <div
       className={cn(
         align === "split" && "flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between",
+        isSplitRight && "flex flex-col gap-6 sm:flex-row-reverse sm:items-end sm:justify-between",
         className
       )}
     >
-      <div className={cn(align === "split" && "max-w-3xl")}>
-        <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
+      <div className={cn(action ? "max-w-4xl lg:max-w-5xl" : "max-w-5xl", isSplitRight && "sm:text-right")}>
+        <Eyebrow tone={tone} align={isSplitRight ? "right" : "left"}>
+          {eyebrow}
+        </Eyebrow>
         <h2
           id={id}
-          className={cn("web-title mt-4 text-web-h2", isDark ? "text-on-dark-hi" : "text-ink-900")}
+          className={cn(
+            "mt-3 font-editorial text-[clamp(2.25rem,3.6vw,3.5rem)] font-medium leading-[1.1] tracking-tight",
+            isDark ? "text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]" : "text-ink-900"
+          )}
         >
           {title}
         </h2>
         {lead && (
           <p
             className={cn(
-              "web-subtitle mt-4 max-w-[62ch] text-web-lead",
-              isDark ? "text-on-dark" : "text-ink-500"
+              "web-subtitle mt-3 max-w-[72ch] text-[15px] sm:text-base leading-relaxed",
+              isSplitRight && "sm:ml-auto",
+              isDark ? "text-slate-300/90" : "text-ink-500"
             )}
           >
             {lead}

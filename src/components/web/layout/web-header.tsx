@@ -6,9 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import { DUR, registerWebMotion } from "@/lib/motion/web-motion";
 import { cn } from "@/lib/utils/cn";
-import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import { HEADER_NAV } from "../constants/site";
 import { MobileDrawer } from "./mobile-drawer";
 
@@ -64,6 +64,7 @@ export function WebHeader() {
       header: { top: "0px" },
       pill: { opacity: 0, scale: 0.97 },
       logo: { scale: 1, transformOrigin: "left center" },
+      navList: { backgroundColor: "rgba(21, 25, 54, 0)", borderColor: "rgba(255, 255, 255, 0)", boxShadow: "none" },
       container: {
         paddingTop: "1.5rem",
         paddingBottom: "0rem",
@@ -75,6 +76,7 @@ export function WebHeader() {
       header: { top: "12px" },
       pill: { opacity: 1, scale: 1 },
       logo: { scale: 0.76, transformOrigin: "left center" },
+      navList: { backgroundColor: "#151936", borderColor: "rgba(255, 255, 255, 0.12)", boxShadow: "0 4px 20px rgba(21,25,54,0.35)" },
       container: {
         paddingTop: "0.65rem",
         paddingBottom: "0.65rem",
@@ -92,7 +94,8 @@ export function WebHeader() {
       const pill = pillBgRef.current;
       const logo = logoRef.current;
       const container = containerRef.current;
-      if (!header || !pill || !logo || !container) return;
+      const navList = navListRef.current;
+      if (!header || !pill || !logo || !container || !navList) return;
 
       const target = isTransparent ? states.transparent : states.condensed;
       const isFirstRun = !hasMountedRef.current;
@@ -107,6 +110,7 @@ export function WebHeader() {
           gsap.set(pill, target.pill);
           gsap.set(logo, target.logo);
           gsap.set(container, target.container);
+          gsap.set(navList, target.navList);
           return;
         }
 
@@ -125,7 +129,8 @@ export function WebHeader() {
           .to(header, target.header, 0)
           .to(pill, target.pill, 0)
           .to(container, target.container, 0)
-          .to(logo, target.logo, 0);
+          .to(logo, target.logo, 0)
+          .to(navList, target.navList, 0);
       });
 
       // Reduced motion: identical end states, no tweens, and the header never
@@ -136,6 +141,7 @@ export function WebHeader() {
         gsap.set(pill, target.pill);
         gsap.set(logo, target.logo);
         gsap.set(container, target.container);
+        gsap.set(navList, target.navList);
       });
 
       return () => media.revert();
@@ -143,8 +149,7 @@ export function WebHeader() {
     { dependencies: [isTransparent, isHidden, pathname] }
   );
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   /**
    * The magnetic indicator.
@@ -203,6 +208,11 @@ export function WebHeader() {
     return () => cancelAnimationFrame(id);
   }, [restIndicator]);
 
+  useEffect(() => {
+    // Smoothly glide indicator to the new active item on route navigation
+    if (pathname) restIndicator(true);
+  }, [pathname, restIndicator]);
+
   return (
     <>
       <header
@@ -215,11 +225,11 @@ export function WebHeader() {
           ref={containerRef}
           className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4"
         >
-          {/* The floating pill, opacity driven by GSAP. */}
+          {/* The floating pill, opacity driven by GSAP with frosted glassmorphism. */}
           <div
             ref={pillBgRef}
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10 rounded-full border border-white/10 bg-tertiary-gradient shadow-[0_14px_36px_rgba(12,31,36,0.45)] backdrop-blur-xl"
+            className="pointer-events-none absolute inset-0 -z-10 rounded-full border border-white/15 bg-tertiary-gradient-glass shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-2xl"
           />
 
           <Link
@@ -247,20 +257,20 @@ export function WebHeader() {
                 // it moves between two links inside it.
                 if (!event.currentTarget.contains(event.relatedTarget as Node)) restIndicator();
               }}
-              className="relative flex items-center gap-1 rounded-full border border-white/20 bg-slate-950/40 px-3.5 py-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-2xl"
+              className="relative flex items-center gap-1 rounded-full border border-transparent p-1"
             >
               {/* Travels between items. Behind the links, so it never
                   intercepts a pointer. */}
               <span
                 ref={indicatorRef}
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-1 h-[calc(100%-0.5rem)] rounded-full bg-white/12 opacity-0"
+                className="pointer-events-none absolute left-0 top-1 h-[calc(100%-0.5rem)] rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] opacity-0"
               />
               {HEADER_NAV.map((item) => {
                 const active = isActive(item.href);
 
                 return (
-                  <li key={item.href} className="relative">
+                  <li key={item.href}>
                     <Link
                       href={item.href}
                       data-active={active ? "true" : undefined}
@@ -268,21 +278,12 @@ export function WebHeader() {
                       onFocus={(event) => moveIndicator(event.currentTarget)}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative block rounded-full px-4 py-1.5 font-mono text-[12.5px] font-medium uppercase transition-all duration-200",
+                        "relative z-10 block rounded-full px-4 py-1.5 font-mono text-[12.5px] font-medium uppercase transition-colors duration-200",
                         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
-                        active ? "text-white" : "text-slate-100/95 hover:text-white"
+                        active ? "text-[#151936]" : "text-slate-200 hover:text-white"
                       )}
                     >
                       {item.label}
-                      {/* The design marks the current section with a yellow
-                          rule. It was missing entirely, so a visitor two pages
-                          deep had nothing telling them where they were. */}
-                      {active && (
-                        <span
-                          aria-hidden="true"
-                          className="absolute inset-x-4 -bottom-0.5 h-px bg-brand-yellow"
-                        />
-                      )}
                     </Link>
                   </li>
                 );
@@ -300,7 +301,7 @@ export function WebHeader() {
 
             <MobileDrawer
               onOpenChange={handleOpenChange}
-              triggerClassName="text-white transition-colors hover:bg-white/10"
+              triggerClassName="text-white bg-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
             />
           </div>
         </div>

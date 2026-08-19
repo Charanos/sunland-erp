@@ -1,67 +1,97 @@
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { WebButtonLink } from "../primitives/button";
 import { SectionBand } from "../primitives/section-band";
+import { Eyebrow } from "../primitives/eyebrow";
 import { faqDefaults } from "./home.defaults";
-import { SectionHeading } from "./section-heading";
 
 /**
  * 10 home.faq, light band.
  *
- * Not in web doc 04. Added in the design pass, and it does real work: these
- * are the six questions the office answers on the phone every week, and
- * answering them here is the difference between a call that starts at
- * "what do you charge" and one that starts at "I would like to view it".
- *
- * Built on native `<details>` and `<summary>`. No accordion library, no
- * JavaScript, no `aria-expanded` to keep in sync by hand: the browser gives
- * us keyboard operation, correct semantics and open state for free, and it
- * works before hydration. This is a server component for exactly that reason.
- *
- * The tone is a prop rather than a constant. Tint is never decorative here:
- * it appears only to separate two sections that would otherwise touch white
- * to white. With the insights band above rendering (tint), this band is
- * light; with insights hidden, which is its state until posts exist, this
- * band takes the tint so the proof band above it still has an edge.
- *
- * TODO(W5-3): emit FAQPage structured data from this content once the SEO
- * wave lands, so the answers can surface in results and AI citations.
+ * Production-grade FAQ with numeral-free editorial accordion and refined advisory concierge.
  */
 export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
   const PlusIcon = webIcons.plus;
+  const ChatIcon = webIcons.chat;
 
   return (
-    <SectionBand tone={tone} labelledBy="faq-heading">
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
-        <div>
-          <SectionHeading
+    <SectionBand tone={tone} labelledBy="faq-heading" className="relative bg-white py-20 lg:py-28">
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-20 items-start">
+        {/* Left Column: Heading & Advisory Concierge Card */}
+        <div className="lg:sticky lg:top-32">
+          <Eyebrow tone="light">{faqDefaults.eyebrow}</Eyebrow>
+          <h2
             id="faq-heading"
-            eyebrow={faqDefaults.eyebrow}
-            title={faqDefaults.headline}
-            lead={faqDefaults.lead}
-            align="stack"
-          />
-          <WebButtonLink href={faqDefaults.cta.href} variant="outline" size="md" className="mt-8">
-            {faqDefaults.cta.label}
-          </WebButtonLink>
+            className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+          >
+            {faqDefaults.headline}
+          </h2>
+          <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-500 max-w-[42ch]">
+            {faqDefaults.lead}
+          </p>
+
+          {/* Elevated Advisory Concierge Card */}
+          <div className="mt-10 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6 sm:p-7 shadow-[0_4px_20px_rgba(21,25,54,0.03)] backdrop-blur-xs">
+            <div className="flex items-start gap-4">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-yellow/15 border border-brand-yellow/30 text-[#151936] shadow-xs">
+                <ChatIcon size={20} stroke={WEB_ICON_STROKE} />
+              </span>
+              <div>
+                <p className="font-editorial text-[21px] font-medium leading-tight text-[#151936]">
+                  Have a specific question?
+                </p>
+                <p className="font-mono text-xs text-slate-500 mt-1">
+                  Average response time: &lt; 2 hours
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <WebButtonLink
+                href={faqDefaults.cta.href}
+                variant="primary"
+                size="md"
+                icon="arrow"
+                iconTrailing
+                className="w-full shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                {faqDefaults.cta.label}
+              </WebButtonLink>
+            </div>
+          </div>
         </div>
 
-        <div>
+        {/* Right Column: Refined Numeral-Free Accordion Panels */}
+        <div className="border-t border-slate-200/90">
           {faqDefaults.items.map((item) => (
             <details
               key={item.question}
               name="home-faq"
-              className="group border-t border-line last:border-b"
+              className="group border-b border-slate-200/90 transition-colors duration-200"
             >
-              <summary className="web-hit flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left [&::-webkit-details-marker]:hidden">
-                <span className="web-title-card text-xl text-ink-900">{item.question}</span>
-                <PlusIcon
-                  size={20}
-                  stroke={WEB_ICON_STROKE}
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 sm:py-7 text-left [&::-webkit-details-marker]:hidden">
+                <div className="min-w-0 flex-1">
+                  <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-[9.5px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">
+                    {item.category}
+                  </span>
+                  <h3 className="font-editorial text-[21px] sm:text-[25px] font-medium leading-snug text-[#151936] transition-colors duration-200 group-hover:text-blue-700">
+                    {item.question}
+                  </h3>
+                </div>
+
+                {/* Tactile Morphing Toggle Button */}
+                <span
                   aria-hidden="true"
-                  className="shrink-0 text-ink-400 transition-transform duration-200 group-open:rotate-45"
-                />
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-500 transition-all duration-300 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white group-open:rotate-45 group-open:border-[#151936] group-open:bg-[#151936] group-open:text-white shadow-xs"
+                >
+                  <PlusIcon size={16} stroke={WEB_ICON_STROKE} />
+                </span>
               </summary>
-              <p className="web-prose pb-6 text-ink-500">{item.answer}</p>
+
+              <div className="overflow-hidden">
+                <p className="pb-8 pr-6 sm:pr-14 text-[15px] sm:text-[15.5px] leading-relaxed text-slate-600 font-normal">
+                  {item.answer}
+                </p>
+              </div>
             </details>
           ))}
         </div>

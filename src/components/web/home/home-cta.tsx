@@ -1,55 +1,83 @@
-import { SITE } from "../constants/site";
-import { BandArtwork } from "../primitives/band-artwork";
+import Image from "next/image";
 import { WebButtonLink } from "../primitives/button";
 import { Container } from "../primitives/container";
+import { Eyebrow } from "../primitives/eyebrow";
 import { ctaDefaults } from "./home.defaults";
 
 /**
- * 11 home.cta, dark band on the tertiary ground.
+ * 11 home.cta, cinematic dark closing band.
  *
- * Closes on the same kind of ground it opened on, which is what makes the
- * page feel bound rather than trailing off. One decision, split by audience:
- * owners left, tenants right.
- *
- * The tertiary gradient carries the depth so the yellow does not have to
- * shout to be the only one in view. Exactly one yellow element here, the
- * primary button, and the secondary is a ghost.
+ * Interconnected with the hero background (horizontally mirrored) and bleeding seamlessly into the footer.
+ * Features grand editorial headline, primary actions, and an oversized brand emblem.
  */
 export function HomeCta() {
   return (
     <section
       aria-labelledby="cta-heading"
-      className="web-tertiary relative overflow-hidden py-28 text-center lg:py-36"
+      className="relative overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 text-center bg-[#090d1f] text-white"
     >
-      <BandArtwork icon="house" position="right" />
+      {/* Horizontally Flipped Cinematic Hero Background */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <Image
+          src="/images/hero-bg.png"
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="100vw"
+          quality={100}
+          className="object-cover object-center scale-x-[-1] opacity-35"
+        />
 
-      <Container className="relative">
-        <h2 id="cta-heading" className="web-title mx-auto max-w-[14em] text-web-h1 text-on-dark-hi">
+        {/* Atmospheric Scrims & Smooth Section Transitions */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-white/10 via-[#090d1f]/75 to-[#090d1f]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -top-32 left-1/2 -translate-x-1/2 size-[650px] rounded-full bg-blue-600/10 blur-[120px]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 right-1/4 size-[450px] rounded-full bg-brand-yellow/5 blur-[100px]"
+        />
+      </div>
+
+      <Container className="relative z-10">
+        <div className="flex justify-center">
+          <Eyebrow tone="dark">NEXT STEPS</Eyebrow>
+        </div>
+
+        <h2
+          id="cta-heading"
+          className="mt-4 font-editorial text-[clamp(2.5rem,5vw,4.5rem)] font-medium leading-[1.06] tracking-tight text-white drop-shadow-md max-w-[14em] mx-auto"
+        >
           {ctaDefaults.headline}
         </h2>
-        <p className="web-subtitle mx-auto mt-5 max-w-[46ch] text-web-lead text-on-dark">
+
+        <p className="web-subtitle mx-auto mt-5 max-w-[48ch] text-base sm:text-lg leading-relaxed text-slate-300">
           {ctaDefaults.lead}
         </p>
 
+        {/* Action Buttons */}
         <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <WebButtonLink href={ctaDefaults.primaryCta.href} variant="primary" size="lg">
+          <WebButtonLink
+            href={ctaDefaults.primaryCta.href}
+            variant="primary"
+            size="lg"
+            className="shadow-lg hover:scale-105 active:scale-95 transition-all"
+          >
             {ctaDefaults.primaryCta.label}
           </WebButtonLink>
-          <WebButtonLink href={ctaDefaults.secondaryCta.href} variant="ghostDark" size="lg">
+          <WebButtonLink
+            href={ctaDefaults.secondaryCta.href}
+            variant="ghostDark"
+            size="lg"
+            className="border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/40 shadow-lg hover:scale-105 active:scale-95 transition-all"
+          >
             {ctaDefaults.secondaryCta.label}
           </WebButtonLink>
         </div>
-
-        <p className="mt-10 text-sm text-on-dark-lo">
-          Or call{" "}
-          <a
-            href={SITE.phoneHref}
-            className="web-numeric text-on-dark-hi underline-offset-4 hover:underline"
-          >
-            {SITE.phone}
-          </a>
-          . {SITE.officeHours}
-        </p>
       </Container>
     </section>
   );
