@@ -179,7 +179,7 @@ export function PortfolioDial({
     <div
       ref={rootRef}
       className={cn(
-        "w-full rounded-[18px] border border-white/12 bg-[#151936] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] sm:rounded-[22px]",
+        "w-full rounded-[18px] border border-white/12 bg-black/20 backdrop-blur-xl p-5 shadow-[0_24px_55px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.08)] sm:rounded-[22px]",
         className
       )}
     >

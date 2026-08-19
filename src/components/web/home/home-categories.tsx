@@ -27,12 +27,23 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
   const ArrowIcon = webIcons.arrow;
 
   return (
-    <SectionBand tone="dark" labelledBy="categories-heading" className="relative">
-      {/* Ambient dusk radiance continuing the hero's atmosphere */}
+    <SectionBand
+      tone="dark"
+      labelledBy="categories-heading"
+      className="relative !bg-[#151936] overflow-hidden"
+    >
+      {/* Black scrim bleed — sits exactly at the top boundary, catching the hero's black and fading gracefully into the blue */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(49,91,232,0.1),transparent_70%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-48 sm:h-64 lg:h-80 bg-gradient-to-b from-black via-black/70 via-35% to-transparent z-0"
       />
+      {/* Ambient blue radiance for atmospheric depth */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_90%_50%_at_50%_100%,rgba(49,91,232,0.14),transparent_70%)]"
+      />
+
+      <div className="relative z-10">
 
       <SectionHeading
         id="categories-heading"
@@ -116,6 +127,7 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
           );
         })}
       </ul>
+      </div>
     </SectionBand>
   );
 }

@@ -347,20 +347,20 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #122a20; /* Tertiary Emerald */
+  background: #f3df27; /* Sunland Brand Yellow */
   border-radius: 9999px;
   border: 2px solid #090e17; /* Matches track edge for floating look */
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1b3d2e;
+  background: #e6d220;
 }
 
 /* Firefox scrollbar support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #122a20 #090e17;
+  scrollbar-color: #f3df27 #090e17;
 }
 
 /* Custom scrollbar utility class */

@@ -16,7 +16,12 @@ export function WebFooter() {
   const MailIcon = webIcons.chat;
 
   return (
-    <footer className="relative overflow-hidden bg-[#090d1f] text-white border-t border-white/[0.08]">
+    <footer className="relative overflow-hidden !bg-[#151936] text-white">
+      {/* Black scrim bleed — sits exactly at the top boundary, catching the SCTA's black and fading gracefully into the blue footer */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-40 sm:h-56 bg-gradient-to-b from-black via-black/70 via-35% to-transparent z-0"
+      />
       {/* Ambient Lighting Bridge */}
       <div
         aria-hidden="true"

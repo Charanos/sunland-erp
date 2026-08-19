@@ -31,7 +31,12 @@ export function HomeCta() {
         {/* Atmospheric Scrims & Smooth Section Transitions */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-white/10 via-[#090d1f]/75 to-[#090d1f]"
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/75 to-[#090d1f]/95"
+        />
+        {/* Bottom dissolve — scrim flows into black so it bleeds seamlessly into the footer below */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-black"
         />
         <div
           aria-hidden="true"

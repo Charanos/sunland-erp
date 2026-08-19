@@ -280,7 +280,7 @@ export function WebHeader() {
                       className={cn(
                         "relative z-10 block rounded-full px-4 py-1.5 font-mono text-[12.5px] font-medium uppercase transition-colors duration-200",
                         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
-                        active ? "text-[#151936]" : "text-slate-200 hover:text-white"
+                        active ? "text-[#151936]" : "text-slate-200 hover:text-[#151936]"
                       )}
                     >
                       {item.label}

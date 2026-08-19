@@ -212,19 +212,19 @@ export function HomeHero({
           quality={100}
           className="gsap-bg-media object-cover object-center"
         />
-        {/* Layered atmospheric scrims: Deep obsidian gradient on left for crystal-clear readability, warm twilight radiance on right */}
+        {/* Layered atmospheric scrims: Balanced black gradient on left for text contrast while keeping architecture vibrant */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-slate-950/34 via-slate-950/28 via-50% to-slate-950/20 lg:to-transparent"
+          className="absolute inset-0 bg-gradient-to-r from-black/25 via-black/25 via-50% to-black/10 lg:to-transparent"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-slate-950/14 via-transparent via-40% to-transparent to-70%"
+          className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent via-35% to-transparent"
         />
-        {/* Seamless bottom dissolve into #151936 Primary Blue of the section below */}
+        {/* Bottom dissolve — scrim flows into black so it bleeds seamlessly into the category section below */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-48 sm:h-64 lg:h-80 bg-gradient-to-b from-transparent via-[#151936]/60 via-55% to-[#151936]"
+          className="absolute inset-x-0 bottom-0 h-72 sm:h-96 bg-gradient-to-b from-transparent via-black/55 via-40% to-black"
         />
       </div>
 
