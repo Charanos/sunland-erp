@@ -1,0 +1,391 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUNLAND WEB - public marketing site token layer
+
+   Terrain Web extends the Terrain Identity system that runs the ERP. Same
+   brand DNA (same navy, same yellow, same three typefaces), different
+   surface: editorial type, alternating full-bleed bands, generous spacing.
+   Terrain was designed for operators looking at dense tables all day. This
+   is designed for strangers arriving on a phone from a search result.
+
+   Everything here is namespaced (--text-web-*, --radius-web-*, --shadow-web-*)
+   so it cannot collide with the ERP scale in globals.css, which is tuned for
+   dense screens and must not move. The ERP --text-sm is 13.5px; the web body
+   floor is 16px. Both are correct for their surface.
+
+   Carries the section 08 amendments from the Claude Design pass:
+   display type at Cormorant 600, controls in JetBrains Mono 500, controls
+   sized by padding with no fixed height, subtitles at Nunito 500, and yellow
+   as a fill, never as type on a light ground.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@theme {
+  /* ── Brand ── */
+  --color-brand-dark: #151936;
+  --color-brand-yellow: #f3df27;
+  --color-brand-yellow-h: #e6d220;
+
+  /* ── Ink on light ── */
+  --color-ink-900: #151936;
+  --color-ink-700: #23273a;
+  --color-ink-500: #4a4f63;
+  --color-ink-400: #6b7080;
+
+  /* ── Surfaces ── */
+  --color-surface-0: #ffffff;
+  --color-surface-1: #f7f7fa;
+  --color-surface-2: #f0f0f5;
+  --color-line: #e3e3e8;
+  /* Hairline inside a card, for the listing spec row rules. Lighter than a
+     card border, which is --color-line. */
+  --color-line-soft: #eeeef3;
+  /* Card border on hover, per the listing card spec. */
+  --color-line-strong: #dcdce4;
+
+  /* ── On dark ── */
+  --color-on-dark-hi: #ffffff;
+  --color-on-dark: #d9dae4;
+  --color-on-dark-lo: #9a9db0;
+  --color-dark-line: rgb(255 255 255 / 0.12);
+  --color-dark-raise: rgb(255 255 255 / 0.06);
+  /* Token extension accepted in the design pass: the hover step for a raised
+     panel on dark. One named step beats five hand-tuned opacities. */
+  --color-dark-raise-hi: rgb(255 255 255 / 0.1);
+
+  /* ── Tertiary, carried over from the ERP ──
+     A second dark ground and a second accent, so Sunland Yellow is not the
+     only way a dark band can carry emphasis. The home page has four dark
+     bands and a hard rule of one yellow element per viewport; without this
+     every dark band competes for the same single yellow. */
+  --color-tertiary-emerald: #122a20;
+  --color-tertiary-emerald-hi: #1b3d2e;
+  --color-tertiary-blue: #315be8;
+
+  /* ── Semantic, inherited from Terrain unchanged ── */
+  --color-positive-bg: rgb(16 185 129 / 0.2);
+  --color-positive-fg: #6ee7b7;
+  --color-critical-bg: rgb(244 63 94 / 0.2);
+  --color-critical-fg: #fda4af;
+  --color-pending-bg: rgb(245 158 11 / 0.2);
+  --color-pending-fg: #fcd34d;
+
+  /* ── Type scale, fluid and clamped ──
+     Line heights are paired with each size so the global `* { line-height:
+     1.6 }` in globals.css never reaches display type. */
+  --text-web-display: clamp(2.875rem, 1.5rem + 5.8vw, 5.25rem);
+  --text-web-display--line-height: 1.04;
+  --text-web-display--letter-spacing: -0.015em;
+
+  --text-web-h1: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
+  --text-web-h1--line-height: 1.08;
+  --text-web-h1--letter-spacing: -0.015em;
+
+  --text-web-h2: clamp(1.875rem, 1.3rem + 2.2vw, 2.625rem);
+  --text-web-h2--line-height: 1.15;
+  --text-web-h2--letter-spacing: -0.01em;
+
+  --text-web-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --text-web-h3--line-height: 1.25;
+
+  --text-web-lead: clamp(1.0625rem, 1rem + 0.4vw, 1.1875rem);
+  --text-web-lead--line-height: 1.6;
+
+  --text-web-body: 1rem;
+  --text-web-body--line-height: 1.65;
+
+  --text-web-sm: 0.9375rem;
+  --text-web-sm--line-height: 1.6;
+
+  --text-web-xs: 0.8125rem;
+  --text-web-xs--line-height: 1.4;
+
+  /* ── Radius, as actually built ──
+     Namespaced deliberately: overriding --radius-lg would resize every
+     rounded-lg across the ERP, where it is Tailwind's 8px default, not this
+     20px. --radius-web-md and --radius-web-xl exist for parity with the doc
+     but the site itself uses card, panel, lg and full. */
+  --radius-web-sm: 6px;
+  --radius-web-md: 12px;
+  --radius-web-card: 14px;
+  --radius-web-panel: 16px;
+  --radius-web-lg: 20px;
+  --radius-web-xl: 28px;
+  /* Token extension accepted in the design pass, with a scope rule: pills,
+     chips, badges, circular controls and all buttons. Never cards or panels,
+     so the full radius never reads as decoration. */
+  --radius-web-full: 999px;
+
+  /* ── Elevation ── */
+  --shadow-web-sm: 0 1px 2px rgb(21 25 54 / 0.06);
+  --shadow-web-md: 0 12px 32px rgb(21 25 54 / 0.07);
+  --shadow-web-lg: 0 24px 60px rgb(21 25 54 / 0.12);
+}
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@theme inline {
+  /* next/font sets --font-cormorant on <html>; this exposes it to Tailwind as
+     the `font-editorial` utility. Named editorial rather than display to stay
+     clear of the CSS font-display descriptor. */
+  --font-editorial: var(--font-cormorant);
+}
+
+:root {
+  /* Section rhythm: --space-9 (96px) between bands on mobile, --space-10
+     (128px) on desktop. Every value here already exists in Tailwind's default
+     spacing scale, so components use the utilities; these exist for CSS that
+     cannot. --space-11 (160px) was argued for and rejected in the design
+     pass: a third section gap means two engineers make different choices on
+     the same page, and perceived looseness is better solved with padding
+     inside a band than by growing the gap between bands. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Token extension accepted in the design pass. A gradient, not a colour, so
+     it stays out of the --color-* namespace where Tailwind would try to make
+     it a background-color. Doc 03 section 5 called the scrim the single most
+     important defensive choice given the photo library, then left it as a
+     description, and descriptions get hand-rolled six different ways. One
+     enforced contrast floor across every image in the product, weakened in
+     one place the day the library improves. */
+  --web-scrim: linear-gradient(180deg, transparent 40%, rgb(21 25 54 / 0.72) 100%);
+  --web-scrim-top: linear-gradient(180deg, rgb(21 25 54 / 0.28) 0%, transparent 32%);
+
+  /* The tertiary ground, carried over from the ERP utility of the same name.
+     A ground only: never type, never a control fill, at most twice per page,
+     never on two adjacent bands. */
+  --web-tertiary-gradient: linear-gradient(135deg, #0c1f24 0%, #122a20 50%, #1e1b4b 100%);
+}
+
+/* ══ Web root ══
+   Scopes the public site base typography. The ERP body rules stay untouched. */
+.web-root {
+  background: var(--color-surface-0);
+  color: var(--color-ink-700);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.web-root ::selection {
+  background: var(--color-brand-dark);
+  color: var(--color-on-dark-hi);
+}
+
+/* ── Typography roles ── */
+
+/* Editorial titles: display, h1, h2 and section h3. Cormorant 600 per the
+   section 08 amendment. The old "no weight above 500" cap is withdrawn. */
+.web-title {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 600;
+}
+
+/* Card, tile and listing titles at 500. The weight split is the point: at 600
+   a card title competes with the section heading above it. */
+.web-title-card {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 500;
+}
+
+/* The wordmark and pull quotes keep the original 300, which is what the
+   editorial contrast of the 300 weight was there for. */
+.web-title-light {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 300;
+}
+
+/* Controls are mono: buttons, pills, chips, badges, counters, pagination.
+   Separates interface voice from editorial voice without a fourth typeface.
+   Line height is a fixed 20px box so controls size by padding alone. */
+.web-control {
+  font-family: var(--font-jetbrains), monospace;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+/* Every price, area, count, reference and date. */
+.web-numeric {
+  font-family: var(--font-jetbrains), monospace;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* The supporting line under a title. At 400 it reads as an afterthought; at
+   500 it reads as data. Card location lines, the address under a listing h1,
+   role lines, section leads, stat captions. Body prose stays 400. */
+.web-subtitle {
+  font-weight: 500;
+}
+
+/* Eyebrow label, used above most section titles, paired with a short yellow
+   rule beside it. */
+.web-eyebrow {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* Body prose with the measure capped at 68 characters, so a wide viewport
+   does not produce an unreadable 120 character line. */
+.web-prose {
+  font-size: var(--text-web-body);
+  font-weight: 400;
+  line-height: 1.65;
+  max-width: 68ch;
+}
+
+/* ── Touch targets ──
+   Doc 03 §6 sets a 44px floor and §3.1 states the mechanism: a control whose
+   visual bounds are smaller extends its hit area beyond them. That matters
+   because the §08 amendment sizes controls by padding on a 20px line box
+   (11px primary gives a 42px visual), and adding height to reach 44 would
+   break the rule that a wrapped or translated label grows the control instead
+   of clipping it.
+
+   So the visual box stays exactly as designed and this pseudo-element carries
+   the hit area. It is inert to layout and to hover styling. */
+.web-hit {
+  position: relative;
+}
+
+.web-hit::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  min-height: 44px;
+  height: 100%;
+  transform: translateY(-50%);
+}
+
+/* ── Grounds ── */
+
+.web-dark {
+  background-color: var(--color-brand-dark);
+  color: var(--color-on-dark);
+}
+
+/* The tertiary ground. See the note on --web-tertiary-gradient above. */
+.web-tertiary {
+  background-image: var(--web-tertiary-gradient);
+  color: var(--color-on-dark);
+}
+
+/* ── Defensive image treatment ──
+   Overlaid text keeps contrast regardless of what the photograph contains,
+   which matters because the library is phone-sourced and inconsistent. Apply
+   to a positioned container holding the image. */
+.web-scrim::after,
+.web-scrim-top::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.web-scrim::after {
+  background-image: var(--web-scrim);
+}
+
+/* Inverted: present so a status badge holds contrast over a bright sky, which
+   the library has plenty of. */
+.web-scrim-top::after {
+  background-image: var(--web-scrim-top);
+}
+
+/* ── Focus ──
+   Visible on every interactive element, 2px, never removed. White on dark
+   grounds, where a navy ring would vanish. */
+.web-root :focus-visible {
+  outline: 2px solid var(--color-brand-dark);
+  outline-offset: 2px;
+}
+
+.web-dark :focus-visible,
+.web-tertiary :focus-visible {
+  outline-color: var(--color-on-dark-hi);
+}
+
+/* ── Motion ──
+   Entrance animations fire once, never on every scroll pass. */
+@keyframes web-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.web-rise {
+  animation: web-rise 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Drawer and sheet entrance, 260ms ease-out per doc 03 §2.7. */
+@keyframes web-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.web-slide-in-right {
+  animation: web-slide-in-right 260ms ease-out both;
+}
+
+@keyframes web-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Skeletons share the box model of the component they stand in for, which is
+   most of the CLS budget. No spinner, no "Finding properties" text. */
+.web-skeleton {
+  background: var(--color-surface-2);
+  animation: web-pulse 1200ms ease-in-out infinite;
+}
+
+/* prefers-reduced-motion is honoured everywhere: opacity survives, transforms
+   do not, the media scale is removed entirely, and the skeleton becomes a
+   static fill. */
+@media (prefers-reduced-motion: reduce) {
+  .web-rise {
+    animation-name: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .web-skeleton {
+    animation: none;
+  }
+
+  .web-slide-in-right {
+    animation-name: none;
+  }
+
+  .web-root *,
+  .web-root *::before,
+  .web-root *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}

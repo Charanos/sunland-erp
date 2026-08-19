@@ -63,6 +63,91 @@ function isApiPath(pathname: string): boolean {
   return pathname.startsWith("/api/");
 }
 
+// ─── Public marketing site (web platform W0-1) ────────────────────────────────
+
+/**
+ * The public site route map from web doc 02 §5. These render with no session
+ * and must never be redirected to /login: they are the front door.
+ *
+ * Deliberately NOT added to UNIVERSAL_PATHS in lib/auth/roles.ts - that list
+ * governs what an *authenticated* user may reach across portals, and adding
+ * public paths to it would widen portal authorization as a side effect.
+ */
+const PUBLIC_PREFIXES = [
+  "/properties",
+  "/landlords",
+  "/services",
+  "/about",
+  "/insights",
+  "/contact",
+  "/locations",
+  "/privacy",
+  "/terms",
+  "/sitemap",
+];
+
+function isMarketingPath(pathname: string): boolean {
+  // "/" is an exact match, never a prefix - every path in the app starts with it.
+  if (pathname === "/") return true;
+  return PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+}
+
+/**
+ * The authenticated portals. Every route group behind a session lives under
+ * one of these.
+ *
+ * This list is what the auth guard actually protects. It is written out
+ * rather than inferred, because inferring "everything that is not public"
+ * means a new portal added tomorrow is unguarded until someone remembers to
+ * update a deny-list, and that failure is silent.
+ */
+const PORTAL_PREFIXES = [
+  "/admin",
+  "/fin",
+  "/hr",
+  "/ops",
+  "/landlord",
+  "/tenant",
+  "/maintenance",
+  "/verify",
+];
+
+function isPortalPath(pathname: string): boolean {
+  return PORTAL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+}
+
+/**
+ * The public site ships behind a flag so it can deploy continuously without
+ * exposing an unfinished site. With the flag off this file behaves exactly as
+ * it did before the web platform existed: "/" redirects to the role portal,
+ * everything unauthenticated goes to /login.
+ */
+function webPublicEnabled(): boolean {
+  return process.env.WEB_PUBLIC_ENABLED === "true";
+}
+
+/**
+ * Host seam for the two-hostname topology in web doc 07 §2 (sunland.co.ke for
+ * the public site, app.sunland.co.ke for the portals). Written now, inert
+ * until cutover: with both env vars unset every request resolves to "app",
+ * which is exactly current behaviour.
+ *
+ * Splitting hosts is the change most likely to log people out of a production
+ * ERP, so it lands as its own reviewed change with DNS in place, not folded
+ * into the route group work.
+ */
+type SunlandHost = "web" | "app";
+
+function resolveHost(request: NextRequest): SunlandHost {
+  const publicHost = process.env.WEB_PUBLIC_HOST;
+  if (!publicHost) return "app";
+
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
+  if (!host) return "app";
+
+  return host === publicHost || host === "www." + publicHost ? "web" : "app";
+}
+
 // ─── Maintenance mode (ADR 020) ───────────────────────────────────────────────
 
 /**
@@ -123,6 +208,36 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Portal paths requested on the public host belong on the app host (web doc
+  // 07 §2 rule 1). Inert until WEB_PUBLIC_HOST and WEB_APP_HOST are both set,
+  // at which point resolveHost() starts returning "web" for the public domain.
+  if (resolveHost(request) === "web" && !isMarketingPath(pathname)) {
+    const appHost = process.env.WEB_APP_HOST;
+    if (appHost) {
+      const target = new URL(request.url);
+      target.host = appHost;
+      return NextResponse.redirect(target);
+    }
+  }
+
+  // Always pass: the public marketing site. This is the one behavioural change
+  // the web platform makes to portal routing, and it is gated so the flag off
+  // restores the previous behaviour exactly. It sits above the maintenance
+  // gate on purpose: the public site staying up while the ERP is in
+  // maintenance is the desired outcome, not an oversight.
+  if (webPublicEnabled() && isMarketingPath(pathname)) {
+    return NextResponse.next();
+  }
+
+  // An unknown path with the public site on is a mistyped or dead URL, and it
+  // belongs on the marketing 404 with a search box and three real links. The
+  // old behaviour, bouncing a stranger who followed a broken backlink to a
+  // staff login screen, is the worst possible answer to a typo. Portal paths
+  // are excluded above, so this never widens the guard.
+  if (webPublicEnabled() && !isPortalPath(pathname)) {
+    return NextResponse.next();
+  }
+
   const user = await getSessionUser(request);
 
   // Not authenticated → redirect to /login, preserving intended destination
@@ -148,7 +263,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(getDefaultPortal(user.role), request.url));
   }
 
-  // Root "/" → role-based portal
+  // Root "/" → role-based portal. Only reachable with WEB_PUBLIC_ENABLED off;
+  // with it on, "/" is the marketing home page and returned above, so a signed
+  // in user browsing the public site is not bounced into their portal.
   if (pathname === "/") {
     return NextResponse.redirect(new URL(getDefaultPortal(user.role), request.url));
   }

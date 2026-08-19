@@ -35,8 +35,11 @@ Read left to right, the website is lead generation. Read right to left, it is pu
 | 08 | `08_WEB_IMPLEMENTATION_PLAN.md` | Build order, tickets, acceptance criteria | Claude Code |
 | 09 | `09_WEB_ADR_DRAFTS.md` | Decisions to merge into `ARCHITECTURE_DECISIONS.md` | Engineering |
 | 10 | `10_LEGACY_INVENTORY_AND_GAPS.md` | What the old site did, what it failed to do, what to add | Product, engineering |
+| 11 | `11_WEB_BUILD_STATUS.md` | What is actually built, and where it deviates from 01 to 10 | Everyone |
 
 Read 10 → 01 → 02 → 07 before writing any code. Read 03 → 04 → 05 before designing any screen.
+
+**Read 11 first if you are picking the build up.** Docs 01 to 10 were written before the code and the Claude Design templates existed. Where doc 11 and an earlier doc disagree, doc 11 describes the repository and the earlier doc is the one that needs correcting.
 
 **This is a greenfield build.** Nothing from the WordPress installation survives: not the theme, not the plugins, not the database, not the templates. Only content migrates. Doc 10 records what the old site did so that no capability is lost by accident, and doc 07 specifies the twenty-six tables that replace six plugins.
 
@@ -62,15 +65,15 @@ These are inherited, not up for renegotiation inside this doc set:
 
 ## 4. Build order at a glance
 
-| Wave | Scope | Ships |
-|---|---|---|
-| W0 | Marketing route group, host routing, Terrain Web tokens, layout shell | Skeleton behind a flag |
-| W1 | Catalogue schema, `/properties` index, listing detail, media pipeline | Real listings, real data |
-| W2 | Home, Landlords, Services, About, Team, Contact | The site as a whole |
-| W3 | Content Studio: pages, sections, navigation, media, blog, settings | Client editability |
-| W4 | Enquiries, valuations, viewings, alerts, assignment and routing | Fullstack loop closed |
-| W5 | Developments, locations, insights, reviews | Full catalogue depth |
-| W6 | SEO, schema, redirects, sitemap, analytics, cutover | Launch |
+| Wave | Scope | Ships | Status |
+|---|---|---|---|
+| W0 | Marketing route group, host routing, Terrain Web tokens, layout shell | Skeleton behind a flag | Done |
+| W1 | Catalogue schema, `/properties` index, listing detail, media pipeline | Real listings, real data | Index and detail done against existing `properties`; schema and media pending |
+| W2 | Home, Landlords, Services, About, Team, Contact | The site as a whole | Done, plus Areas, Insights and legal |
+| W3 | Content Studio: pages, sections, navigation, media, blog, settings | Client editability | Next |
+| W4 | Enquiries, valuations, viewings, alerts, assignment and routing | Fullstack loop closed | Forms built, pipelines pending |
+| W5 | Developments, locations, insights, reviews | Full catalogue depth | Templates built, content pending |
+| W6 | SEO, schema, redirects, sitemap, analytics, cutover | Launch | Pending |
 
 Doc 08 expands each wave into tickets with acceptance criteria.
 

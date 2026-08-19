@@ -178,7 +178,18 @@ export default function LoginPage() {
       </section>
 
       {/* Form Side */}
-      <section className="flex min-h-screen items-center justify-center bg-slate-50/20 px-6 py-12 lg:bg-white">
+      <section className="relative flex min-h-screen items-center justify-center bg-slate-50/20 px-6 py-12 lg:bg-white">
+        {/* Back to Home Button */}
+        <div className="absolute top-6 right-6">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          >
+            <IconArrowRight className="rotate-180" size={16} />
+            Back to Home
+          </Link>
+        </div>
+
         <div className="w-full max-w-md animate-fade-in">
           {/* Logo container - Hidden on Desktop, visible on Mobile inside a brand-dark card badge for visibility */}
           <div className="mb-10 flex justify-center lg:hidden">

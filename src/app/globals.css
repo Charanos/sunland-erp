@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./web-theme.css";
 
 :root {
   --bg: #f4f6f0;
@@ -345,25 +346,25 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(21, 25, 54, 0.15);
-  /* Theme navy at low opacity */
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(21, 25, 54, 0.3);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Firefox scrollbar support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(21, 25, 54, 0.15) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
-/* Custom scrollbar utility class (for backwards compatibility) */
+/* Custom scrollbar utility class */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(21, 25, 54, 0.15) transparent;
+  scrollbar-color: rgba(18, 42, 32, 0.35) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -376,12 +377,12 @@ button:disabled {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(21, 25, 54, 0.15);
+  background: rgba(18, 42, 32, 0.35);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(21, 25, 54, 0.3);
+  background: rgba(18, 42, 32, 0.65);
 }
 
 /* ── Animations & Keyframes ───────────────────────────── */
@@ -601,6 +602,8 @@ body.modal-open {
 }
 
 .bg-tertiary-gradient .badge-tone-neutral,
+.web-dark .badge-tone-neutral,
+.web-tertiary .badge-tone-neutral,
 .text-white .badge-tone-neutral,
 [class*="bg-[#151936]"] .badge-tone-neutral,
 [class*="bg-[#0d211a]"] .badge-tone-neutral,
