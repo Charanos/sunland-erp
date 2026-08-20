@@ -8,7 +8,7 @@ import { WEB_ICON_STROKE, webIcons } from "../icons";
  */
 export function ResultsGrid({ listings }: { listings: ListingCardData[] }) {
   return (
-    <ul className="grid gap-x-6 gap-y-10 sm:gap-y-12 lg:gap-x-8 lg:gap-y-14 sm:grid-cols-2 xl:grid-cols-3">
+    <ul data-reveal-group className="grid gap-x-6 gap-y-10 sm:gap-y-12 lg:gap-x-8 lg:gap-y-14 sm:grid-cols-2 xl:grid-cols-3">
       {listings.map((listing, index) => (
         <li key={listing.id}>
           <ListingCard
