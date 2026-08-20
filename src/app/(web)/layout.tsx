@@ -3,6 +3,7 @@ import { FloatingContact } from "@/components/web/layout/floating-contact";
 import { SkipLink } from "@/components/web/layout/skip-link";
 import { WebFooter } from "@/components/web/layout/web-footer";
 import { WebHeader } from "@/components/web/layout/web-header";
+import { RevealController } from "@/components/web/motion/reveal-controller";
 
 /**
  * The public site shell.
@@ -30,6 +31,7 @@ export default function WebLayout({ children }: { children: React.ReactNode }) {
     <div className="web-root flex min-h-screen flex-col">
       <SkipLink />
       <WebHeader />
+      <RevealController />
       <main id="content" className="flex-1">
         {children}
       </main>

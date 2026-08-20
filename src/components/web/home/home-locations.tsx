@@ -47,7 +47,7 @@ export function HomeLocations({ tiles }: { tiles: LocationTile[] }) {
         }
       />
 
-      <ul className="mt-12 grid auto-rows-[200px] sm:auto-rows-[220px] grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+      <ul data-reveal-group className="mt-12 grid auto-rows-[200px] sm:auto-rows-[220px] grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
         {tiles.slice(0, 8).map((tile, index) => {
           const isHero = index === 0;
           const isAnchor = index === 7;

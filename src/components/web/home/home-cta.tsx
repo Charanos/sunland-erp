@@ -19,7 +19,7 @@ export function HomeCta() {
       {/* Horizontally Flipped Cinematic Hero Background */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <Image
-          src="/images/hero-bg.png"
+          src="/images/hero-home.jpg"
           alt=""
           aria-hidden="true"
           fill
@@ -48,7 +48,11 @@ export function HomeCta() {
         />
       </div>
 
-      <Container className="relative z-10">
+      {/* data-reveal here is safe: this Container holds only the heading,
+          lead and buttons. The scrims and glows above are siblings on the
+          section itself, outside this element, so nothing that hides the
+          hero-to-footer seam ever moves. */}
+      <Container className="relative z-10" data-reveal>
         <div className="flex justify-center">
           <Eyebrow tone="dark">NEXT STEPS</Eyebrow>
         </div>

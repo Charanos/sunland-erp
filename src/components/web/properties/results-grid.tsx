@@ -21,7 +21,6 @@ export function ResultsGrid({ listings }: { listings: ListingCardData[] }) {
             // title is a sibling section beneath it.
             headingLevel={2}
             priority={index < 3}
-            onTint
           />
         </li>
       ))}

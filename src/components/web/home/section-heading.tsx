@@ -37,6 +37,9 @@ export function SectionHeading({
 
   return (
     <div
+      // Safe to animate: a heading block is content only. Scrims and glows
+      // live on the band, which is deliberately never transformed.
+      data-reveal
       className={cn(
         align === "split" && "flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between",
         isSplitRight && "flex flex-col gap-6 sm:flex-row-reverse sm:items-end sm:justify-between",

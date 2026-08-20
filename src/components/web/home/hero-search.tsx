@@ -209,7 +209,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                           setOpenDropdown(null);
                         }}
                         className={cn(
-                          "w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
+                          "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                           location.toLowerCase() === area.toLowerCase()
                             ? "bg-slate-100 text-[#151936]"
                             : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
@@ -242,7 +242,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
               type="button"
               onClick={() => setOpenDropdown(openDropdown === "type" ? null : "type")}
               className={cn(
-                "w-full text-left px-3.5 py-1.5 rounded-xl lg:rounded-full transition-all cursor-pointer",
+                "web-hit w-full text-left px-3.5 py-1.5 rounded-xl lg:rounded-full transition-all cursor-pointer",
                 openDropdown === "type" ? "bg-slate-100/90 shadow-inner" : "hover:bg-slate-100/60"
               )}
             >
@@ -279,7 +279,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                         setOpenDropdown(null);
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
+                        "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                         isSelected
                           ? "bg-slate-100 text-[#151936]"
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
@@ -305,7 +305,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
               type="button"
               onClick={() => setOpenDropdown(openDropdown === "beds" ? null : "beds")}
               className={cn(
-                "w-full text-left px-3.5 py-1.5 rounded-xl lg:rounded-full transition-all cursor-pointer",
+                "web-hit w-full text-left px-3.5 py-1.5 rounded-xl lg:rounded-full transition-all cursor-pointer",
                 openDropdown === "beds" ? "bg-slate-100/90 shadow-inner" : "hover:bg-slate-100/60"
               )}
             >
@@ -341,7 +341,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                         setOpenDropdown(null);
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
+                        "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                         isSelected
                           ? "bg-slate-100 text-[#151936]"
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
@@ -364,7 +364,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
               type="button"
               onClick={() => setOpenDropdown(openDropdown === "budget" ? null : "budget")}
               className={cn(
-                "w-full text-left px-3.5 py-1.5 rounded-xl lg:rounded-full transition-all cursor-pointer",
+                "web-hit w-full text-left px-3.5 py-1.5 rounded-xl lg:rounded-full transition-all cursor-pointer",
                 openDropdown === "budget" ? "bg-slate-100/90 shadow-inner" : "hover:bg-slate-100/60"
               )}
             >
@@ -400,7 +400,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                         setOpenDropdown(null);
                       }}
                       className={cn(
-                        "w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
+                        "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                         isSelected
                           ? "bg-slate-100 text-[#151936]"
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"

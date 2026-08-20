@@ -2,6 +2,7 @@ import Image from "next/image";
 import { galleryDefaults } from "./home.defaults";
 import { SectionBand } from "../primitives/section-band";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
+import { GalleryMarquee } from "./gallery-marquee";
 
 /**
  * 09.5 home.gallery, full bleed panoramic cinematic showcase.
@@ -11,7 +12,10 @@ import { WEB_ICON_STROKE, webIcons } from "../icons";
  */
 export function HomeGallery() {
   const PinIcon = webIcons.pin;
-  const items = [...galleryDefaults.items, ...galleryDefaults.items];
+  // Doubled so the ribbon can loop seamlessly at -50%. The second pass is
+  // the same content again, so it is hidden from assistive technology to stop
+  // every residence being announced twice.
+  const items = galleryDefaults.items;
 
   return (
     <SectionBand
@@ -32,11 +36,12 @@ export function HomeGallery() {
         />
 
         {/* Infinite Moving Ribbon */}
-        <div className="flex w-max animate-web-marquee gap-5 sm:gap-6 py-2 will-change-transform">
-          {items.map((item, idx) => (
+        <GalleryMarquee>
+          {[...items, ...items].map((item, idx) => (
             <div
               key={`${item.title}-${idx}`}
-              className="group relative h-[260px] sm:h-[320px] lg:h-[360px] w-[340px] sm:w-[460px] lg:w-[540px] shrink-0 overflow-hidden rounded-[22px] bg-[#151936] shadow-[0_16px_36px_rgba(21,25,54,0.08),0_2px_8px_rgba(0,0,0,0.04)] cursor-pointer"
+              aria-hidden={idx >= items.length ? "true" : undefined}
+              className="group relative h-[260px] sm:h-[320px] lg:h-[360px] w-[340px] sm:w-[460px] lg:w-[540px] shrink-0 overflow-hidden rounded-[22px] bg-[#151936] shadow-[0_16px_36px_rgba(21,25,54,0.08),0_2px_8px_rgba(0,0,0,0.04)]"
             >
               {/* High-Resolution Architectural Photography */}
               <Image
@@ -74,7 +79,7 @@ export function HomeGallery() {
               </div>
             </div>
           ))}
-        </div>
+        </GalleryMarquee>
       </div>
     </SectionBand>
   );

@@ -65,9 +65,17 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
         }
       />
 
-      {/* 1.5 card scroll-snap on a phone, so the row visibly continues past
-          the edge rather than looking like it ends at four. */}
-      <ul className="mt-12 -mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+      {/* One column on a phone, not a scroll-snap carousel.
+          Four cards is short enough to read as a normal stack, and a stack
+          has none of a carousel's problems for free: no scrollbar to hide, no
+          swipe-to-discover affordance to design, nothing sitting at the exact
+          screen position the floating contact button also wants. A carousel
+          earns its complexity past six or eight items; at four it is
+          machinery solving a problem the content does not have. */}
+      <ul
+        data-reveal-group
+        className="mt-9 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4"
+      >
         {visible.map((tile) => {
           const IconComponent = webIcons[tile.icon];
           const segment = tile.href.split("/").pop() ?? "";
@@ -77,10 +85,10 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
             "Explore verified active listings and mandate opportunities";
 
           return (
-            <li key={tile.href} className="w-[78%] shrink-0 snap-start sm:w-auto sm:shrink">
+            <li key={tile.href}>
               <Link
                 href={tile.href}
-                className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[22px] border border-white/10 bg-gradient-to-b from-white/[0.06] via-white/[0.025] to-transparent p-6 sm:p-7 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1.5 hover:border-white/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_30px_rgba(243,223,39,0.08)]"
+                className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[22px] border border-white/10 bg-gradient-to-b from-white/[0.06] via-white/[0.025] to-transparent p-5 sm:p-7 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1.5 hover:border-white/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_30px_rgba(243,223,39,0.08)]"
               >
                 {/* Glow accent matching the category theme */}
                 <div
@@ -104,17 +112,17 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
                 </div>
 
                 {/* Body: Title + Curated Sub-descriptor */}
-                <div className="mt-8 mb-6">
-                  <p className="font-editorial text-[25px] font-medium leading-tight text-white transition-colors duration-200 group-hover:text-brand-yellow sm:text-[27px]">
+                <div className="mt-5 mb-4 sm:mt-8 sm:mb-6">
+                  <p className="font-editorial text-[22px] font-medium leading-tight text-white transition-colors duration-200 group-hover:text-brand-yellow sm:text-[27px]">
                     {tile.label}
                   </p>
-                  <p className="mt-2.5 text-[13px] leading-relaxed text-slate-300/80">
+                  <p className="mt-2 text-[13px] leading-relaxed text-slate-300/80 sm:mt-2.5">
                     {subtitle}
                   </p>
                 </div>
 
                 {/* Footer: Explore link + arrow circle */}
-                <div className="mt-auto flex items-center justify-between border-t border-white/[0.08] pt-4">
+                <div className="mt-auto flex items-center justify-between border-t border-white/[0.08] pt-3.5 sm:pt-4">
                   <span className="font-mono text-[11px] font-medium uppercase tracking-widest text-slate-400 transition-colors group-hover:text-slate-200">
                     Explore Catalogue
                   </span>

@@ -31,7 +31,7 @@ export function HomeLandlords() {
 
       <Container className="relative">
         {/* Top: Uninhibited Wide Heading */}
-        <div className="max-w-5xl">
+        <div className="max-w-5xl" data-reveal>
           <Eyebrow tone="dark">{landlordDefaults.eyebrow}</Eyebrow>
           <h2
             id="landlords-heading"
@@ -48,7 +48,7 @@ export function HomeLandlords() {
         <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16 items-start">
           {/* Left Column: Uncarded Numbered Timeline & CTAs */}
           <div>
-            <ol className="divide-y divide-white/10">
+            <ol className="divide-y divide-white/10" data-reveal-group>
               {landlordDefaults.steps.map((step) => (
                 <li
                   key={step.number}
@@ -90,8 +90,11 @@ export function HomeLandlords() {
             </div>
           </div>
 
-          {/* Right Column: High-Contrast White ERP Statement Console */}
-          <div>
+          {/* Right Column: High-Contrast White ERP Statement Console.
+              Slides in from the right rather than rising, so the console
+              reads as arriving from a different axis than the timeline beside
+              it, the one deliberate directional beat on this band. */}
+          <div data-reveal data-reveal-x="32">
             <div className="relative overflow-hidden rounded-[26px] border border-slate-200/90 bg-white p-7 sm:p-9 shadow-[0_24px_60px_rgba(0,0,0,0.35),0_2px_6px_rgba(0,0,0,0.06)] text-slate-900">
               {/* Console Top Header */}
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">

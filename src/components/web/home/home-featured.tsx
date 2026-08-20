@@ -112,14 +112,13 @@ export function HomeFeatured({ listings }: { listings: ListingCardData[] }) {
         </p>
       </div>
 
-      <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+      <ul data-reveal-group className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
         {filteredListings.map((listing, index) => (
           <li key={listing.id} className="flex h-full">
             <ListingCard
               listing={listing}
               headingLevel={3}
               priority={index < 3}
-              onTint
               className="w-full h-full"
             />
           </li>

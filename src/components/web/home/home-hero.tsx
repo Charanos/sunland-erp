@@ -163,30 +163,67 @@ export function HomeHero({
             "<0.15"
           );
 
-        // ── Parallax on exit ─────────────────────────────────────────────────
-        // The photograph drifts slower than the page as the hero leaves, and
-        // the content lifts and dims slightly ahead of it. Scrubbed, so it is
-        // driven entirely by the scroll position and never plays on its own.
-        const drift = gsap.timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.6,
-          },
-        });
-
-        drift
-          .to(".gsap-bg-media", { yPercent: 14, scale: 1.06, ease: "none" }, 0)
-          .to(".gsap-hero-content", { yPercent: -8, opacity: 0.55, ease: "none" }, 0);
-
         // matchMedia().revert() below tears all of this down, including the
-        // ScrollTrigger and the SplitText wrappers.
+        // SplitText wrappers.
+      });
+
+      // ── Parallax on exit, desktop only ──────────────────────────────────
+      // The photograph drifts slower than the page as the hero leaves.
+      //
+      // A scroll listener rather than ScrollTrigger: this needs one number,
+      // how far through the hero the page has scrolled, and computing it is
+      // three lines. Pulling in a scroll-position engine for that was costing
+      // roughly 40KB and an initialisation order that had to be exactly right.
+      //
+      // Gated above 1024px on purpose. Parallax on a phone means compositing
+      // a full-bleed image on every frame of a touch scroll, on the hardware
+      // least able to afford it, for an effect largely lost on a small screen.
+      media.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+        const section = containerRef.current;
+        const image = section?.querySelector<HTMLElement>(".gsap-bg-media");
+        if (!section || !image) return;
+
+        const quickY = gsap.quickTo(image, "yPercent", { duration: 0.4, ease: "none" });
+        // scaleX/scaleY rather than the "scale" shorthand: GSAP tracks a
+        // composite "scale" as one entry in its transform cache, and once
+        // yPercent is also being written on the same element that entry can
+        // no longer be isolated for clearProps, which is exactly what GSAP's
+        // own "scale not eligible for reset" warning is telling us. The two
+        // axes are each their own cache entry and reset cleanly.
+        const quickScaleX = gsap.quickTo(image, "scaleX", { duration: 0.4, ease: "none" });
+        const quickScaleY = gsap.quickTo(image, "scaleY", { duration: 0.4, ease: "none" });
+
+        let frame = 0;
+        const update = () => {
+          frame = 0;
+          const height = section.offsetHeight || 1;
+          // 0 at rest, 1 when the hero has fully left the top of the screen.
+          const progress = Math.min(Math.max(-section.getBoundingClientRect().top / height, 0), 1);
+          const scale = 1 + progress * 0.06;
+          quickY(progress * 14);
+          quickScaleX(scale);
+          quickScaleY(scale);
+        };
+
+        const onScroll = () => {
+          // One write per frame at most, so a fast wheel or a momentum scroll
+          // cannot queue up work faster than the compositor drains it.
+          if (frame === 0) frame = requestAnimationFrame(update);
+        };
+
+        update();
+        window.addEventListener("scroll", onScroll, { passive: true });
+
+        return () => {
+          window.removeEventListener("scroll", onScroll);
+          if (frame) cancelAnimationFrame(frame);
+          gsap.set(image, { clearProps: "yPercent,scaleX,scaleY" });
+        };
       });
 
       // Reduced motion: no branch is registered, so nothing is ever set to
-      // opacity 0, nothing is split, and no ScrollTrigger is created. The hero
-      // renders exactly as the markup describes it.
+      // opacity 0 and nothing is split. The hero renders exactly as the markup
+      // describes it.
 
       return () => media.revert();
     },
@@ -201,7 +238,7 @@ export function HomeHero({
     >
       <div className="gsap-bg gsap-enter absolute inset-0 z-0">
         <Image
-          src="/images/hero-bg.png"
+          src="/images/hero-home.jpg"
           alt=""
           aria-hidden="true"
           fill

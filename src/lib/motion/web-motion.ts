@@ -2,7 +2,6 @@
 
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 
 /**
@@ -34,19 +33,38 @@ import { SplitText } from "gsap/SplitText";
  *                as a bug rather than as character.
  */
 
-let registered = false;
-
-export function registerWebMotion() {
-  if (registered || typeof window === "undefined") return;
-
-  gsap.registerPlugin(CustomEase, ScrollTrigger, SplitText);
+/**
+ * Registration happens at module scope, not inside a function a component
+ * calls during render.
+ *
+ * This is load-bearing and was a real bug. `gsap.timeline({ scrollTrigger })`
+ * only recognises those vars if ScrollTrigger is registered at the moment the
+ * timeline is constructed. Registering from inside a `useGSAP` callback meant
+ * whichever component ran first registered the plugin, but any timeline built
+ * in that same pass had already read its vars: the `scrollTrigger` key was
+ * silently dropped, no error was thrown, and the hero parallax and every
+ * scroll reveal simply never ran.
+ *
+ * A module-scope side effect runs once at import time, which is always before
+ * any component body that imported it. The window guard keeps it inert during
+ * server rendering.
+ */
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(CustomEase, SplitText);
 
   CustomEase.create("sun.rise", "0.16, 1, 0.28, 1");
   CustomEase.create("sun.settle", "0.22, 1, 0.36, 1");
   CustomEase.create("sun.glide", "0.65, 0, 0.35, 1");
   CustomEase.create("sun.snap", "0.33, 1, 0.5, 1");
+}
 
-  registered = true;
+/**
+ * Kept as a no-op-safe entry point so call sites read intentionally and so a
+ * component that uses the motion language cannot forget to import this module,
+ * which is what actually triggers the registration above.
+ */
+export function registerWebMotion() {
+  // Intentionally empty: importing this module is the registration.
 }
 
 /**

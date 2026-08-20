@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils/cn";
 import { formatKES } from "@/lib/utils/format";
 import { LISTING_STATUS_CONFIG, type ListingStatus } from "../constants/listing-status";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
-import { ListingStatusBadge, WebMediaBadge } from "./badge";
+import { ListingStatusBadge } from "./badge";
 import { SpecChip, SpecRow } from "./spec-chip";
 
 /**
@@ -71,13 +71,11 @@ export function ListingCard({
   listing,
   headingLevel = 3,
   priority = false,
-  onTint = false,
   className,
 }: {
   listing: ListingCardData;
   headingLevel?: 2 | 3;
   priority?: boolean;
-  onTint?: boolean;
   className?: string;
 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";

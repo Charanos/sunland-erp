@@ -172,6 +172,17 @@
   color: var(--color-ink-700);
   font-family: var(--font-nunito), system-ui, sans-serif;
   font-weight: 400;
+
+  /* The horizontal-overflow guard.
+
+     Doc 04 §12 requires no horizontal scroll at any width, and on a page with
+     a full-bleed hero, a marquee wider than the viewport and several negative
+     margins, a single overshooting child is all it takes. `clip` rather than
+     `hidden`: `hidden` on an ancestor silently makes it a scroll container,
+     which breaks `position: sticky` on descendants (the listing enquiry rail
+     and the filter rail both depend on it). `clip` trims the overflow without
+     creating a scroll port. */
+  overflow-x: clip;
 }
 
 .web-root ::selection {

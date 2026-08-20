@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { DUR, STAGGER } from "@/lib/motion/web-motion";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { SectionBand } from "../primitives/section-band";
 import { Eyebrow } from "../primitives/eyebrow";
@@ -12,8 +15,20 @@ import { cn } from "@/lib/utils/cn";
  * 08 home.proof, light band.
  *
  * Client social proof on the left paired with core commitments and right-aligned title.
+ *
+ * ── Bespoke reveal, not the generic one ──
+ *
+ * Already a client component for the carousel state, so the reveal here is
+ * hand-built rather than left to the page-wide controller: the testimonial
+ * card turns in from the left on a slight rotation, matched by the copy
+ * column turning the other way from the right, so the two halves meet in the
+ * middle rather than both rising in parallel. The three commitment rows
+ * cascade in afterward as their own beat. It is the one section on the page
+ * that earns genuinely custom choreography, because it already pays the cost
+ * of being interactive.
  */
 export function HomeProof() {
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const testimonials = proofDefaults.testimonials;
   const current = testimonials[activeIndex] ?? testimonials[0];
@@ -22,6 +37,70 @@ export function HomeProof() {
   const ChevronLeftIcon = webIcons.chevronLeft;
   const ChevronRightIcon = webIcons.chevronRight;
   const CheckIcon = webIcons.check;
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      if (section.getBoundingClientRect().top < window.innerHeight * 0.92) return;
+
+      const testimonial = section.querySelector<HTMLElement>(".proof-testimonial");
+      const copy = section.querySelector<HTMLElement>(".proof-copy");
+      const commitments = Array.from(
+        section.querySelectorAll<HTMLElement>(".proof-commitments > div")
+      );
+
+      const targets = [testimonial, copy, ...commitments].filter(
+        (el): el is HTMLElement => el !== null
+      );
+      if (targets.length === 0) return;
+
+      if (testimonial) gsap.set(testimonial, { opacity: 0, x: -32, rotate: -1.5 });
+      if (copy) gsap.set(copy, { opacity: 0, x: 32 });
+      if (commitments.length > 0) gsap.set(commitments, { opacity: 0, y: 18 });
+
+      const play = () => {
+        const tl = gsap.timeline({ defaults: { clearProps: "opacity,transform" } });
+        if (testimonial) {
+          tl.to(testimonial, {
+            opacity: 1,
+            x: 0,
+            rotate: 0,
+            duration: DUR.panel,
+            ease: "sun.settle",
+          });
+        }
+        if (copy) {
+          tl.to(
+            copy,
+            { opacity: 1, x: 0, duration: DUR.base, ease: "sun.rise" },
+            testimonial ? "<0.1" : 0
+          );
+        }
+        if (commitments.length > 0) {
+          tl.to(
+            commitments,
+            { opacity: 1, y: 0, duration: DUR.base, ease: "sun.rise", stagger: STAGGER.cards },
+            "<0.25"
+          );
+        }
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return;
+          observer.disconnect();
+          play();
+        },
+        { rootMargin: "0px 0px -12% 0px", threshold: 0.01 }
+      );
+      observer.observe(section);
+
+      return () => observer.disconnect();
+    },
+    { scope: sectionRef, dependencies: [] }
+  );
 
   const handlePrev = () => {
     setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
@@ -33,9 +112,9 @@ export function HomeProof() {
 
   return (
     <SectionBand tone="tint" labelledBy="proof-heading" className="relative bg-[#f8fafc]">
-      <div className="grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:gap-20 items-center">
+      <div ref={sectionRef} className="grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:gap-20 items-center">
         {/* Left Column: Interactive Multi-Role Testimonial Showcase */}
-        <div className="order-2 lg:order-1">
+        <div className="order-2 lg:order-1 proof-testimonial">
           {/* Category Filter Switcher */}
           <div className="flex flex-wrap items-center gap-2.5 mb-6">
             {testimonials.map((item, idx) => (
@@ -135,6 +214,7 @@ export function HomeProof() {
 
         {/* Right Column: Title, Subtitle, and Core Operational Commitments */}
         <div className="order-1 lg:order-2">
+          <div className="proof-copy">
           <Eyebrow tone="light">{proofDefaults.eyebrow}</Eyebrow>
           <h2
             id="proof-heading"
@@ -145,9 +225,10 @@ export function HomeProof() {
           <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-500 max-w-[50ch]">
             {proofDefaults.lead}
           </p>
+          </div>
 
           {/* Three Core Commitments - Uncarded Editorial */}
-          <div className="mt-12 space-y-8">
+          <div className="proof-commitments mt-12 space-y-8">
             {proofDefaults.points.map((point) => {
               const IconComponent = webIcons[point.icon];
 

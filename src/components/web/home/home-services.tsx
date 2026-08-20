@@ -22,7 +22,7 @@ export function HomeServices() {
         align="stack"
       />
 
-      <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
+      <ul data-reveal-group className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
         {serviceDefaults.cards.map((card) => {
           const IconComponent = webIcons[card.icon];
 

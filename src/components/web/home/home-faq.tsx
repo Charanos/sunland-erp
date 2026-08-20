@@ -17,7 +17,7 @@ export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
     <SectionBand tone={tone} labelledBy="faq-heading" className="relative bg-white py-20 lg:py-28">
       <div className="grid gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-20 items-start">
         {/* Left Column: Heading & Advisory Concierge Card */}
-        <div className="lg:sticky lg:top-32">
+        <div className="lg:sticky lg:top-32" data-reveal>
           <Eyebrow tone="light">{faqDefaults.eyebrow}</Eyebrow>
           <h2
             id="faq-heading"
@@ -61,7 +61,7 @@ export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
         </div>
 
         {/* Right Column: Refined Numeral-Free Accordion Panels */}
-        <div className="border-t border-slate-200/90">
+        <div className="border-t border-slate-200/90" data-reveal-group>
           {faqDefaults.items.map((item) => (
             <details
               key={item.question}

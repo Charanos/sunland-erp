@@ -154,7 +154,7 @@ export function HomeBudget() {
                 type="button"
                 onClick={() => setBudget(preset)}
                 className={cn(
-                  "rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-all cursor-pointer",
+                  "web-hit rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-all cursor-pointer",
                   budget === preset
                     ? "bg-[#151936] text-white shadow-xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
