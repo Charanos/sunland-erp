@@ -1,4 +1,5 @@
 import { HomeBudget } from "@/components/web/home/home-budget";
+import { WebFooter } from "@/components/web/layout/web-footer";
 import { HomeCategories } from "@/components/web/home/home-categories";
 import { HomeCta } from "@/components/web/home/home-cta";
 import { HomeFaq } from "@/components/web/home/home-faq";
@@ -177,6 +178,7 @@ export default async function HomePage() {
       <HomeInsights posts={insightPosts} />
       <HomeFaq tone={showInsights ? "light" : "tint"} />
       <HomeCta />
+      <WebFooter />
     </>
   );
 }

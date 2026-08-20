@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { FloatingContact } from "@/components/web/layout/floating-contact";
 import { SkipLink } from "@/components/web/layout/skip-link";
-import { WebFooter } from "@/components/web/layout/web-footer";
 import { WebHeader } from "@/components/web/layout/web-header";
 import { RevealController } from "@/components/web/motion/reveal-controller";
 import { SmoothScrollProvider } from "@/components/web/motion/smooth-scroll-provider";
@@ -52,7 +51,6 @@ setTimeout(function () {
       <main id="content" className="flex-1">
         {children}
       </main>
-      <WebFooter />
       <FloatingContact />
     </div>
   );
