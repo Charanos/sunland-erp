@@ -41,6 +41,7 @@ import gsap from "gsap";
 
 let lenis: Lenis | null = null;
 let tickerFn: ((time: number) => void) | null = null;
+let resizeObserver: ResizeObserver | null = null;
 
 /** Idempotent: safe to call from more than one mounted component. */
 export function initSmoothScroll(): void {
@@ -48,25 +49,33 @@ export function initSmoothScroll(): void {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   lenis = new Lenis({
-    // A shade lighter than Lenis's own default (0.1). Heavier damping reads
-    // as sluggish on a page whose other motion is already fast and precise;
-    // this keeps the lag just perceptible enough to feel weighted.
-    lerp: 0.11,
+    lerp: 0.1,
     smoothWheel: true,
-    // Native touch momentum already feels right on a phone. Lenis smoothing
-    // touch input on top of the OS's own inertia is where "smooth scroll"
-    // libraries most commonly turn a page rubbery instead of premium.
     syncTouch: false,
+    autoResize: true,
   });
 
   // gsap.ticker reports seconds; Lenis wants milliseconds.
   tickerFn = (time: number) => lenis?.raf(time * 1000);
   gsap.ticker.add(tickerFn);
+
+  if (typeof ResizeObserver !== "undefined" && document.body) {
+    resizeObserver = new ResizeObserver(() => {
+      lenis?.resize();
+    });
+    resizeObserver.observe(document.body);
+  }
+}
+
+export function resizeSmoothScroll(): void {
+  lenis?.resize();
 }
 
 export function destroySmoothScroll(): void {
   if (tickerFn) gsap.ticker.remove(tickerFn);
   tickerFn = null;
+  resizeObserver?.disconnect();
+  resizeObserver = null;
   lenis?.destroy();
   lenis = null;
 }

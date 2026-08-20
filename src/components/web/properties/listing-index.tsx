@@ -1,7 +1,8 @@
+import Image from "next/image";
 import { PageHeader } from "../layout/page-header";
 import { Container } from "../primitives/container";
 import { WebPagination } from "../primitives/pagination";
-import type { Crumb } from "../primitives/breadcrumbs";
+import { Breadcrumbs, type Crumb } from "../primitives/breadcrumbs";
 import { CATEGORY_FACETS, type ListingFacet } from "../constants/listing-taxonomy";
 import { FilterRail } from "./filter-rail";
 import { EmptyResults, RegisterRequirement, ResultsGrid } from "./results-grid";
@@ -123,14 +124,60 @@ export async function ListingIndex({
 
   return (
     <>
-      <PageHeader
-        crumbs={crumbs}
-        title={title}
-        lead={lead}
-        meta={`${results.total} ${results.total === 1 ? "property" : "properties"}`}
-      />
+      <section className="web-dark relative z-10 flex min-h-[48svh] sm:min-h-[52svh] flex-col overflow-hidden pb-14 pt-32 sm:pt-36 lg:pt-44">
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+          <Image
+            src="/images/properties-hero.jpg"
+            alt=""
+            aria-hidden="true"
+            fill
+            priority
+            sizes="100vw"
+            quality={100}
+            className="object-cover object-center opacity-70"
+          />
+          {/* Layered atmospheric scrims for header transparency contrast and editorial legibility */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent via-35% to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 via-55% to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/40 to-[#151936]"
+          />
+        </div>
 
-      <div className="bg-surface-1 pb-24 pt-8">
+        <Container className="relative z-10 flex flex-1 flex-col justify-end">
+          <Breadcrumbs items={crumbs} tone="dark" className="mb-6 opacity-85" />
+          
+          <div className="w-full">
+            <h1 className="web-title w-full text-[clamp(2.4rem,4.2vw,4.5rem)] font-normal leading-[1.06] tracking-tight text-white drop-shadow-md">
+              {title}
+            </h1>
+
+            <div className="mt-5 flex flex-col sm:flex-row sm:items-end justify-between gap-6 pt-1">
+              {lead && (
+                <p className="web-subtitle max-w-[62ch] text-base sm:text-lg leading-relaxed text-slate-200/90 drop-shadow-sm">
+                  {lead}
+                </p>
+              )}
+
+              <div className="flex shrink-0 items-center gap-2.5 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 backdrop-blur-md shadow-sm">
+                <span aria-hidden="true" className="inline-block size-2 rounded-full bg-brand-yellow animate-pulse" />
+                <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-yellow">
+                  {results.total} {results.total === 1 ? "property" : "properties"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <div className="bg-[#fbfcff] pb-28 pt-10">
         <Container>
           <div className="grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
             <FilterRail

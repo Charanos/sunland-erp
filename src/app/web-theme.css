@@ -241,7 +241,7 @@
    section 08 amendment. The old "no weight above 500" cap is withdrawn. */
 .web-title {
   font-family: var(--font-cormorant), Georgia, serif;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Card, tile and listing titles at 500. The weight split is the point: at 600

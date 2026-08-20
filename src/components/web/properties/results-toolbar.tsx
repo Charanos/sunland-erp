@@ -54,35 +54,35 @@ export function ResultsToolbar({
   };
 
   return (
-    <div className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-web-full border border-line bg-surface-0 px-5 py-3.5">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <p aria-live="polite" className="web-numeric text-[13.5px] text-ink-900">
-          {total} {total === 1 ? "result" : "results"}
+    <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/70 pb-4">
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
+        <p aria-live="polite" className="font-mono text-xs font-medium uppercase tracking-widest text-slate-500">
+          {total} {total === 1 ? "Property Available" : "Properties Available"}
         </p>
 
-        {chips.length > 0 && <span aria-hidden="true" className="h-4 w-px bg-line" />}
+        {chips.length > 0 && <span aria-hidden="true" className="h-3.5 w-px bg-slate-300" />}
 
         {chips.map((chip) => (
           <span
             key={`${chip.param}-${chip.value ?? chip.label}`}
-            className="inline-flex items-center gap-1.5 rounded-web-full bg-surface-2 py-1 pl-3 pr-1.5 text-[12.5px] text-ink-900"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white py-0.5 pl-2.5 pr-1 font-mono text-[11px] font-medium text-slate-700 shadow-2xs"
           >
             {chip.label}
             <button
               type="button"
               onClick={() => removeChip(chip.param, chip.value)}
               aria-label={`Remove ${chip.label} filter`}
-              className="web-hit inline-flex size-5 items-center justify-center rounded-web-full text-ink-400 transition-colors hover:text-ink-900"
+              className="inline-flex size-4 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-[#151936] hover:text-white"
             >
-              <CloseIcon size={13} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+              <CloseIcon size={10} stroke={2} aria-hidden="true" />
             </button>
           </span>
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
-        <label htmlFor={sortId} className="web-subtitle text-[13px] text-ink-400">
-          Sort
+      <div className="flex items-center gap-2">
+        <label htmlFor={sortId} className="font-mono text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+          Sort by
         </label>
         <select
           id={sortId}
@@ -93,7 +93,7 @@ export function ResultsToolbar({
             else params.set("sort", event.target.value);
             push(params);
           }}
-          className="rounded-web-full border border-line-strong bg-surface-0 px-3 py-1.5 text-[13.5px] text-ink-900 focus:border-ink-900 focus:outline-none"
+          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs font-medium text-slate-800 focus:border-[#151936] focus:outline-none transition-all cursor-pointer"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>

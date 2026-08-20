@@ -72,9 +72,12 @@ export function WebHeader() {
   const pathname = usePathname();
   const scrollDirection = useScrollDirection();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
 
   const isHome = pathname === "/";
-  const isTransparent = isHome && scrollDirection === "top";
+  const isProperties = pathname?.startsWith("/properties");
+  const isTransparentRoute = isHome || isProperties;
+  const isTransparent = isTransparentRoute && scrollDirection === "top";
   const isHidden = scrollDirection === "down" && !drawerOpen;
 
   const headerRef = useRef<HTMLElement>(null);
@@ -123,24 +126,20 @@ export function WebHeader() {
       const navList = navListRef.current;
       if (!header || !pill || !logo || !container || !navList) return;
 
-      const isFirstRun = !hasMountedRef.current;
-      hasMountedRef.current = true;
-
       const media = gsap.matchMedia();
 
-      // No preference stated, or motion explicitly welcome: the full thing.
       media.add("(prefers-reduced-motion: no-preference)", () => {
-        if (isFirstRun) {
-          gsap.set(header, { ...target.header, yPercent: 0, opacity: 1 });
-          gsap.set(pill, target.pill);
-          gsap.set(logo, target.logo);
-          gsap.set(container, target.container);
-          gsap.set(navList, target.navList);
+        gsap.killTweensOf([header, pill, logo, container, navList]);
+
+        if (isTransparent) {
+          gsap.to(header, { ...states.transparent.header, yPercent: 0, opacity: 1, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+          gsap.to(pill, { ...states.transparent.pill, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+          gsap.to(logo, { ...states.transparent.logo, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+          gsap.to(container, { ...states.transparent.container, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+          gsap.to(navList, { ...states.transparent.navList, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
           return;
         }
 
-        // Leaving is quicker than arriving. A header that takes as long to go
-        // as it does to come back feels like it is arguing with the scroll.
         gsap.to(header, {
           yPercent: isHidden ? -130 : 0,
           opacity: isHidden ? 0 : 1,
@@ -149,27 +148,21 @@ export function WebHeader() {
           overwrite: "auto",
         });
 
-        gsap
-          .timeline({ defaults: { ease: "sun.glide", duration: DUR.panel } })
-          .to(header, target.header, 0)
-          .to(pill, target.pill, 0)
-          .to(container, target.container, 0)
-          .to(logo, target.logo, 0)
-          .to(navList, target.navList, 0);
+        gsap.to(header, { ...states.condensed.header, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+        gsap.to(pill, { ...states.condensed.pill, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+        gsap.to(container, { ...states.condensed.container, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+        gsap.to(logo, { ...states.condensed.logo, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
+        gsap.to(navList, { ...states.condensed.navList, duration: DUR.snap, ease: "sun.glide", overwrite: "auto" });
       });
 
-      // Reduced motion: identical end states, no tweens, and the header never
-      // hides. Sliding a navigation bar off screen is exactly the kind of
-      // movement this preference is asking us not to make.
       media.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.killTweensOf([header, pill, logo, container, navList]);
         gsap.set(header, { ...target.header, yPercent: 0, opacity: 1 });
         gsap.set(pill, target.pill);
         gsap.set(logo, target.logo);
         gsap.set(container, target.container);
         gsap.set(navList, target.navList);
       });
-
-      return () => media.revert();
     },
     { dependencies: [isTransparent, isHidden, pathname] }
   );
@@ -282,11 +275,17 @@ export function WebHeader() {
           <nav aria-label="Primary" className="hidden lg:block">
             <ul
               ref={navListRef}
-              onMouseLeave={() => restIndicator()}
+              onMouseLeave={() => {
+                setHoveredHref(null);
+                restIndicator();
+              }}
               onBlur={(event) => {
                 // Only rest when focus has actually left the capsule, not when
                 // it moves between two links inside it.
-                if (!event.currentTarget.contains(event.relatedTarget as Node)) restIndicator();
+                if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                  setHoveredHref(null);
+                  restIndicator();
+                }
               }}
               className="relative flex items-center gap-1 rounded-full border border-transparent p-1"
               style={initialTarget.navList}
@@ -300,19 +299,30 @@ export function WebHeader() {
               />
               {HEADER_NAV.map((item) => {
                 const active = isActive(item.href);
+                const isIndicatorUnder = hoveredHref !== null ? item.href === hoveredHref : active;
 
                 return (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       data-active={active ? "true" : undefined}
-                      onMouseEnter={(event) => moveIndicator(event.currentTarget)}
-                      onFocus={(event) => moveIndicator(event.currentTarget)}
+                      onMouseEnter={(event) => {
+                        setHoveredHref(item.href);
+                        moveIndicator(event.currentTarget);
+                      }}
+                      onFocus={(event) => {
+                        setHoveredHref(item.href);
+                        moveIndicator(event.currentTarget);
+                      }}
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "relative z-10 block rounded-full px-4 py-1.5 font-mono text-[12.5px] font-medium uppercase transition-colors duration-200",
                         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
-                        active ? "text-[#151936]" : "text-slate-200 hover:text-[#151936]"
+                        isIndicatorUnder
+                          ? "text-[#151936] font-medium"
+                          : active
+                          ? "text-white font-medium"
+                          : "text-slate-200 hover:text-white"
                       )}
                     >
                       {item.label}
@@ -343,7 +353,7 @@ export function WebHeader() {
           full-bleed hero. Sized to the real condensed height at each
           breakpoint rather than one magic number: the logo is 36px under 640
           and 60px above it, so a flat 96px left a visible gap on a phone. */}
-      {!isHome && <div aria-hidden="true" className="h-[72px] sm:h-[96px]" />}
+      {!isTransparentRoute && <div aria-hidden="true" className="h-[72px] sm:h-[96px]" />}
     </>
   );
 }

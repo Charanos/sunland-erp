@@ -113,17 +113,13 @@ export function FilterRail({
     Boolean(current("min")) ||
     Boolean(current("max"));
 
-  const sectionClass = "border-b border-line-soft pb-5 mb-5";
-  const legendClass = "web-subtitle mb-3 block text-[13px] text-ink-900";
-  const chipClass =
-    "web-control web-hit inline-flex items-center rounded-web-full px-[15px] py-1.5 text-[11.5px] tracking-[0.08em] transition-all duration-150";
+  const sectionClass = "border-b border-slate-200/70 pb-5 mb-5";
+  const legendClass = "font-mono text-[11px] font-medium uppercase tracking-[0.15em] text-slate-500 mb-3 block";
   const inputClass =
-    "w-full rounded-web-full border border-line-strong bg-surface-0 px-3.5 py-2 text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none";
+    "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:border-[#151936] focus:outline-none focus:ring-1 focus:ring-[#151936] transition-all";
 
   const body = (
     <form
-      // The no-JS fallback: this submits by GET to the current path and the
-      // server renders the same filtered page.
       method="get"
       action={pathname}
       onSubmit={(event) => {
@@ -139,35 +135,35 @@ export function FilterRail({
         setOpen(false);
       }}
     >
-      <div className="mb-5 flex items-baseline justify-between gap-4">
-        <h2 className="web-control text-[11px] uppercase tracking-[0.2em] text-ink-400">Refine</h2>
+      <div className="mb-6 flex items-center justify-between gap-4 border-b border-slate-200/70 pb-3">
+        <h2 className="font-mono text-[11.5px] font-medium uppercase tracking-[0.18em] text-slate-900">
+          Refine Search
+        </h2>
         {hasActiveFilters && (
           <button
             type="button"
             onClick={clearAll}
-            className="web-hit border-b border-line-strong text-[13px] text-ink-900 transition-colors hover:border-ink-900"
+            className="text-[11.5px] font-medium text-slate-500 underline decoration-slate-300 underline-offset-2 transition-colors hover:text-[#151936]"
           >
-            Clear all
+            Reset
           </button>
         )}
       </div>
 
-      {/* Status. Hidden when the page is already a status facet: offering to
-          re-choose the thing the URL has fixed is how filters contradict
-          their own page. */}
+      {/* Status */}
       {lockedFacet?.kind !== "status" && (
         <fieldset className={sectionClass}>
           <legend className={legendClass}>Status</legend>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="grid grid-cols-3 gap-1 rounded-full bg-slate-200/60 p-1 border border-slate-200/80">
             <button
               type="button"
               onClick={() => setSingle("status", "")}
               aria-pressed={!activeStatus}
               className={cn(
-                chipClass,
+                "rounded-full py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider transition-all",
                 !activeStatus
-                  ? "bg-brand-dark text-on-dark-hi"
-                  : "border border-line-strong text-ink-500 hover:border-ink-400"
+                  ? "bg-[#151936] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               )}
             >
               Any
@@ -179,10 +175,10 @@ export function FilterRail({
                 onClick={() => setSingle("status", facet.segment)}
                 aria-pressed={activeStatus === facet.segment}
                 className={cn(
-                  chipClass,
+                  "rounded-full py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider transition-all",
                   activeStatus === facet.segment
-                    ? "bg-brand-dark text-on-dark-hi"
-                    : "border border-line-strong text-ink-500 hover:border-ink-400"
+                    ? "bg-[#151936] text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
                 )}
               >
                 {facet.label}
@@ -192,10 +188,11 @@ export function FilterRail({
         </fieldset>
       )}
 
+      {/* Property Type */}
       {lockedFacet?.kind !== "category" && (
         <fieldset className={sectionClass}>
-          <legend className={legendClass}>Property type</legend>
-          <div className="grid gap-2.5">
+          <legend className={legendClass}>Property Type</legend>
+          <div className="grid gap-1.5">
             {CATEGORY_FACETS.map((facet) => {
               const checked = activeCategories.includes(facet.segment);
               const count = counts[facet.segment];
@@ -203,19 +200,28 @@ export function FilterRail({
               return (
                 <label
                   key={facet.segment}
-                  className="flex min-h-8 cursor-pointer items-center gap-2.5 text-[14.5px] text-ink-500"
+                  className={cn(
+                    "flex min-h-8.5 cursor-pointer items-center justify-between rounded-lg px-2 py-1 text-[13.5px] transition-colors",
+                    checked
+                      ? "font-medium text-[#151936]"
+                      : "text-slate-600 hover:text-slate-900"
+                  )}
                 >
-                  <input
-                    type="checkbox"
-                    name="category"
-                    value={facet.segment}
-                    checked={checked}
-                    onChange={() => toggleInList("category", facet.segment)}
-                    className="size-4 shrink-0 accent-[var(--color-brand-dark)]"
-                  />
-                  {facet.label}
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      name="category"
+                      value={facet.segment}
+                      checked={checked}
+                      onChange={() => toggleInList("category", facet.segment)}
+                      className="size-4 shrink-0 rounded border-slate-300 accent-[#151936]"
+                    />
+                    <span>{facet.label}</span>
+                  </div>
                   {typeof count === "number" && (
-                    <span className="web-numeric ml-auto text-[12.5px] text-ink-400">{count}</span>
+                    <span className="font-mono text-[11px] text-slate-400">
+                      {count}
+                    </span>
                   )}
                 </label>
               );
@@ -224,6 +230,7 @@ export function FilterRail({
         </fieldset>
       )}
 
+      {/* Location */}
       <div className={sectionClass}>
         <label htmlFor={locationId} className={legendClass}>
           Location
@@ -232,41 +239,49 @@ export function FilterRail({
           id={locationId}
           name="location"
           defaultValue={current("location")}
-          placeholder="Any area"
+          placeholder="e.g. Karen, Westlands, Runda"
           className={inputClass}
         />
       </div>
 
+      {/* Monthly Rent / Price */}
       <div className={sectionClass}>
-        <p className={legendClass}>Monthly rent, KES</p>
+        <p className={legendClass}>
+          {activeStatus === "for-sale" ? "Price Range, KES" : "Monthly Rent, KES"}
+        </p>
         <div className="flex items-center gap-2">
-          <input
-            id={minId}
-            name="min"
-            inputMode="numeric"
-            aria-label="Minimum rent"
-            defaultValue={current("min")}
-            placeholder="Min"
-            className={cn(inputClass, "web-numeric min-w-0 flex-1 px-3 text-[13.5px]")}
-          />
-          <span aria-hidden="true" className="text-ink-400">
-            to
+          <div className="relative min-w-0 flex-1">
+            <input
+              id={minId}
+              name="min"
+              inputMode="numeric"
+              aria-label="Minimum price"
+              defaultValue={current("min")}
+              placeholder="Min"
+              className={inputClass}
+            />
+          </div>
+          <span aria-hidden="true" className="text-xs font-mono text-slate-400">
+            —
           </span>
-          <input
-            id={maxId}
-            name="max"
-            inputMode="numeric"
-            aria-label="Maximum rent"
-            defaultValue={current("max")}
-            placeholder="Max"
-            className={cn(inputClass, "web-numeric min-w-0 flex-1 px-3 text-[13.5px]")}
-          />
+          <div className="relative min-w-0 flex-1">
+            <input
+              id={maxId}
+              name="max"
+              inputMode="numeric"
+              aria-label="Maximum price"
+              defaultValue={current("max")}
+              placeholder="Max"
+              className={inputClass}
+            />
+          </div>
         </div>
       </div>
 
+      {/* Bedrooms */}
       <fieldset className={sectionClass}>
         <legend className={legendClass}>Bedrooms</legend>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="grid grid-cols-4 gap-1.5">
           {BEDROOM_OPTIONS.map((option) => {
             const active = activeBedrooms.includes(option);
             return (
@@ -276,10 +291,10 @@ export function FilterRail({
                 onClick={() => toggleInList("beds", option)}
                 aria-pressed={active}
                 className={cn(
-                  "web-numeric web-hit inline-flex min-w-10 items-center justify-center rounded-web-full px-2.5 py-1.5 text-[13.5px] transition-all duration-150",
+                  "flex items-center justify-center rounded-xl py-2 font-mono text-xs font-medium transition-all border",
                   active
-                    ? "bg-brand-dark text-on-dark-hi"
-                    : "border border-line-strong text-ink-500 hover:border-ink-400"
+                    ? "border-[#151936] bg-[#151936] text-white shadow-xs"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                 )}
               >
                 {option}
@@ -289,13 +304,19 @@ export function FilterRail({
         </div>
       </fieldset>
 
+      {/* Features */}
       <fieldset className="mb-6">
-        <legend className={legendClass}>Features</legend>
-        <div className="grid gap-2.5">
+        <legend className={legendClass}>Amenities</legend>
+        <div className="grid gap-1.5">
           {FEATURE_OPTIONS.map((feature) => (
             <label
               key={feature.value}
-              className="flex min-h-8 cursor-pointer items-center gap-2.5 text-[14.5px] text-ink-500"
+              className={cn(
+                "flex min-h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1 text-[13px] transition-colors",
+                activeFeatures.includes(feature.value)
+                  ? "font-medium text-[#151936]"
+                  : "text-slate-600 hover:text-slate-900"
+              )}
             >
               <input
                 type="checkbox"
@@ -303,9 +324,9 @@ export function FilterRail({
                 value={feature.value}
                 checked={activeFeatures.includes(feature.value)}
                 onChange={() => toggleInList("feature", feature.value)}
-                className="size-4 shrink-0 accent-[var(--color-brand-dark)]"
+                className="size-4 shrink-0 rounded border-slate-300 accent-[#151936]"
               />
-              {feature.label}
+              <span>{feature.label}</span>
             </label>
           ))}
         </div>
@@ -313,34 +334,34 @@ export function FilterRail({
 
       <button
         type="submit"
-        className="web-control web-hit w-full rounded-web-full bg-brand-yellow px-6 py-2.5 text-xs uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h"
+        className="w-full rounded-full bg-[#151936] px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.14em] text-white transition-colors hover:bg-slate-800 active:scale-[0.99]"
       >
-        Show {resultCount} {resultCount === 1 ? "match" : "matches"}
+        Show {resultCount} {resultCount === 1 ? "Result" : "Results"}
       </button>
     </form>
   );
 
   return (
     <>
-      {/* Mobile: a single 44px row that opens the sheet, so the first listing
-          card is above the fold at 390 rather than buried under a filter rail. */}
+      {/* Mobile filter trigger */}
       <div className={cn("lg:hidden", className)}>
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-expanded={open}
-          className="web-control web-hit flex w-full items-center justify-center gap-2 rounded-web-full border border-line bg-surface-0 px-5 py-2.5 text-[11.5px] uppercase tracking-[0.12em] text-ink-900"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200/90 bg-white px-5 py-3 font-mono text-xs font-medium uppercase tracking-wider text-[#151936] shadow-xs transition-colors hover:bg-slate-50"
         >
           <FilterIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-          Filters
+          Filter Properties
           {hasActiveFilters && (
-            <span className="web-numeric rounded-web-full bg-brand-dark px-2 py-0.5 text-[10px] text-on-dark-hi">
-              on
+            <span className="rounded-full bg-[#151936] px-2 py-0.5 font-mono text-[10px] text-white">
+              Active
             </span>
           )}
         </button>
       </div>
 
+      {/* Mobile Drawer */}
       {open && (
         <div className="fixed inset-0 z-overlay flex items-end lg:hidden">
           <button
@@ -348,31 +369,34 @@ export function FilterRail({
             tabIndex={-1}
             aria-hidden="true"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 cursor-default bg-brand-dark/60 backdrop-blur-sm"
+            className="absolute inset-0 cursor-default bg-[#090d1f]/60 backdrop-blur-sm animate-fade-in"
           />
           <div
             role="dialog"
             aria-modal="true"
             aria-label="Filters"
-            className="relative max-h-[85vh] w-full overflow-y-auto rounded-t-web-lg bg-surface-0 p-6 shadow-web-lg"
+            className="relative max-h-[88vh] w-full overflow-y-auto rounded-t-[28px] border-t border-slate-200/80 bg-white p-6 shadow-2xl animate-slide-up"
           >
+            {/* Drag Handle Indicator */}
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close filters"
-              className="web-hit absolute right-4 top-4 inline-flex size-11 items-center justify-center rounded-web-full text-ink-500"
+              className="absolute right-5 top-5 inline-flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
             >
-              <CloseIcon size={20} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+              <CloseIcon size={18} stroke={WEB_ICON_STROKE} aria-hidden="true" />
             </button>
             {body}
           </div>
         </div>
       )}
 
+      {/* Desktop Sticky Uncarded Aside */}
       <aside
         aria-label="Filters"
         className={cn(
-          "sticky top-[100px] hidden max-w-[300px] rounded-web-card border border-line bg-surface-0 p-6 lg:block",
+          "sticky top-28 hidden w-full max-w-[270px] pr-2 lg:block",
           className
         )}
       >

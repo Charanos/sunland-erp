@@ -87,17 +87,15 @@ export function ListingCard({
   return (
     <article
       className={cn(
-        "group relative flex flex-col justify-between overflow-hidden rounded-[22px] border border-slate-200/90 bg-white transition-all duration-300 ease-out",
-        "shadow-[0_8px_24px_rgba(21,25,54,0.04),0_1px_2px_rgba(0,0,0,0.02)]",
-        isAvailable &&
-          "hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_20px_45px_rgba(21,25,54,0.1),0_4px_12px_rgba(0,0,0,0.03)] focus-within:-translate-y-1.5 focus-within:shadow-[0_20px_45px_rgba(21,25,54,0.1)]",
+        "group relative flex flex-col justify-between transition-all duration-300 ease-out",
+        isAvailable && "hover:-translate-y-1",
         className
       )}
     >
       {/* Media */}
       <div
         className={cn(
-          "web-scrim-top relative aspect-[16/11] overflow-hidden rounded-t-[21px] bg-slate-900",
+          "web-scrim-top relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-900 shadow-2xs transition-shadow duration-300 group-hover:shadow-md",
           !isAvailable && "saturate-[0.55]"
         )}
       >
@@ -111,38 +109,38 @@ export function ListingCard({
             loading={priority ? undefined : "lazy"}
             className={cn(
               "object-cover transition-transform duration-500 ease-out motion-reduce:transition-none",
-              isAvailable && "group-hover:scale-[1.05] motion-reduce:group-hover:scale-100"
+              isAvailable && "group-hover:scale-[1.04] motion-reduce:group-hover:scale-100"
             )}
           />
         ) : (
           <BrandedFallback />
         )}
 
-        <div className="absolute inset-x-3.5 top-3.5 z-10 flex items-start justify-between gap-2">
+        <div className="absolute inset-x-3 top-3 z-10 flex items-start justify-between gap-2">
           <ListingStatusBadge status={listing.status} />
           {listing.isFeatured && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow px-2.5 py-1 font-mono text-[10.5px] font-semibold uppercase tracking-wider text-[#151936] shadow-xs">
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-[#151936] shadow-2xs">
               Featured
             </span>
           )}
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+      <div className="flex flex-1 flex-col justify-between pt-4 pb-1">
         <div>
-          <Heading className="font-editorial text-[21px] sm:text-[23px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-700 min-h-[3.35rem]">
+          <Heading className="font-editorial text-[20px] sm:text-[21px] font-normal leading-[1.25] text-[#151936] transition-colors group-hover:text-blue-900 min-h-[3.2rem]">
             <Link href={`/properties/${listing.slug}`} className="after:absolute after:inset-0">
               <span className="line-clamp-2">{listing.title}</span>
             </Link>
           </Heading>
 
-          <p className="mt-2 flex items-center gap-1.5 truncate text-xs text-slate-500 font-normal">
-            <PinIcon size={15} stroke={WEB_ICON_STROKE} aria-hidden="true" className="shrink-0 text-slate-400" />
+          <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-slate-500 font-normal">
+            <PinIcon size={14} stroke={WEB_ICON_STROKE} aria-hidden="true" className="shrink-0 text-slate-400" />
             <span className="truncate">{listing.location}</span>
           </p>
         </div>
 
-        <div className="my-4 border-y border-slate-100 py-3 min-h-[46px] flex items-center">
+        <div className="my-3 border-y border-slate-200/60 py-2.5 min-h-[42px] flex items-center">
           <SpecRow className="w-full border-0 py-0 my-0">
             <SpecChip icon="bed" value={listing.bedrooms} unit="bedrooms" />
             <SpecChip icon="bath" value={listing.bathrooms} unit="bathrooms" />
@@ -161,7 +159,7 @@ export function ListingCard({
               <>
                 <p
                   className={cn(
-                    "font-mono text-[22px] sm:text-[24px] font-medium tracking-tight",
+                    "font-mono text-[20px] sm:text-[21px] font-medium tracking-tight",
                     isAvailable ? "text-[#151936]" : "text-slate-500"
                   )}
                 >
@@ -174,8 +172,8 @@ export function ListingCard({
             )}
           </div>
 
-          <div className="flex size-8.5 items-center justify-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-500 shadow-xs transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
-            <ArrowIcon size={14} stroke={2} aria-hidden="true" />
+          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+            <ArrowIcon size={13} stroke={2} aria-hidden="true" />
           </div>
         </div>
       </div>

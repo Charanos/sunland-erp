@@ -59,28 +59,28 @@ export function WebPagination({
   const endItem = pageSize && totalItems ? Math.min(currentPage * pageSize, totalItems) : null;
 
   const stepClass =
-    "web-control web-hit inline-flex items-center gap-1 rounded-web-full border border-line px-4 py-2 text-[11px] uppercase tracking-[0.1em] text-ink-500 transition-colors hover:border-ink-900 hover:text-ink-900";
+    "inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-slate-700 transition-colors hover:border-[#151936] hover:text-[#151936]";
   const disabledClass = "pointer-events-none opacity-40";
 
   return (
     <nav
       aria-label="Pagination"
       className={cn(
-        "mt-8 flex flex-col items-center justify-between gap-4 rounded-web-panel border border-line bg-surface-0 p-3 shadow-web-sm sm:flex-row",
+        "mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-200/70 pt-6 sm:flex-row",
         className
       )}
     >
-      <p className="web-numeric text-[13px] text-ink-400">
+      <p className="font-mono text-xs text-slate-500">
         {startItem && endItem && totalItems ? (
           <>
-            Showing <span className="text-ink-900">{startItem}</span> to{" "}
-            <span className="text-ink-900">{endItem}</span> of{" "}
-            <span className="text-ink-900">{totalItems}</span> {itemLabel}
+            Showing <span className="font-medium text-[#151936]">{startItem}</span> to{" "}
+            <span className="font-medium text-[#151936]">{endItem}</span> of{" "}
+            <span className="font-medium text-[#151936]">{totalItems}</span> {itemLabel}
           </>
         ) : (
           <>
-            Page <span className="text-ink-900">{currentPage}</span> of{" "}
-            <span className="text-ink-900">{totalPages}</span>
+            Page <span className="font-medium text-[#151936]">{currentPage}</span> of{" "}
+            <span className="font-medium text-[#151936]">{totalPages}</span>
           </>
         )}
       </p>
@@ -106,10 +106,10 @@ export function WebPagination({
               aria-label={`Page ${page}`}
               aria-current={page === currentPage ? "page" : undefined}
               className={cn(
-                "web-numeric web-hit inline-flex size-9 items-center justify-center rounded-web-full text-[13px] transition-colors",
+                "inline-flex size-8 items-center justify-center rounded-full font-mono text-xs font-medium transition-colors",
                 page === currentPage
-                  ? "bg-brand-dark text-on-dark-hi"
-                  : "text-ink-500 hover:bg-surface-1 hover:text-ink-900"
+                  ? "bg-[#151936] text-white shadow-2xs"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
               )}
             >
               {page}

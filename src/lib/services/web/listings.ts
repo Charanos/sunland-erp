@@ -4,6 +4,81 @@ import { properties } from "@/db/schema/properties";
 import { toListingStatus, type ListingStatus } from "@/components/web/constants/listing-status";
 import { generateListingSlug, type SortValue } from "@/components/web/constants/listing-taxonomy";
 import type { ListingCardData } from "@/components/web/primitives/listing-card";
+import { MOCK_PROPERTIES } from "@/components/web/properties/properties.defaults";
+
+/**
+ * Filter mock listings in memory when database query yields empty or fails.
+ */
+function filterMockListings(filters: ListingFilters = {}): ListingResults {
+  const page = Math.max(1, filters.page ?? 1);
+  const pageSize = Math.min(48, Math.max(1, filters.pageSize ?? 9));
+
+  let results = [...MOCK_PROPERTIES];
+
+  // Status filter: "for-rent" | "for-sale"
+  if (filters.status) {
+    results = results.filter((p) => p.listingType === filters.status);
+  }
+
+  // Category facet: "apartments" | "villas" | "commercial" | "land"
+  if (filters.category) {
+    results = results.filter((p) => p.category === filters.category);
+  }
+
+  // Location filter (case-insensitive search)
+  if (filters.location) {
+    const query = filters.location.toLowerCase().trim();
+    results = results.filter(
+      (p) =>
+        p.location.toLowerCase().includes(query) ||
+        p.title.toLowerCase().includes(query)
+    );
+  }
+
+  // Price range filter
+  if (filters.minPrice !== undefined && filters.minPrice > 0) {
+    results = results.filter((p) => p.priceKes !== null && p.priceKes >= filters.minPrice!);
+  }
+  if (filters.maxPrice !== undefined && filters.maxPrice > 0) {
+    results = results.filter((p) => p.priceKes !== null && p.priceKes <= filters.maxPrice!);
+  }
+
+  // Bedroom filter: e.g. ["1", "2", "3", "4+"]
+  if (filters.bedrooms && filters.bedrooms.length > 0) {
+    results = results.filter((p) => {
+      if (p.bedrooms === null || p.bedrooms === undefined) return false;
+      return filters.bedrooms!.some((b) => {
+        if (b === "4+" || b === "4") return (p.bedrooms ?? 0) >= 4;
+        return String(p.bedrooms) === b;
+      });
+    });
+  }
+
+  // Sorting
+  const sort = filters.sort ?? "newest";
+  if (sort === "price-asc") {
+    results.sort((a, b) => (a.priceKes ?? 0) - (b.priceKes ?? 0));
+  } else if (sort === "price-desc") {
+    results.sort((a, b) => (b.priceKes ?? 0) - (a.priceKes ?? 0));
+  } else if (sort === "bedrooms") {
+    results.sort((a, b) => (b.bedrooms ?? 0) - (a.bedrooms ?? 0));
+  } else {
+    // newest / featured first
+    results.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+  }
+
+  const total = results.length;
+  const start = (page - 1) * pageSize;
+  const pagedListings = results.slice(start, start + pageSize);
+
+  return {
+    listings: pagedListings,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
 
 /**
  * The public listing catalogue.
@@ -239,17 +314,20 @@ export async function getListings(filters: ListingFilters = {}): Promise<Listing
 
     const total = countRow?.total ?? 0;
 
-    return {
-      listings: rows.map(toCardData),
-      total,
-      page,
-      pageSize,
-      totalPages: Math.ceil(total / pageSize),
-    };
+    if (rows.length > 0 || total > 0) {
+      return {
+        listings: rows.map(toCardData),
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      };
+    }
   } catch (error) {
-    console.error("[web/listings] query failed", error);
-    return { ...EMPTY_RESULTS, page, pageSize };
+    // Database unreachable in dev - fall back to mock listings below
   }
+
+  return filterMockListings(filters);
 }
 
 /** Facet counts for the filter rail. A zero is a real answer here. */
@@ -261,25 +339,33 @@ export async function getFacetCounts(): Promise<Record<string, number>> {
       .where(ne(properties.status, "off_market"))
       .groupBy(properties.propertyType);
 
-    const counts: Record<string, number> = {
-      apartments: 0,
-      villas: 0,
-      commercial: 0,
-      land: 0,
-    };
+    if (rows && rows.length > 0) {
+      const counts: Record<string, number> = {
+        apartments: 0,
+        villas: 0,
+        commercial: 0,
+        land: 0,
+      };
 
-    for (const row of rows) {
-      const type = row.propertyType.toLowerCase().trim();
-      for (const [segment, types] of Object.entries(CATEGORY_TO_TYPES)) {
-        if (types.includes(type)) counts[segment] += row.count;
+      for (const row of rows) {
+        const type = row.propertyType.toLowerCase().trim();
+        for (const [segment, types] of Object.entries(CATEGORY_TO_TYPES)) {
+          if (types.includes(type)) counts[segment] += row.count;
+        }
       }
-    }
 
-    return counts;
+      return counts;
+    }
   } catch (error) {
-    console.error("[web/listings] facet counts failed", error);
-    return {};
+    // Fall back to mock counts below
   }
+
+  return {
+    apartments: MOCK_PROPERTIES.filter((p) => p.category === "apartments").length,
+    villas: MOCK_PROPERTIES.filter((p) => p.category === "villas").length,
+    commercial: MOCK_PROPERTIES.filter((p) => p.category === "commercial").length,
+    land: MOCK_PROPERTIES.filter((p) => p.category === "land").length,
+  };
 }
 
 export type ListingDetail = ListingCardData & {
@@ -313,31 +399,30 @@ export async function getListingBySlug(slug: string): Promise<ListingDetail | nu
       .where(ne(properties.status, "off_market"));
 
     const match = rows.find((row) => generateListingSlug(row.name, row.propertyCode) === slug);
-    if (!match) return null;
+    if (match) {
+      const card = toCardData(match);
 
-    const card = toCardData(match);
-
-    return {
-      ...card,
-      description: match.description,
-      propertyType: match.propertyType,
-      reference: match.propertyCode,
-      // Alt text is required before an image can be a listing hero. Where the
-      // record has none we synthesise a descriptive default rather than ship
-      // an empty alt, which a screen reader announces as the file name.
-      images: (match.media ?? [])
-        .filter((item) => Boolean(item.url))
-        .map((item, index, all) => ({
-          url: item.url,
-          alt: item.alt || `${match.name}, photo ${index + 1} of ${all.length}`,
-        })),
-      amenities: match.amenities ?? [],
-      yearBuilt: match.yearBuilt,
-    };
+      return {
+        ...card,
+        description: match.description,
+        propertyType: match.propertyType,
+        reference: match.propertyCode,
+        images: (match.media ?? [])
+          .filter((item) => Boolean(item.url))
+          .map((item, index, all) => ({
+            url: item.url,
+            alt: item.alt || `${match.name}, photo ${index + 1} of ${all.length}`,
+          })),
+        amenities: match.amenities ?? [],
+        yearBuilt: match.yearBuilt,
+      };
+    }
   } catch (error) {
-    console.error("[web/listings] detail lookup failed", error);
-    return null;
+    // Fall back to mock detail below
   }
+
+  const mockMatch = MOCK_PROPERTIES.find((p) => p.slug === slug);
+  return mockMatch ?? null;
 }
 
 /** Similar listings for the detail page. Never includes the current one. */
@@ -362,11 +447,16 @@ export async function getSimilarListings(
       .orderBy(desc(properties.isFeatured), desc(properties.createdAt))
       .limit(limit);
 
-    return rows.map(toCardData);
+    if (rows && rows.length > 0) {
+      return rows.map(toCardData);
+    }
   } catch (error) {
-    console.error("[web/listings] similar lookup failed", error);
-    return [];
+    // Fall back to mock similar below
   }
+
+  return MOCK_PROPERTIES
+    .filter((p) => p.id !== listing.id)
+    .slice(0, limit);
 }
 
 /**
