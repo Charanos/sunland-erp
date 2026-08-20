@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { startSmoothScroll, stopSmoothScroll } from "@/lib/motion/smooth-scroll";
 
 /**
  * Lock body scroll while an overlay is open.
@@ -56,6 +57,15 @@ export function useBodyScrollLock(locked: boolean) {
       body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
+    // Lenis drives the real scroll position every frame via its own
+    // requestAnimationFrame step, which knows nothing about this lock. Left
+    // running, it keeps calling window.scrollTo underneath a body that is now
+    // position:fixed, and the moment the lock lifts the page jumps to wherever
+    // Lenis's internal target had drifted to rather than back where it was.
+    // Stopping it here, and only here, is what makes the position restored
+    // below actually stick.
+    stopSmoothScroll();
+
     return () => {
       body.style.position = previous.position;
       body.style.top = previous.top;
@@ -68,6 +78,12 @@ export function useBodyScrollLock(locked: boolean) {
       // Instant, not smooth: this is a restore, not a navigation, and a
       // smooth scroll here animates the page back under the visitor's cursor.
       window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior });
+
+      // Passing scrollY snaps Lenis's own internal target to match before it
+      // resumes, since nothing dispatched a native scroll event for it to
+      // learn that from while the body was fixed. See startSmoothScroll's
+      // doc comment for why this is necessary rather than defensive.
+      startSmoothScroll(scrollY);
     };
   }, [locked]);
 }

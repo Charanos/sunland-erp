@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { FloatingContact } from "@/components/web/layout/floating-contact";
 import { SkipLink } from "@/components/web/layout/skip-link";
 import { WebFooter } from "@/components/web/layout/web-footer";
 import { WebHeader } from "@/components/web/layout/web-header";
 import { RevealController } from "@/components/web/motion/reveal-controller";
+import { SmoothScrollProvider } from "@/components/web/motion/smooth-scroll-provider";
 
 /**
  * The public site shell.
@@ -29,9 +31,24 @@ export const metadata: Metadata = {
 export default function WebLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="web-root flex min-h-screen flex-col">
+      {/* Runs before the parser reaches the body, so `.web-preanim` (see
+          web-theme.css) is already on <html> at the very first paint,
+          eliminating the flash where a GSAP entrance snaps visible content
+          to hidden a frame after hydration. Each entrance effect removes the
+          class itself once its timeline is built; the 2.5s fallback here is
+          what stops a hero staying invisible forever if that JS never
+          arrives at all, matching the "ships visible by default" contract
+          the entrance animations themselves already follow. */}
+      <Script id="web-preanim-gate" strategy="beforeInteractive">
+        {`document.documentElement.classList.add("web-preanim");
+setTimeout(function () {
+  document.documentElement.classList.remove("web-preanim");
+}, 2500);`}
+      </Script>
       <SkipLink />
       <WebHeader />
       <RevealController />
+      <SmoothScrollProvider />
       <main id="content" className="flex-1">
         {children}
       </main>

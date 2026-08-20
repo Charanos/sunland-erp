@@ -50,6 +50,14 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${nunito.variable} ${jetbrains.variable} ${cardo.variable} ${cormorant.variable} h-full antialiased`}
+      // The (web) route group's pre-hydration flash-prevention script adds
+      // and later removes a `web-preanim` class on this element before React
+      // ever hydrates, so its className legitimately differs from the
+      // server-rendered markup at the moment hydration runs. Without this,
+      // React logs a hydration-mismatch warning for a difference we caused
+      // on purpose; it does not affect portal routes, which never touch this
+      // class in the first place.
+      suppressHydrationWarning
     >
       <body className="min-h-full">
         <AppProviders>{children}</AppProviders>

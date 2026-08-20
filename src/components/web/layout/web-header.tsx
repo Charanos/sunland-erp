@@ -12,6 +12,36 @@ import { cn } from "@/lib/utils/cn";
 import { HEADER_NAV } from "../constants/site";
 import { MobileDrawer } from "./mobile-drawer";
 
+/** The two visual end states, shared by the animated and reduced paths, and
+ *  by the SSR-safe inline styles below. Module scope: nothing in it depends
+ *  on props or state, so it does not need to be recreated every render. */
+const HEADER_STATES = {
+  transparent: {
+    header: { top: "0px" },
+    pill: { opacity: 0, scale: 0.97 },
+    logo: { scale: 1, transformOrigin: "left center" },
+    navList: { backgroundColor: "rgba(21, 25, 54, 0)", borderColor: "rgba(255, 255, 255, 0)", boxShadow: "none" },
+    container: {
+      paddingTop: "1.5rem",
+      paddingBottom: "0rem",
+      paddingLeft: "clamp(1.5rem, 3.5vw, 3.5rem)",
+      paddingRight: "clamp(1.5rem, 3.5vw, 3.5rem)",
+    },
+  },
+  condensed: {
+    header: { top: "12px" },
+    pill: { opacity: 1, scale: 1 },
+    logo: { scale: 0.76, transformOrigin: "left center" },
+    navList: { backgroundColor: "#151936", borderColor: "rgba(255, 255, 255, 0.12)", boxShadow: "0 4px 20px rgba(21,25,54,0.35)" },
+    container: {
+      paddingTop: "0.65rem",
+      paddingBottom: "0.65rem",
+      paddingLeft: "clamp(1rem, 2vw, 2rem)",
+      paddingRight: "clamp(1rem, 2vw, 2rem)",
+    },
+  },
+} as const;
+
 /**
  * The site header.
  *
@@ -58,33 +88,29 @@ export function WebHeader() {
   // Stable, so the drawer's effect does not re-run on every header render.
   const handleOpenChange = useCallback((open: boolean) => setDrawerOpen(open), []);
 
-  /** The two visual end states, shared by the animated and reduced paths. */
-  const states = {
-    transparent: {
-      header: { top: "0px" },
-      pill: { opacity: 0, scale: 0.97 },
-      logo: { scale: 1, transformOrigin: "left center" },
-      navList: { backgroundColor: "rgba(21, 25, 54, 0)", borderColor: "rgba(255, 255, 255, 0)", boxShadow: "none" },
-      container: {
-        paddingTop: "1.5rem",
-        paddingBottom: "0rem",
-        paddingLeft: "clamp(1.5rem, 3.5vw, 3.5rem)",
-        paddingRight: "clamp(1.5rem, 3.5vw, 3.5rem)",
-      },
-    },
-    condensed: {
-      header: { top: "12px" },
-      pill: { opacity: 1, scale: 1 },
-      logo: { scale: 0.76, transformOrigin: "left center" },
-      navList: { backgroundColor: "#151936", borderColor: "rgba(255, 255, 255, 0.12)", boxShadow: "0 4px 20px rgba(21,25,54,0.35)" },
-      container: {
-        paddingTop: "0.65rem",
-        paddingBottom: "0.65rem",
-        paddingLeft: "clamp(1rem, 2vw, 2rem)",
-        paddingRight: "clamp(1rem, 2vw, 2rem)",
-      },
-    },
-  };
+  const states = HEADER_STATES;
+  const target = isTransparent ? states.transparent : states.condensed;
+
+  /**
+   * The state the header renders in before any effect has run, frozen at the
+   * value computed on the very first render and never touched again.
+   *
+   * `isHome` comes from `usePathname()` and `scrollDirection`'s initial value
+   * is always `"top"`, on the server and on the client alike, so `target`
+   * here is already correct at SSR time with no script required. Without
+   * this, every visual property below lived only in a `gsap.set()` inside
+   * `useGSAP`, which cannot run before the browser's first paint: the header
+   * would flash in whatever bare state the Tailwind classes implied (opaque
+   * pill, full-size logo, solid nav capsule) and then visibly snap to the
+   * correct one a frame later. `useRef`'s initializer runs once; every
+   * render after this one passes a fresh `target` that the lazy initializer
+   * quietly ignores, which is what keeps this frozen rather than fighting
+   * GSAP's own inline-style mutations on every subsequent condense/reveal.
+   * A `useState` lazy initializer rather than `useRef(target).current`: the
+   * latter reads `.current` in the render body, which the refs lint rule
+   * (correctly, in general) flags as unsafe outside an effect.
+   */
+  const [initialTarget] = useState(() => target);
 
   useGSAP(
     () => {
@@ -97,7 +123,6 @@ export function WebHeader() {
       const navList = navListRef.current;
       if (!header || !pill || !logo || !container || !navList) return;
 
-      const target = isTransparent ? states.transparent : states.condensed;
       const isFirstRun = !hasMountedRef.current;
       hasMountedRef.current = true;
 
@@ -218,18 +243,23 @@ export function WebHeader() {
       <header
         ref={headerRef}
         // `z-header` from the layering scale, not a bare z-50. The drawer
-        // scrim and panel sit above this on purpose.
+        // scrim and panel sit above this on purpose. `top` is the one value
+        // GSAP owns that Tailwind's `top-0` would otherwise render wrong on
+        // a condensed-by-default page for the first paint.
         className="fixed left-0 right-0 top-0 z-header flex justify-center px-3 sm:px-4"
+        style={{ top: initialTarget.header.top }}
       >
         <div
           ref={containerRef}
           className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4"
+          style={initialTarget.container}
         >
           {/* The floating pill, opacity driven by GSAP with frosted glassmorphism. */}
           <div
             ref={pillBgRef}
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 rounded-full border border-white/15 bg-tertiary-gradient-glass shadow-[0_16px_40px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-2xl"
+            style={{ opacity: initialTarget.pill.opacity, transform: `scale(${initialTarget.pill.scale})` }}
           />
 
           <Link
@@ -237,6 +267,7 @@ export function WebHeader() {
             href="/"
             aria-label="Sunland Real Estates, home"
             className="web-hit shrink-0 rounded-lg transition-transform duration-300 hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-yellow active:scale-[0.98]"
+            style={{ transform: `scale(${initialTarget.logo.scale})`, transformOrigin: initialTarget.logo.transformOrigin }}
           >
             <Image
               src="/logo.png"
@@ -258,6 +289,7 @@ export function WebHeader() {
                 if (!event.currentTarget.contains(event.relatedTarget as Node)) restIndicator();
               }}
               className="relative flex items-center gap-1 rounded-full border border-transparent p-1"
+              style={initialTarget.navList}
             >
               {/* Travels between items. Behind the links, so it never
                   intercepts a pointer. */}

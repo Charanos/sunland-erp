@@ -167,6 +167,20 @@ export function HomeHero({
         // SplitText wrappers.
       });
 
+      // Reduced motion never hides anything (see the .gsap-enter rule this
+      // pairs with), so there is nothing to reveal here; only the branch
+      // above hid content, so only it needs to hand back.
+      //
+      // Lifting the gate has to happen after every from() and splitLines()
+      // call above, not before: those calls apply their hidden start state
+      // (opacity 0, the split words' own offsets) synchronously the instant
+      // they run, so by this line every animated element is already hidden
+      // by GSAP's own inline styles, which outrank the CSS rule regardless
+      // of whether the class is still on <html>. Doing it here rather than
+      // inside the branch itself is what guarantees the split headline is
+      // never visible unsplit: SplitText has already wrapped it above.
+      document.documentElement.classList.remove("web-preanim");
+
       // ── Parallax on exit, desktop only ──────────────────────────────────
       // The photograph drifts slower than the page as the hero leaves.
       //
@@ -220,10 +234,6 @@ export function HomeHero({
           gsap.set(image, { clearProps: "yPercent,scaleX,scaleY" });
         };
       });
-
-      // Reduced motion: no branch is registered, so nothing is ever set to
-      // opacity 0 and nothing is split. The hero renders exactly as the markup
-      // describes it.
 
       return () => media.revert();
     },

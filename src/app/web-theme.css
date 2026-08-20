@@ -574,3 +574,32 @@
     transform: none !important;
   }
 }
+
+/* ── The pre-hydration gate ───────────────────────────────────────────────
+   The rule above is correct for the resting state and for the no-JS path,
+   but it is exactly what causes the flash: the server-rendered page paints
+   `.gsap-enter` visible, and only once React hydrates and useGSAP's layout
+   effect runs does the entrance timeline's from() calls snap it to hidden a
+   frame later, an eyeful of the finished hero collapsing before it replays.
+   The fix has to hide the element on the very first paint, which is earlier
+   than any React effect can ever run.
+
+   `.web-preanim` is added to <html> by a blocking, beforeInteractive inline
+   script (src/app/(web)/layout.tsx) that executes before the parser reaches
+   the body, so this rule is already in force at first paint. Each hero's
+   useGSAP effect removes the class itself once it has constructed its
+   timeline (and, for the split headline and lead, once SplitText has already
+   wrapped the words), so the handoff from CSS-hidden to GSAP-hidden happens
+   with zero visual delta, never as a separate visible step. A short timeout
+   in that same script removes it regardless, so a bundle that never arrives
+   still leaves the page visible rather than hidden forever, preserving the
+   contract above.
+
+   Scoped to `no-preference` for the same reason `.gsap-enter` itself is
+   never hidden under `reduce`: a reduced-motion visitor must see the finished
+   page immediately, not wait out a hide that no animation will ever undo. */
+@media (prefers-reduced-motion: no-preference) {
+  .web-preanim .gsap-enter {
+    opacity: 0;
+  }
+}
