@@ -5,6 +5,7 @@ import { FilterRail } from "./filter-rail";
 import { EmptyResults, RegisterRequirement, ResultsGrid } from "./results-grid";
 import { ResultsToolbar } from "./results-toolbar";
 import { PropertiesHero } from "./properties-hero";
+import { PropertiesPageReveal } from "./properties-page-reveal";
 import { getFacetCounts, getListings, type ListingFilters } from "@/lib/services/web/listings";
 
 /**
@@ -131,7 +132,6 @@ export async function ListingIndex({
         }
         countSlot={
           <>
-            <span aria-hidden="true" className="inline-block size-2 rounded-full bg-brand-yellow animate-pulse" />
             <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-yellow">
               {results.total} {results.total === 1 ? "property" : "properties"}
             </span>
@@ -139,35 +139,36 @@ export async function ListingIndex({
         }
       />
 
+      {/* Scoped reveal orchestrator — no dependency on RevealController */}
+      <PropertiesPageReveal />
+
       {/* ── Below-fold body ─────────────────────────────────────────────── */}
       <div className="bg-[#fbfcff] pb-28 pt-10">
         <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
           <div className="grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
-            {/* FilterRail enters from the left as a unit */}
-            <div data-reveal data-reveal-x="-28">
+
+            {/* ── FilterRail — sticky on desktop ──────────────────────────── */}
+            <div className="ph-reveal-rail lg:sticky lg:top-24 lg:self-start mb-5 lg:mb-0">
               <FilterRail
                 counts={counts}
                 resultCount={results.total}
                 lockedFacet={facet ? { kind: facet.kind, segment: facet.segment } : undefined}
-                className="mb-5 lg:mb-0"
               />
             </div>
 
+            {/* ── Results column ──────────────────────────────────────────── */}
             <section aria-label="Results" className="min-w-0">
-              {/* Toolbar rises independently — first beat of the results column */}
-              <div data-reveal>
+              <div className="ph-reveal-toolbar">
                 <ResultsToolbar total={results.total} chips={chips} />
               </div>
 
               {results.listings.length > 0 ? (
                 <>
-                  {/* Cards stagger as a group — each card is its own target */}
-                  <div data-reveal-group className="mt-6">
+                  <div className="mt-6">
                     <ResultsGrid listings={results.listings} />
                   </div>
 
-                  {/* Pagination rises after the grid */}
-                  <div data-reveal className="mt-4">
+                  <div className="ph-reveal-footer mt-4">
                     <WebPagination
                       currentPage={results.page}
                       totalPages={results.totalPages}
@@ -178,13 +179,12 @@ export async function ListingIndex({
                     />
                   </div>
 
-                  {/* RegisterRequirement slides up as a closing beat */}
-                  <div data-reveal>
+                  <div className="ph-reveal-cta">
                     <RegisterRequirement />
                   </div>
                 </>
               ) : (
-                <div data-reveal>
+                <div className="ph-reveal-empty">
                   <EmptyResults alternatives={alternatives} clearHref={basePath} />
                 </div>
               )}
