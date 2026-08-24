@@ -13,6 +13,7 @@ import { Breadcrumbs } from "@/components/web/primitives/breadcrumbs";
 import { Container } from "@/components/web/primitives/container";
 import { Eyebrow } from "@/components/web/primitives/eyebrow";
 import { SectionBand } from "@/components/web/primitives/section-band";
+import { WebBadge } from "@/components/web/primitives/badge";
 import { ServicesHero } from "@/components/web/services/services-hero";
 import { PropertyManagementService } from "@/components/web/services/property-management-service";
 import { SalesLettingService } from "@/components/web/services/sales-letting-service";
@@ -92,7 +93,24 @@ export default function ServicesPage() {
             {SERVICES_ROUTER.cards.map((card, idx) => {
               const IconComponent = webIcons[card.icon];
               const stepNumbers = ["01", "02", "03", "04"];
-              const categoryTags = ["Landlords & Owners", "Tenants & Residents", "Buyers & Investors", "Enterprises & Retail"];
+              const categoryBadges = [
+                "Landlords & Owners",
+                "Tenants & Residents",
+                "Buyers & Investors",
+                "Corporate & SEZ",
+              ];
+              const titles = [
+                "Valuation, letting & management",
+                "Browse curated rentals",
+                "Homes, plots & prime blocks",
+                "Offices, retail & logistics",
+              ];
+              const descriptions = [
+                "Complimentary appraisal, structured lease drafting, and full automated property management with 0% finder's fee.",
+                "Browse authentic residential stock with verified pricing, zero finder's fees, and streamlined digital tenancy.",
+                "Prime residential and commercial acquisitions backed by official registry title verification and escrow closing.",
+                "Strategic tenant and landlord representation for Grade-A office towers, retail frontage, and SEZ logistics godowns.",
+              ];
               const highlights = [
                 "0% Finder Fee · 5th Payout",
                 "Zero Tenant Fee · Verified Stock",
@@ -100,17 +118,17 @@ export default function ServicesPage() {
                 "450k+ Sq Ft · SEZ Advisory",
               ];
               const ctaLabels = [
-                "Owner Valuation Portal",
-                "Browse Rental Listings",
-                "Explore Properties for Sale",
-                "Commercial Advisory",
+                "Valuation & Portal",
+                "Explore Rentals",
+                "Properties For Sale",
+                "Commercial Desk",
               ];
 
               return (
                 <Link
                   key={card.href}
                   href={card.href}
-                  className="group relative flex flex-col justify-between p-8 sm:p-10 lg:p-10 transition-colors duration-300 hover:bg-surface-1/60"
+                  className="group relative flex flex-col justify-between p-8 sm:p-9 lg:p-10 transition-colors duration-300 hover:bg-surface-1/60"
                 >
                   {/* Subtle Top Border Hover Accent */}
                   <span
@@ -118,7 +136,7 @@ export default function ServicesPage() {
                     className="absolute top-0 inset-x-0 h-[2px] bg-ink-900 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
                   />
 
-                  {/* Top Meta Row: Monospace Numeral + Floating Glyph */}
+                  {/* Top Meta Row: Monospace Numeral + Minimalist Glyph */}
                   <div>
                     <div className="flex items-center justify-between pb-6 border-b border-line-soft">
                       <span className="font-mono text-2xl sm:text-3xl font-light text-ink-300 group-hover:text-ink-900 transition-colors duration-300">
@@ -129,41 +147,42 @@ export default function ServicesPage() {
                         size={22}
                         stroke={WEB_ICON_STROKE}
                         aria-hidden="true"
-                        className="text-ink-400 group-hover:text-ink-900 transition-colors duration-300"
+                        className="text-ink-400 group-hover:text-ink-900 group-hover:scale-110 transition-all duration-300"
                       />
                     </div>
 
-                    {/* Target Audience Eyebrow */}
+                    {/* Target Audience Primitive Badge */}
                     <div className="mt-8">
-                      <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-ink-400 font-medium">
-                        {categoryTags[idx]}
-                      </p>
-                      <p className="font-mono text-[11px] text-ink-600 font-medium mt-1">
-                        {card.audience}
-                      </p>
+                      <WebBadge tone="neutral" className="border border-line-soft font-mono font-medium text-[10px] tracking-[0.14em]">
+                        {categoryBadges[idx]}
+                      </WebBadge>
                     </div>
 
                     {/* Main Title (Clean sans-serif as per typography rules) */}
-                    <h3 className="mt-3 text-[21px] sm:text-[22px] font-medium tracking-tight text-ink-900 leading-[1.2] group-hover:text-ink-950 transition-colors">
-                      {card.title}
+                    <h3 className="mt-3.5 text-[20px] sm:text-[21px] font-medium tracking-tight text-ink-900 leading-[1.25] group-hover:text-ink-950 transition-colors">
+                      {titles[idx]}
                     </h3>
 
                     {/* Narrative Description */}
                     <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-ink-500 font-normal">
-                      {card.body}
+                      {descriptions[idx]}
                     </p>
                   </div>
 
                   {/* Bottom Highlight & Action Trigger */}
                   <div className="mt-10 pt-6 border-t border-line-soft space-y-4">
-                    <div className="flex items-center gap-2 font-mono text-[11.5px] text-ink-600 font-medium">
-                      <span className="size-1.5 rounded-full bg-emerald-600 shrink-0" />
+                    <div className="inline-flex items-center gap-2 py-1 px-2.5 rounded-full bg-emerald-500/8 border border-emerald-500/20 text-emerald-800 text-[10.5px] font-mono font-medium">
+                      <span className="size-1.5 rounded-full bg-emerald-600 shrink-0 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
                       <span>{highlights[idx]}</span>
                     </div>
 
-                    <div className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:gap-3 transition-all duration-300">
-                      <span>{ctaLabels[idx]}</span>
-                      <ArrowIcon size={14} stroke={WEB_ICON_STROKE} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                    <div className="flex items-center justify-between pt-2">
+                      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:text-ink-950 transition-colors">
+                        {ctaLabels[idx]}
+                      </span>
+                      <div className="flex size-7.5 items-center justify-center rounded-full border border-line bg-surface-0 text-ink-700 group-hover:bg-ink-900 group-hover:text-white group-hover:border-ink-900 group-hover:translate-x-1 transition-all duration-300 shadow-2xs">
+                        <ArrowIcon size={14} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+                      </div>
                     </div>
                   </div>
                 </Link>

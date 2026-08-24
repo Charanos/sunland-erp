@@ -1,91 +1,120 @@
 import Link from "next/link";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { SectionBand } from "../primitives/section-band";
+import { WebBadge } from "../primitives/badge";
 import { serviceDefaults } from "./home.defaults";
-import { SectionHeading } from "./section-heading";
 
 /**
- * 07 home.services, tint band.
+ * 07 home.services, open architectural directory band.
  *
- * Visual service feature panels with institutional metrics, bespoke typography, and micro-interactions.
+ * Open 4-column directory architecture with hairline dividers, primitive design tokens,
+ * high-contrast monospace numbering, and interactive micro-interactions.
  */
 export function HomeServices() {
   const ArrowIcon = webIcons.arrow;
 
   return (
-    <SectionBand tone="tint" labelledBy="services-heading" className="relative bg-[#f8fafc]">
-      <SectionHeading
-        id="services-heading"
-        eyebrow={serviceDefaults.eyebrow}
-        title={serviceDefaults.headline}
-        lead="Specialized real estate mandates managed with operational precision, verified local market intelligence, and institutional accountability."
-        align="stack"
-      />
+    <SectionBand
+      tone="light"
+      labelledBy="services-heading"
+      className="relative bg-surface-0 border-t border-line py-20 lg:py-28"
+    >
+      {/* Centered Editorial Header */}
+      <div className="mx-auto max-w-2xl text-center pb-14 sm:pb-16" data-reveal>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-900 font-medium">
+            {serviceDefaults.eyebrow}
+          </p>
+          <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
+        </div>
 
-      <ul data-reveal-group className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
+        <h2
+          id="services-heading"
+          className="font-editorial text-[clamp(2.25rem,3.8vw,3.5rem)] font-medium leading-[1.08] tracking-tight text-ink-900 text-balance"
+        >
+          {serviceDefaults.headline}
+        </h2>
+
+        <p className="mt-4 text-[15px] sm:text-[16px] leading-relaxed text-ink-500 font-normal max-w-[52ch] mx-auto">
+          Specialized real estate mandates managed with operational precision, verified local market intelligence, and institutional accountability.
+        </p>
+      </div>
+
+      {/* Open 4-Column Architectural Directory Grid */}
+      <div className="border-y border-line grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-line">
         {serviceDefaults.cards.map((card) => {
           const IconComponent = webIcons[card.icon];
 
           return (
-            <li key={card.href} className="flex h-full">
-              <Link
-                href={card.href}
-                className="group relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[24px] border border-slate-200/90 bg-white p-7 sm:p-8 shadow-[0_10px_30px_rgba(21,25,54,0.04),0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_24px_50px_rgba(21,25,54,0.1),0_4px_12px_rgba(0,0,0,0.03)]"
-              >
-                {/* Top Row: Numeral & Category Tag + Uncarded Floating Icon */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-semibold text-brand-yellow">
-                        {card.num}
-                      </span>
-                      <span className="rounded-full bg-slate-100/90 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-slate-500">
-                        {card.tag}
-                      </span>
-                    </div>
+            <Link
+              key={card.href}
+              href={card.href}
+              className="group relative flex flex-col justify-between p-8 sm:p-9 lg:p-10 transition-colors duration-300 hover:bg-surface-1/60"
+            >
+              {/* Subtle Top Border Hover Accent */}
+              <span
+                aria-hidden="true"
+                className="absolute top-0 inset-x-0 h-[2px] bg-ink-900 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
+              />
 
-                    <span
-                      aria-hidden="true"
-                      className="text-slate-400 transition-all duration-300 group-hover:scale-110 group-hover:text-[#151936]"
-                    >
-                      <IconComponent size={24} stroke={WEB_ICON_STROKE} />
-                    </span>
-                  </div>
+              {/* Top Meta Row: Monospace Numeral + Minimalist Glyph */}
+              <div>
+                <div className="flex items-center justify-between pb-6 border-b border-line-soft">
+                  <span className="font-mono text-2xl sm:text-3xl font-light text-ink-300 group-hover:text-ink-900 transition-colors duration-300">
+                    {card.num}
+                  </span>
 
-                  {/* Title & Description */}
-                  <h3 className="font-editorial mt-6 text-2xl font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-700">
-                    {card.title}
-                  </h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-slate-500 font-normal">
-                    {card.body}
-                  </p>
+                  <IconComponent
+                    size={22}
+                    stroke={WEB_ICON_STROKE}
+                    aria-hidden="true"
+                    className="text-ink-400 group-hover:text-ink-900 group-hover:scale-110 transition-all duration-300"
+                  />
                 </div>
 
-                {/* Bottom Section: Metric Badge + Interactive Action Row */}
+                {/* Category Primitive Badge */}
                 <div className="mt-8">
-                  {/* Highlight Metric Pill */}
-                  <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/80 px-3.5 py-2.5 transition-colors group-hover:bg-blue-50/50 group-hover:border-blue-100/80">
-                    <span className="font-mono text-[11px] font-medium text-slate-700">
-                      {card.highlight}
-                    </span>
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                  </div>
+                  <WebBadge tone="neutral" className="border border-line-soft font-mono font-medium text-[10px] tracking-[0.14em]">
+                    {card.tag}
+                  </WebBadge>
+                </div>
 
-                  {/* Footer Row */}
-                  <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-                    <span className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-[#151936]">
-                      Explore Mandate
-                    </span>
-                    <div className="flex size-7.5 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white shadow-xs">
-                      <ArrowIcon size={14} stroke={2} aria-hidden="true" />
-                    </div>
+                {/* Main Title (Clean sans-serif as per typography rules) */}
+                <h3 className="mt-3.5 text-[20px] sm:text-[21px] font-medium tracking-tight text-ink-900 leading-[1.25] group-hover:text-ink-950 transition-colors">
+                  {card.title}
+                </h3>
+
+                {/* Narrative Description */}
+                <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-ink-500 font-normal">
+                  {card.body}
+                </p>
+              </div>
+
+              {/* Bottom Highlight & Action Trigger */}
+              <div className="mt-10 pt-6 border-t border-line-soft space-y-4">
+                <div className="inline-flex items-center gap-2 py-1 px-2.5 rounded-full bg-emerald-500/8 border border-emerald-500/20 text-emerald-800 text-[10.5px] font-mono font-medium">
+                  <span className="size-1.5 rounded-full bg-emerald-600 shrink-0 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
+                  <span>{card.highlight}</span>
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
+                  <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:text-ink-950 transition-colors">
+                    Explore Mandate
+                  </span>
+                  <div className="flex size-7.5 items-center justify-center rounded-full border border-line bg-surface-0 text-ink-700 group-hover:bg-ink-900 group-hover:text-white group-hover:border-ink-900 group-hover:translate-x-1 transition-all duration-300 shadow-2xs">
+                    <ArrowIcon
+                      size={14}
+                      stroke={WEB_ICON_STROKE}
+                      aria-hidden="true"
+                    />
                   </div>
                 </div>
-              </Link>
-            </li>
+              </div>
+            </Link>
           );
         })}
-      </ul>
+      </div>
     </SectionBand>
   );
 }

@@ -71,20 +71,20 @@ export function ListingDetailView({
               sizes="100vw"
               className="object-cover object-center opacity-80 sm:opacity-85"
             />
-            {/* 1. Top bar clearance scrim */}
+            {/* 1. Top dissolve scrim */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent via-30% to-transparent"
+              className="absolute inset-x-0 top-0 h-72 sm:h-96 bg-gradient-to-b from-brand-dark via-black/60 via-60% to-transparent"
             />
-            {/* 2. Symmetrical horizontal mask (even on both left and right edges) */}
+            {/* 2. Symmetrical horizontal mask */}
             <div
               aria-hidden="true"
               className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 via-50% to-black/55"
             />
-            {/* 3. Bottom dissolve scrim matching Home Hero */}
+            {/* 3. Subtle bottom clearance scrim */}
             <div
               aria-hidden="true"
-              className="absolute inset-x-0 bottom-0 h-72 sm:h-96 bg-gradient-to-b from-transparent via-black/55 via-40% to-brand-dark"
+              className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent via-30% to-transparent"
             />
           </div>
         )}

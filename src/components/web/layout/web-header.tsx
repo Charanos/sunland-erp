@@ -78,7 +78,8 @@ export function WebHeader() {
   const isProperties = pathname?.startsWith("/properties");
   const isLandlords = pathname?.startsWith("/landlords");
   const isServices = pathname?.startsWith("/services");
-  const isTransparentRoute = isHome || isProperties || isLandlords || isServices;
+  const isLocations = pathname?.startsWith("/locations");
+  const isTransparentRoute = isHome || isProperties || isLandlords || isServices || isLocations;
   const isTransparent = isTransparentRoute && scrollDirection === "top";
   const isHidden = scrollDirection === "down" && !drawerOpen;
 

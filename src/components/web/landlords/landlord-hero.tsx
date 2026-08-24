@@ -35,7 +35,7 @@ export function LandlordHero({ stats }: { stats?: { value: string; label: string
         />
         <div
           aria-hidden="true"
-          className="ph-scrim absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 via-55% to-transparent"
+          className="ph-scrim absolute inset-0 bg-gradient-to-l from-black/65 via-black/30 via-55% to-transparent"
         />
         <div
           aria-hidden="true"
