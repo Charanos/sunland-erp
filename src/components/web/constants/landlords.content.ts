@@ -141,7 +141,7 @@ export const LANDLORDS = {
       {
         name: "Full management",
         tagline: "We run it end to end.",
-        figure: "8",
+        figure: "10",
         unit: "% of rent collected",
         featured: true,
         badge: "Most owners",

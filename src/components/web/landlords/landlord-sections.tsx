@@ -7,6 +7,7 @@ import { WebButtonLink } from "../primitives/button";
 import { Container } from "../primitives/container";
 import { Eyebrow } from "../primitives/eyebrow";
 import { SectionBand } from "../primitives/section-band";
+import { LandlordRentChart } from "./landlord-chart";
 
 /**
  * The landlord hub, section by section, from the Claude Design template.
@@ -30,14 +31,16 @@ function SectionIntro({
   id: string;
   tone?: "light" | "dark";
 }) {
+  const isDark = tone === "dark";
+
   return (
-    <div className="mb-12 max-w-[640px]">
-      <Eyebrow tone={tone === "dark" ? "dark" : "light"}>{eyebrow}</Eyebrow>
+    <div className="mb-12 max-w-4xl" data-reveal>
+      <Eyebrow tone={isDark ? "dark" : "light"}>{eyebrow}</Eyebrow>
       <h2
         id={id}
         className={cn(
-          "web-title mt-4 text-web-h2",
-          tone === "dark" ? "text-on-dark-hi" : "text-ink-900"
+          "mt-4 font-editorial text-[clamp(2.25rem,3.8vw,3.6rem)] font-medium leading-[1.1] tracking-tight",
+          isDark ? "text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]" : "text-[#151936]"
         )}
       >
         {title}
@@ -45,8 +48,8 @@ function SectionIntro({
       {lead && (
         <p
           className={cn(
-            "web-subtitle mt-5 text-web-lead",
-            tone === "dark" ? "text-on-dark" : "text-ink-500"
+            "web-subtitle mt-4 max-w-[72ch] text-[15px] sm:text-base leading-relaxed font-normal",
+            isDark ? "text-slate-300/90" : "text-slate-600"
           )}
         >
           {lead}
@@ -56,130 +59,91 @@ function SectionIntro({
   );
 }
 
-// ── 01 Hero ──────────────────────────────────────────────────────────────────
+export { LandlordHero } from "./landlord-hero";
 
-/**
- * Full editorial hero, not the compact interior band.
- *
- * This page is a destination in its own right, reached from an advert or a
- * referral as often as from the nav, so it opens like a landing page rather
- * than like a section of one. The stat grid is the proof: four figures an
- * owner can check against any competitor.
- */
-export function LandlordHero({ stats }: { stats?: { value: string; label: string }[] }) {
-  const figures = stats ?? [...LANDLORDS.hero.stats];
-  const ArrowIcon = webIcons.arrow;
-
-  return (
-    <section
-      aria-labelledby="landlord-hero-heading"
-      className="web-dark relative overflow-hidden px-5 py-24 sm:px-8 lg:px-14 lg:py-28"
-    >
-      <Image
-        src="/images/hero-bg.jpg"
-        alt=""
-        aria-hidden="true"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover opacity-20"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-brand-dark/72 to-brand-dark/94"
-      />
-
-      <div className="relative mx-auto grid w-full max-w-[1320px] gap-16 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-center">
-        <div>
-          <Eyebrow tone="dark">{LANDLORDS.hero.eyebrow}</Eyebrow>
-          <h1
-            id="landlord-hero-heading"
-            className="web-title mt-5 max-w-[16em] text-[clamp(2.5rem,1.5rem+4.4vw,4rem)] leading-[1.05] tracking-[-0.015em] text-on-dark-hi"
-          >
-            {LANDLORDS.hero.headline}
-          </h1>
-          <p className="web-subtitle mt-6 max-w-[54ch] text-web-lead text-on-dark">
-            {LANDLORDS.hero.lead}
-          </p>
-
-          <div className="mt-9 flex flex-wrap gap-3">
-            <WebButtonLink href={LANDLORDS.hero.primary.href} variant="primary" size="lg">
-              {LANDLORDS.hero.primary.label}
-            </WebButtonLink>
-            <a
-              href={LANDLORDS.hero.secondary.href}
-              className="web-hit inline-flex items-center gap-2 rounded-web-full border border-dark-line px-7 py-2.5 text-[15px] text-on-dark-hi transition-colors hover:bg-dark-raise"
-            >
-              {LANDLORDS.hero.secondary.label}
-              <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-            </a>
-          </div>
-
-          <p className="mt-7 text-sm text-on-dark-lo">{LANDLORDS.hero.reassurance}</p>
-        </div>
-
-        {/* Hairline grid: 1px gaps over a translucent background, so the cells
-            read as one instrument panel rather than four floating boxes. */}
-        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-web-panel border border-dark-line bg-dark-line">
-          {figures.map((stat) => (
-            <div key={stat.label} className="bg-brand-dark/55 px-6 py-7">
-              <dd className="web-numeric text-[30px] tracking-[-0.02em] text-on-dark-hi">
-                {stat.value}
-              </dd>
-              <dt className="web-control mt-1.5 text-[11px] uppercase tracking-[0.16em] text-on-dark-lo">
-                {stat.label}
-              </dt>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
-  );
-}
 
 // ── 02 Promises ──────────────────────────────────────────────────────────────
 
 export function LandlordPromises() {
+  const CheckIcon = webIcons.check;
+  const ShieldIcon = webIcons.shield;
+
   return (
-    <SectionBand tone="light" labelledBy="promises-heading">
-      <SectionIntro
-        id="promises-heading"
-        eyebrow={LANDLORDS.promises.eyebrow}
-        title={LANDLORDS.promises.title}
-        lead={LANDLORDS.promises.lead}
-      />
+    <SectionBand
+      tone="light"
+      labelledBy="promises-heading"
+      className="!overflow-visible relative bg-white py-24 lg:py-32 border-b border-slate-200/80"
+    >
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20 items-start">
+        {/* Left Column: Sticky Editorial Heading & Guarantee Reassurance */}
+        <div className="lg:sticky lg:top-32" data-reveal>
+          <Eyebrow tone="light">{LANDLORDS.promises.eyebrow}</Eyebrow>
+          <h2
+            id="promises-heading"
+            className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+          >
+            {LANDLORDS.promises.title}
+          </h2>
+          <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-600 max-w-[46ch]">
+            {LANDLORDS.promises.lead}
+          </p>
 
-      <ul className="grid gap-5 md:grid-cols-3">
-        {LANDLORDS.promises.cards.map((card) => {
-          const IconComponent = webIcons[card.icon];
+          {/* Institutional Trust Footnote */}
+          <div className="mt-10 pt-8 border-t border-slate-200/80 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-slate-700 font-mono">
+              <ShieldIcon size={15} stroke={WEB_ICON_STROKE} className="text-emerald-600" />
+              <span>Standard Mandate Protection</span>
+            </div>
+            <p className="text-sm text-slate-500 leading-relaxed font-normal max-w-[42ch]">
+              All service-level agreements, remittance deadlines, and expenditure thresholds are contractual obligations written directly into your management agreement.
+            </p>
+          </div>
+        </div>
 
-          return (
-            <li key={card.number} className="rounded-web-card border border-line p-7">
-              <div className="mb-5 flex items-center justify-between gap-3">
-                <span
-                  aria-hidden="true"
-                  className="flex size-10 items-center justify-center rounded-web-full border border-line-soft bg-surface-1 text-ink-900"
-                >
-                  <IconComponent size={20} stroke={WEB_ICON_STROKE} />
-                </span>
-                <span className="web-numeric text-[11px] tracking-[0.14em] text-ink-400">
-                  {card.number}
-                </span>
+        {/* Right Column: Spacious Line-Divided Guarantee Rows */}
+        <div className="border-t border-slate-200/90 divide-y divide-slate-200/90" data-reveal-group>
+          {LANDLORDS.promises.cards.map((card) => {
+            const IconComponent = webIcons[card.icon];
+
+            return (
+              <div key={card.title} className="py-8 sm:py-10 first:pt-6 last:pb-6 space-y-4">
+                {/* Header Row: Icon + Title */}
+                <div className="flex items-center gap-4">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100/90 text-[#151936] shadow-xs"
+                  >
+                    <IconComponent size={20} stroke={WEB_ICON_STROKE} />
+                  </span>
+                  <h3 className="font-editorial text-2xl sm:text-[27px] font-medium leading-snug text-[#151936]">
+                    {card.title}
+                  </h3>
+                </div>
+
+                {/* Body Narrative */}
+                <p className="text-[15px] sm:text-[15.5px] leading-relaxed text-slate-600 font-normal pl-0 sm:pl-15">
+                  {card.body}
+                </p>
+
+                {/* Concrete Deliverable Line */}
+                <div className="pt-2 pl-0 sm:pl-15">
+                  <div className="flex items-start gap-2 text-sm text-slate-800">
+                    <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 mt-0.5">
+                      <CheckIcon size={11} stroke={2.5} />
+                    </span>
+                    <p className="leading-relaxed">
+                      <strong className="font-medium text-[#151936]">What you get:</strong>{" "}
+                      <span className="text-slate-600">
+                        {card.outcome.charAt(0).toUpperCase() + card.outcome.slice(1)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              <h3 className="web-title-card text-[23px] leading-tight text-ink-900">
-                {card.title}
-              </h3>
-              <p className="mt-3 text-[14.5px] leading-relaxed text-ink-500">{card.body}</p>
-
-              {/* The deliverable. A promise without one is marketing. */}
-              <p className="mt-5 border-t border-line-soft pt-4 text-sm leading-relaxed text-ink-900">
-                <span className="web-subtitle">What you get:</span> {card.outcome}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
+            );
+          })}
+        </div>
+      </div>
     </SectionBand>
   );
 }
@@ -187,39 +151,150 @@ export function LandlordPromises() {
 // ── 03 Timeline ──────────────────────────────────────────────────────────────
 
 export function LandlordTimeline() {
-  return (
-    <section id="how" aria-labelledby="timeline-heading" className="bg-surface-1 py-24 lg:py-28">
-      <Container>
-        <SectionIntro
-          id="timeline-heading"
-          eyebrow={LANDLORDS.timeline.eyebrow}
-          title={LANDLORDS.timeline.title}
-        />
+  const ArrowIcon = webIcons.arrow;
+  const CheckIcon = webIcons.check;
 
-        <ol className="overflow-hidden rounded-web-panel border border-line bg-surface-0">
-          {LANDLORDS.timeline.steps.map((step) => (
-            <li
-              key={step.when}
-              className="grid gap-2 border-t border-line-soft px-6 py-7 first:border-t-0 sm:grid-cols-[88px_minmax(0,1fr)] sm:gap-6 sm:px-8"
-            >
-              <span className="web-numeric text-[13px] text-ink-900">{step.when}</span>
-              <div>
-                <h3 className="web-subtitle text-[17px] text-ink-900">{step.title}</h3>
-                <p className="mt-2 max-w-[70ch] text-[14.5px] leading-relaxed text-ink-500">
-                  {step.body}
-                </p>
+  const deliverables: Record<string, string> = {
+    "Day 1": "Photographic condition audit & valuation comparables",
+    "Day 2–3": "One clear mandate letter with your repair threshold",
+    "Day 2-3": "One clear mandate letter with your repair threshold",
+    "Week 1": "Syndicated multi-portal listing with HDR photography",
+    "Offer": "Complete tenant vetting dossier & landlord references",
+    "Monthly": "Itemised unit statement & direct disbursement",
+    "Ongoing": "Quarterly photo inspections & 60-day renewal review",
+  };
+
+  return (
+    <SectionBand
+      tone="tint"
+      id="how"
+      labelledBy="timeline-heading"
+      className="!overflow-visible relative bg-[#f8fafc] py-24 lg:py-32 border-b border-slate-200/80"
+    >
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-20 items-start">
+        {/* Left Column: Connected Architectural Timeline Spine */}
+        <div className="relative" data-reveal-group>
+          {/* Continuous vertical hairline spine */}
+          <div
+            aria-hidden="true"
+            className="absolute left-[7px] sm:left-[9px] top-3 bottom-6 w-[1.5px] bg-slate-200/90"
+          />
+
+          <div className="space-y-12 sm:space-y-14">
+            {LANDLORDS.timeline.steps.map((step, index) => (
+              <div key={step.when} className="group relative flex gap-6 sm:gap-8 items-start">
+                {/* Milestone Node Pin */}
+                <div className="relative z-10 flex size-4 sm:size-5 shrink-0 items-center justify-center bg-[#f8fafc]">
+                  <span className="size-2.5 rounded-full border-[1.5px] border-slate-300 bg-white transition-all duration-300 group-hover:scale-125 group-hover:border-[#151936] group-hover:bg-[#151936]" />
+                </div>
+
+                {/* Step Content */}
+                <div className="flex-1 min-w-0">
+                  {/* Milestone Step Header */}
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[11.5px] font-medium uppercase tracking-widest text-[#151936]">
+                      {step.when}
+                    </span>
+                    <span className="h-px w-6 bg-slate-200" />
+                    <span className="font-mono text-[10.5px] uppercase tracking-widest text-slate-400 font-medium">
+                      Milestone 0{index + 1}
+                    </span>
+                  </div>
+
+                  {/* Milestone Title */}
+                  <h3 className="font-editorial mt-2.5 text-[24px] sm:text-[27px] font-medium leading-snug text-[#151936]">
+                    {step.title}
+                  </h3>
+
+                  {/* Body Narrative */}
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-slate-600 font-normal max-w-[56ch]">
+                    {step.body}
+                  </p>
+
+                  {/* Specific Deliverable Checkpoint */}
+                  {deliverables[step.when] && (
+                    <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 pt-3 border-t border-slate-200/60 max-w-[56ch]">
+                      <div className="flex items-center gap-1.5 text-emerald-700 font-mono text-[11px] uppercase tracking-wider font-medium">
+                        <CheckIcon size={12} stroke={2.5} />
+                        <span>Deliverable</span>
+                      </div>
+                      <span className="text-slate-300 hidden sm:inline">·</span>
+                      <span className="text-[14px] text-slate-600 font-normal">
+                        {deliverables[step.when]}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </li>
-          ))}
-        </ol>
-      </Container>
-    </section>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Column: Sticky Editorial Context & Velocity Telemetry (Shifted to Right) */}
+        <div className="lg:sticky lg:top-32 space-y-8" data-reveal>
+          <div>
+            <Eyebrow tone="light">{LANDLORDS.timeline.eyebrow}</Eyebrow>
+            <h2
+              id="timeline-heading"
+              className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+            >
+              {LANDLORDS.timeline.title}
+            </h2>
+            <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-600 max-w-[44ch]">
+              A transparent, milestone-driven lifecycle from initial appraisal to monthly dividend remittances. No silent gaps, no surprise deductions.
+            </p>
+          </div>
+
+          {/* Asset Velocity Telemetry Strip */}
+          <div className="grid grid-cols-2 gap-y-7 gap-x-8 border-t border-slate-200/80 pt-7">
+            <div className="space-y-1.5">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+                18<span className="text-sm text-slate-500 ml-1.5 font-normal">Days</span>
+              </div>
+              <p className="text-xs text-slate-500 font-normal">Average time to let</p>
+            </div>
+            <div className="space-y-1.5">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+                100<span className="text-sm text-slate-500 ml-1 font-normal">%</span>
+              </div>
+              <p className="text-xs text-slate-500 font-normal">Accompanied viewings</p>
+            </div>
+            <div className="space-y-1.5">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+                5th<span className="text-xs text-slate-500 ml-1.5 font-normal">Monthly</span>
+              </div>
+              <p className="text-xs text-slate-500 font-normal">Guaranteed payout date</p>
+            </div>
+            <div className="space-y-1.5">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+                0<span className="text-sm text-slate-500 ml-1.5 font-normal">KES</span>
+              </div>
+              <p className="text-xs text-slate-500 font-normal">Upfront onboarding cost</p>
+            </div>
+          </div>
+
+          <div className="pt-2 space-y-3">
+            <WebButtonLink href="#valuation" variant="primary" size="lg">
+              <span>Request Free Appraisal</span>
+              <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+            </WebButtonLink>
+
+            <p className="text-xs text-slate-500 font-normal leading-relaxed">
+              Direct telephone line with your named portfolio manager from day one.
+            </p>
+          </div>
+        </div>
+      </div>
+    </SectionBand>
   );
 }
 
 // ── 04 Fees ──────────────────────────────────────────────────────────────────
 
 export function LandlordFees() {
+  const CheckIcon = webIcons.check;
+  const CrossIcon = webIcons.close;
+
   return (
     <SectionBand tone="light" labelledBy="fees-heading">
       <SectionIntro
@@ -229,46 +304,64 @@ export function LandlordFees() {
         lead={LANDLORDS.fees.lead}
       />
 
-      <ul className="grid gap-5 md:grid-cols-3">
-        {LANDLORDS.fees.tiers.map((tier) => (
-          <li
+      <div className="mt-4 grid lg:grid-cols-3 border-t border-slate-200/80 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/80">
+        {LANDLORDS.fees.tiers.map((tier, index) => (
+          <div
             key={tier.name}
             className={cn(
-              "relative rounded-web-panel p-8",
-              tier.featured ? "border-[1.5px] border-brand-dark" : "border border-line"
+              "relative py-12 lg:py-16",
+              index === 0 ? "lg:pr-14" : index === 1 ? "lg:px-14" : "lg:pl-14"
             )}
           >
-            {tier.badge && (
-              <span className="web-control absolute -top-3 left-8 inline-flex rounded-web-full bg-brand-yellow px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-brand-dark">
-                {tier.badge}
-              </span>
-            )}
+            {/* Alignment container for the badge so the titles line up even if a badge is missing */}
+            <div className="h-8 mb-5 flex items-center">
+              {tier.badge && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-[10.5px] font-medium uppercase tracking-widest text-[#151936] shadow-sm">
+                  <span className="size-1.5 rounded-full bg-emerald-500" />
+                  {tier.badge}
+                </span>
+              )}
+            </div>
 
-            <h3 className="web-title-card text-2xl text-ink-900">{tier.name}</h3>
-            <p className="web-subtitle mt-1.5 text-sm text-ink-400">{tier.tagline}</p>
-
-            <p className="mt-6 flex items-baseline gap-1.5">
-              <span className="web-numeric text-[34px] tracking-[-0.03em] text-ink-900">
-                {tier.figure}
-              </span>
-              <span className="text-[15px] text-ink-500">{tier.unit}</span>
+            <h3 className="font-editorial text-[30px] lg:text-[34px] font-medium leading-tight text-[#151936]">
+              {tier.name}
+            </h3>
+            <p className="mt-2.5 text-[15.5px] leading-relaxed text-slate-500 font-normal max-w-[28ch]">
+              {tier.tagline}
             </p>
 
-            <ul className="mt-6 grid gap-3 border-t border-line-soft pt-5">
+            {/* Editorial Number Presentation */}
+            <div className="mt-10 flex items-baseline gap-2.5 border-b border-slate-200/80 pb-10">
+              <span className="font-editorial text-[56px] lg:text-[64px] font-medium leading-none tracking-tight text-[#151936]">
+                {tier.figure}
+              </span>
+              <span className="text-[15.5px] text-slate-500 font-normal max-w-[14ch] leading-snug">
+                {tier.unit}
+              </span>
+            </div>
+
+            {/* Inclusions and Exclusions */}
+            <ul className="mt-10 space-y-5">
               {tier.includes.map((item) => (
-                <li key={item} className="text-[14.5px] text-ink-500">
-                  {item}
+                <li key={item} className="flex items-start gap-3.5 text-[15px] text-slate-700 font-normal leading-relaxed">
+                  <span className="flex size-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white mt-[3px] shadow-sm">
+                    <CheckIcon size={12} stroke={3.5} />
+                  </span>
+                  <span>{item}</span>
                 </li>
               ))}
               {tier.excludes.map((item) => (
-                <li key={item} className="text-[14.5px] text-ink-400">
-                  {item}
+                <li key={item} className="flex items-start gap-3.5 text-[15px] text-slate-400 font-normal leading-relaxed">
+                  <span className="flex size-[18px] shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-300 mt-[3px]">
+                    <CrossIcon size={11} stroke={2} />
+                  </span>
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </SectionBand>
   );
 }
@@ -285,85 +378,183 @@ export function LandlordFees() {
 export function LandlordErp() {
   const BuildingIcon = webIcons.building;
   const ArrowIcon = webIcons.arrow;
+  const SparkleIcon = webIcons.sparkle;
 
   return (
     <section
       aria-labelledby="erp-heading"
-      className="web-dark relative overflow-hidden py-24 lg:py-28"
+      className="web-dark relative overflow-hidden py-24 lg:py-32 bg-[#090d1f]"
     >
+      {/* Background ambient lighting */}
+      <div className="pointer-events-none absolute -top-40 right-0 h-[600px] w-[600px] rounded-full bg-emerald-500/5 blur-[140px]" />
+      <div className="pointer-events-none absolute -bottom-40 left-0 h-[600px] w-[600px] rounded-full bg-brand-yellow/5 blur-[140px]" />
+
       <BuildingIcon
-        size={620}
-        stroke={0.4}
+        size={680}
+        stroke={0.35}
         aria-hidden="true"
-        className="pointer-events-none absolute -right-36 -top-32 text-white opacity-[0.06]"
+        className="pointer-events-none absolute -right-32 -top-24 text-white opacity-[0.03]"
       />
 
       <Container className="relative">
-        <div className="grid gap-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-20">
+        {/* Tier 1: Narrative & Live Dashboard Showcase */}
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-16">
           <div>
-            <SectionIntro
-              id="erp-heading"
-              eyebrow={LANDLORDS.erp.eyebrow}
-              title={LANDLORDS.erp.title}
-              lead={LANDLORDS.erp.lead}
-              tone="dark"
-            />
+            {/* Bespoke Architectural Eyebrow */}
+            <div className="mb-6 flex items-center gap-3">
+              <span aria-hidden="true" className="h-px w-7 shrink-0 bg-brand-yellow" />
+              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-slate-300">
+                <span className="font-editorial lowercase text-brand-yellow text-[15px] italic tracking-normal leading-none">sys.</span>
+                <span>{LANDLORDS.erp.eyebrow}</span>
+                <span className="text-white/20">/</span>
+                <span className="text-emerald-400 font-medium">Core Ledger</span>
+              </div>
+            </div>
 
-            <dl className="mb-8">
+            <h2
+              id="erp-heading"
+              className="font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.06] tracking-tight text-white max-w-xl text-balance"
+            >
+              {LANDLORDS.erp.title}
+            </h2>
+
+            <p className="mt-5 text-[15.5px] sm:text-base leading-relaxed text-slate-300 max-w-[50ch] font-normal">
+              {LANDLORDS.erp.lead}
+            </p>
+
+            {/* Core Ledger Pillars - Open Hairline List */}
+            <div className="mt-10 border-t border-b border-white/10 divide-y divide-white/10">
               {LANDLORDS.erp.rows.map((row) => {
                 const IconComponent = webIcons[row.icon];
                 return (
                   <div
                     key={row.label}
-                    className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-dark-line py-4 last:border-b"
+                    className="group flex items-center justify-between gap-4 py-4 transition-colors hover:bg-white/[0.02]"
                   >
-                    <dt className="inline-flex min-w-[170px] items-center gap-3 text-[15.5px] text-on-dark-hi">
-                      <IconComponent
-                        size={18}
-                        stroke={WEB_ICON_STROKE}
-                        aria-hidden="true"
-                        className="text-brand-yellow"
-                      />
-                      {row.label}
-                    </dt>
-                    <dd className="text-[14.5px] text-on-dark-lo">{row.value}</dd>
+                    <div className="flex items-center gap-3.5">
+                      <span className="text-brand-yellow shrink-0">
+                        <IconComponent size={18} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+                      </span>
+                      <span className="text-[15px] font-medium text-white">
+                        {row.label}
+                      </span>
+                      <span className="text-slate-400 text-[13.5px] font-normal hidden sm:inline">
+                        — {row.value}
+                      </span>
+                    </div>
+
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-emerald-400/90 font-medium shrink-0">
+                      Live Hook
+                    </span>
                   </div>
                 );
               })}
-            </dl>
+            </div>
 
-            <Link
-              href={LANDLORDS.erp.portalLink.href}
-              className="web-hit inline-flex items-center gap-2 rounded-web-full border border-dark-line px-6 py-2.5 text-[14.5px] text-on-dark-hi transition-colors hover:bg-dark-raise"
-            >
-              {LANDLORDS.erp.portalLink.label}
-              <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-            </Link>
+            <div className="mt-8 flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                href={LANDLORDS.erp.portalLink.href}
+                className="web-hit inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-[14px] font-medium text-[#151936] shadow-lg shadow-white/10 transition-all hover:bg-slate-100 hover:scale-[1.02]"
+              >
+                <span>{LANDLORDS.erp.portalLink.label}</span>
+                <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+              </Link>
 
-            <ul className="mt-8 grid gap-px overflow-hidden rounded-web-panel border border-dark-line bg-dark-line sm:grid-cols-2 lg:grid-cols-3">
-              {LANDLORDS.erp.capabilities.map((capability) => {
-                const IconComponent = webIcons[capability.icon];
-                return (
-                  <li key={capability.title} className="bg-brand-dark/55 px-5 py-6">
-                    <IconComponent
-                      size={20}
-                      stroke={WEB_ICON_STROKE}
-                      aria-hidden="true"
-                      className="text-brand-yellow"
-                    />
-                    <p className="web-subtitle mt-3.5 text-[14.5px] text-on-dark-hi">
-                      {capability.title}
-                    </p>
-                    <p className="mt-1.5 text-[13.5px] leading-relaxed text-on-dark-lo">
-                      {capability.body}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
+              <div className="flex items-center gap-2 text-xs font-normal text-slate-400">
+                <SparkleIcon size={14} className="text-brand-yellow" />
+                <span>Instant biometric / mandate access</span>
+              </div>
+            </div>
           </div>
 
-          <LandlordPortfolioMock />
+          {/* Right Console Showcase */}
+          <div className="relative">
+            <div className="absolute -inset-1 rounded-[28px] bg-gradient-to-r from-emerald-500/20 via-brand-yellow/10 to-indigo-500/20 blur-xl opacity-70" />
+            <LandlordPortfolioMock />
+          </div>
+        </div>
+
+        {/* Tier 2: Infrastructure Architecture - Full-Width Architectural Matrix */}
+        <div className="mt-28 pt-20 border-t border-white/10">
+          {/* Asymmetric Editorial Header - Title on the Right */}
+          <div className="mb-16 grid lg:grid-cols-[1fr_minmax(0,1.2fr)] gap-8 lg:gap-14 items-end">
+            {/* Left Column: Context Narrative & Live Telemetry */}
+            <div className="space-y-4 lg:pr-10 lg:border-r border-white/10">
+              <p className="text-[15px] sm:text-[15.5px] leading-relaxed text-slate-300 font-normal">
+                Every transaction, repair photograph, tenant vetting dossier, and M-Pesa reference is permanently indexed against the unit ledger. No silent gaps, no undocumented deductions.
+              </p>
+              <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-widest text-slate-400 pt-1">
+                <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                  <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                  6 Core Modules Active
+                </span>
+                <span className="text-white/20">/</span>
+                <span>100% Audited Ledger</span>
+              </div>
+            </div>
+
+            {/* Right Column: Golden Eyebrow & Major Serif Title (Far Right Anchored) */}
+            <div className="lg:text-right lg:ml-auto">
+              <div className="flex items-center lg:flex-row-reverse gap-3 mb-3">
+                <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
+                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-brand-yellow font-medium">
+                  Infrastructure Architecture
+                </p>
+              </div>
+              <h3 className="font-editorial text-[clamp(2.4rem,3.8vw,3.6rem)] font-medium leading-[1.08] tracking-tight text-white max-w-xl text-balance">
+                Engineered for total portfolio transparency
+              </h3>
+            </div>
+          </div>
+
+          {/* 3x2 Hairline Architectural Matrix */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 border-y border-white/10 divide-y sm:divide-y-0 divide-white/10">
+            {LANDLORDS.erp.capabilities.map((capability, index) => {
+              const IconComponent = webIcons[capability.icon];
+              const specs = [
+                "Instant Paybill Webhook",
+                "30 / 60 / 90+ Day Ageing",
+                "Photo Audit & Invoices",
+                "Encrypted Vault Storage",
+                "Self-Service Tenant Desk",
+                "Immutable Append-Only Log",
+              ];
+
+              return (
+                <div
+                  key={capability.title}
+                  className={cn(
+                    "group relative overflow-hidden p-8 lg:p-10 transition-all duration-300 hover:bg-white/[0.02]",
+                    index % 3 !== 0 && "lg:border-l lg:border-white/10",
+                    index >= 3 && "lg:border-t lg:border-white/10",
+                    index % 2 !== 0 && "sm:border-l sm:border-white/10 lg:border-l-0",
+                    index >= 2 && "sm:border-t sm:border-white/10 lg:border-t-0"
+                  )}
+                >
+                  {/* Absolutely Placed Background Watermark Artwork */}
+                  <IconComponent
+                    size={160}
+                    stroke={1.0}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -bottom-6 -right-6 text-white opacity-[0.025] transition-all duration-500 group-hover:scale-105 group-hover:opacity-[0.05] group-hover:text-brand-yellow"
+                  />
+
+                  <h4 className="relative z-10 font-editorial text-[22px] font-medium text-white leading-snug tracking-tight">
+                    {capability.title}
+                  </h4>
+
+                  <p className="relative z-10 mt-3 text-[14px] leading-relaxed text-slate-400 font-normal">
+                    {capability.body}
+                  </p>
+
+                  <div className="relative z-10 mt-6 pt-4 border-t border-white/5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-emerald-400/90 font-medium">
+                    <span className="size-1 rounded-full bg-emerald-500/80" />
+                    <span>{specs[index]}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </Container>
     </section>
@@ -379,52 +570,152 @@ export function LandlordErp() {
  * misleading; the surrounding prose already states what the portal does.
  */
 function LandlordPortfolioMock() {
+  const ChartIcon = webIcons.chart;
+  const ShieldIcon = webIcons.shield;
+
   return (
     <div
       aria-hidden="true"
-      className="overflow-hidden rounded-web-panel bg-surface-0 shadow-[0_32px_70px_rgb(0_0_0/0.42)]"
+      className="relative overflow-hidden rounded-[24px] bg-[#ffffff] shadow-2xl ring-1 ring-white/10 flex flex-col"
     >
-      <div className="flex h-11 items-center gap-2.5 border-b border-line bg-surface-1 px-4.5">
-        <span className="web-title-light text-[17px] tracking-[0.04em] text-ink-900">Sunland</span>
-        <span className="web-control ml-auto text-[11px] uppercase tracking-[0.16em] text-ink-400">
-          Portfolio
-        </span>
+      {/* Console Chrome Header */}
+      <div className="flex h-12 items-center justify-between border-b border-slate-100 bg-slate-50/80 px-5">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="size-2.5 rounded-full bg-slate-300" />
+            <span className="size-2.5 rounded-full bg-slate-300" />
+            <span className="size-2.5 rounded-full bg-slate-300" />
+          </div>
+          <span className="h-3 w-px bg-slate-200" />
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded bg-[#151936] text-white shadow-xs">
+              <span className="font-editorial text-xs italic leading-none pt-0.5">S</span>
+            </span>
+            <span className="font-mono text-[11px] uppercase tracking-widest text-[#151936] font-medium">
+              Sunland ERP
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 font-mono text-[9.5px]">
+          <div className="flex items-center gap-1.5 uppercase tracking-wider text-slate-600 font-medium">
+            <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
+            <span>Live Sync</span>
+          </div>
+          <span className="text-slate-300">/</span>
+          <span className="uppercase tracking-widest text-slate-400 hidden sm:inline">
+            Mandate #SL-884
+          </span>
+        </div>
       </div>
 
       <div className="p-6">
-        <div className="mb-5 grid grid-cols-3 gap-4 border-b border-line-soft pb-5">
-          {LANDLORDS.erp.dashboard.summary.map((item) => (
-            <div key={item.label}>
-              <p className="web-numeric text-xl tracking-[-0.02em] text-ink-900">{item.value}</p>
-              <p className="web-control mt-1 text-[11px] uppercase tracking-[0.12em] text-ink-400">
-                {item.label}
-              </p>
-            </div>
-          ))}
+        {/* Metric Summary Bar */}
+        <div className="grid grid-cols-3 gap-3 border-b border-slate-100 pb-5">
+          <div>
+            <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mb-1">
+              Collected, Mar
+            </p>
+            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              1.42<span className="text-[16px]">M</span>
+            </p>
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-mono text-emerald-600 font-medium mt-1">
+              <ChartIcon size={10} stroke={2.5} /> +12.4%
+            </span>
+          </div>
+
+          <div className="border-l border-slate-100 pl-3">
+            <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mb-1">
+              Occupancy
+            </p>
+            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              96<span className="text-[16px]">%</span>
+            </p>
+            <span className="text-[10px] font-mono text-slate-500 font-normal mt-1 block">
+              4 of 4 Active
+            </span>
+          </div>
+
+          <div className="border-l border-slate-100 pl-3">
+            <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mb-1">
+              Open Jobs
+            </p>
+            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              2
+            </p>
+            <span className="text-[10px] font-mono text-amber-600 font-medium mt-1 block">
+              In Approval
+            </span>
+          </div>
         </div>
 
-        <div>
-          {LANDLORDS.erp.dashboard.units.map((unit) => (
-            <div
-              key={unit.name}
-              className="flex items-center gap-3 border-b border-line-soft py-3 last:border-b-0"
-            >
-              <span className="min-w-0 flex-1 truncate text-[14.5px] text-ink-900">
-                {unit.name}
-              </span>
-              <span className="web-numeric text-[13.5px] text-ink-500">{unit.amount}</span>
-              <span
-                className={cn(
-                  "web-numeric inline-flex shrink-0 rounded-web-full px-2.5 py-0.5 text-[10px] uppercase tracking-[0.14em]",
-                  unit.state === "paid"
-                    ? "bg-positive-bg text-emerald-800"
-                    : "bg-warning-bg text-amber-800"
-                )}
+        {/* The Recharts Interactive Area Graph */}
+        <div className="mt-4 pt-1">
+          <LandlordRentChart />
+        </div>
+
+        {/* Live Remittances Feed - Open Hairline List */}
+        <div className="mt-5 pt-5 border-t border-slate-100">
+          <div className="flex items-center justify-between mb-3.5">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400 font-medium">
+              Live Remittance Feed
+            </span>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400">
+              Autopay Matched
+            </span>
+          </div>
+
+          <div className="divide-y divide-slate-100/90 border-t border-b border-slate-100">
+            {LANDLORDS.erp.dashboard.units.map((unit) => (
+              <div
+                key={unit.name}
+                className="flex items-center justify-between gap-3 py-2.5 transition-colors hover:bg-slate-50/50"
               >
-                {unit.state === "paid" ? "Paid" : "Part paid"}
-              </span>
-            </div>
-          ))}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="size-6 rounded bg-slate-100 flex items-center justify-center font-editorial text-xs font-medium text-[#151936] shrink-0">
+                    {unit.name.charAt(0)}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-[13px] font-medium text-[#151936]">
+                      {unit.name}
+                    </p>
+                    <p className="text-[10.5px] font-mono text-slate-400">
+                      M-Pesa Webhook · 04 Mar
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-right shrink-0">
+                  <p className="font-mono text-[12.5px] font-medium text-[#151936]">
+                    KES {unit.amount}
+                  </p>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider font-medium",
+                      unit.state === "paid" ? "text-emerald-600" : "text-amber-600"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "size-1 rounded-full",
+                        unit.state === "paid" ? "bg-emerald-500" : "bg-amber-500"
+                      )}
+                    />
+                    {unit.state === "paid" ? "Settled" : "Partial"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer Security Badge */}
+        <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[10.5px] text-slate-400 font-mono">
+          <span className="flex items-center gap-1.5">
+            <ShieldIcon size={12} className="text-emerald-500" />
+            256-Bit Encrypted Vault
+          </span>
+          <span>Paybill 880100 Linked</span>
         </div>
       </div>
     </div>
@@ -434,29 +725,90 @@ function LandlordPortfolioMock() {
 // ── 06 Testimonial and FAQ ───────────────────────────────────────────────────
 
 export function LandlordProof() {
-  return (
-    <SectionBand tone="light" labelledBy="landlord-proof-heading">
-      <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-        <figure className="max-w-[60ch]">
-          <h2
-            id="landlord-proof-heading"
-            className="web-control text-[11px] uppercase tracking-[0.22em] text-ink-400"
-          >
-            {LANDLORDS.testimonial.eyebrow}
-          </h2>
-          <blockquote className="web-title-light mt-7 text-[clamp(1.5rem,1.2rem+1.2vw,2rem)] leading-[1.35] text-ink-900 text-pretty">
-            {LANDLORDS.testimonial.quote}
-          </blockquote>
-          <figcaption className="mt-6 text-[14.5px] text-ink-400">
-            <span className="web-subtitle text-ink-900">{LANDLORDS.testimonial.name}</span> ·{" "}
-            {LANDLORDS.testimonial.role}
-          </figcaption>
-        </figure>
+  const QuoteIcon = webIcons.quote;
+  const ShieldIcon = webIcons.shield;
 
-        <div className="rounded-web-panel border border-line bg-surface-1 p-8">
-          <h3 className="web-control text-[11px] uppercase tracking-[0.2em] text-ink-400">
-            Common questions
-          </h3>
+  return (
+    <SectionBand tone="light" labelledBy="landlord-proof-heading" className="bg-white py-24 lg:py-32 border-b border-slate-200/80">
+      <div className="grid gap-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20 items-start">
+        {/* Left Column: Client Proof & Mandate Endorsement */}
+        <div className="space-y-10">
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <span aria-hidden="true" className="h-px w-7 bg-brand-yellow shrink-0" />
+              <p
+                id="landlord-proof-heading"
+                className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium"
+              >
+                {LANDLORDS.testimonial.eyebrow}
+              </p>
+            </div>
+
+            {/* Decorative Quote Icon & Editorial Quote */}
+            <div className="relative">
+              <QuoteIcon
+                size={72}
+                stroke={0.7}
+                aria-hidden="true"
+                className="text-slate-100 absolute -top-8 -left-4 pointer-events-none -z-10"
+              />
+              <blockquote className="font-editorial text-[clamp(1.85rem,2.6vw,2.5rem)] font-medium leading-[1.28] tracking-tight text-[#151936] text-pretty">
+                &ldquo;{LANDLORDS.testimonial.quote}&rdquo;
+              </blockquote>
+            </div>
+
+            {/* Client Signature Profile */}
+            <div className="mt-8 flex items-center gap-4 pt-6 border-t border-slate-200/80">
+              <div className="size-11 rounded-full bg-[#151936] text-white flex items-center justify-center font-editorial text-lg font-medium shadow-xs shrink-0">
+                R
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-editorial text-[18px] font-medium text-[#151936]">
+                    {LANDLORDS.testimonial.name}
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-emerald-700 font-medium">
+                    <ShieldIcon size={10} stroke={2.5} /> Verified Landlord
+                  </span>
+                </div>
+                <p className="text-[13.5px] text-slate-500 font-normal">
+                  8-Unit Portfolio · Kilimani & Lavington
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof Telemetry Strip */}
+          <div className="grid grid-cols-2 gap-8 border-t border-slate-200/80 pt-8">
+            <div className="space-y-1">
+              <p className="font-editorial text-[36px] font-medium leading-none text-[#151936]">
+                98.4<span className="text-[20px]">%</span>
+              </p>
+              <p className="text-xs text-slate-500 font-normal">Annual landlord retention rate</p>
+            </div>
+            <div className="space-y-1">
+              <p className="font-editorial text-[36px] font-medium leading-none text-[#151936]">
+                24<span className="text-[20px]">h</span>
+              </p>
+              <p className="text-xs text-slate-500 font-normal">Average repair dispatch turnaround</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Open Uncarded FAQ Accordion */}
+        <div className="lg:pl-6">
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <span aria-hidden="true" className="h-px w-6 bg-brand-yellow shrink-0" />
+              <h3 className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                Mandate Clarity
+              </h3>
+            </div>
+            <h4 className="font-editorial text-[26px] sm:text-[30px] font-medium leading-tight text-[#151936]">
+              Common questions
+            </h4>
+          </div>
+
           <FaqList />
         </div>
       </div>
@@ -465,28 +817,27 @@ export function LandlordProof() {
 }
 
 /**
- * The four common questions, on native `<details>`.
- *
- * Not the shared `FaqAccordion`: that one is styled for a full-width band with
- * a 20px title and a plus affordance, and this sits inside a tinted card at
- * 15.5px. Forcing one component to do both would mean three tone props to
- * serve two callers.
+ * The four common questions, on native `<details>` with custom uncarded styling.
  */
 function FaqList() {
+  const PlusIcon = webIcons.plus;
+
   return (
-    <div className="mt-5">
+    <div className="border-t border-slate-200/90 divide-y divide-slate-200/90">
       {LANDLORDS.faq.map((item) => (
-        <details key={item.question} name="landlord-faq" className="group border-t border-line">
-          <summary className="web-hit flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-[15.5px] text-ink-900 [&::-webkit-details-marker]:hidden">
-            {item.question}
+        <details key={item.question} name="landlord-faq" className="group">
+          <summary className="web-hit flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-editorial text-[18.5px] sm:text-[20px] font-medium text-[#151936] transition-colors hover:text-slate-600 group-open:text-[#151936] [&::-webkit-details-marker]:hidden">
+            <span>{item.question}</span>
             <span
               aria-hidden="true"
-              className="shrink-0 text-ink-400 transition-transform duration-200 group-open:rotate-45"
+              className="flex size-8 shrink-0 items-center justify-center rounded-full border border-slate-200/10 bg-slate-50/60 text-slate-500 transition-all duration-200 group-hover:border-slate-400 group-hover:text-[#151936] group-open:rotate-45 group-open:border-slate-200/20 group-open:text-[#151936] group-open:bg-slate-100"
             >
-              +
+              <PlusIcon size={16} stroke={2} />
             </span>
           </summary>
-          <p className="pb-4 text-[14.5px] leading-relaxed text-ink-500">{item.answer}</p>
+          <p className="pb-6 text-[15px] leading-relaxed text-slate-600 font-normal max-w-[56ch]">
+            {item.answer}
+          </p>
         </details>
       ))}
     </div>

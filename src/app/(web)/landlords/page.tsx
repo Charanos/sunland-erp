@@ -46,33 +46,81 @@ export default function LandlordsPage() {
       <LandlordErp />
       <LandlordProof />
 
-      <section id="valuation" aria-labelledby="valuation-heading" className="bg-surface-1 py-24 lg:py-28">
+      <section
+        id="valuations"
+        aria-labelledby="valuation-heading"
+        className="scroll-mt-12 bg-[#f8fafc] py-24 lg:py-32 border-t border-slate-200/80 relative"
+      >
+        {/* Support both #valuations and #valuation anchors */}
+        <div id="valuation" className="absolute -top-12 left-0 pointer-events-none" aria-hidden="true" />
         <Container>
-          <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
-            <div>
-              <Eyebrow>{LANDLORDS.valuation.eyebrow}</Eyebrow>
-              <h2 id="valuation-heading" className="web-title mt-4 text-web-h2 text-ink-900">
-                {LANDLORDS.valuation.title}
-              </h2>
-              <p className="web-subtitle mt-5 max-w-[56ch] text-web-lead text-ink-500">
-                {LANDLORDS.valuation.lead}
-              </p>
+          <div className="grid gap-16 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)] lg:gap-20 items-start">
+            {/* Left Column: Valuation Value Proposition & Milestones */}
+            <div className="space-y-8">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span aria-hidden="true" className="h-px w-7 bg-brand-yellow shrink-0" />
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                    {LANDLORDS.valuation.eyebrow}
+                  </p>
+                </div>
 
-              <ol className="mt-8 max-w-[52ch]">
-                {LANDLORDS.valuation.steps.map((step, index) => (
-                  <li key={step} className="flex gap-3.5 border-t border-line py-3.5 last:border-b">
-                    <span
-                      aria-hidden="true"
-                      className="web-numeric pt-0.5 text-[12.5px] text-ink-400"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-[14.5px] leading-relaxed text-ink-500">{step}</span>
-                  </li>
-                ))}
-              </ol>
+                <h2 id="valuation-heading" className="font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.06] tracking-tight text-[#151936]">
+                  {LANDLORDS.valuation.title}
+                </h2>
+
+                <p className="mt-5 text-[15.5px] sm:text-base leading-relaxed text-slate-600 font-normal max-w-[50ch]">
+                  {LANDLORDS.valuation.lead}
+                </p>
+              </div>
+
+              {/* Deliverable Milestones - Uncarded, Hairline Divided */}
+              <div className="border-t border-slate-200/90 divide-y divide-slate-200/90">
+                <div className="py-4.5 flex items-start gap-4">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 mt-0.5">
+                    <span className="size-1.5 rounded-full bg-emerald-600" />
+                  </span>
+                  <div>
+                    <h3 className="font-editorial text-[18.5px] font-medium text-[#151936]">
+                      Discovery Consultation
+                    </h3>
+                    <p className="text-[14px] leading-relaxed text-slate-600 font-normal mt-0.5">
+                      We call within one working day to understand unit configurations, current lease status, and target yields.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="py-4.5 flex items-start gap-4">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 mt-0.5">
+                    <span className="size-1.5 rounded-full bg-emerald-600" />
+                  </span>
+                  <div>
+                    <h3 className="font-editorial text-[18.5px] font-medium text-[#151936]">
+                      On-Site Appraisal Walkthrough
+                    </h3>
+                    <p className="text-[14px] leading-relaxed text-slate-600 font-normal mt-0.5">
+                      A senior consultant inspects the premises (typically 45 mins), evaluating finishes, fixtures, and tenant appeal.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="py-4.5 flex items-start gap-4">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 mt-0.5">
+                    <span className="size-1.5 rounded-full bg-emerald-600" />
+                  </span>
+                  <div>
+                    <h3 className="font-editorial text-[18.5px] font-medium text-[#151936]">
+                      Written Comparable Dossier
+                    </h3>
+                    <p className="text-[14px] leading-relaxed text-slate-600 font-normal mt-0.5">
+                      Receive a definitive figure backed by recent submarket transactions and our live rental ledger comparables.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
+            {/* Right Column: Uncarded Elegant Valuation Form */}
             <InlineValuationForm />
           </div>
         </Container>
