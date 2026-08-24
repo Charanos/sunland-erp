@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { ListingIndex } from "@/components/web/properties/listing-index";
-import { ListingIndexSkeleton } from "@/components/web/properties/listing-index-skeleton";
 
 export const metadata: Metadata = {
   title: "Properties to let and for sale in Nairobi",
@@ -12,14 +10,19 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 /**
- * The listing index.
+ * The /properties route.
  *
- * The Suspense boundary is here rather than in a `loading.tsx`, because a
- * route-level loading file at `/properties` also wraps `/properties/[segment]`,
- * and a wrapped segment flushes its shell with a 200 before resolving, which
- * turns a missing listing into a soft 404. Placing the boundary explicitly
- * keeps the skeleton on the page that needs it and leaves the segment route
- * free to return a real 404.
+ * Suspense architecture:
+ *
+ *   Previously this page wrapped the entire ListingIndex in a
+ *   `<Suspense key={JSON.stringify(params)}>`, which caused the hero,
+ *   FilterRail and all layout to re-suspend (flash to skeleton) on every
+ *   filter change.
+ *
+ *   The boundary is now inside ListingIndexBody → only the results grid
+ *   re-suspends. The hero stays visible, the FilterRail updates instantly
+ *   (it reads the URL itself as a client component), and pagination
+ *   navigates without a full-page flash.
  */
 export default async function PropertiesPage({
   searchParams,
@@ -29,19 +32,12 @@ export default async function PropertiesPage({
   const params = await searchParams;
 
   return (
-    <Suspense
-      // Re-suspends when the filters change, so the skeleton reappears rather
-      // than the previous result set sitting there looking current.
-      key={JSON.stringify(params)}
-      fallback={<ListingIndexSkeleton />}
-    >
-      <ListingIndex
-        searchParams={params}
-        basePath="/properties"
-        crumbs={[{ label: "Home", href: "/" }, { label: "Properties" }]}
-        title="Properties in Nairobi and beyond"
-        lead="Apartments, villas, land and commercial space. Everything below is on our books today, with the price we will actually quote you."
-      />
-    </Suspense>
+    <ListingIndex
+      searchParams={params}
+      basePath="/properties"
+      crumbs={[{ label: "Home", href: "/" }, { label: "Properties" }]}
+      title="Properties in Nairobi and beyond"
+      lead="Apartments, villas, land and commercial space. Everything below is on our books today, with the price we will actually quote you."
+    />
   );
 }

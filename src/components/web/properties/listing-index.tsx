@@ -1,24 +1,33 @@
-import { Breadcrumbs, type Crumb } from "../primitives/breadcrumbs";
-import { WebPagination } from "../primitives/pagination";
-import { CATEGORY_FACETS, type ListingFacet } from "../constants/listing-taxonomy";
-import { FilterRail } from "./filter-rail";
-import { EmptyResults, RegisterRequirement, ResultsGrid } from "./results-grid";
-import { ResultsToolbar } from "./results-toolbar";
+import { Suspense } from "react";
+import { type Crumb } from "../primitives/breadcrumbs";
+import { Breadcrumbs } from "../primitives/breadcrumbs";
+import { type ListingFacet } from "../constants/listing-taxonomy";
 import { PropertiesHero } from "./properties-hero";
 import { PropertiesPageReveal } from "./properties-page-reveal";
-import { getFacetCounts, getListings, type ListingFilters } from "@/lib/services/web/listings";
+import { ListingIndexBody } from "./listing-index-body";
+import { FilterRail } from "./filter-rail";
+import { getFacetCounts } from "@/lib/services/web/listings";
 
 /**
- * The listing index template, shared by `/properties` and every facet page
- * beneath it.
+ * The listing index template, shared by `/properties` and every facet page.
  *
- * One component rather than five near-copies, because the facets differ only
- * in which filter is pinned and what the heading says. Five copies is five
- * places to forget the aria-live count.
+ * Architecture (filter-change optimisation):
  *
- * Filter state round-trips through the URL: the server reads `searchParams`,
- * queries, and renders. Nothing about the result set lives in client state,
- * so the back button, a shared link and a crawler all see the same page.
+ *   ┌─ ListingIndex (server, renders once per route) ──────────────────────┐
+ *   │  PropertiesHero       ← static, never re-suspends                    │
+ *   │  PropertiesPageReveal ← client, mounts once                          │
+ *   │  ┌─ below-fold grid ─────────────────────────────────────────────┐   │
+ *   │  │  FilterRail  ← client component, reads URL itself — instant   │   │
+ *   │  │  ┌─ <Suspense key={filterKey}> ───────────────────────────┐   │   │
+ *   │  │  │  PropertiesResults  ← ONLY this re-suspends on change  │   │   │
+ *   │  │  └───────────────────────────────────────────────────────┘   │   │
+ *   │  └──────────────────────────────────────────────────────────────┘   │
+ *   └──────────────────────────────────────────────────────────────────────┘
+ *
+ * When the user changes a filter or navigates a page:
+ *   • Hero stays visible (no flash, no re-animation)
+ *   • FilterRail updates instantly (client, reads URL via useSearchParams)
+ *   • Only the results grid shows a skeleton while the new fetch resolves
  */
 export async function ListingIndex({
   facet,
@@ -28,7 +37,6 @@ export async function ListingIndex({
   title,
   lead,
 }: {
-  /** Present on a facet page, absent on /properties. */
   facet?: ListingFacet;
   searchParams: Record<string, string | string[] | undefined>;
   basePath: string;
@@ -36,163 +44,75 @@ export async function ListingIndex({
   title: string;
   lead: string;
 }) {
-  const single = (key: string) => {
-    const value = searchParams[key];
-    return Array.isArray(value) ? value[0] : value;
-  };
-  const many = (key: string) => {
-    const value = searchParams[key];
-    if (Array.isArray(value)) return value;
-    return value ? [value] : [];
-  };
+  // Fetch facet counts here (fast / cached) so the FilterRail can render
+  // immediately with accurate counts independent of the results fetch.
+  const counts = await getFacetCounts();
 
-  const toNumber = (value: string | undefined) => {
-    if (!value) return undefined;
-    const parsed = Number(value.replace(/[^0-9]/g, ""));
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
-  };
-
-  // The facet pins its own filter. A query parameter cannot override it:
-  // /properties/apartments?category=land would otherwise render land under an
-  // "Apartments in Nairobi" heading, which is a page that contradicts itself.
-  const categoryFromFacet = facet?.kind === "category" ? facet.segment : undefined;
-  const statusFromFacet =
-    facet?.kind === "status" ? (facet.segment as "for-rent" | "for-sale") : undefined;
-
-  const selectedCategories = categoryFromFacet ? [categoryFromFacet] : many("category");
-  const statusParam = single("status");
-  const status =
-    statusFromFacet ??
-    (statusParam === "for-rent" || statusParam === "for-sale" ? statusParam : undefined);
-
-  const filters: ListingFilters = {
-    status,
-    // The service takes one category; a multi-select rail is a W1-13 concern
-    // once the real taxonomy exists. Until then the first selection wins,
-    // which is honest about what the query actually does.
-    category: selectedCategories[0],
-    location: single("location"),
-    minPrice: toNumber(single("min")),
-    maxPrice: toNumber(single("max")),
-    bedrooms: many("beds"),
-    sort: single("sort") as ListingFilters["sort"],
-    page: Number(single("page")) || 1,
-    pageSize: 9,
-  };
-
-  const [results, counts] = await Promise.all([getListings(filters), getFacetCounts()]);
-
-  const chips: { label: string; param: string; value?: string }[] = [];
-  for (const segment of selectedCategories) {
-    if (segment === categoryFromFacet) continue;
-    const match = CATEGORY_FACETS.find((item) => item.segment === segment);
-    if (match) chips.push({ label: match.label, param: "category", value: segment });
-  }
-  for (const beds of many("beds")) {
-    chips.push({ label: `${beds} bd`, param: "beds", value: beds });
-  }
-  if (filters.location) chips.push({ label: filters.location, param: "location" });
-  if (filters.minPrice)
-    chips.push({ label: `Min ${filters.minPrice.toLocaleString("en-KE")}`, param: "min" });
-  if (filters.maxPrice)
-    chips.push({ label: `Max ${filters.maxPrice.toLocaleString("en-KE")}`, param: "max" });
-
-  // Alternatives relax the most restrictive filter first, so each suggestion
-  // is a real result set rather than a guess that lands on another empty page.
-  const alternatives: { label: string; href: string }[] = [];
-  if (filters.maxPrice) {
-    alternatives.push({
-      label: `Up to ${Math.round(filters.maxPrice * 1.3).toLocaleString("en-KE")}`,
-      href: `${basePath}?max=${Math.round(filters.maxPrice * 1.3)}`,
-    });
-  }
-  if (filters.bedrooms && filters.bedrooms.length > 0) {
-    alternatives.push({ label: "Any number of bedrooms", href: basePath });
-  }
-  if (filters.location) {
-    alternatives.push({ label: "Any area", href: basePath });
-  }
-
-  const carriedParams: Record<string, string | undefined> = {
-    status: statusFromFacet ? undefined : statusParam,
-    location: filters.location,
-    min: single("min"),
-    max: single("max"),
-    sort: single("sort"),
-  };
+  // Derive a total for the hero pill by summing all facet category counts.
+  // This avoids an extra getListings() call just for the hero number.
+  const totalForHero = Object.values(counts).reduce((sum, n) => sum + n, 0);
 
   return (
     <>
-      {/* ── Animated hero (client component) ───────────────────────────── */}
+      {/* ── Hero — static, never re-renders on filter change ────────────── */}
       <PropertiesHero
         title={title}
         lead={lead}
-        breadcrumbSlot={
-          <Breadcrumbs items={crumbs} tone="dark" />
-        }
+        breadcrumbSlot={<Breadcrumbs items={crumbs} tone="dark" />}
         countSlot={
-          <>
-            <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-yellow">
-              {results.total} {results.total === 1 ? "property" : "properties"}
-            </span>
-          </>
+          <span className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand-yellow">
+            {totalForHero > 0
+              ? `${totalForHero} ${totalForHero === 1 ? "property" : "properties"}`
+              : "Properties"}
+          </span>
         }
       />
 
-      {/* Scoped reveal orchestrator — no dependency on RevealController */}
+      {/* Scoped reveal orchestrator */}
       <PropertiesPageReveal />
 
       {/* ── Below-fold body ─────────────────────────────────────────────── */}
       <div className="bg-[#fbfcff] pb-28 pt-10">
-        <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
-          <div className="grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
-
-            {/* ── FilterRail — sticky on desktop ──────────────────────────── */}
-            <div className="ph-reveal-rail lg:sticky lg:top-24 lg:self-start mb-5 lg:mb-0">
-              <FilterRail
-                counts={counts}
-                resultCount={results.total}
-                lockedFacet={facet ? { kind: facet.kind, segment: facet.segment } : undefined}
-              />
-            </div>
-
-            {/* ── Results column ──────────────────────────────────────────── */}
-            <section aria-label="Results" className="min-w-0">
-              <div className="ph-reveal-toolbar">
-                <ResultsToolbar total={results.total} chips={chips} />
-              </div>
-
-              {results.listings.length > 0 ? (
-                <>
-                  <div className="mt-6">
-                    <ResultsGrid listings={results.listings} />
-                  </div>
-
-                  <div className="ph-reveal-footer mt-4">
-                    <WebPagination
-                      currentPage={results.page}
-                      totalPages={results.totalPages}
-                      totalItems={results.total}
-                      pageSize={results.pageSize}
-                      basePath={basePath}
-                      searchParams={carriedParams}
-                    />
-                  </div>
-
-                  <div className="ph-reveal-cta">
-                    <RegisterRequirement />
-                  </div>
-                </>
-              ) : (
-                <div className="ph-reveal-empty">
-                  <EmptyResults alternatives={alternatives} clearHref={basePath} />
+        <Suspense
+          fallback={
+            // While ListingIndexBody itself resolves (facet counts), show
+            // the FilterRail shell with the pre-fetched counts we already have.
+            <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
+              <div className="grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
+                <div className="ph-reveal-rail lg:sticky lg:top-24 lg:self-start mb-5 lg:mb-0">
+                  <FilterRail
+                    counts={counts}
+                    resultCount={0}
+                    lockedFacet={
+                      facet ? { kind: facet.kind, segment: facet.segment } : undefined
+                    }
+                  />
                 </div>
-              )}
-            </section>
-          </div>
-        </div>
+                <div className="min-w-0">
+                  <div className="h-[54px] w-full animate-pulse rounded-xl bg-slate-200/70" />
+                  <ul className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
+                    {Array.from({ length: 9 }).map((_, i) => (
+                      <li key={i} className="flex flex-col gap-3">
+                        <div className="aspect-[16/10] animate-pulse rounded-2xl bg-slate-200/70" />
+                        <div className="h-4 w-3/4 animate-pulse rounded-full bg-slate-200/60" />
+                        <div className="h-3 w-1/2 animate-pulse rounded-full bg-slate-200/50" />
+                        <div className="h-6 w-2/5 animate-pulse rounded-full bg-slate-200/70" />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          }
+        >
+          <ListingIndexBody
+            facet={facet}
+            searchParams={searchParams}
+            basePath={basePath}
+            counts={counts}
+          />
+        </Suspense>
       </div>
     </>
   );
 }
-
