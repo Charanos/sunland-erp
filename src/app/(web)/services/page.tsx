@@ -13,6 +13,8 @@ import { Breadcrumbs } from "@/components/web/primitives/breadcrumbs";
 import { Container } from "@/components/web/primitives/container";
 import { Eyebrow } from "@/components/web/primitives/eyebrow";
 import { SectionBand } from "@/components/web/primitives/section-band";
+import { ServicesHero } from "@/components/web/services/services-hero";
+import { PropertyManagementService } from "@/components/web/services/property-management-service";
 
 export const metadata: Metadata = {
   title: "Our services: management, sales, letting, valuation",
@@ -34,57 +36,14 @@ export default function ServicesPage() {
 
   return (
     <>
-      <section
-        aria-labelledby="services-heading"
-        className="web-dark px-5 pb-24 pt-8 sm:px-8 lg:px-14"
-      >
-        <div className="mx-auto w-full max-w-[1320px]">
-          <Breadcrumbs
-            items={[{ label: "Home", href: "/" }, { label: "Services" }]}
-            className="mb-10"
-          />
+      <ServicesHero />
 
-          <div className="grid gap-14 lg:grid-cols-2 lg:items-end">
-            <div>
-              <Eyebrow tone="dark">{SERVICES_HERO.eyebrow}</Eyebrow>
-              <h1
-                id="services-heading"
-                className="web-title mt-5 max-w-[16em] text-[clamp(2.5rem,1.5rem+4.4vw,4rem)] leading-[1.05] tracking-[-0.015em] text-on-dark-hi"
-              >
-                {SERVICES_HERO.headline}
-              </h1>
-              <p className="web-subtitle mt-6 max-w-[54ch] text-web-lead text-on-dark">
-                {SERVICES_HERO.lead}
-              </p>
-            </div>
-
-            {/* In-page jump nav. On a page this long it is the table of
-                contents, and it doubles as the mobile summary of what is
-                below the fold. */}
-            <nav aria-label="Services" className="border-t border-dark-line">
-              {SERVICES_HERO.jumpLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="web-hit flex items-center justify-between gap-4 border-b border-dark-line py-4.5 text-base text-on-dark-hi transition-colors hover:text-brand-yellow"
-                >
-                  {link.label}
-                  <ArrowIcon
-                    size={18}
-                    stroke={WEB_ICON_STROKE}
-                    aria-hidden="true"
-                    className="shrink-0 text-brand-yellow"
-                  />
-                </a>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </section>
-
-      {SERVICE_SECTIONS.map((section) => (
-        <ServiceBand key={section.id} section={section} />
-      ))}
+      {SERVICE_SECTIONS.map((section) => {
+        if (section.id === "management") {
+          return <PropertyManagementService key={section.id} />;
+        }
+        return <ServiceBand key={section.id} section={section} />;
+      })}
 
       <SectionBand tone="light" labelledBy="router-heading">
         <div className="mb-10 max-w-[600px]">

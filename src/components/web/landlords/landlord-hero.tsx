@@ -18,7 +18,7 @@ export function LandlordHero({ stats }: { stats?: { value: string; label: string
       {/* ── Background ── */}
       <div className="ph-bg pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
         <Image
-          src="/images/landlords-hero.jpg"
+          src="/images/landlords-hero.png"
           alt=""
           aria-hidden="true"
           fill

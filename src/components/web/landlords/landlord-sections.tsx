@@ -459,11 +459,6 @@ export function LandlordErp() {
                 <span>{LANDLORDS.erp.portalLink.label}</span>
                 <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
               </Link>
-
-              <div className="flex items-center gap-2 text-xs font-normal text-slate-400">
-                <SparkleIcon size={14} className="text-brand-yellow" />
-                <span>Instant biometric / mandate access</span>
-              </div>
             </div>
           </div>
 
@@ -665,7 +660,7 @@ function LandlordPortfolioMock() {
             </span>
           </div>
 
-          <div className="divide-y divide-slate-100/90 border-t border-b border-slate-100">
+          <div className="divide-y divide-slate-100/90 border-t border-slate-100">
             {LANDLORDS.erp.dashboard.units.map((unit) => (
               <div
                 key={unit.name}
