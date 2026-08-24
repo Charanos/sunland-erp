@@ -7,116 +7,112 @@ import { cn } from "@/lib/utils/cn";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { WebButtonLink } from "../primitives/button";
 
-const MANAGEMENT_PILLARS = [
+const VALUATION_PILLARS = [
   {
-    id: "vetting",
+    id: "appraisals",
     number: "01",
-    tabTitle: "Tenant Vetting",
-    microTag: "CRB & KYC Screening",
-    title: "Institutional Tenant Onboarding & Vetting",
-    sla: "SLA: 48h Metropol CRB Verification",
-    icon: "userCheck" as const,
-    summary: "Rigorous institutional vetting before keys are handed over, protecting capital yield, asset integrity, and community stability.",
+    tabTitle: "Market Appraisals",
+    microTag: "Letting & Sale Pricing",
+    title: "Comparative Market Analysis & Disposal Appraisals",
+    icon: "chart" as const,
+    summary: "Evidence-based market pricing derived from real settled Land Registry transactions and yield analytics across Nairobi & Coastal corridors, rather than speculative asking rates.",
     specs: [
       {
-        title: "CRB Credit & Default Screening",
-        desc: "Metropol credit bureau scoring and historical arrears cross-referencing.",
+        title: "Verified Land Registry Comparables",
+        desc: "Historical transaction data analysis filtering out aspirational portal asking rates.",
       },
       {
-        title: "Income & Employer Verification",
-        desc: "Formal employer confirmation and 6-month certified bank statement analysis.",
+        title: "Yield & Absorption Rate Modeling",
+        desc: "Rental yield forecasting, vacancy duration velocity, and tenant demand modeling.",
       },
       {
-        title: "Prior Landlord KYC Reference",
-        desc: "Direct verification with previous property managers and government ID/PIN clearance.",
+        title: "Physical Asset Condition Audit",
+        desc: "On-site structural evaluation, specification assessment, and capital appreciation factors.",
       },
       {
-        title: "Statutory Lease Execution",
-        desc: "Legally enforceable digital lease agreements registered under Kenya Law.",
+        title: "Complimentary 48-Hour Appraisal",
+        desc: "Zero-fee preliminary valuation report for prospective vendors, landlords, and asset owners.",
       },
     ],
   },
   {
-    id: "financial",
+    id: "mortgage",
     number: "02",
-    tabTitle: "Financial Core",
-    microTag: "5th Guaranteed Remittance",
-    title: "Financial Governance & 5th Remittance",
-    sla: "SLA: Disbursed by 5th Monthly",
-    icon: "coin" as const,
-    summary: "Guaranteed monthly cash flow with automated bank/M-Pesa reconciliation and zero undocumented deductions.",
+    tabTitle: "Bank & Mortgage",
+    microTag: "Institutional Lending",
+    title: "Bank Secured Lending & Mortgage Valuations",
+    icon: "shield" as const,
+    summary: "Certified valuation dossiers structured for commercial banks, SACCOs, and institutional mortgage providers compliant with Central Bank of Kenya lending covenants.",
     specs: [
       {
-        title: "Guaranteed 5th Remittance",
-        desc: "Automated disbursement directly to your bank account or M-Pesa on/before the 5th.",
+        title: "Tier-1 Bank Panel Formats",
+        desc: "Standardized reporting fully accepted by major financial institutions and credit risk committees.",
       },
       {
-        title: "ERP Paybill Webhook Matching",
-        desc: "Automated instant rent reconciliation eliminating manual deposit slips.",
+        title: "Open Market & Forced Sale Values",
+        desc: "Definitive Open Market Valuation (OMV) and Forced Sale Valuation (FSV) calculations.",
       },
       {
-        title: "Escrow & Utility Administration",
-        desc: "Dedicated escrow accounting for water, KPLC, service charge, and security.",
+        title: "Title Deed & Cadastral Verification",
+        desc: "Official registry searches, survey boundary checks, and beacon re-establishment verification.",
       },
       {
-        title: "Live Landlord Ledger & PDF Exports",
-        desc: "24/7 access to your real-time unit ledgers with downloadable monthly statements.",
+        title: "3-Day Fast-Track Delivery",
+        desc: "Expedited report submission directly to your bank's credit risk underwriting department.",
       },
     ],
   },
   {
-    id: "facilities",
+    id: "statutory",
     number: "03",
-    tabTitle: "Facilities ERP",
-    microTag: "Photo Work Orders",
-    title: "Facilities & Photo Work Orders",
-    sla: "SLA: Zero Contractor Markup",
-    icon: "wrench" as const,
-    summary: "Transparent maintenance with photographic proof on every repair and pre-negotiated contractor rates with zero markup.",
+    tabTitle: "Statutory & Probate",
+    microTag: "Legal & Tax Advisory",
+    title: "Court Probate, Succession & Statutory Tax Valuations",
+    icon: "doc" as const,
+    summary: "Legally enforceable valuation schedules for High Court probate succession, compulsory acquisition claims, and KRA Capital Gains Tax baseline determination.",
     specs: [
       {
-        title: "Timestamped Photo Dossiers",
-        desc: "Before-and-after photographic evidence attached to every single repair invoice.",
+        title: "High Court Probate Recognition",
+        desc: "Certified estate distribution schedules compliant with the Law of Succession Act.",
       },
       {
-        title: "KES 10,000 Approval Threshold",
-        desc: "Strict automated cap; any expenditure above KES 10,000 requires 1-click landlord signoff.",
+        title: "KRA Capital Gains Tax Baselines",
+        desc: "Definitive market value baselines for Stamp Duty assessment and Capital Gains Tax filings.",
       },
       {
-        title: "Direct Contractor Pricing",
-        desc: "Zero contractor markup — you pay the exact verified tradesman invoice rate.",
+        title: "Compulsory Acquisition Representation",
+        desc: "Expert representation and compensation negotiation under the National Land Commission framework.",
       },
       {
-        title: "24/7 Emergency Rapid Response",
-        desc: "Immediate on-site containment for plumbing bursts, power faults, and structural issues.",
+        title: "Insurance Reinstatement Costing",
+        desc: "Accurate replacement cost calculations protecting asset owners against under-insurance penalties.",
       },
     ],
   },
   {
-    id: "legal",
+    id: "portfolio",
     number: "04",
-    tabTitle: "Legal & Tax",
-    microTag: "Sectional Act & KRA",
-    title: "Legal, Statutory & Tax Compliance",
-    sla: "SLA: Sectional Properties Act 2020",
-    icon: "doc" as const,
-    summary: "Comprehensive compliance with statutory property laws, tenancy legislation, and KRA withholding tax requirements.",
+    tabTitle: "Portfolio Audits",
+    microTag: "Multi-Unit DCF Modeling",
+    title: "Institutional Portfolio & Balance Sheet Asset Audits",
+    icon: "coin" as const,
+    summary: "Rigorous discounted cash flow (DCF) yield modeling and balance sheet asset audits for institutional developers, real estate funds, REITs, and multi-asset landlords.",
     specs: [
       {
-        title: "Statutory Law Compliance",
-        desc: "Full alignment with Sectional Properties Act 2020 and Landlord & Tenant Act.",
+        title: "Discounted Cash Flow (DCF) Yield Modeling",
+        desc: "Net Present Value (NPV) and Internal Rate of Return (IRR) multi-year cash flow projections.",
       },
       {
-        title: "Formal Arrears Escalation",
-        desc: "Strict statutory demand notices and structured dispute resolution protocols.",
+        title: "Highest & Best Use (HBU) Studies",
+        desc: "Feasibility appraisals for commercial development, greenfield plots, and redevelopment parcels.",
       },
       {
-        title: "Annual KRA Tax Schedules",
-        desc: "Automated withholding tax and annual rental income tax computation schedules.",
+        title: "Sectional Properties Act 2020 Audits",
+        desc: "Valuation of individual sectional unit shares and undivided common property rights.",
       },
       {
-        title: "Digital Move-In/Out Inventories",
-        desc: "Comprehensive photographic condition inventories signed digitally at handover.",
+        title: "IFRS-Compliant Balance Sheet Revaluation",
+        desc: "Fair value assessments fully compliant with International Financial Reporting Standards.",
       },
     ],
   },
@@ -124,44 +120,39 @@ const MANAGEMENT_PILLARS = [
 
 const KEY_METRICS = [
   {
-    value: "10%",
-    label: "Management fee",
-    sub: "Of rent collected (8% for 10+ units)",
-    highlight: "Standard Tier",
+    value: "FREE",
+    label: "Market appraisal",
+    sub: "Complimentary preliminary review",
   },
   {
-    value: "5th",
-    label: "Guaranteed remittance",
-    sub: "Disbursed monthly via RTGS / M-Pesa",
-    highlight: "Guaranteed SLA",
+    value: "3 Days",
+    label: "Turnaround time",
+    sub: "Fast-track formal valuation dossier",
   },
   {
-    value: "0%",
-    label: "Tenant finding fee",
-    sub: "Included free with management mandate",
-    highlight: "Zero Placement Fee",
+    value: "100%",
+    label: "Bank acceptance",
+    sub: "Tier-1 bank & mortgage approved",
   },
   {
-    value: "60 Days",
-    label: "Notice period",
-    sub: "Either party, zero exit penalties",
-    highlight: "Zero Lock-in",
+    value: "KES 0",
+    label: "Hidden disbursements",
+    sub: "Transparent upfront quotation",
   },
 ];
 
-export function PropertyManagementService() {
+export function ValuationService() {
   const [activePillar, setActivePillar] = useState<number>(0);
   const ArrowIcon = webIcons.arrow;
   const CheckIcon = webIcons.check;
   const ShieldIcon = webIcons.shield;
-  const PhoneIcon = webIcons.phone;
 
-  const currentPillar = MANAGEMENT_PILLARS[activePillar];
+  const currentPillar = VALUATION_PILLARS[activePillar];
 
   return (
     <section
-      id="management"
-      aria-labelledby="management-heading"
+      id="valuation"
+      aria-labelledby="valuation-heading"
       className="scroll-mt-20 border-b border-line py-20 lg:py-28 bg-surface-0"
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
@@ -172,36 +163,36 @@ export function PropertyManagementService() {
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-900 font-medium">
-                Practice 01 · Full Asset Lifecycle
+                Practice 03 · Valuation & Advisory
               </p>
             </div>
             <p className="text-[15.5px] sm:text-[16.5px] leading-relaxed text-ink-500 font-normal max-w-[48ch]">
-              We take the entire operational weight off your shoulders. Every property is assigned a named manager, every transaction is backed by real-time ERP auditing, and rent is remitted on the 5th without exception.
+              A written figure grounded in empirical market reality rather than speculative asking prices. Certified by registered valuers for bank lending, court probate, tax compliance, and portfolio audits.
             </p>
           </div>
 
           {/* Right Column: Main Serif Title */}
           <div className="lg:col-span-7 lg:pl-2">
             <h2
-              id="management-heading"
-              className="font-editorial lg:text-right text-[clamp(2.25rem,3.8vw,3.5rem)] font-medium leading-[1.08] tracking-tight text-ink-900 text-balance"
+              id="valuation-heading"
+              className="font-editorial text-right text-[clamp(2.25rem,3.8vw,3.5rem)] font-medium leading-[1.08] tracking-tight text-ink-900 text-balance"
             >
-              Property management engineered for absolute certainty
+              Property valuation grounded in empirical market reality
             </h2>
           </div>
         </div>
 
-        {/* Main Content Grid: Visuals Left, Interactive Machinery Right */}
+        {/* Main Content Grid: Visuals Left, Interactive Machinery Right (Matching Service 01) */}
         <div className="mt-14 grid gap-14 lg:gap-20 lg:grid-cols-12 lg:items-start">
           
-          {/* Left Column (Flipped): Full-Height 4K Showcase with Home Hero Glass HUD (5 cols) */}
+          {/* Left Column: Full-Height 4K Showcase with Home Hero Glass HUD (5 cols, sticky) */}
           <div className="lg:col-span-5 lg:sticky lg:top-28">
-            <div className="relative min-h-[640px] sm:min-h-[700px] lg:min-h-[780px] w-full rounded-[22px] overflow-hidden border border-line-soft bg-surface-2 group flex flex-col justify-center items-center p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
+            <div className="relative min-h-[640px] sm:min-h-[700px] lg:min-h-[760px] w-full rounded-[22px] overflow-hidden border border-line-soft bg-surface-2 group flex flex-col justify-between p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
               
               {/* 4K Background Image */}
               <Image
-                src="/images/services/property-management.jpg"
-                alt="High-end managed apartment interior in Nairobi"
+                src="/images/services/valuation.jpg"
+                alt="Executive real estate valuer and surveyor in Nairobi"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 42vw"
@@ -213,21 +204,20 @@ export function PropertyManagementService() {
               {/* Multi-layered Cinematic Gradient Scrim */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/30 pointer-events-none" />
 
-
               {/* Bottom Floating Frosted Glass HUD Widget (Home Hero Vibe) */}
               <div className="relative z-10 rounded-[18px] border border-white/15 bg-black/30 backdrop-blur-xl p-5 sm:p-6 shadow-[0_24px_55px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.12)] text-white space-y-4">
                 {/* HUD Header */}
                 <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
                   <div>
                     <p className="font-mono text-[9.5px] uppercase tracking-[0.22em] text-brand-yellow font-semibold">
-                      Portfolio Benchmark Ledger
+                      Valuation Benchmark Ledger
                     </p>
                     <p className="text-xs font-normal text-slate-200 mt-0.5">
-                      Kilimani · Lavington · Riverside · Westlands
+                      Institution of Surveyors of Kenya
                     </p>
                   </div>
                   <span className="font-mono text-[10px] text-slate-300 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">
-                    Live Telemetry
+                    Certified
                   </span>
                 </div>
 
@@ -252,31 +242,45 @@ export function PropertyManagementService() {
                 <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300 font-mono">
                   <span className="flex items-center gap-1.5">
                     <ShieldIcon size={12} stroke={WEB_ICON_STROKE} className="text-emerald-400 shrink-0" />
-                    <span>Contractual SLA Guaranteed</span>
+                    <span>Valuers Act Cap 532 Licensed</span>
                   </span>
-                  <span className="text-slate-400">Zero Exit Penalties</span>
+                  <span className="text-slate-400">ISK Registered</span>
+                </div>
+              </div>
+
+              
+
+              {/* Top Floating Telemetry Status Pill */}
+              <div className="relative z-10 flex items-center justify-between gap-3">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md text-white text-xs font-mono tracking-wider shadow-sm">
+                  <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] animate-pulse" />
+                  <span>CERTIFIED VALUATION DESK</span>
+                </div>
+
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-mono text-slate-200 backdrop-blur-md">
+                  <span>VRB & ISK Accredited</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column (Flipped): Interactive Pillar Machinery (7 cols) */}
+          {/* Right Column: Interactive Machinery (7 cols) */}
           <div className="lg:col-span-7 space-y-9 lg:pl-2">
             
             {/* Header and Control Bar */}
             <div className="flex items-center justify-between pb-3 border-b border-line-soft">
               <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-400 font-medium">
-                Operational Core Machinery
+                Valuation Advisory Machinery
               </span>
               <span className="font-mono text-[11px] uppercase tracking-wider text-ink-900 font-medium">
-                4 Active Safeguards
+                4 Certified Practices
               </span>
             </div>
 
             {/* Desktop Nav Style Tertiary-Glass Capsule Tab Selector */}
             <div className="relative rounded-2xl sm:rounded-full border border-white/15 bg-tertiary-gradient-glass p-1.5 shadow-[0_16px_40px_rgba(12,31,36,0.25),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 sm:gap-1.5">
-                {MANAGEMENT_PILLARS.map((pillar, idx) => {
+                {VALUATION_PILLARS.map((pillar, idx) => {
                   const isActive = activePillar === idx;
                   return (
                     <button
@@ -308,7 +312,7 @@ export function PropertyManagementService() {
             {/* Active Pillar Detail View */}
             <div className="space-y-8 pt-1">
               
-              {/* Pillar Title & SLA Tag - Right Aligned */}
+              {/* Pillar Title - Right Aligned */}
               <div className="space-y-3 text-right">
                 <h3 className="font-editorial text-[26px] sm:text-[30px] font-medium text-ink-900 tracking-tight leading-[1.12]">
                   {currentPillar.title}
@@ -360,12 +364,13 @@ export function PropertyManagementService() {
                   size="lg"
                   className="bg-tertiary-gradient text-white shadow-md hover:brightness-110 border-0 px-7 py-3.5 rounded-full text-sm font-medium"
                 >
-                  Request Management Valuation
+                  Request Valuation Appraisal
                 </WebButtonLink>
               </div>
 
             </div>
           </div>
+
         </div>
       </div>
     </section>

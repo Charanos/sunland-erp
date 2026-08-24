@@ -15,6 +15,9 @@ import { Eyebrow } from "@/components/web/primitives/eyebrow";
 import { SectionBand } from "@/components/web/primitives/section-band";
 import { ServicesHero } from "@/components/web/services/services-hero";
 import { PropertyManagementService } from "@/components/web/services/property-management-service";
+import { SalesLettingService } from "@/components/web/services/sales-letting-service";
+import { ValuationService } from "@/components/web/services/valuation-service";
+import { CommercialService } from "@/components/web/services/commercial-service";
 
 export const metadata: Metadata = {
   title: "Our services: management, sales, letting, valuation",
@@ -42,48 +45,134 @@ export default function ServicesPage() {
         if (section.id === "management") {
           return <PropertyManagementService key={section.id} />;
         }
+        if (section.id === "letting") {
+          return <SalesLettingService key={section.id} />;
+        }
+        if (section.id === "valuation") {
+          return <ValuationService key={section.id} />;
+        }
+        if (section.id === "commercial") {
+          return <CommercialService key={section.id} />;
+        }
         return <ServiceBand key={section.id} section={section} />;
       })}
 
-      <SectionBand tone="light" labelledBy="router-heading">
-        <div className="mb-10 max-w-[600px]">
-          <Eyebrow>{SERVICES_ROUTER.eyebrow}</Eyebrow>
-          <h2 id="router-heading" className="web-title mt-4 text-web-h2 text-ink-900">
-            {SERVICES_ROUTER.title}
-          </h2>
-        </div>
+      {/* Architectural Open Directory Router Section */}
+      <section
+        id="services-router"
+        aria-labelledby="router-heading"
+        className="border-t border-line py-24 lg:py-32 bg-surface-0"
+      >
+        <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
+          
+          {/* Editorial Section Header: Centered */}
+          <div className="mx-auto max-w-2xl text-center pb-14 sm:pb-16">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <span aria-hidden="true" className="h-px w-8 bg-ink-900" />
+              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-900 font-medium">
+                Direct Mandate Routing
+              </p>
+              <span aria-hidden="true" className="h-px w-8 bg-ink-900" />
+            </div>
 
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES_ROUTER.cards.map((card) => {
-            const IconComponent = webIcons[card.icon];
+            <h2
+              id="router-heading"
+              className="font-editorial text-[clamp(2.5rem,4.2vw,3.75rem)] font-medium leading-[1.06] tracking-tight text-ink-900 text-balance"
+            >
+              Start from where you are
+            </h2>
 
-            return (
-              <li key={card.href}>
+            <p className="mt-4 text-[15.5px] sm:text-[16.5px] leading-relaxed text-ink-500 font-normal max-w-[50ch] mx-auto">
+              Whether you are an asset owner, seeking a vetted residence, acquiring prime property, or scaling corporate facilities, route your mandate directly to the specialized desk.
+            </p>
+          </div>
+
+          {/* Open 4-Column Architectural Directory Grid */}
+          <div className="border-y border-line grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-line">
+            {SERVICES_ROUTER.cards.map((card, idx) => {
+              const IconComponent = webIcons[card.icon];
+              const stepNumbers = ["01", "02", "03", "04"];
+              const categoryTags = ["Landlords & Owners", "Tenants & Residents", "Buyers & Investors", "Enterprises & Retail"];
+              const highlights = [
+                "0% Finder Fee · 5th Payout",
+                "Zero Tenant Fee · Verified Stock",
+                "Registry Checked · Escrow Closing",
+                "450k+ Sq Ft · SEZ Advisory",
+              ];
+              const ctaLabels = [
+                "Owner Valuation Portal",
+                "Browse Rental Listings",
+                "Explore Properties for Sale",
+                "Commercial Advisory",
+              ];
+
+              return (
                 <Link
+                  key={card.href}
                   href={card.href}
-                  className="group flex h-full flex-col rounded-web-card border border-line p-7 transition-all duration-200 hover:-translate-y-[3px] hover:border-line-strong hover:shadow-web-md"
+                  className="group relative flex flex-col justify-between p-8 sm:p-10 lg:p-10 transition-colors duration-300 hover:bg-surface-1/60"
                 >
-                  <IconComponent
-                    size={22}
-                    stroke={WEB_ICON_STROKE}
+                  {/* Subtle Top Border Hover Accent */}
+                  <span
                     aria-hidden="true"
-                    className="text-ink-400 transition-colors group-hover:text-ink-900"
+                    className="absolute top-0 inset-x-0 h-[2px] bg-ink-900 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
                   />
-                  <p className="web-control mt-5 text-[11px] uppercase tracking-[0.16em] text-ink-400">
-                    {card.audience}
-                  </p>
-                  <p className="web-title-card mt-3 text-[22px] leading-tight text-ink-900">
-                    {card.title}
-                  </p>
-                  <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-ink-500">
-                    {card.body}
-                  </p>
+
+                  {/* Top Meta Row: Monospace Numeral + Floating Glyph */}
+                  <div>
+                    <div className="flex items-center justify-between pb-6 border-b border-line-soft">
+                      <span className="font-mono text-2xl sm:text-3xl font-light text-ink-300 group-hover:text-ink-900 transition-colors duration-300">
+                        {stepNumbers[idx]}
+                      </span>
+
+                      <IconComponent
+                        size={22}
+                        stroke={WEB_ICON_STROKE}
+                        aria-hidden="true"
+                        className="text-ink-400 group-hover:text-ink-900 transition-colors duration-300"
+                      />
+                    </div>
+
+                    {/* Target Audience Eyebrow */}
+                    <div className="mt-8">
+                      <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-ink-400 font-medium">
+                        {categoryTags[idx]}
+                      </p>
+                      <p className="font-mono text-[11px] text-ink-600 font-medium mt-1">
+                        {card.audience}
+                      </p>
+                    </div>
+
+                    {/* Main Title (Clean sans-serif as per typography rules) */}
+                    <h3 className="mt-3 text-[21px] sm:text-[22px] font-medium tracking-tight text-ink-900 leading-[1.2] group-hover:text-ink-950 transition-colors">
+                      {card.title}
+                    </h3>
+
+                    {/* Narrative Description */}
+                    <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-ink-500 font-normal">
+                      {card.body}
+                    </p>
+                  </div>
+
+                  {/* Bottom Highlight & Action Trigger */}
+                  <div className="mt-10 pt-6 border-t border-line-soft space-y-4">
+                    <div className="flex items-center gap-2 font-mono text-[11.5px] text-ink-600 font-medium">
+                      <span className="size-1.5 rounded-full bg-emerald-600 shrink-0" />
+                      <span>{highlights[idx]}</span>
+                    </div>
+
+                    <div className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:gap-3 transition-all duration-300">
+                      <span>{ctaLabels[idx]}</span>
+                      <ArrowIcon size={14} stroke={WEB_ICON_STROKE} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </div>
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </SectionBand>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
     </>
   );
 }
