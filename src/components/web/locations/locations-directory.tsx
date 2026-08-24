@@ -26,6 +26,19 @@ const BENTO_SLUGS = [
   "spring-valley",
 ];
 
+function formatBenchmarkPrice(guideValue: string) {
+  if (guideValue.toLowerCase().includes("request")) {
+    return "POA · On Request";
+  }
+  if (guideValue.startsWith("from ")) {
+    return `KES ${guideValue.replace("from ", "From ")}`;
+  }
+  if (guideValue.includes("sqft")) {
+    return `KES ${guideValue}`;
+  }
+  return `KES ${guideValue}`;
+}
+
 export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
   const [selectedGroup, setSelectedGroup] = useState<AreaGroup | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,6 +78,36 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
     return Object.values(counts).reduce((sum, count) => sum + count, 0);
   }, [counts]);
 
+  // Dynamic Asset Breakdown derived from loaded submarkets
+  const dynamicAssetMix = useMemo(() => {
+    const total = areas.length;
+    if (total === 0) return undefined;
+    const primeCount = areas.filter((a) => a.group === "prime").length;
+    const commercialCount = areas.filter((a) => a.group === "commercial").length;
+    const satelliteCount = areas.filter((a) => a.group === "satellite").length;
+
+    return [
+      {
+        name: "Prime Residential",
+        value: Math.round((primeCount / total) * 100),
+        count: primeCount,
+        color: "#151936",
+      },
+      {
+        name: "Commercial & Office",
+        value: Math.round((commercialCount / total) * 100),
+        count: commercialCount,
+        color: "#2563eb",
+      },
+      {
+        name: "Satellite & Coast",
+        value: Math.round((satelliteCount / total) * 100),
+        count: satelliteCount,
+        color: "#0d9488",
+      },
+    ];
+  }, [areas]);
+
   // When on "All Hubs" with no search query, split into Bento Anchors + Remaining 3-in-a-row cards
   const isDefaultAllView = selectedGroup === "all" && searchQuery.trim() === "";
 
@@ -90,6 +133,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
           <AreaOccupancyPieCharts
             totalAreas={areas.length}
             totalListings={totalLiveProperties}
+            customAssetMix={dynamicAssetMix}
           />
         </div>
 
@@ -215,7 +259,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
           </div>
         </div>
 
-        {/* ── 01. The Curated 8-Hub Masterpiece Bento Grid ── */}
+        {/* ── 01. The Curated 8-Hub Luxury Masterpiece Bento Grid ── */}
         {isDefaultAllView && bentoAreas.length > 0 && (
           <div className="pt-8 sm:pt-10">
             <div className="flex items-center justify-between pb-5 border-b border-line-soft mb-6">
@@ -228,7 +272,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
               <span className="font-mono text-xs text-slate-400">8 Curated Hubs</span>
             </div>
 
-            <ul className="grid auto-rows-[200px] sm:auto-rows-[230px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            <ul className="grid auto-rows-[250px] sm:auto-rows-[270px] lg:auto-rows-[290px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {bentoAreas.map((tile, index) => {
                 const isHero = index === 0; // Kilimani 2x2
                 const isAnchor = index === 7; // Spring Valley 2x1 panoramic anchor
@@ -245,7 +289,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                   >
                     <Link
                       href={`/locations/${tile.slug}`}
-                      className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[24px] border border-slate-200/80 bg-slate-900 p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(21,25,54,0.18),0_4px_12px_rgba(0,0,0,0.06)]"
+                      className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[26px] border border-white/10 bg-slate-950 p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_22px_50px_rgba(9,13,31,0.35)]"
                     >
                       {/* Background Photography */}
                       {tile.imageUrl && (
@@ -255,65 +299,135 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                           fill
                           sizes={
                             isHero
-                              ? "(min-width: 1024px) 600px, 100vw"
-                              : "(min-width: 1024px) 300px, 50vw"
+                              ? "(min-width: 1024px) 700px, 100vw"
+                              : isAnchor
+                              ? "(min-width: 1024px) 700px, 100vw"
+                              : "(min-width: 1024px) 350px, 50vw"
                           }
                           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                         />
                       )}
 
-                      {/* Multi-stop Scrim for contrast */}
+                      {/* Multi-stage Luxury Scrims */}
                       <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090d1f] via-[#090d1f]/50 via-50% to-[#090d1f]/10 transition-opacity duration-300 group-hover:via-[#090d1f]/40"
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090d1f] via-[#090d1f]/60 via-45% to-black/20 transition-opacity duration-300 group-hover:via-[#090d1f]/50"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/40 to-transparent"
                       />
 
-                      {/* Top Action Pill */}
-                      <div className="relative z-10 flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-white/15 px-3 py-1 font-mono text-[10.5px] font-medium text-white backdrop-blur-md shadow-xs">
+                      {/* Top Action Row: Minimal Region Tag + Sleek Arrow Action */}
+                      <div className="relative z-10 flex items-center justify-between gap-3">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/45 backdrop-blur-md px-3.5 py-1 font-mono text-[10.5px] font-medium text-white border border-white/10 shadow-xs">
                           <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                           <span>{tile.region}</span>
                         </span>
 
-                        <div className="flex items-center gap-2">
-                          {liveCount > 0 && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-emerald-500/30 px-3 py-1 text-[10.5px] font-mono font-medium text-emerald-300 backdrop-blur-md shadow-xs">
-                              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              {liveCount} Listed
-                            </span>
-                          )}
-
-                          <span className="flex size-8 items-center justify-center rounded-full bg-white/10 border border-white/20 text-white backdrop-blur-md transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:scale-110 shadow-xs">
-                            <ArrowOutIcon size={14} stroke={2} />
-                          </span>
-                        </div>
+                        <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:scale-105 shadow-xs">
+                          <ArrowOutIcon size={13} stroke={2} />
+                        </span>
                       </div>
 
-                      {/* Bottom Content */}
+                      {/* Bottom Content Row */}
                       <div className="relative z-10 mt-auto pt-4">
-                        <p
-                          className={cn(
-                            "font-editorial font-medium leading-tight text-white transition-colors group-hover:text-brand-yellow",
-                            isHero ? "text-3xl sm:text-4xl" : "text-xl sm:text-2xl"
-                          )}
-                        >
-                          {tile.name}
-                        </p>
+                        {isHero ? (
+                          <>
+                            <h3 className="font-editorial text-3xl sm:text-4xl lg:text-[44px] font-medium leading-[1.08] text-white tracking-tight transition-colors group-hover:text-brand-yellow">
+                              {tile.name}
+                            </h3>
+                            {tile.tagline && (
+                              <p className="mt-2 text-sm sm:text-base text-slate-200 font-normal max-w-[46ch] line-clamp-2">
+                                {tile.blurb}
+                              </p>
+                            )}
 
-                        {tile.tagline && (
-                          <p className="mt-1 text-xs text-slate-300/90 font-normal line-clamp-1">
-                            {tile.tagline}
-                          </p>
+                            {/* Refined Seamless Price Telemetry */}
+                            <div className="mt-5 flex items-baseline justify-between border-t border-white/20 pt-3.5">
+                              <div className="flex items-baseline gap-2">
+                                <span className="font-mono text-2xl sm:text-3xl font-medium tracking-tight text-white">
+                                  {formatBenchmarkPrice(tile.guideValue)}
+                                </span>
+                                {!tile.guideValue.includes("sqft") &&
+                                  !tile.guideValue.toLowerCase().includes("request") && (
+                                    <span className="text-sm font-normal text-slate-300 font-sans">
+                                      / month
+                                    </span>
+                                  )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-mono text-slate-300 capitalize">
+                                  {tile.guideLabel}
+                                </span>
+                                {liveCount > 0 && (
+                                  <span className="hidden sm:inline-flex items-center gap-1.5 text-emerald-300 text-xs font-mono font-medium pl-3 border-l border-white/20">
+                                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                    {liveCount} Active Mandates
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        ) : isAnchor ? (
+                          <>
+                            <h3 className="font-editorial text-2xl sm:text-3xl font-medium leading-tight text-white transition-colors group-hover:text-brand-yellow">
+                              {tile.name}
+                            </h3>
+                            {tile.tagline && (
+                              <p className="mt-1 text-xs sm:text-sm text-slate-200 font-normal max-w-[50ch] line-clamp-1">
+                                {tile.tagline}
+                              </p>
+                            )}
+
+                            {/* Refined Seamless Price Telemetry */}
+                            <div className="mt-3.5 flex items-baseline justify-between border-t border-white/15 pt-2.5">
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="font-mono text-xl sm:text-2xl font-medium tracking-tight text-white">
+                                  {formatBenchmarkPrice(tile.guideValue)}
+                                </span>
+                                {!tile.guideValue.includes("sqft") &&
+                                  !tile.guideValue.toLowerCase().includes("request") && (
+                                    <span className="text-xs font-normal text-slate-300 font-sans">
+                                      / mo
+                                    </span>
+                                  )}
+                              </div>
+                              <span className="text-xs font-mono text-slate-300 capitalize">
+                                {tile.guideLabel}
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <h3 className="font-editorial text-2xl font-medium leading-snug text-white transition-colors group-hover:text-brand-yellow">
+                              {tile.name}
+                            </h3>
+                            {tile.tagline && (
+                              <p className="mt-0.5 text-xs text-slate-300/90 font-normal line-clamp-1">
+                                {tile.tagline}
+                              </p>
+                            )}
+
+                            {/* Refined Seamless Price Telemetry */}
+                            <div className="mt-3.5 flex items-baseline justify-between border-t border-white/15 pt-2.5">
+                              <div className="flex items-baseline gap-1">
+                                <span className="font-mono text-base sm:text-[17px] font-medium tracking-tight text-white">
+                                  {formatBenchmarkPrice(tile.guideValue)}
+                                </span>
+                                {!tile.guideValue.includes("sqft") &&
+                                  !tile.guideValue.toLowerCase().includes("request") && (
+                                    <span className="text-[11px] font-normal text-slate-400 font-sans">
+                                      /mo
+                                    </span>
+                                  )}
+                              </div>
+                              <span className="text-[11px] font-mono text-slate-400/90 capitalize truncate max-w-[120px] text-right">
+                                {tile.guideLabel}
+                              </span>
+                            </div>
+                          </>
                         )}
-
-                        <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2.5 font-mono text-[11px]">
-                          <span className="text-brand-yellow/95 font-medium">
-                            {tile.guideLabel} · {tile.guideValue}
-                          </span>
-                          <span className="text-slate-300/80 font-normal hidden sm:inline">
-                            Explore Guide
-                          </span>
-                        </div>
                       </div>
                     </Link>
                   </li>
@@ -389,7 +503,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                     {/* Open Content Below Photo (On Crisp White Canvas) */}
                     <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
                       <div>
-                        <h3 className="font-editorial text-[22px] sm:text-[23px] font-normal leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+                        <h3 className="font-editorial text-[22px] sm:text-[24px] font-normal leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
                           <Link href={`/locations/${area.slug}`} className="after:absolute after:inset-0">
                             {area.name}
                           </Link>
@@ -416,17 +530,25 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
 
                       {/* Pricing Benchmark & Action Row */}
                       <div className="mt-5 border-t border-slate-200/80 pt-3.5 flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span className="font-mono text-[18px] sm:text-[19px] font-medium tracking-tight text-[#151936]">
-                            {area.guideValue}
-                          </span>
-                          <span className="text-[10.5px] font-mono text-slate-400 uppercase tracking-wider">
+                        <div>
+                          <span className="block text-[10.5px] font-mono text-slate-500 uppercase tracking-wider">
                             {area.guideLabel}
                           </span>
+                          <div className="flex items-baseline gap-1 mt-0.5">
+                            <span className="font-mono text-xl sm:text-[22px] font-medium tracking-tight text-[#151936]">
+                              {formatBenchmarkPrice(area.guideValue)}
+                            </span>
+                            {!area.guideValue.includes("sqft") &&
+                              !area.guideValue.toLowerCase().includes("request") && (
+                                <span className="text-xs font-normal text-slate-500 font-sans">
+                                  /mo
+                                </span>
+                              )}
+                          </div>
                         </div>
 
-                        <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
-                          <ArrowRightIcon size={13} stroke={2} aria-hidden="true" />
+                        <div className="flex size-9 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-xs transition-all duration-300 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white group-hover:scale-105">
+                          <ArrowRightIcon size={14} stroke={2} aria-hidden="true" />
                         </div>
                       </div>
                     </div>

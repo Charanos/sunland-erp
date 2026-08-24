@@ -3,36 +3,57 @@
 import { useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { cn } from "@/lib/utils/cn";
-import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
 
-interface AreaOccupancyPieChartsProps {
-  totalAreas?: number;
-  totalListings?: number;
+export interface AssetClassSlice {
+  name: string;
+  value: number;
+  count?: number;
+  color: string;
 }
 
-const OCCUPANCY_DATA = [
-  { name: "Actively Occupied / Let", value: 94.6, color: "#151936" },
-  { name: "Available Turnaround", value: 5.4, color: "#cbd5e1" },
-];
+export interface OccupancySlice {
+  name: string;
+  value: number;
+  color: string;
+}
 
-const ASSET_MIX_DATA = [
-  { name: "Prime Residential", value: 48, color: "#151936" },
-  { name: "Commercial & Office", value: 32, color: "#315be8" },
-  { name: "Industrial & SEZ", value: 12, color: "#338f70" },
-  { name: "Coastal & Holiday", value: 8, color: "#c78312" },
+export interface AreaOccupancyPieChartsProps {
+  totalAreas?: number;
+  totalListings?: number;
+  occupancyRate?: number;
+  medianTurnDays?: number;
+  collectionRate?: number;
+  customAssetMix?: AssetClassSlice[];
+  customOccupancyMix?: OccupancySlice[];
+}
+
+const DEFAULT_OCCUPANCY_RATE = 94.6;
+const DEFAULT_MEDIAN_TURN_DAYS = 18;
+const DEFAULT_COLLECTION_RATE = 99.2;
+
+const DEFAULT_ASSET_MIX: AssetClassSlice[] = [
+  { name: "Prime Residential", value: 48, count: 26, color: "#151936" },
+  { name: "Commercial & Office", value: 32, count: 17, color: "#2563eb" },
+  { name: "Industrial & SEZ", value: 12, count: 6, color: "#0d9488" },
+  { name: "Coastal & Holiday", value: 8, count: 4, color: "#d97706" },
 ];
 
 const CustomPieTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="rounded-xl border border-slate-200/90 bg-white/95 p-3.5 shadow-lg backdrop-blur-md">
+      <div className="rounded-xl border border-slate-200/90 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-2 mb-1">
           <span className="size-2.5 rounded-full" style={{ backgroundColor: data.payload.color }} />
-          <span className="font-mono text-xs font-medium text-slate-700">{data.name}</span>
+          <span className="font-mono text-xs font-medium text-slate-800">{data.name}</span>
         </div>
-        <p className="font-mono text-sm font-semibold text-[#151936] pl-4">
+        <p className="font-mono text-sm font-semibold text-[#151936] pl-4.5">
           {data.value}% Portfolio Share
+          {data.payload.count && (
+            <span className="text-xs font-normal text-slate-500 block mt-0.5">
+              {data.payload.count} Active Properties
+            </span>
+          )}
         </p>
       </div>
     );
@@ -42,9 +63,30 @@ const CustomPieTooltip = ({ active, payload }: any) => {
 
 export function AreaOccupancyPieCharts({
   totalAreas = 20,
-  totalListings = 48,
+  totalListings = 53,
+  occupancyRate = DEFAULT_OCCUPANCY_RATE,
+  medianTurnDays = DEFAULT_MEDIAN_TURN_DAYS,
+  collectionRate = DEFAULT_COLLECTION_RATE,
+  customAssetMix,
+  customOccupancyMix,
 }: AreaOccupancyPieChartsProps) {
-  const [activeChart, setActiveChart] = useState<"occupancy" | "composition">("occupancy");
+  // Default open to "composition" (Asset Allocation) as requested
+  const [activeChart, setActiveChart] = useState<"composition" | "occupancy">("composition");
+
+  const assetMixData = useMemo(() => {
+    return customAssetMix && customAssetMix.length > 0 ? customAssetMix : DEFAULT_ASSET_MIX;
+  }, [customAssetMix]);
+
+  const occupancyData = useMemo<OccupancySlice[]>(() => {
+    if (customOccupancyMix && customOccupancyMix.length > 0) {
+      return customOccupancyMix;
+    }
+    const voidRate = +(100 - occupancyRate).toFixed(1);
+    return [
+      { name: "Actively Tenanted & Let", value: occupancyRate, color: "#151936" },
+      { name: "Turnaround / Available", value: voidRate, color: "#cbd5e1" },
+    ];
+  }, [customOccupancyMix, occupancyRate]);
 
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-50/90 via-white to-slate-100/50 p-6 sm:p-8 lg:p-10 shadow-2xs">
@@ -58,35 +100,35 @@ export function AreaOccupancyPieCharts({
             </p>
           </div>
           <h3 className="font-editorial text-2xl sm:text-[26px] font-medium text-[#151936] tracking-tight">
-            Occupancy Rate & Asset Allocation
+            Portfolio Allocation & Tenancy Absorption
           </h3>
         </div>
 
-        {/* Chart Selector Pills */}
+        {/* Chart Selector Pills (Asset Allocation FIRST & Default) */}
         <div className="flex bg-slate-200/60 rounded-full p-1 border border-slate-200/80 w-fit">
-          <button
-            type="button"
-            onClick={() => setActiveChart("occupancy")}
-            className={cn(
-              "cursor-pointer px-3.5 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200",
-              activeChart === "occupancy"
-                ? "bg-[#151936] text-white shadow-2xs font-medium"
-                : "text-slate-600 hover:text-[#151936]"
-            )}
-          >
-            Occupancy Health (94.6%)
-          </button>
           <button
             type="button"
             onClick={() => setActiveChart("composition")}
             className={cn(
-              "cursor-pointer px-3.5 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200",
+              "cursor-pointer px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200",
               activeChart === "composition"
                 ? "bg-[#151936] text-white shadow-2xs font-medium"
                 : "text-slate-600 hover:text-[#151936]"
             )}
           >
             Asset Allocation
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveChart("occupancy")}
+            className={cn(
+              "cursor-pointer px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200",
+              activeChart === "occupancy"
+                ? "bg-[#151936] text-white shadow-2xs font-medium"
+                : "text-slate-600 hover:text-[#151936]"
+            )}
+          >
+            Occupancy Health ({occupancyRate}%)
           </button>
         </div>
       </div>
@@ -95,24 +137,24 @@ export function AreaOccupancyPieCharts({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pt-6 items-center">
         {/* Left: Donut Chart Frame */}
         <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
-          <div className="relative size-56 sm:size-60">
+          <div className="relative size-56 sm:size-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Tooltip content={<CustomPieTooltip />} />
-                {activeChart === "occupancy" ? (
+                {activeChart === "composition" ? (
                   <Pie
-                    data={OCCUPANCY_DATA}
+                    data={assetMixData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={68}
-                    outerRadius={98}
+                    innerRadius={72}
+                    outerRadius={104}
                     paddingAngle={3}
                     dataKey="value"
                     animationDuration={600}
                   >
-                    {OCCUPANCY_DATA.map((entry, index) => (
+                    {assetMixData.map((entry, index) => (
                       <Cell
-                        key={`occ-${index}`}
+                        key={`asset-${index}`}
                         fill={entry.color}
                         className="transition-all duration-300 hover:opacity-85"
                       />
@@ -120,18 +162,18 @@ export function AreaOccupancyPieCharts({
                   </Pie>
                 ) : (
                   <Pie
-                    data={ASSET_MIX_DATA}
+                    data={occupancyData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={68}
-                    outerRadius={98}
-                    paddingAngle={2}
+                    innerRadius={72}
+                    outerRadius={104}
+                    paddingAngle={3}
                     dataKey="value"
                     animationDuration={600}
                   >
-                    {ASSET_MIX_DATA.map((entry, index) => (
+                    {occupancyData.map((entry, index) => (
                       <Cell
-                        key={`mix-${index}`}
+                        key={`occ-${index}`}
                         fill={entry.color}
                         className="transition-all duration-300 hover:opacity-85"
                       />
@@ -143,11 +185,11 @@ export function AreaOccupancyPieCharts({
 
             {/* Centered Donut KPI Ring */}
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span className="font-mono text-3xl font-medium tracking-tight text-[#151936] leading-none">
-                {activeChart === "occupancy" ? "94.6%" : "20"}
+              <span className="font-mono text-3xl sm:text-[32px] font-medium tracking-tight text-[#151936] leading-none">
+                {activeChart === "composition" ? `${totalAreas}` : `${occupancyRate}%`}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">
-                {activeChart === "occupancy" ? "Occupied" : "Hubs"}
+                {activeChart === "composition" ? "Covered Hubs" : "Occupied"}
               </span>
             </div>
           </div>
@@ -158,22 +200,22 @@ export function AreaOccupancyPieCharts({
           {/* Active Legend Breakdown */}
           <div className="space-y-2.5">
             <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400 font-medium">
-              {activeChart === "occupancy"
-                ? "Submarket Tenancy Absorption Distribution"
-                : "Asset Class Allocation Breakdown"}
+              {activeChart === "composition"
+                ? "Asset Class Allocation & Property Distribution"
+                : "Submarket Tenancy Absorption & Availability"}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {(activeChart === "occupancy" ? OCCUPANCY_DATA : ASSET_MIX_DATA).map((item) => (
+              {(activeChart === "composition" ? assetMixData : occupancyData).map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-200/60 bg-white/80"
+                  className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200/70 bg-white/90 shadow-2xs"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="size-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                     <span className="text-xs font-medium text-slate-700 truncate">{item.name}</span>
                   </div>
-                  <span className="font-mono text-xs font-semibold text-[#151936] pl-2">
+                  <span className="font-mono text-xs font-semibold text-[#151936] pl-2 shrink-0">
                     {item.value}%
                   </span>
                 </div>
@@ -182,29 +224,29 @@ export function AreaOccupancyPieCharts({
           </div>
 
           {/* 4-KPI Benchmark Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-200/60">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3.5 border-t border-slate-200/60">
             <div className="space-y-0.5">
               <p className="font-mono text-[10px] uppercase text-slate-400">Occupancy Rate</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">94.6%</p>
+              <p className="font-mono text-lg font-medium text-[#151936]">{occupancyRate}%</p>
               <span className="text-[10px] text-emerald-600 font-mono">✦ Low Void Risk</span>
             </div>
 
             <div className="space-y-0.5">
               <p className="font-mono text-[10px] uppercase text-slate-400">Median Turn Time</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">18 Days</p>
+              <p className="font-mono text-lg font-medium text-[#151936]">{medianTurnDays} Days</p>
               <span className="text-[10px] text-slate-400 font-mono">From Mandate</span>
             </div>
 
             <div className="space-y-0.5">
               <p className="font-mono text-[10px] uppercase text-slate-400">Collection Rate</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">99.2%</p>
+              <p className="font-mono text-lg font-medium text-[#151936]">{collectionRate}%</p>
               <span className="text-[10px] text-slate-400 font-mono">Escrow Managed</span>
             </div>
 
             <div className="space-y-0.5">
-              <p className="font-mono text-[10px] uppercase text-slate-400">Covered Hubs</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">20 Areas</p>
-              <span className="text-[10px] text-slate-400 font-mono">Live Ledger</span>
+              <p className="font-mono text-[10px] uppercase text-slate-400">Portfolio Scale</p>
+              <p className="font-mono text-lg font-medium text-[#151936]">{totalListings} Units</p>
+              <span className="text-[10px] text-slate-400 font-mono">{totalAreas} Submarkets</span>
             </div>
           </div>
         </div>
