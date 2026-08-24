@@ -171,16 +171,16 @@ export function ListingGallery({ images, title }: { images: GalleryImage[]; titl
           className="fixed inset-0 z-overlay flex flex-col bg-brand-dark/96 backdrop-blur-sm"
         >
           <div className="flex items-center justify-between p-4">
-            <p className="web-numeric text-sm text-on-dark">
+            <p className="web-numeric inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-sm text-on-dark-hi backdrop-blur-sm">
               {openIndex + 1} / {images.length}
             </p>
             <button
               type="button"
               onClick={close}
               aria-label="Close gallery"
-              className="web-hit inline-flex size-11 items-center justify-center rounded-web-full text-on-dark-hi transition-colors hover:bg-dark-raise"
+              className="web-hit inline-flex size-14 items-center justify-center rounded-web-full text-on-dark-hi transition-all hover:scale-105 hover:bg-dark-raise"
             >
-              <CloseIcon size={22} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+              <CloseIcon size={24} stroke={WEB_ICON_STROKE} aria-hidden="true" />
             </button>
           </div>
 
@@ -199,17 +199,17 @@ export function ListingGallery({ images, title }: { images: GalleryImage[]; titl
               type="button"
               onClick={() => step(-1)}
               aria-label="Previous photo"
-              className="web-hit inline-flex size-12 items-center justify-center rounded-web-full border border-dark-line text-on-dark-hi transition-colors hover:bg-dark-raise"
+              className="web-hit inline-flex size-14 items-center justify-center rounded-web-full border border-dark-line text-on-dark-hi transition-all hover:scale-105 hover:bg-dark-raise"
             >
-              <PrevIcon size={22} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+              <PrevIcon size={24} stroke={WEB_ICON_STROKE} aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={() => step(1)}
               aria-label="Next photo"
-              className="web-hit inline-flex size-12 items-center justify-center rounded-web-full border border-dark-line text-on-dark-hi transition-colors hover:bg-dark-raise"
+              className="web-hit inline-flex size-14 items-center justify-center rounded-web-full border border-dark-line text-on-dark-hi transition-all hover:scale-105 hover:bg-dark-raise"
             >
-              <NextIcon size={22} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+              <NextIcon size={24} stroke={WEB_ICON_STROKE} aria-hidden="true" />
             </button>
           </div>
         </div>

@@ -11,6 +11,8 @@ import { Eyebrow } from "../primitives/eyebrow";
 import { ListingCard, type ListingCardData } from "../primitives/listing-card";
 import { EnquiryForm } from "./enquiry-form";
 import { ListingGallery } from "./listing-gallery";
+import { ListingDetailChart } from "./listing-detail-chart";
+import { ListingDetailOccupancy } from "./listing-detail-occupancy";
 
 /**
  * The listing detail page.
@@ -82,24 +84,24 @@ export function ListingDetailView({
           <div className="grid gap-14 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:items-start">
             <div className="min-w-0">
               <div className="mb-4 flex flex-wrap gap-2">
-                <span className="web-control inline-flex items-center gap-1.5 rounded-web-full bg-positive-bg px-3 py-1 text-[11.5px] uppercase tracking-[0.08em] text-emerald-800">
+                <span className="web-control inline-flex items-center gap-1.5 rounded-web-full bg-positive-bg px-3 py-1 text-xs uppercase tracking-[0.08em] text-emerald-800">
                   <span aria-hidden="true" className={cn("size-1.5 rounded-full", status.dot)} />
                   {status.label}
                 </span>
-                <span className="web-control inline-flex rounded-web-full border border-line px-3 py-1 text-[11.5px] uppercase tracking-[0.08em] text-ink-500">
+                <span className="web-control inline-flex rounded-web-full border border-line px-3 py-1 text-xs uppercase tracking-[0.08em] text-ink-500">
                   {isRental ? "To let" : "For sale"}
                 </span>
-                <span className="web-numeric inline-flex rounded-web-full border border-line px-3 py-1 text-[11.5px] tracking-[0.04em] text-ink-500">
+                <span className="web-numeric inline-flex rounded-web-full border border-line px-3 py-1 text-xs tracking-[0.04em] text-ink-500">
                   Ref {listing.reference}
                 </span>
               </div>
 
-              <h1 className="web-title text-[clamp(2rem,1.4rem+2.4vw,3rem)] leading-[1.08] tracking-[-0.015em] text-ink-900">
+              <h1 className="web-title text-web-h1 text-ink-900">
                 {listing.title}
               </h1>
               <p className="web-subtitle mt-2.5 text-base text-ink-400">{listing.location}</p>
 
-              <dl className="mt-8 grid grid-cols-2 border-y border-line-soft sm:grid-cols-4">
+              <dl className="mt-8 grid grid-cols-2 divide-y divide-line-soft border-y border-line-soft sm:grid-cols-4 sm:divide-x sm:divide-y-0">
                 <SpecFigure value={listing.bedrooms} label="Bedrooms" />
                 <SpecFigure value={listing.bathrooms} label="Bathrooms" />
                 <SpecFigure value={listing.area} label="Area" />
@@ -109,7 +111,7 @@ export function ListingDetailView({
               {listing.description && (
                 <section className="mt-11">
                   <h2 className="web-title text-web-h3 text-ink-900">About this property</h2>
-                  <div className="mt-4 space-y-4">
+                  <div className="mt-4 space-y-4 border-l-2 border-brand-yellow/40 pl-5">
                     {listing.description.split(/\n{2,}/).map((paragraph) => (
                       <p key={paragraph.slice(0, 40)} className="web-prose text-ink-500">
                         {paragraph}
@@ -122,11 +124,11 @@ export function ListingDetailView({
               {listing.amenities.length > 0 && (
                 <section className="mt-11">
                   <h2 className="web-title text-web-h3 text-ink-900">Features and fittings</h2>
-                  <ul className="mt-5 grid gap-x-8 sm:grid-cols-2">
+                  <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                     {listing.amenities.map((amenity) => (
                       <li
                         key={amenity}
-                        className="flex items-center gap-3 border-b border-line-soft py-3.5 text-[15px] text-ink-500"
+                        className="flex items-center gap-2.5 rounded-full border border-line-soft px-4 py-2 text-sm text-ink-500 transition-colors hover:border-line hover:bg-surface-1"
                       >
                         <CheckIcon
                           size={15}
@@ -152,7 +154,7 @@ export function ListingDetailView({
                       <CostRow label="Move-in total" value={formatKES(moveInTotal)} total />
                     )}
                   </div>
-                  <p className="mt-3.5 text-[13.5px] leading-relaxed text-ink-400">
+                  <p className="mt-4 rounded-xl bg-surface-1 p-4 text-sm leading-relaxed text-ink-500">
                     Deposit is held against damage and returned at the end of the tenancy less any
                     deductions, itemised. We do not charge tenants a finder&apos;s fee. Service
                     charge, where the block levies one, is quoted on enquiry.
@@ -160,31 +162,58 @@ export function ListingDetailView({
                 </section>
               )}
 
-              <section className="mt-11 pb-16">
+              <section className="mt-11">
                 <h2 className="web-title text-web-h3 text-ink-900">The area</h2>
-                <p className="web-prose mt-4 text-ink-500">
-                  This property is in {areaName}. Location on the map is approximate until a viewing
-                  is booked, which is deliberate: an exact pin on a vacant unit is a security
-                  problem for the owner and the neighbours.
-                </p>
-                <Link
-                  href={`/locations/${areaSlug}`}
-                  className="web-subtitle mt-5 inline-flex items-center gap-2 border-b border-line-strong pb-1 text-[14.5px] text-ink-900 transition-colors hover:border-ink-900"
-                >
-                  What {areaName} is like to live in
-                  <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-                </Link>
+                <div className="mt-5 overflow-hidden rounded-2xl border border-line bg-surface-1">
+                  <div className="flex h-40 items-center justify-center bg-surface-2">
+                    <div className="flex flex-col items-center gap-2 text-ink-400">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                      <span className="label-caps">Map View</span>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <p className="web-prose text-ink-500">
+                      This property is in {areaName}. Location on the map is approximate until a viewing
+                      is booked, which is deliberate: an exact pin on a vacant unit is a security
+                      problem for the owner and the neighbours.
+                    </p>
+                    <Link
+                      href={`/locations/${areaSlug}`}
+                      className="web-subtitle mt-5 inline-flex items-center gap-2 border-b border-line-strong pb-1 text-sm text-ink-900 transition-colors hover:border-ink-900"
+                    >
+                      What {areaName} is like to live in
+                      <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
               </section>
+
+              {listing.units && (
+                <section className="mt-11 pb-16">
+                  <h2 className="web-title text-web-h3 text-ink-900">Building Occupancy</h2>
+                  <p className="web-prose mt-2 text-ink-500">
+                    Live availability breakdown for this property.
+                  </p>
+                  <div className="mt-5 overflow-hidden rounded-2xl border border-line bg-surface-0 shadow-web-sm">
+                    <div className="p-6">
+                      <ListingDetailOccupancy data={listing.units} />
+                    </div>
+                  </div>
+                </section>
+              )}
             </div>
 
-            <aside aria-label="Enquire" className="lg:sticky lg:top-[100px]">
-              <div className="overflow-hidden rounded-web-panel border border-line bg-surface-0 shadow-web-md">
+            <aside aria-label="Enquire" className="lg:sticky lg:top-[100px] lg:-mt-6">
+              <div className="overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <div className="border-b border-line-soft p-6 pb-5">
                   {listing.priceKes === null ? (
                     <p className="text-web-lead text-ink-900">Price on request</p>
                   ) : (
                     <div className="flex items-baseline gap-2">
-                      <span className="web-numeric text-[30px] tracking-[-0.025em] text-ink-900">
+                      <span className="web-numeric text-3xl tracking-[-0.025em] text-ink-900">
                         {formatKES(listing.priceKes)}
                       </span>
                       {listing.priceSuffix && (
@@ -194,9 +223,10 @@ export function ListingDetailView({
                       )}
                     </div>
                   )}
-                  <p className="web-subtitle mt-1 text-[13.5px] text-ink-400">
+                  <p className="web-subtitle mt-1 text-sm text-ink-400">
                     No tenant agency fee.
                   </p>
+                  <ListingDetailChart priceKes={listing.priceKes} />
                 </div>
                 <div className="p-6">
                   <EnquiryForm listingTitle={listing.title} reference={listing.reference} />
@@ -219,7 +249,7 @@ export function ListingDetailView({
               </div>
               <Link
                 href="/properties"
-                className="web-subtitle inline-flex items-center gap-2 border-b border-line-strong pb-1 text-[14.5px] text-ink-900 transition-colors hover:border-ink-900"
+                className="web-subtitle inline-flex items-center gap-2 border-b border-line-strong pb-1 text-sm text-ink-900 transition-colors hover:border-ink-900"
               >
                 All properties
                 <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
@@ -245,11 +275,11 @@ export function ListingDetailView({
             <p className="text-sm text-on-dark-hi">Price on request</p>
           ) : (
             <p className="flex items-baseline gap-1.5">
-              <span className="web-numeric text-[19px] tracking-[-0.02em] text-on-dark-hi">
+              <span className="web-numeric text-xl tracking-[-0.02em] text-on-dark-hi">
                 {formatKES(listing.priceKes)}
               </span>
               {listing.priceSuffix && (
-                <span className="web-numeric text-[13px] text-on-dark-lo">
+                <span className="web-numeric text-xs text-on-dark-lo">
                   {listing.priceSuffix.replace("/ mo", "/ month")}
                 </span>
               )}
@@ -288,9 +318,9 @@ function SpecFigure({
   if (value === null || value === undefined || value === "" || value === 0) return null;
 
   return (
-    <div className="py-5">
-      <dd className="web-numeric text-[22px] tracking-[-0.02em] text-ink-900">{value}</dd>
-      <dt className="web-control mt-1 text-[11px] uppercase tracking-[0.16em] text-ink-400">
+    <div className="px-5 py-5 text-center sm:px-6 sm:text-left">
+      <dd className="web-numeric text-2xl tracking-[-0.02em] text-ink-900">{value}</dd>
+      <dt className="web-control mt-1 text-xxs uppercase tracking-[0.16em] text-ink-400">
         {label}
       </dt>
     </div>
@@ -311,15 +341,15 @@ function CostRow({
   return (
     <div
       className={cn(
-        "flex items-baseline justify-between gap-5 px-5 py-4",
+        "relative flex items-baseline justify-between gap-5 px-5 py-4",
         (emphasis || total) && "bg-surface-1",
         !emphasis && "border-t border-line-soft",
-        total && "border-t border-line"
+        total && "border-t border-line before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-brand-yellow"
       )}
     >
       <span
         className={cn(
-          "text-[15px]",
+          "text-base",
           total ? "web-subtitle text-ink-900" : emphasis ? "text-ink-900" : "text-ink-500"
         )}
       >
@@ -328,7 +358,7 @@ function CostRow({
       <span
         className={cn(
           "web-numeric",
-          total ? "text-[17px] tracking-[-0.02em] text-ink-900" : "text-[15px] text-ink-500"
+          total ? "text-lg tracking-[-0.02em] text-ink-900" : "text-base text-ink-500"
         )}
       >
         {value}

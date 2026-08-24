@@ -58,6 +58,11 @@ export const MOCK_PROPERTIES: (ListingDetail & { category: "apartments" | "villa
     description: "Tastefully fully-furnished 2 bedroom ensuite apartment with bespoke Nordic interior finishes, open-plan kitchen, and lush leafy neighborhood views.",
     amenities: ["Fully Furnished", "High-Speed Internet", "Heated Swimming Pool", "CCTV Surveillance", "Concierge Reception"],
     yearBuilt: 2022,
+    units: [
+      { type: "Bedsitter", total: 4, occupied: 3, vacant: 1 },
+      { type: "1 Bedroom", total: 10, occupied: 8, vacant: 2 },
+      { type: "2 Bedroom", total: 6, occupied: 6, vacant: 0 },
+    ],
     images: [
       { url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80", alt: "Interior" },
       { url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80", alt: "Bedroom" },

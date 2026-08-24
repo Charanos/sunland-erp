@@ -48,9 +48,9 @@ export function EnquiryForm({
     `Hello Sunland, I would like to view ${listingTitle} (Ref ${reference}).`
   )}`;
 
-  const labelClass = "web-subtitle mb-1.5 block text-[12.5px] text-ink-500";
+  const labelClass = "web-subtitle mb-1.5 block text-xs text-ink-500";
   const inputClass =
-    "w-full rounded-web-full border border-line-strong bg-surface-0 px-4 py-2.5 text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none";
+    "w-full rounded-web-full border border-slate-200 bg-surface-0 px-4 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none";
 
   return (
     <form
@@ -102,21 +102,24 @@ export function EnquiryForm({
           name="message"
           rows={3}
           placeholder="When would you like to view?"
-          className="w-full resize-y rounded-web-card border border-line-strong bg-surface-0 px-4 py-3 text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none"
+          className="w-full resize-y rounded-web-card border border-slate-200 bg-surface-0 px-4 py-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none"
         />
       </div>
 
-      <button
-        type="submit"
-        className="web-control web-hit rounded-web-full bg-brand-yellow px-6 py-[11px] text-[12.5px] uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h"
-      >
-        Book a viewing
-      </button>
+      <div className="relative group">
+        <div className="absolute -inset-1 rounded-web-full bg-brand-yellow/50 opacity-0 blur transition-opacity duration-500 group-hover:opacity-100" />
+        <button
+          type="submit"
+          className="relative w-full web-control web-hit rounded-web-full bg-brand-yellow px-6 py-[11px] text-xs uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h"
+        >
+          Book a viewing
+        </button>
+      </div>
 
       {attempted && (
         <p
           role="status"
-          className="rounded-web-card border border-line bg-surface-1 p-3 text-[13px] leading-relaxed text-ink-700"
+          className="rounded-web-card border border-line bg-surface-1 p-3 text-xs leading-relaxed text-ink-700"
         >
           Online enquiries open with the new site. Call {SITE.phone} or send us a WhatsApp quoting{" "}
           <span className="web-numeric">{reference}</span> and we will book the viewing now.
@@ -135,7 +138,7 @@ export function EnquiryForm({
           href={whatsappHref}
           target="_blank"
           rel="noreferrer"
-          className="web-hit inline-flex flex-1 items-center justify-center gap-2 rounded-web-full border border-line-strong px-4 py-2.5 text-sm text-ink-900 transition-colors hover:border-ink-900"
+          className="web-hit inline-flex flex-1 items-center justify-center gap-2 rounded-web-full bg-[#25D366] px-4 py-2.5 text-sm text-white transition-colors hover:bg-[#20b858]"
         >
           <ChatIcon size={15} stroke={WEB_ICON_STROKE} aria-hidden="true" />
           WhatsApp

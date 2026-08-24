@@ -197,7 +197,7 @@ export async function ListingIndexBody({
 
         {/* FilterRail — client component, reads URL directly via useSearchParams,
             reflects filter changes instantly without waiting for server fetch */}
-        <div className="ph-reveal-rail lg:sticky lg:top-24 lg:self-start mb-5 lg:mb-0">
+        <div className="ph-reveal-rail lg:sticky lg:top-30 lg:self-start mb-5 lg:mb-0">
           <FilterRail
             counts={counts}
             resultCount={estimatedCount}
