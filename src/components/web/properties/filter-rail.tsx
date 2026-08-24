@@ -97,6 +97,7 @@ export function FilterRail({
     // Resets to the facet baseline, not to /properties. Someone filtering
     // inside "Apartments" who clears expects all apartments, not all stock.
     router.push(pathname, { scroll: false });
+    setOpen(false);
   };
 
   const activeCategories = currentList("category");
@@ -157,7 +158,7 @@ export function FilterRail({
           <div className="grid grid-cols-3 gap-1 rounded-full bg-slate-200/60 p-1 border border-slate-200/80">
             <button
               type="button"
-              onClick={() => setSingle("status", "")}
+              onClick={() => { setSingle("status", ""); setOpen(false); }}
               aria-pressed={!activeStatus}
               className={cn(
                 "rounded-full py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider transition-all",
@@ -172,7 +173,7 @@ export function FilterRail({
               <button
                 key={facet.segment}
                 type="button"
-                onClick={() => setSingle("status", facet.segment)}
+                onClick={() => { setSingle("status", facet.segment); setOpen(false); }}
                 aria-pressed={activeStatus === facet.segment}
                 className={cn(
                   "rounded-full py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider transition-all",
@@ -288,7 +289,7 @@ export function FilterRail({
               <button
                 key={option}
                 type="button"
-                onClick={() => toggleInList("beds", option)}
+                onClick={() => { toggleInList("beds", option); setOpen(false); }}
                 aria-pressed={active}
                 className={cn(
                   "flex items-center justify-center rounded-xl py-2 font-mono text-xs font-medium transition-all border",
@@ -336,7 +337,9 @@ export function FilterRail({
         type="submit"
         className="w-full rounded-full bg-[#151936] px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.14em] text-white transition-colors hover:bg-slate-800 active:scale-[0.99]"
       >
-        Show {resultCount} {resultCount === 1 ? "Result" : "Results"}
+        {resultCount > 0
+          ? `Show ${resultCount} ${resultCount === 1 ? "Result" : "Results"}`
+          : "Apply Filters"}
       </button>
     </form>
   );
@@ -396,7 +399,7 @@ export function FilterRail({
       <aside
         aria-label="Filters"
         className={cn(
-          "sticky top-28 hidden w-full max-w-[270px] pr-2 lg:block",
+          "sticky top-24 hidden w-full max-w-[270px] pr-2 lg:block",
           className
         )}
       >

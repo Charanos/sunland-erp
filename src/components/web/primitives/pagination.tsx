@@ -89,6 +89,7 @@ export function WebPagination({
         <Link
           href={hrefFor(currentPage - 1)}
           rel="prev"
+          scroll={false}
           aria-label="Previous page"
           aria-disabled={currentPage <= 1 || undefined}
           tabIndex={currentPage <= 1 ? -1 : undefined}
@@ -103,6 +104,7 @@ export function WebPagination({
             <Link
               key={page}
               href={hrefFor(page)}
+              scroll={false}
               aria-label={`Page ${page}`}
               aria-current={page === currentPage ? "page" : undefined}
               className={cn(
@@ -120,6 +122,7 @@ export function WebPagination({
         <Link
           href={hrefFor(currentPage + 1)}
           rel="next"
+          scroll={false}
           aria-label="Next page"
           aria-disabled={currentPage >= totalPages || undefined}
           tabIndex={currentPage >= totalPages ? -1 : undefined}

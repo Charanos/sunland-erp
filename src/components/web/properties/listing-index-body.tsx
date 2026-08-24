@@ -167,6 +167,7 @@ export async function ListingIndexBody({
     alternatives.push({ label: "Any area", href: basePath });
   }
 
+
   const carriedParams: Record<string, string | undefined> = {
     status: statusFromFacet ? undefined : statusParam,
     location: filters.location,
@@ -179,6 +180,17 @@ export async function ListingIndexBody({
   // results column to remount, never the FilterRail or surrounding layout.
   const filterKey = JSON.stringify(filters);
 
+  // Derive a result count estimate for the FilterRail submit button from the
+  // facet counts (cached, no extra DB round-trip). This is an approximation
+  // — the rail shows "Show ~N Results". Exact count is shown in the toolbar
+  // once PropertiesResults resolves.
+  const estimatedCount = (() => {
+    if (filters.category && counts[filters.category] !== undefined) {
+      return counts[filters.category];
+    }
+    return Object.values(counts).reduce((s, n) => s + n, 0);
+  })();
+
   return (
     <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
       <div className="grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start">
@@ -188,21 +200,26 @@ export async function ListingIndexBody({
         <div className="ph-reveal-rail lg:sticky lg:top-24 lg:self-start mb-5 lg:mb-0">
           <FilterRail
             counts={counts}
-            resultCount={0}
+            resultCount={estimatedCount}
             lockedFacet={facet ? { kind: facet.kind, segment: facet.segment } : undefined}
           />
         </div>
 
-        {/* Results column — ONLY this re-suspends on filter/page change */}
-        <Suspense key={filterKey} fallback={<ResultsSkeleton />}>
-          <PropertiesResults
-            filters={filters}
-            chips={chips}
-            alternatives={alternatives}
-            basePath={basePath}
-            carriedParams={carriedParams}
-          />
-        </Suspense>
+        {/* Results column — the ONLY part that re-suspends on filter/page change.
+            #results-anchor is the scroll target used by PropertiesPageReveal
+            when the user paginates or changes a filter. */}
+        <div className="min-w-0">
+          <div id="results-anchor" aria-hidden="true" className="pointer-events-none absolute" />
+          <Suspense key={filterKey} fallback={<ResultsSkeleton />}>
+            <PropertiesResults
+              filters={filters}
+              chips={chips}
+              alternatives={alternatives}
+              basePath={basePath}
+              carriedParams={carriedParams}
+            />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
