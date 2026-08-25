@@ -61,7 +61,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Dense apartment stock, walkable to Yaya and the CBD. Best value per square metre in the prime belt.",
     imageUrl:
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/kilimani.jpg",
   },
   {
     slug: "lavington",
@@ -74,7 +74,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Low-rise, leafy, mostly gated compounds of six to twelve units. Strong with families.",
     imageUrl:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/lavington.jpg",
   },
   {
     slug: "kileleshwa",
@@ -86,7 +86,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Newer towers & expat residences",
     blurb: "Newer towers with amenities, popular with expatriate and corporate tenants.",
     imageUrl:
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/kileleshwa.jpg",
   },
   {
     slug: "runda",
@@ -99,7 +99,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Detached houses on half-acre plots. Diplomatic and executive lets, long tenancies.",
     imageUrl:
-      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/runda.jpg",
   },
   {
     slug: "spring-valley",
@@ -112,7 +112,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Townhouses and villas, quiet lanes off Lower Kabete Road. Mostly owner-occupied.",
     imageUrl:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/spring-valley.jpg",
   },
   {
     slug: "parklands",
@@ -124,7 +124,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Established residential courts",
     blurb: "Close to Westlands and the Aga Khan. Older blocks alongside new mid-rise.",
     imageUrl:
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/parklands.jpg",
   },
 
   // Commercial and mixed, compact tiles.
@@ -138,7 +138,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Commercial hub & high-rise",
     blurb: "Offices, retail and serviced apartments.",
     imageUrl:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/westlands.jpg",
   },
   {
     slug: "riverside-drive",
@@ -150,7 +150,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Prime riverine residences",
     blurb: "Embassies, offices and prime plots.",
     imageUrl:
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/riverside-drive.jpg",
   },
   {
     slug: "upper-hill",
@@ -162,7 +162,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Financial district & Grade-A towers",
     blurb: "Grade A offices and city apartments.",
     imageUrl:
-      "https://images.unsplash.com/photo-1554469384-e58fac16e23a?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
+      "/images/areas/upper-hill.jpg",
   },
   {
     slug: "garden-estate",
