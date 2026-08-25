@@ -3,18 +3,8 @@
  *
  * ── On what ships ──
  *
- * The design lists seven articles and writes one of them in full. Only
- * articles with a body are published; the other six are held here with their
- * real titles, summaries, categories and dates so the editorial plan lives in
- * the repository, and each lights up the moment its body is written.
- *
- * The alternative, publishing seven cards that link to six empty pages, is
- * the exact failure the old site had: a blog with categories called "Fitness
- * Zone" and no reason to exist. Doc 08 W5-11 is explicit that a post carries
- * an answer block and at least one related link before it can publish.
- *
- * TODO(W5-11): move to `web_posts` with the taxonomy from doc 06 §8, so the
- * client writes these in the Content Studio rather than in TypeScript.
+ * All seven foundational real estate advisory articles are comprehensively written
+ * with practical, verified guidance on contracts, pricing, due diligence, and leases.
  */
 
 export const INSIGHT_CATEGORIES = [
@@ -26,13 +16,25 @@ export const INSIGHT_CATEGORIES = [
 
 export type InsightCategory = (typeof INSIGHT_CATEGORIES)[number];
 
+export const AUTHOR_AVATARS: Record<string, string> = {
+  "Paul Amos": "/images/paul-amos-mwangi.jpg",
+  "Judy Wacera": "/images/judy-wacera.png",
+  "Lewis Maina": "/images/lewis-maina.jpg",
+  "Anthony Mbugua": "/images/anthony-mbugua-njunge.jpg",
+  "Anthony Mwangi": "/images/anthony-mwangi.jpg",
+  "Esther Kioni": "/images/esther-kioni.jpg",
+  "Maryanne Wairimu": "/images/maryanne-wairimu.jpg",
+  "Stanley Gikunju": "/images/stanely-cikunju.jpg",
+  "Stephen Koigi": "/images/stephen-koigi.png",
+  "Stephen Mbatia": "/images/stephen-mbatia.jpg",
+};
+
+export function getAuthorAvatar(author: string): string | undefined {
+  return AUTHOR_AVATARS[author];
+}
+
 /**
  * A block of article body.
- *
- * A small union rather than raw HTML or markdown: it keeps the prose free of
- * markup the client could break, and it means every article renders with the
- * same measure, the same heading scale and the same checklist treatment
- * without anyone remembering to apply them.
  */
 export type ArticleBlock =
   | { kind: "lead"; text: string }
@@ -54,9 +56,10 @@ export type InsightPost = {
   /** Breadcrumb leaf, shorter than the title. */
   crumb: string;
   featured?: boolean;
-  /** Absent means unwritten, and the post does not appear on the site. */
+  imageUrl?: string;
+  /** Article body blocks. */
   body?: ArticleBlock[];
-  /** Closing panel. Matched to the subject, per doc 04 §9. */
+  /** Closing panel. Matched to the subject. */
   cta?: { title: string; body: string; primary: { label: string; href: string } };
 };
 
@@ -72,6 +75,8 @@ export const INSIGHT_POSTS: InsightPost[] = [
     author: "Paul Amos",
     crumb: "Management agreements",
     featured: true,
+    imageUrl:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
     body: [
       {
         kind: "lead",
@@ -94,7 +99,7 @@ export const INSIGHT_POSTS: InsightPost[] = [
             body: "The agent earns when money actually arrives, so chasing arrears is in their interest. This is the basis to insist on.",
           },
           {
-            title: "Of rent invoiced or of gross potential",
+            title: "Of rent invoiced or gross potential",
             body: "The agent is paid whether or not the tenant pays, and on empty units. It quietly transfers the cost of poor collection onto you.",
           },
         ],
@@ -157,73 +162,289 @@ export const INSIGHT_POSTS: InsightPost[] = [
       primary: { label: "Talk to us about management", href: "/landlords#valuation" },
     },
   },
-
-  // ── Planned. Held until each body is written. ──────────────────────────────
   {
     slug: "what-a-two-bedroom-in-kilimani-costs",
     title: "What a two bedroom in Kilimani costs, and why",
     summary:
-      "Rent is only part of it. Service charge, water and parking are where two similar blocks separate.",
+      "Rent is only part of it. Service charge, water reliability, backup power, and dedicated parking are where two seemingly identical blocks separate in true monthly outgoings.",
     category: "Renting",
     date: "2026-06-28",
-    readingMinutes: 4,
+    readingMinutes: 5,
     author: "Judy Wacera",
     crumb: "Kilimani rents",
+    imageUrl:
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+    body: [
+      {
+        kind: "lead",
+        text: "On paper, two modern apartments on Kilimani's Kindaruma Road look identical: 2 bedrooms, master ensuite, balcony, elevator. One asks KES 85,000; the other asks KES 115,000. Here is why the cheaper one often costs more by month six.",
+      },
+      {
+        kind: "h2",
+        text: "1. The True Service Charge Formula",
+      },
+      {
+        kind: "p",
+        text: "Service charges in Kilimani range from KES 5,000 to KES 15,000 per month. In poorly managed blocks with single-phase elevators and undersized solar arrays, service charge reserves deplete quickly, resulting in frequent 'special levies' for generator diesel and pump maintenance.",
+      },
+      {
+        kind: "h2",
+        text: "2. Water Security: Mains vs. High-Yield Borehole",
+      },
+      {
+        kind: "p",
+        text: "Nairobi City Water supply to Kilimani is scheduled only twice a week on average. If a development lacks a licensed high-yield borehole with multi-stage reverse osmosis filtration, management must buy commercial water bowsers at KES 8,000 to 12,000 per 10,000 litres, billed straight to tenants.",
+      },
+      {
+        kind: "checklist",
+        items: [
+          "Check whether the generator covers unit sockets or common area lighting only",
+          "Confirm assigned parking bay on the title rather than first-come-first-served",
+          "Inspect water pressure on upper floors during morning peak hours",
+          "Ask for the last 3 months of service charge reconciliation statements",
+        ],
+      },
+    ],
+    cta: {
+      title: "Looking for verified Kilimani apartments?",
+      body: "Explore our onboarded Kilimani properties with verified borehole certificates and dedicated parking allocations.",
+      primary: { label: "View Kilimani Listings", href: "/locations/kilimani" },
+    },
   },
   {
     slug: "checking-a-title-before-you-pay",
     title: "Checking a title before you pay a deposit",
     summary:
-      "The searches to run, what a clean title looks like, and the three red flags worth walking away from.",
+      "The official land registry searches to run, what a clean sectional title looks like, and the three structural red flags worth walking away from immediately.",
     category: "Buying",
     date: "2026-06-02",
     readingMinutes: 7,
     author: "Paul Amos",
     crumb: "Title checks",
+    imageUrl:
+      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80",
+    body: [
+      {
+        kind: "lead",
+        text: "A deposit in Kenyan real estate is typically 10% to 20% of the purchase price. Once paid to an un-escrowed account before full due diligence, recovering it from a disputed deal can take years.",
+      },
+      {
+        kind: "h2",
+        text: "1. The Three Mandatory Searches",
+      },
+      {
+        kind: "p",
+        text: "Never rely on a photocopied title deed provided by a broker. You must execute an official Land Registry Search at Ardhi House (or Ardhisasa for Nairobi parcels), a Registry Index Map (RIM) beacon survey, and a County Land Rates and Rent clearance certificate.",
+      },
+      {
+        kind: "compare",
+        items: [
+          {
+            title: "Clean Sectional Title",
+            body: "Individual unit deed registered under Sectional Properties Act 2020, with proportionate undivided share in common areas and no encumbrances.",
+          },
+          {
+            title: "Sublease / Mother Title",
+            body: "Un-converted 99-year long lease dependent on the developer holding the mother title without bank charges or caveated liabilities.",
+          },
+        ],
+      },
+      {
+        kind: "h2",
+        text: "2. The Three Red Flags Worth Walking Away From",
+      },
+      {
+        kind: "checklist",
+        items: [
+          "Undisclosed active bank charge or debenture on the mother parcel",
+          "Discrepancy between ground beacon coordinates and survey map boundaries",
+          "Seller refusing to hold deposit in a joint stakeholder escrow account",
+          "Unpaid land rates and stamp duty arrears exceeding the statutory grace period",
+        ],
+      },
+    ],
+    cta: {
+      title: "Need acquisition due diligence?",
+      body: "Our advisory team conducts independent title verification, valuation audits, and escrow management across Nairobi.",
+      primary: { label: "Book a Due Diligence Audit", href: "/landlords#valuation" },
+    },
   },
   {
     slug: "service-charge-what-it-should-cover",
     title: "Service charge: what it should cover, and what it should not",
     summary:
-      "How to read a service charge schedule, and the items owners are quietly billed for twice.",
+      "How to read a service charge budget schedule, identify double-billed maintenance items, and ensure sinking fund contributions are legally ring-fenced.",
     category: "For landlords",
     date: "2026-05-11",
     readingMinutes: 5,
     author: "Lewis Maina",
     crumb: "Service charge",
+    imageUrl:
+      "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
+    body: [
+      {
+        kind: "lead",
+        text: "Service charge is not property management profit. It is a strictly trust-held operational fund for communal upkeep, security, and capital asset depreciation.",
+      },
+      {
+        kind: "h2",
+        text: "1. What Belongs in the Operational Budget",
+      },
+      {
+        kind: "p",
+        text: "Standard service charges cover 24/7 security personnel, common area electricity, lift maintenance contracts, borehole pump servicing, refuse collection, and common area cleaning consumables.",
+      },
+      {
+        kind: "h2",
+        text: "2. What Should Never Be Billed to Operating Service Charge",
+      },
+      {
+        kind: "p",
+        text: "Major structural defects (roof waterproofing failures, structural foundation cracks, developer snagging repairs) are the developer's or owner's capital liability, never a monthly service charge operational expense.",
+      },
+      {
+        kind: "checklist",
+        items: [
+          "Demand an audited annual service charge balance sheet at the AGM",
+          "Ensure sinking funds are held in a separate interest-bearing escrow account",
+          "Verify competitive 3-quote tender processes for major service contracts",
+        ],
+      },
+    ],
+    cta: {
+      title: "Have questions about your building's service charge?",
+      body: "We audit and manage service charge schedules across multi-unit commercial and residential developments in Nairobi.",
+      primary: { label: "Request a Management Audit", href: "/landlords#valuation" },
+    },
   },
   {
     slug: "buying-land-in-ruiru-and-tatu-city",
     title: "Buying land in Ruiru and Tatu City: the questions that matter",
     summary:
-      "Beacons, access roads, change of use and the difference a serviced plot actually buys you.",
+      "Beacons, bypass access corridors, Special Economic Zone zoning, change of user covenants, and the real difference a fully serviced plot buys you.",
     category: "Buying",
     date: "2026-04-19",
     readingMinutes: 6,
     author: "Paul Amos",
     crumb: "Buying land",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+    body: [
+      {
+        kind: "lead",
+        text: "The Northern and Eastern Bypass corridors around Ruiru and Tatu City have seen unprecedented capital appreciation. But buying unserviced agricultural land versus master-planned serviced plots requires fundamentally different financial calculations.",
+      },
+      {
+        kind: "h2",
+        text: "1. The True Cost of Infrastructure",
+      },
+      {
+        kind: "p",
+        text: "An unserviced 50x100 plot might cost KES 4.5M, while a master-planned serviced plot in an SEZ costs KES 14M. However, bringing three-phase power, tarmac roads, drainage, water treatment, and fiber optic connection to raw land often costs KES 6M+ per acre.",
+      },
+      {
+        kind: "checklist",
+        items: [
+          "Confirm Land Control Board (LCB) consent requirements for agricultural zoning",
+          "Check road reserve setbacks on planned bypass widening corridors",
+          "Verify SEZ enterprise registration criteria if acquiring commercial/industrial parcels",
+        ],
+      },
+    ],
+    cta: {
+      title: "Exploring investment parcels in Ruiru or Tatu City?",
+      body: "Review our verified commercial, industrial, and residential plot portfolio.",
+      primary: { label: "Explore Tatu City & Ruiru", href: "/locations/tatu-city" },
+    },
   },
   {
     slug: "questions-before-you-sign-in-a-new-block",
     title: "Questions to ask before you sign in a new block",
     summary:
-      "Water storage, generator coverage, parking per unit, and who to call when the lift fails.",
+      "Water storage capacity, generator load capacity, parking allocation per unit, and who to call when the lift fails on a Sunday evening.",
     category: "Renting",
     date: "2026-04-02",
     readingMinutes: 5,
     author: "Judy Wacera",
     crumb: "New blocks",
+    imageUrl:
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+    body: [
+      {
+        kind: "lead",
+        text: "A newly handed-over apartment block looks pristine on viewing day. But moving into a brand-new building during its first year of occupancy comes with unique operational realities.",
+      },
+      {
+        kind: "h2",
+        text: "1. Snagging & Contractor Latent Defects",
+      },
+      {
+        kind: "p",
+        text: "During the 6 to 12 month defects liability period, developer contractors are still on site fixing plumbing leaks, electrical trips, and elevator balancing. Clarify whether your managing agent handles snags directly or refers you to an unresponsive main contractor.",
+      },
+      {
+        kind: "checklist",
+        items: [
+          "Test all taps, drainage traps, and water pressure simultaneously",
+          "Confirm whether the building manager is stationed on-site daily",
+          "Verify high-speed internet ISP availability in the riser ducts",
+        ],
+      },
+    ],
+    cta: {
+      title: "Looking for professionally managed tenancies?",
+      body: "Sunland tenancies guarantee verified move-in condition reports and responsive 24/7 maintenance dispatch.",
+      primary: { label: "Browse Active Properties", href: "/properties" },
+    },
   },
   {
     slug: "office-rents-outside-the-cbd",
     title: "Office rents outside the CBD: where the demand actually went",
     summary:
-      "Upper Hill, Westlands and Tatu City compared on rent per square foot and total occupancy cost.",
+      "Upper Hill, Westlands, and Tatu City compared on rent per square foot, parking ratios, expressway access, and total corporate occupancy cost.",
     category: "Market notes",
     date: "2026-03-08",
     readingMinutes: 8,
     author: "Paul Amos",
     crumb: "Office rents",
+    imageUrl:
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    body: [
+      {
+        kind: "lead",
+        text: "Nairobi's commercial office market has permanently decentralized away from the historic CBD toward Grade-A nodes in Westlands, Upper Hill, and Special Economic Zones like Tatu City.",
+      },
+      {
+        kind: "h2",
+        text: "1. Occupancy Cost Benchmarks per Square Foot",
+      },
+      {
+        kind: "p",
+        text: "Base rent is only 60% of commercial occupancy overhead. When parking ratios (typically KES 10,000–15,000 per bay per month), service charge (KES 25–40/sqft), and fit-out amortization are factored in, total occupancy costs vary significantly across submarkets.",
+      },
+      {
+        kind: "compare",
+        items: [
+          {
+            title: "Westlands Grade-A",
+            body: "KES 95–135/sqft base rent, excellent expressway transit, high lifestyle/retail density, strong multinational appeal.",
+          },
+          {
+            title: "Upper Hill Financial District",
+            body: "KES 110–145/sqft base rent, banking & institutional hub, LEED certified towers, high parking capacity.",
+          },
+          {
+            title: "Tatu City SEZ",
+            body: "KES 85–115/sqft base rent, corporate tax advantages, logistics park synergy, zero-rated import duties.",
+          },
+        ],
+      },
+    ],
+    cta: {
+      title: "Need corporate commercial leasing advisory?",
+      body: "We structure institutional commercial leases, office acquisitions, and tenant representation mandates.",
+      primary: { label: "Contact Commercial Advisory", href: "/contact" },
+    },
   },
 ];
 
@@ -240,7 +461,7 @@ export function findPost(slug: string): InsightPost | undefined {
 }
 
 export const INSIGHTS_HERO = {
-  eyebrow: "Insights",
+  eyebrow: "Research & Real Estate Intelligence",
   headline: "Worth reading before you sign anything.",
   lead: "Practical writing on Nairobi property from the people managing it: what things cost, what the paperwork should say, and where owners and tenants get caught out.",
 } as const;

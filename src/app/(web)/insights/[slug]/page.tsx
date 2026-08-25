@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   findPost,
   publishedPosts,
-  type ArticleBlock,
   type InsightPost,
+  getAuthorAvatar,
 } from "@/components/web/constants/insights.content";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
-import { Breadcrumbs } from "@/components/web/primitives/breadcrumbs";
 import { WebButtonLink } from "@/components/web/primitives/button";
 import { Container } from "@/components/web/primitives/container";
+import { ArticleHero } from "@/components/web/insights/article-hero";
+import { ArticleInteractiveTools } from "@/components/web/insights/article-interactive-tools";
+import { ArticleBodyBlocks } from "@/components/web/insights/article-body-blocks";
 
 export const revalidate = 3600;
 
-/** Only written articles have routes. An unwritten slug is a genuine 404. */
 export function generateStaticParams() {
   return publishedPosts().map((post) => ({ slug: post.slug }));
 }
@@ -35,21 +37,6 @@ export async function generateMetadata({
   };
 }
 
-/**
- * An insight article.
- *
- * A 760px measure, prose at 17px on a 1.8 line height, and every figure in
- * mono. The body is a block union rather than raw HTML, so the measure, the
- * heading scale and the checklist treatment are applied by the template and
- * cannot be broken by whoever writes the next one.
- *
- * Every article ends with a call to action matched to its subject, per doc 04
- * §9: a landlord piece closes on management, a tenant piece would close on
- * listings.
- *
- * TODO(W5-3): emit Article structured data with author, datePublished and
- * dateModified from these same fields.
- */
 export default async function InsightArticlePage({
   params,
 }: {
@@ -63,87 +50,113 @@ export default async function InsightArticlePage({
     .filter((item) => item.slug !== post.slug)
     .slice(0, 3);
 
+  const ArrowRightIcon = webIcons.arrow;
+  const CheckIcon = webIcons.check;
+  const PhoneIcon = webIcons.phone;
+
   return (
     <>
       <article>
-        <header className="web-dark px-5 pb-16 pt-8 sm:px-8 lg:px-14">
-          <div className="mx-auto w-full max-w-[760px]">
-            <Breadcrumbs
-              items={[
-                { label: "Home", href: "/" },
-                { label: "Insights", href: "/insights" },
-                { label: post.crumb },
-              ]}
-              className="mb-8"
-            />
+        {/* ── 01. Cinematic Article Hero ── */}
+        <ArticleHero post={post} />
 
-            <span className="web-numeric inline-flex rounded-web-full border border-dark-line px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-on-dark">
-              {post.category}
-            </span>
+        {/* ── 02. Interactive Article Body & Reading Utility ── */}
+        <div className="bg-surface-0 px-5 pb-24 pt-12 sm:pt-16 sm:px-8 lg:px-14 border-t border-line">
+          <div className="mx-auto w-full max-w-[980px]">
+            {/* Reading Toolbar & Quick Table of Contents */}
+            <ArticleInteractiveTools post={post} />
 
-            <h1 className="web-title mt-5 text-[clamp(2.125rem,1.5rem+3vw,3.25rem)] leading-[1.08] tracking-[-0.015em] text-on-dark-hi">
-              {post.title}
-            </h1>
-            <p className="mt-5 text-web-lead leading-relaxed text-on-dark">{post.summary}</p>
+            {/* High-End Block Renderer (Lead, Quotes, Compare Matrix, Checklists & Data Models) */}
+            <ArticleBodyBlocks blocks={post.body ?? []} slug={post.slug} />
 
-            <div className="mt-7 flex flex-wrap items-center gap-4 border-t border-dark-line pt-6">
-              <span
-                aria-hidden="true"
-                className="web-numeric flex size-11 shrink-0 items-center justify-center rounded-web-full bg-dark-raise text-sm text-on-dark-hi"
-              >
-                {post.author
-                  .split(" ")
-                  .map((part) => part.charAt(0))
-                  .join("")}
-              </span>
-              <div>
-                <p className="text-[14.5px] text-on-dark-hi">{post.author}</p>
-                <p className="web-numeric text-[12.5px] text-on-dark-lo">
-                  <time dateTime={post.date}>{post.date}</time> · {post.readingMinutes} min read
-                </p>
+            {/* ── 03. Author & Practitioner Authority Spotlight (Uncarded Editorial Strip) ── */}
+            <div className="mt-16 pt-8 border-t border-line flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                {getAuthorAvatar(post.author) ? (
+                  <div className="relative size-14 shrink-0 overflow-hidden rounded-full border border-line shadow-sm">
+                    <Image
+                      src={getAuthorAvatar(post.author)!}
+                      alt={post.author}
+                      fill
+                      sizes="56px"
+                      className="object-cover object-center"
+                    />
+                  </div>
+                ) : (
+                  <span
+                    aria-hidden="true"
+                    className="font-mono flex size-12 shrink-0 items-center justify-center rounded-full bg-[#151936] text-sm font-medium text-white shadow-sm"
+                  >
+                    {post.author
+                      .split(" ")
+                      .map((part) => part.charAt(0))
+                      .join("")}
+                  </span>
+                )}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-editorial text-base sm:text-lg font-medium text-[#151936]">
+                      {post.author}
+                    </p>
+                    <span className="rounded-full bg-surface-1 border border-line px-2.5 py-0.5 font-mono text-[10px] font-medium text-slate-700">
+                      Advisory Author
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500 max-w-[44ch]">
+                    Specializing in institutional property asset management, leases, and contract due diligence across Nairobi.
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-        </header>
 
-        <div className="bg-surface-0 px-5 pb-24 pt-16 sm:px-8 lg:px-14">
-          <div className="mx-auto w-full max-w-[760px]">
-            {post.body?.map((block, index) => (
-              <Block key={`${block.kind}-${index}`} block={block} />
-            ))}
-
-            <p className="web-prose mt-6 text-ink-500">
-              Read{" "}
-              <Link
-                href="/landlords#how"
-                className="border-b border-line-strong text-ink-900 transition-colors hover:border-ink-900"
+              <WebButtonLink
+                href="/contact"
+                variant="outline"
+                size="sm"
+                icon="chat"
+                iconTrailing
+                className="shrink-0"
               >
-                how our own management works
-              </Link>{" "}
-              next.
-            </p>
+                Request Consultation
+              </WebButtonLink>
+            </div>
 
+            {/* ── 04. Executive Consultation & Action Callout ── */}
             {post.cta && (
-              <div className="mt-12 rounded-web-panel border border-line bg-surface-1 p-8">
-                <h2 className="web-title text-[26px] leading-tight text-ink-900">
+              <div className="mt-12 rounded-3xl border border-slate-800 bg-gradient-to-br from-[#151936] via-[#10132c] to-[#090d1f] p-8 sm:p-12 text-white shadow-2xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />
+                  <p className="font-mono text-xs uppercase tracking-[0.22em] text-slate-300 font-medium">
+                    Direct Practitioner Advisory
+                  </p>
+                </div>
+
+                <h2 className="font-editorial text-2xl sm:text-3xl lg:text-[34px] font-medium leading-tight text-white">
                   {post.cta.title}
                 </h2>
-                <p className="mt-3 max-w-[56ch] text-[15.5px] leading-relaxed text-ink-500">
+                <p className="mt-4 max-w-[62ch] text-[15px] sm:text-base leading-relaxed text-slate-300 font-normal">
                   {post.cta.body}
                 </p>
-                <div className="mt-6 flex flex-wrap gap-3">
+
+                <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-white/10 pt-6">
                   <WebButtonLink href={post.cta.primary.href} variant="primary" size="md">
                     {post.cta.primary.label}
                   </WebButtonLink>
+
                   <WebButtonLink
                     href="/contact"
                     variant="outline"
                     size="md"
                     icon="arrow"
                     iconTrailing
+                    className="border-white/30 text-white hover:bg-white/10"
                   >
-                    Contact us
+                    Contact Advisory Team
                   </WebButtonLink>
+
+                  <div className="ml-auto flex items-center gap-2 text-xs font-mono text-slate-400">
+                    <CheckIcon size={14} stroke={WEB_ICON_STROKE} className="text-emerald-400" />
+                    <span>Confidential & Independent</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -151,13 +164,27 @@ export default async function InsightArticlePage({
         </div>
       </article>
 
+      {/* ── 05. Overhauled High-Fidelity "Read Next" Showcase ── */}
       {readNext.length > 0 && (
-        <section aria-labelledby="read-next-heading" className="bg-surface-1 py-20 lg:py-24">
+        <section aria-labelledby="read-next-heading" className="bg-surface-1 py-20 lg:py-24 border-t border-line">
           <Container>
-            <h2 id="read-next-heading" className="web-title text-web-h2 text-ink-900">
-              Read next
-            </h2>
-            <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex items-center justify-between pb-5 border-b border-line-soft mb-10">
+              <div className="flex items-center gap-2.5">
+                <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />
+                <h2 id="read-next-heading" className="font-mono text-xs uppercase tracking-[0.22em] text-slate-500 font-medium">
+                  Related Research & Advisories
+                </h2>
+              </div>
+              <Link
+                href="/insights"
+                className="font-mono text-xs text-slate-500 hover:text-[#151936] transition-colors inline-flex items-center gap-1"
+              >
+                <span>View All Research</span>
+                <ArrowRightIcon size={12} stroke={2} />
+              </Link>
+            </div>
+
+            <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {readNext.map((item) => (
                 <li key={item.slug}>
                   <ReadNextCard post={item} />
@@ -171,87 +198,74 @@ export default async function InsightArticlePage({
   );
 }
 
-function Block({ block }: { block: ArticleBlock }) {
-  const CheckIcon = webIcons.check;
-
-  switch (block.kind) {
-    case "lead":
-      return <p className="mb-6 text-[19px] leading-[1.65] text-ink-900">{block.text}</p>;
-
-    case "p":
-      return <p className="mb-6 text-[17px] leading-[1.8] text-ink-500">{block.text}</p>;
-
-    case "h2":
-      return (
-        <h2 className="web-title mb-4 mt-12 text-[30px] leading-tight text-ink-900">
-          {block.text}
-        </h2>
-      );
-
-    case "quote":
-      return (
-        <blockquote className="mb-6 rounded-r-web-card border-l-2 border-brand-yellow bg-surface-1 px-6 py-5">
-          <p className="text-[16.5px] leading-[1.75] text-ink-900">{block.text}</p>
-        </blockquote>
-      );
-
-    case "compare":
-      return (
-        <div className="mb-5 overflow-hidden rounded-web-card border border-line">
-          {block.items.map((item, index) => (
-            <div
-              key={item.title}
-              className={index > 0 ? "border-t border-line-soft px-6 py-4.5" : "px-6 py-4.5"}
-            >
-              <p className="web-subtitle text-[15.5px] text-ink-900">{item.title}</p>
-              <p className="mt-1.5 text-[14.5px] leading-[1.7] text-ink-500">{item.body}</p>
-            </div>
-          ))}
-        </div>
-      );
-
-    case "checklist":
-      return (
-        <ul className="mb-8">
-          {block.items.map((item) => (
-            <li
-              key={item}
-              className="flex gap-3.5 border-t border-line-soft py-3.5 last:border-b"
-            >
-              <CheckIcon
-                size={18}
-                stroke={WEB_ICON_STROKE}
-                aria-hidden="true"
-                className="mt-1 shrink-0 text-ink-900"
-              />
-              <span className="text-base leading-[1.7] text-ink-500">{item}</span>
-            </li>
-          ))}
-        </ul>
-      );
-  }
-}
-
 function ReadNextCard({ post }: { post: InsightPost }) {
+  const ArrowRightIcon = webIcons.arrow;
+
   return (
-    <Link
-      href={`/insights/${post.slug}`}
-      className="block h-full overflow-hidden rounded-web-card border border-line bg-surface-0 transition-all duration-200 hover:-translate-y-[3px] hover:shadow-web-md"
-    >
-      <div
-        aria-hidden="true"
-        className="flex aspect-[16/9] items-center justify-center bg-surface-2"
-      >
-        <span className="web-title-light text-[56px] leading-none text-brand-dark/15">
-          {post.category.charAt(0)}
+    <article className="group relative flex h-full flex-col justify-between transition-all duration-300 ease-out hover:-translate-y-1">
+      {/* Media Image Frame with Scrims & Badge */}
+      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-900 shadow-2xs transition-shadow duration-300 group-hover:shadow-md">
+        <Image
+          src={
+            post.imageUrl ??
+            "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80"
+          }
+          alt={post.title}
+          fill
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
+        />
+        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-[10px] font-medium text-white border border-white/15 shadow-xs">
+          <span className="size-1.5 rounded-full bg-brand-yellow" />
+          {post.category}
         </span>
       </div>
-      <div className="p-5">
-        <p className="web-numeric text-xs text-ink-400">
-          <time dateTime={post.date}>{post.date}</time> · {post.readingMinutes} min
-        </p>
-        <p className="web-title-card mt-2.5 text-[22px] leading-snug text-ink-900">{post.title}</p>
+
+      {/* Content Section below photo */}
+      <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
+        <div>
+          <h3 className="font-editorial text-[21px] sm:text-[22px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+            <Link
+              href={`/insights/${post.slug}`}
+              className="after:absolute after:inset-0"
+            >
+              {post.title}
+            </Link>
+          </h3>
+
+          <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-2">
+            {post.summary}
+          </p>
+        </div>
+
+        {/* Author & Telemetry Footer */}
+        <div className="mt-5 border-t border-slate-200/80 pt-3.5 flex items-center justify-between font-mono text-xs text-slate-500">
+          <div className="flex items-center gap-2.5">
+            {getAuthorAvatar(post.author) ? (
+              <div className="relative size-6 shrink-0 overflow-hidden rounded-full border border-line">
+                <Image
+                  src={getAuthorAvatar(post.author)!}
+                  alt={post.author}
+                  fill
+                  sizes="24px"
+                  className="object-cover object-center"
+                />
+              </div>
+            ) : null}
+            <span className="font-medium text-[#151936]">{post.author}</span>
+            <span>·</span>
+            <span>{post.readingMinutes} min</span>
+          </div>
+
+          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+            <ArrowRightIcon size={13} stroke={2} aria-hidden="true" />
+          </div>
+        </div>
       </div>
-    </Link>
+    </article>
   );
 }

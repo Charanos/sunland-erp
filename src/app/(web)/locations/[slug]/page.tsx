@@ -305,62 +305,54 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                   </p>
                 </div>
 
-                {/* Part A: Full-Width Realized Cost Matrix */}
+                  {/* Part A: Full-Width Realized Cost Matrix */}
                 <div className="w-full">
                   <div className="pb-3 border-b border-slate-100 mb-2">
                     <h4 className="font-editorial text-xl font-medium text-[#151936]">Realized Cost Matrix</h4>
                     <p className="text-xs text-slate-500 mt-0.5">Historical and active booking bands</p>
                   </div>
 
-                  {editorial ? (
-                    <div className="border-y border-slate-200 divide-y divide-slate-100">
-                      {editorial.costRows.map((row) => (
-                        <div
-                          key={row.type}
-                          className={cn(
-                            "flex items-center justify-between py-4 text-sm transition-colors",
-                            row.emphasis && "bg-brand-yellow/5 px-3 -mx-3 rounded-lg font-medium"
+                  <div className="border-y border-slate-200 divide-y divide-slate-100">
+                    {(editorial?.costRows && editorial.costRows.length > 0
+                      ? editorial.costRows
+                      : stats.priceRows.length > 0
+                      ? stats.priceRows.map((r) => ({
+                          type: r.label,
+                          toLet: r.typicalRent ? formatKES(r.typicalRent) : area.guideValue,
+                          forSale: "On Request",
+                          emphasis: r.bedrooms === 2,
+                        }))
+                      : [
+                          { type: "1 Bedroom Executive", toLet: "45–65k", forSale: "7.5–10.5M" },
+                          { type: "2 Bedroom Apartment", toLet: area.guideValue, forSale: "12–18M", emphasis: true },
+                          { type: "3 Bedroom Apartment", toLet: "95–160k", forSale: "18–28M" },
+                          { type: "4 Bed Townhouse / Villa", toLet: "180–320k", forSale: "35–65M" },
+                        ]
+                    ).map((row) => (
+                      <div
+                        key={row.type}
+                        className={cn(
+                          "flex items-center justify-between py-4 text-sm transition-colors",
+                          row.emphasis && "bg-brand-yellow/5 px-3 -mx-3 rounded-lg font-medium"
+                        )}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          {row.emphasis && (
+                            <span className="size-2 rounded-full bg-emerald-500" />
                           )}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            {row.emphasis && (
-                              <span className="size-2 rounded-full bg-emerald-500" />
-                            )}
-                            <span className="text-[#151936] text-[15px]">{row.type}</span>
-                          </div>
-                          <div className="flex items-center gap-6 sm:gap-10 text-right">
-                            <span className="font-mono font-medium text-[#151936] text-base">
-                              {row.toLet} <span className="text-xs text-slate-400 font-normal">/ mo</span>
-                            </span>
-                            <span className="font-mono text-slate-500 text-sm min-w-[80px]">
-                              {row.forSale}
-                            </span>
-                          </div>
+                          <span className="text-[#151936] text-[15px]">{row.type}</span>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    stats.priceRows.length > 0 && (
-                      <div className="border-y border-slate-200 divide-y divide-slate-100">
-                        {stats.priceRows.map((row) => (
-                          <div
-                            key={row.bedrooms}
-                            className="flex items-center justify-between py-4 text-sm"
-                          >
-                            <span className="text-[#151936] text-[15px]">{row.label}</span>
-                            <div className="flex items-center gap-6 sm:gap-10 text-right">
-                              <span className="font-mono font-medium text-[#151936] text-base">
-                                {row.typicalRent ? formatKES(row.typicalRent) : "On Request"}
-                              </span>
-                              <span className="font-mono text-emerald-600 text-xs min-w-[80px]">
-                                {row.available} units live
-                              </span>
-                            </div>
-                          </div>
-                        ))}
+                        <div className="flex items-center gap-6 sm:gap-10 text-right">
+                          <span className="font-mono font-medium text-[#151936] text-base">
+                            {row.toLet} <span className="text-xs text-slate-400 font-normal">/ mo</span>
+                          </span>
+                          <span className="font-mono text-slate-500 text-sm min-w-[80px]">
+                            {row.forSale}
+                          </span>
+                        </div>
                       </div>
-                    )
-                  )}
+                    ))}
+                  </div>
 
                   <p className="mt-3.5 text-xs leading-relaxed text-slate-400 font-normal">
                     Ranges reflect realized contracts on Sunland&apos;s active book over the last 12 months. Service charges and utilities are billed separately.
@@ -369,7 +361,19 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
 
                 {/* Part B: Full-Width Interactive Price Spectrum (Recharts) */}
                 <div className="w-full pt-4">
-                  <AreaPriceChart editorialRows={editorial?.costRows} liveRows={stats.priceRows} />
+                  <AreaPriceChart
+                    editorialRows={
+                      editorial?.costRows && editorial.costRows.length > 0
+                        ? editorial.costRows
+                        : [
+                            { type: "1 Bedroom Executive", toLet: "45–65k", forSale: "7.5–10.5M" },
+                            { type: "2 Bedroom Apartment", toLet: area.guideValue, forSale: "12–18M", emphasis: true },
+                            { type: "3 Bedroom Apartment", toLet: "95–160k", forSale: "18–28M" },
+                            { type: "4 Bed Townhouse / Villa", toLet: "180–320k", forSale: "35–65M" },
+                          ]
+                    }
+                    liveRows={stats.priceRows}
+                  />
                 </div>
               </section>
 

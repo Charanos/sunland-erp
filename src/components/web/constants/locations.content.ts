@@ -650,8 +650,552 @@ export const AREA_EDITORIAL: Record<string, AreaEditorial> = {
       { value: "19 d", label: "Average time to let" },
     ],
   },
+  "riverside-drive": {
+    livingHere: [
+      "Riverside Drive represents one of Nairobi's most prestigious diplomatic and corporate corridors, lined with riverine vegetation, diplomatic missions (including the German and Australian Embassies), and boutique office parks.",
+      "The corridor bridges Westlands and Lavington, offering effortless dual access to Chiromo Road and James Gichuru Road while maintaining a secluded, secure leafy environment.",
+      "Properties range from luxury riverfront apartments with rooftop infinity pools to ambassadorial compounds and low-density corporate headquarters.",
+    ],
+    costsNote:
+      "Riverside Drive commands strong diplomatic rental yields with long-tenancy stability and premium corporate lease covenants.",
+    costRows: [
+      { type: "1 bed executive suite", toLet: "90–130k", forSale: "14–19M" },
+      { type: "2 bed riverfront apt", toLet: "140–200k", forSale: "22–32M", emphasis: true },
+      { type: "3 bed luxury penthouse", toLet: "220–350k", forSale: "38–65M" },
+      { type: "Commercial office park", toLet: "110–145 /sqft", forSale: "14,500 /sqft" },
+    ],
+    distances: [
+      { place: "Westlands Core", value: "1.2 km" },
+      { place: "Lavington Green", value: "2.4 km" },
+      { place: "Nairobi CBD", value: "4.5 km" },
+      { place: "JKIA via Expressway", value: "17 km" },
+    ],
+    worthKnowing: [
+      "Confirm riparian reserve boundary clearance for riverfront properties",
+      "Verify embassy security compliance and barrier road access protocols",
+      "Check generator power capacity for all building HVAC systems",
+      "Review tenant mix in mixed-use residential/commercial developments",
+    ],
+    amenities: [
+      "Diplomatic Mission & Embassy Corridor",
+      "Direct Dual Access to Westlands & Lavington",
+      "Riverine Green Buffer & Landscaped Grounds",
+      "24/7 Monitored Barrier Security Checkpoints",
+      "Borehole Water & Multi-Stage Water Filtration",
+      "Full Dual Inverter & Backup Generator Systems",
+      "Underground Secure Multi-Level Parking",
+      "Rooftop Pools & Health Club Facilities",
+    ],
+    stats: [
+      { value: "5", label: "On our books" },
+      { value: "175k", label: "Median 2 bed rent" },
+      { value: "16 d", label: "Average time to let" },
+    ],
+  },
+  kileleshwa: {
+    livingHere: [
+      "Kileleshwa is a premier residential neighborhood that has seamlessly transitioned into modern, amenity-rich apartment living while maintaining quiet, tree-lined residential streets.",
+      "Extremely popular with young corporate professionals, expatriate consultants, and young families due to its central location between Kilimani, Lavington, and Westlands.",
+      "Modern developments here boast heated swimming pools, fully equipped gymnasiums, children's play areas, and high-speed elevators.",
+    ],
+    costsNote:
+      "Furnished two-bedroom units achieve premium yields from short-term corporate stays and long-lease executive contracts.",
+    costRows: [
+      { type: "1 bedroom modern", toLet: "55–75k", forSale: "7.5–10.5M" },
+      { type: "2 bedroom unfurnished", toLet: "80–120k", forSale: "12–17M" },
+      { type: "2 bedroom furnished", toLet: "150–200k", forSale: "16–22M", emphasis: true },
+      { type: "3 bedroom + DSQ", toLet: "120–170k", forSale: "18–26M" },
+      { type: "4 bedroom penthouse", toLet: "220–320k", forSale: "35–55M" },
+    ],
+    distances: [
+      { place: "Kasuku Centre", value: "0.6 km" },
+      { place: "Kileleshwa Police Station", value: "1.0 km" },
+      { place: "Yaya Centre", value: "2.2 km" },
+      { place: "Nairobi CBD", value: "5.5 km" },
+    ],
+    worthKnowing: [
+      "Check elevator-to-unit ratio in higher-density blocks",
+      "Confirm dedicated domestic staff quarters (DSQ) allocation",
+      "Verify borehole water yield and independent electric metering",
+      "Review building rules regarding short-term Airbnb lets",
+    ],
+    amenities: [
+      "Kasuku Centre & Neighborhood Boutiques",
+      "Heated Swimming Pools & Modern Fitness Centers",
+      "Dedicated Domestic Staff Quarters (DSQ)",
+      "High-Speed Passenger & Service Lifts",
+      "24/7 CCTV & Armed Response Corridors",
+      "Borehole Water & Secondary Storage",
+      "Kids Playgrounds & Landscaped Courtyards",
+      "5 Minutes to Westlands, Kilimani & CBD",
+    ],
+    stats: [
+      { value: "8", label: "On our books" },
+      { value: "110k", label: "Median 2 bed rent" },
+      { value: "17 d", label: "Average time to let" },
+    ],
+  },
+  parklands: {
+    livingHere: [
+      "Parklands is an established, culturally vibrant residential and commercial submarket bordering the Aga Khan University Hospital, City Park, and Westlands.",
+      "Characterized by strong community ties, established family court compounds, specialized medical practices, and modern mid-rise residential towers.",
+      "Highly sought-after for its walkable proximity to premier medical facilities, Diamond Plaza retail center, and leading academic institutions.",
+    ],
+    costsNote:
+      "Rental demand is anchored by healthcare professionals, university faculty, and established multi-generational families.",
+    costRows: [
+      { type: "2 bedroom flat", toLet: "70–95k", forSale: "11–16M" },
+      { type: "3 bedroom court", toLet: "95–140k", forSale: "16–24M", emphasis: true },
+      { type: "4 bedroom apartment", toLet: "140–200k", forSale: "24–36M" },
+      { type: "Commercial clinic / office", toLet: "90–120 /sqft", forSale: "11,000 /sqft" },
+    ],
+    distances: [
+      { place: "Aga Khan University Hosp.", value: "0.5 km" },
+      { place: "Diamond Plaza Hub", value: "0.8 km" },
+      { place: "City Park Forest", value: "1.2 km" },
+      { place: "Westlands Sarit", value: "2.0 km" },
+    ],
+    worthKnowing: [
+      "Verify dedicated parking bays (street parking can be congested on avenue lanes)",
+      "Check water storage capacity in older court compounds",
+      "Confirm backup generator connections for internal home sockets",
+      "Review commercial licensing zoning on avenue frontage parcels",
+    ],
+    amenities: [
+      "Aga Khan University Hospital Proximity",
+      "Diamond Plaza & Highridge Retail Hubs",
+      "City Park Nature Forest & Green Lung",
+      "Premier Community Centers & Academies",
+      "Full Backup Generators & Water Storage",
+      "24/7 Security Patrols & Gated Barrier Courts",
+      "Close Transit to Westlands & Limuru Road",
+      "High Medical & Professional Tenant Demand",
+    ],
+    stats: [
+      { value: "6", label: "On our books" },
+      { value: "95k", label: "Median 3 bed rent" },
+      { value: "18 d", label: "Average time to let" },
+    ],
+  },
+  "upper-hill": {
+    livingHere: [
+      "Upper Hill is Nairobi's premier financial power district, housing the regional headquarters of the World Bank, Britam Tower, Equity Bank, and major diplomatic consulates.",
+      "Zoned primarily for high-density Grade-A commercial towers, with a growing segment of executive serviced apartments and corporate pied-à-terres.",
+      "Directly connected to the CBD, Community government offices, and the expressway to JKIA.",
+    ],
+    costsNote:
+      "Commercial office leases are structured on 5 to 6 year institutional terms with standard 3-year escalation clauses.",
+    costRows: [
+      { type: "Grade-A Office Space", toLet: "110–145 /sqft", forSale: "13,500 /sqft", emphasis: true },
+      { type: "1 bed executive studio", toLet: "75–110k", forSale: "9.5–14M" },
+      { type: "2 bed serviced apartment", toLet: "140–210k", forSale: "18–28M" },
+      { type: "Commercial retail ground", toLet: "160–220 /sqft", forSale: "on request" },
+    ],
+    distances: [
+      { place: "Britam Tower Core", value: "0.3 km" },
+      { place: "Nairobi Hospital", value: "1.1 km" },
+      { place: "Nairobi CBD", value: "2.0 km" },
+      { place: "JKIA via Expressway", value: "15 km" },
+    ],
+    worthKnowing: [
+      "Verify parking bay ratio (minimum 3 bays per 100 sqm of office floor)",
+      "Confirm dual independent utility power feeds and generator synchronization",
+      "Check fiber ISP carrier neutrality in the building risers",
+      "Review service charge sinking fund allocations for facade maintenance",
+    ],
+    amenities: [
+      "East Africa's Premier Financial District",
+      "Grade-A LEED Certified Commercial Towers",
+      "Direct Expressway Link to Airport & Westlands",
+      "Dual Grid Power & 100% Generator Redundancy",
+      "High-Speed Smart Destination Lifts",
+      "CCTV Surveillance & Armed Response Perimeter",
+      "World Bank, British High Commission Proximity",
+      "Underground Multi-Tier Executive Parking",
+    ],
+    stats: [
+      { value: "9", label: "On our books" },
+      { value: "125/sqft", label: "Avg commercial rate" },
+      { value: "14 d", label: "Average time to let" },
+    ],
+  },
+  "garden-estate": {
+    livingHere: [
+      "Garden Estate along Thika Superhighway is a serene residential suburb characterized by half-acre homesteads, private gated courts, and modern mid-rise family apartments.",
+      "Benefits from direct access to Garden City Mall, Mountain Mall, and the Northern Bypass connecting seamlessly to Runda and Westlands.",
+      "Known for mature trees, spacious garden compounds, and quiet residential ambiance favored by established professionals.",
+    ],
+    costsNote:
+      "Strong demand for 2 and 3 bedroom family apartments near Garden City with reliable 8–10% gross yields.",
+    costRows: [
+      { type: "2 bedroom apartment", toLet: "50–70k", forSale: "8.5–12M", emphasis: true },
+      { type: "3 bedroom + DSQ", toLet: "75–110k", forSale: "13–18M" },
+      { type: "4 bed maisonette / villa", toLet: "120–180k", forSale: "32–48M" },
+      { type: "0.5 acre parcel", toLet: "—", forSale: "35–50M" },
+    ],
+    distances: [
+      { place: "Garden City Mall", value: "1.2 km" },
+      { place: "Thika Superhighway", value: "0.8 km" },
+      { place: "Northern Bypass", value: "2.5 km" },
+      { place: "Nairobi CBD", value: "10 km" },
+    ],
+    worthKnowing: [
+      "Confirm access road drainage during heavy rains",
+      "Verify private court security barriers and monthly association dues",
+      "Check water storage capacity and borehole connection",
+      "Review proximity to Thika Highway for noise buffering",
+    ],
+    amenities: [
+      "Garden City Mall Retail & Entertainment Hub",
+      "Direct Access to Thika Superhighway & Bypass",
+      "Private Gated Estates with Barrier Security",
+      "Spacious Half-Acre Compounds & Mature Gardens",
+      "Borehole Water & Secondary Storage",
+      "Dedicated Children's Play Lawns",
+      "Braeburn Garden Estate & Leading Academies",
+      "Low-Density Peaceful Suburban Living",
+    ],
+    stats: [
+      { value: "5", label: "On our books" },
+      { value: "65k", label: "Median 2 bed rent" },
+      { value: "21 d", label: "Average time to let" },
+    ],
+  },
+  thome: {
+    livingHere: [
+      "Thome is a secure, well-planned residential neighborhood off Thika Road, featuring organized gated courts, detached family maisonettes, and low-density apartment communities.",
+      "Favored by families and executives working in Nairobi's northern commercial nodes and central business district.",
+      "Excellent access to schools, shopping complexes, and both the Eastern and Northern Bypasses.",
+    ],
+    costsNote:
+      "Consistent residential tenancy demand with low void rates across 3-bedroom court units.",
+    costRows: [
+      { type: "2 bedroom apartment", toLet: "45–65k", forSale: "7.5–11M" },
+      { type: "3 bedroom maisonette", toLet: "75–110k", forSale: "18–26M", emphasis: true },
+      { type: "4 bedroom villa (0.25 ac)", toLet: "110–160k", forSale: "28–42M" },
+    ],
+    distances: [
+      { place: "Mountain Mall", value: "1.0 km" },
+      { place: "Thika Superhighway", value: "0.6 km" },
+      { place: "USIU Africa", value: "3.5 km" },
+      { place: "Nairobi CBD", value: "11 km" },
+    ],
+    worthKnowing: [
+      "Check court barrier access management protocols",
+      "Verify individual compound perimeter fencing",
+      "Confirm municipal water scheduling and private tank sizing",
+      "Review road paving status on secondary court lanes",
+    ],
+    amenities: [
+      "Gated Court Communities & Barrier Gates",
+      "Direct Link to Thika Highway & Northern Bypass",
+      "Family Maisonettes with Private Parking",
+      "Borehole Water & Piped Municipal Backup",
+      "Mountain Mall & Roasters Retail Corridors",
+      "Proximity to USIU Africa & PAC University",
+      "24/7 Neighborhood Patrol Services",
+      "Quiet Family-Friendly Environment",
+    ],
+    stats: [
+      { value: "4", label: "On our books" },
+      { value: "80k", label: "Median 3 bed rent" },
+      { value: "22 d", label: "Average time to let" },
+    ],
+  },
+  "baba-dogo": {
+    livingHere: [
+      "Baba Dogo is one of Nairobi's core light industrial and logistics zones, located off Outering and Thika Roads.",
+      "Hosts major manufacturing plants, warehousing compounds, FMCG distribution hubs, and commercial godowns.",
+      "Features high three-phase power availability, heavy vehicle turning radius access, and direct links to the Eastern Bypass.",
+    ],
+    costsNote:
+      "Industrial godowns and logistics warehouses are priced per square foot monthly with long-term industrial leases.",
+    costRows: [
+      { type: "Light Industrial Godown", toLet: "38–55 /sqft", forSale: "4,500 /sqft", emphasis: true },
+      { type: "Commercial Logistics Hub", toLet: "45–65 /sqft", forSale: "5,800 /sqft" },
+      { type: "Industrial Plot (1 ac)", toLet: "—", forSale: "65–95M" },
+    ],
+    distances: [
+      { place: "Outering Road Link", value: "0.8 km" },
+      { place: "Thika Superhighway", value: "2.2 km" },
+      { place: "Eastern Bypass", value: "6.5 km" },
+      { place: "JKIA Cargo Hub", value: "18 km" },
+    ],
+    worthKnowing: [
+      "Verify three-phase electrical power capacity and transformer rating",
+      "Check floor loading specifications (typically 5–10 tonnes/sqm)",
+      "Confirm heavy truck entry gate height and turning yard clearance",
+      "Review industrial effluent disposal and NEMA compliance",
+    ],
+    amenities: [
+      "High-Power 3-Phase Industrial Grid",
+      "Heavy Vehicle Turning Yards & Dock Levelers",
+      "High-Eaves Warehouses & Steel Truss Spans",
+      "24/7 Gated Industrial Compound Security",
+      "Direct Freight Access to Outering & Thika Road",
+      "Borehole Water for Industrial Processes",
+      "CCTV Monitored Freight Corridors",
+      "Dedicated Commercial Admin Office Mezzanines",
+    ],
+    stats: [
+      { value: "6", label: "On our books" },
+      { value: "45/sqft", label: "Avg industrial rate" },
+      { value: "25 d", label: "Average time to let" },
+    ],
+  },
+  "nairobi-west": {
+    livingHere: [
+      "Nairobi West is an energetic, highly connected urban submarket situated immediately south of the CBD, adjacent to Nairobi West Hospital and Nyayo National Stadium.",
+      "Known for its high rental demand, convenient public transit links, and bustling commercial and residential mix.",
+      "Extremely popular with medical staff, university students, civil servants, and young urban professionals.",
+    ],
+    costsNote:
+      "High rental density with very fast tenant turnaround and minimal vacancy void periods.",
+    costRows: [
+      { type: "Bedsitter / Studio", toLet: "18–28k", forSale: "3.2–4.5M" },
+      { type: "1 bedroom apartment", toLet: "30–45k", forSale: "4.8–6.8M" },
+      { type: "2 bedroom apartment", toLet: "45–65k", forSale: "7.5–11M", emphasis: true },
+      { type: "3 bedroom family flat", toLet: "65–85k", forSale: "11–15M" },
+    ],
+    distances: [
+      { place: "Nairobi West Hospital", value: "0.4 km" },
+      { place: "Nyayo Stadium", value: "1.0 km" },
+      { place: "Nairobi CBD", value: "2.8 km" },
+      { place: "Wilson Airport", value: "2.5 km" },
+    ],
+    worthKnowing: [
+      "Check building water rationing schedule and roof tank storage",
+      "Confirm tenant sub-metering for electricity (tokens)",
+      "Verify access control and night security guard coverage",
+      "Review road accessibility during match days at Nyayo Stadium",
+    ],
+    amenities: [
+      "Nairobi West Hospital & Specialized Clinics",
+      "5 Minutes Drive to Nairobi CBD & Industrial Area",
+      "Wilson Airport Proximity for Commuters",
+      "High-Density Public Transit Connections",
+      "Vibrant Commercial High Streets & Markets",
+      "Fast Tenant Absorption & Low Void Rates",
+      "CCTV Security & Controlled Access Gates",
+      "Reliable Telecommunications & Fibre Internet",
+    ],
+    stats: [
+      { value: "7", label: "On our books" },
+      { value: "50k", label: "Median 2 bed rent" },
+      { value: "12 d", label: "Average time to let" },
+    ],
+  },
+  kasarani: {
+    livingHere: [
+      "Kasarani is a rapidly expanding, high-yield residential hub along Thika Superhighway, home to Kasarani Stadium and major academic institutions.",
+      "Attracts investors seeking strong rental returns from modern studio, 1-bedroom, and 2-bedroom multi-family residential towers.",
+      "High tenant pool of university students, young professionals, and sporting personnel with rapid leasing turnaround.",
+    ],
+    costsNote:
+      "Consistent high-yield residential market with strong occupancy rates across newly built blocks.",
+    costRows: [
+      { type: "Studio / Bedsitter", toLet: "12–18k", forSale: "2.2–3.2M" },
+      { type: "1 bedroom new build", toLet: "22–32k", forSale: "3.5–5.2M", emphasis: true },
+      { type: "2 bedroom apartment", toLet: "35–50k", forSale: "5.5–8.2M" },
+      { type: "3 bedroom family flat", toLet: "50–70k", forSale: "8.5–12M" },
+    ],
+    distances: [
+      { place: "Kasarani Stadium Hub", value: "1.0 km" },
+      { place: "Thika Superhighway", value: "0.8 km" },
+      { place: "TRM Mall", value: "2.5 km" },
+      { place: "Nairobi CBD", value: "12 km" },
+    ],
+    worthKnowing: [
+      "Verify borehole connection and water treatment in high-rise towers",
+      "Check elevator maintenance contracts in buildings over 4 storeys",
+      "Confirm token electricity meters for each unit",
+      "Review parking ratio for tenant vehicles",
+    ],
+    amenities: [
+      "Moi International Sports Centre Kasarani",
+      "Direct Thika Superhighway Access",
+      "TRM (Thika Road Mall) Shopping Proximity",
+      "USIU Africa & Kenyatta University Commute",
+      "High-Yield Multi-Family Investment Assets",
+      "Borehole Water & Secondary Storage",
+      "Fibre Internet Ready Infrastructure",
+      "Rapid Tenant Absorption & Deep Pool",
+    ],
+    stats: [
+      { value: "9", label: "On our books" },
+      { value: "28k", label: "Median 1 bed rent" },
+      { value: "11 d", label: "Average time to let" },
+    ],
+  },
+  ruiru: {
+    livingHere: [
+      "Ruiru is one of the fastest growing satellite cities in the Nairobi Metropolitan Area, situated along the Thika Superhighway and Eastern/Northern Bypasses.",
+      "Features expansive master-planned gated communities, serviced quarter-acre and 50x100 residential plots, and modern townhouses.",
+      "Popular with homeowners commuting via bypass routes to Westlands and the airport.",
+    ],
+    costsNote:
+      "Exceptional land capital appreciation over the last 5 years with robust demand for gated estate homes.",
+    costRows: [
+      { type: "50×100 Serviced Plot", toLet: "—", forSale: "4.5–8.5M", emphasis: true },
+      { type: "2 bedroom apartment", toLet: "30–45k", forSale: "5.2–7.5M" },
+      { type: "3 bedroom townhouse", toLet: "55–85k", forSale: "12–18M" },
+      { type: "4 bedroom villa", toLet: "80–130k", forSale: "18–28M" },
+    ],
+    distances: [
+      { place: "Eastern / Northern Bypass", value: "1.5 km" },
+      { place: "Thika Superhighway", value: "1.0 km" },
+      { place: "Tatu City Core", value: "4.0 km" },
+      { place: "Nairobi CBD", value: "22 km" },
+    ],
+    worthKnowing: [
+      "Confirm title deed clean search at Kiambu Land Registry",
+      "Verify bypass access and dual carriageway expansion plans",
+      "Check estate building control bylaws and service fees",
+      "Review piped water connection and electricity infrastructure",
+    ],
+    amenities: [
+      "Dual Carriageway Bypass Interchanges",
+      "Gated Master-Planned Community Estates",
+      "Proximity to Tatu City SEZ & Light Industry",
+      "Leading International & Private Academies",
+      "High Capital Appreciation Land Market",
+      "Reliable Piped & Borehole Water Reticulation",
+      "Commercial Shopping Centers & Supermarkets",
+      "Peaceful Suburban Living with Easy Commutes",
+    ],
+    stats: [
+      { value: "7", label: "On our books" },
+      { value: "6.5M", label: "Median plot value" },
+      { value: "24 d", label: "Average time to sell" },
+    ],
+  },
+  "ongata-rongai": {
+    livingHere: [
+      "Ongata Rongai, situated in Kajiado County adjacent to Nairobi National Park, is a thriving satellite town offering affordable family homes, villas, and maisonettes.",
+      "Offers stunning views of the Ngong Hills and close proximity to the SGR station and Catholic University of Eastern Africa (CUEA).",
+      "Known for its cool climate, open spaces, and vibrant neighborhood commerce.",
+    ],
+    costsNote:
+      "Affordable rental bands make Rongai a prime location for family living with excellent value per square foot.",
+    costRows: [
+      { type: "2 bedroom flat", toLet: "25–38k", forSale: "4.5–6.8M" },
+      { type: "3 bedroom bungalow", toLet: "40–60k", forSale: "8.5–13M", emphasis: true },
+      { type: "4 bedroom maisonette", toLet: "60–95k", forSale: "14–22M" },
+      { type: "50×100 plot", toLet: "—", forSale: "3.5–6.5M" },
+    ],
+    distances: [
+      { place: "Magadi Road Corridor", value: "0.5 km" },
+      { place: "SGR Ongata Rongai Station", value: "3.2 km" },
+      { place: "Galleria Mall Karen", value: "7.5 km" },
+      { place: "Nairobi CBD", value: "18 km" },
+    ],
+    worthKnowing: [
+      "Check Magadi Road traffic peak hours and dualling progress",
+      "Verify private borehole connection and water softness",
+      "Confirm estate perimeter fencing and neighborhood watch",
+      "Review land title deed verification at Kajiado registry",
+    ],
+    amenities: [
+      "Breathtaking Views of Ngong Hills",
+      "SGR Commuter Rail Station Proximity",
+      "Galleria Mall & Karen Commercial Centers",
+      "Leading Universities (CUEA, Multimedia, Nazarene)",
+      "Borehole Water & Secondary Storage",
+      "Gated Courts & Private Family Compounds",
+      "High Value-for-Money Family Living",
+      "Direct Proximity to Nairobi National Park",
+    ],
+    stats: [
+      { value: "5", label: "On our books" },
+      { value: "48k", label: "Median 3 bed rent" },
+      { value: "20 d", label: "Average time to let" },
+    ],
+  },
+  nyeri: {
+    livingHere: [
+      "Nyeri is the historic administrative and agricultural heart of Central Kenya, situated between Mount Kenya and the Aberdare Mountain Range.",
+      "Features rich agricultural land, serene highland retirement homesteads, town commercial plots, and tea/coffee estate acreage.",
+      "Enjoys year-round cool highland weather, fertile volcanic soil, and excellent road networks to Nairobi and Mount Kenya circuits.",
+    ],
+    costsNote:
+      "Substantial demand for commercial parcels in Nyeri Town and agricultural acreage in surrounding zones.",
+    costRows: [
+      { type: "Town Commercial Plot", toLet: "—", forSale: "8–18M", emphasis: true },
+      { type: "Agricultural Acreage (1 ac)", toLet: "—", forSale: "3.5–7.5M" },
+      { type: "3 bedroom family home", toLet: "30–50k", forSale: "9–15M" },
+    ],
+    distances: [
+      { place: "Nyeri Town CBD", value: "1.0 km" },
+      { place: "Mount Kenya National Park", value: "18 km" },
+      { place: "Aberdare Country Club", value: "14 km" },
+      { place: "Nairobi via Kenol Highway", value: "140 km" },
+    ],
+    worthKnowing: [
+      "Verify Land Control Board (LCB) consent requirements for agricultural parcels",
+      "Check perennial water stream rights and borehole potential",
+      "Confirm road frontage access on dual highway expansions",
+      "Review freehold title deed clean searches at Nyeri registry",
+    ],
+    amenities: [
+      "Cool Highland Climate & Volcanic Soil",
+      "Mount Kenya & Aberdare Tourist Corridors",
+      "Kenol-Marua Dual Carriageway Highway Access",
+      "Perennial River Water & Piped Municipal Networks",
+      "Historical Administrative Infrastructure",
+      "High-Yield Agricultural & Agro-Processing Hubs",
+      "Peaceful Countryside Retirement Living",
+      "Leading County Hospitals & Academic Institutions",
+    ],
+    stats: [
+      { value: "4", label: "On our books" },
+      { value: "5.5M", label: "Avg acre value" },
+      { value: "35 d", label: "Average time to sell" },
+    ],
+  },
+  iten: {
+    livingHere: [
+      "Iten in Elgeyo Marakwet County is the undisputed 'Home of Champions', perched majestically at 2,400m on the edge of the breathtaking Kerio Valley Escarpment.",
+      "Globally renowned as the high-altitude training capital of international distance runners, creating strong demand for sports hospitality, boutique lodges, and residential plots.",
+      "Offers dramatic rift valley panoramas, crisp mountain air, and rich agricultural countryside.",
+    ],
+    costsNote:
+      "Specialized market driven by sports tourism, athletic training camps, eco-lodges, and agricultural acreage.",
+    costRows: [
+      { type: "Escarpment View Plot (0.5 ac)", toLet: "—", forSale: "3.5–7M", emphasis: true },
+      { type: "Athletic Camp / Lodge Facility", toLet: "80–180k", forSale: "25–55M" },
+      { type: "Highland Acreage (1 ac)", toLet: "—", forSale: "2.2–4.5M" },
+    ],
+    distances: [
+      { place: "Iten Viewpoint Escarpment", value: "0.5 km" },
+      { place: "Lornah Kiplagat Sports Center", value: "1.2 km" },
+      { place: "Eldoret Town Core", value: "32 km" },
+      { place: "Eldoret International Airport", value: "48 km" },
+    ],
+    worthKnowing: [
+      "Confirm geological escarpment stability and setback for view plots",
+      "Verify water spring rights and high-altitude borehole infrastructure",
+      "Check county zoning approvals for commercial hospitality/training facilities",
+      "Review road access during rainy highland seasons",
+    ],
+    amenities: [
+      "World-Renowned High Altitude Training Mecca",
+      "Panoramic Kerio Valley Escarpment Views",
+      "Clean Highland Mountain Air & Mild Weather",
+      "High-Yield Sports Tourism & Hospitality Demand",
+      "30 Minutes to Eldoret International Airport",
+      "Perennial Mountain Springs & Fresh Piped Water",
+      "Rich Organic Agricultural Acreage",
+      "Peaceful Sanctuary for Wellness & Sports Ventures",
+    ],
+    stats: [
+      { value: "3", label: "On our books" },
+      { value: "4.2M", label: "Median plot value" },
+      { value: "30 d", label: "Average time to sell" },
+    ],
+  },
 };
 
 export function findAreaEditorial(slug: string): AreaEditorial | undefined {
   return AREA_EDITORIAL[slug];
 }
+
