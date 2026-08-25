@@ -88,7 +88,6 @@ export function WebHeader() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pillBgRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
-  const hasMountedRef = useRef(false);
   const navListRef = useRef<HTMLUListElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
 

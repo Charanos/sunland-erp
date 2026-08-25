@@ -29,7 +29,6 @@ export function ListingGallery({
   offsetIndex?: number;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
@@ -40,10 +39,6 @@ export function ListingGallery({
   const PrevIcon = webIcons.chevronLeft;
   const NextIcon = webIcons.chevronRight;
   const GridIcon = webIcons.grid;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const close = useCallback(() => {
     setOpenIndex(null);
@@ -270,9 +265,13 @@ export function ListingGallery({
         <span>View all {allImages.length} photos</span>
       </button>
 
-      {/* Full-Screen Master Lightbox Portaled to Body */}
-      {mounted &&
-        openIndex !== null &&
+      {/* Full-Screen Master Lightbox Portaled to Body.
+          No `mounted` guard: this is gated on openIndex, which starts null and
+          only becomes a number from a click, so the portal cannot be reached
+          during server rendering. The mounted flag it used to carry cost a
+          state hook, an effect, and a second render on every listing page to
+          re-derive something the existing condition already guaranteed. */}
+      {openIndex !== null &&
         createPortal(
           <div
             ref={dialogRef}

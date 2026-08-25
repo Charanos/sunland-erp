@@ -83,8 +83,6 @@ export function ListingDetailOccupancy({
 }) {
   const [viewMode, setViewMode] = useState<"chart" | "table">("chart");
 
-  const CheckIcon = webIcons.check;
-  const BuildingIcon = webIcons.building;
   const ShieldIcon = webIcons.shield;
 
   // Aggregate asset totals

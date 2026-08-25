@@ -269,10 +269,17 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                   Premier Submarket Anchors
                 </p>
               </div>
-              <span className="font-mono text-xs text-slate-400">8 Curated Hubs</span>
+              {/* Derived: the label tracked a literal 8 while the grid renders
+                  whatever bentoAreas holds. */}
+              <span className="font-mono text-xs text-slate-400">
+                {bentoAreas.length} Curated Hubs
+              </span>
             </div>
 
-            <ul className="grid auto-rows-[250px] sm:auto-rows-[270px] lg:auto-rows-[290px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <ul
+              data-reveal-group
+              className="grid auto-rows-[250px] sm:auto-rows-[270px] lg:auto-rows-[290px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+            >
               {bentoAreas.map((tile, index) => {
                 const isHero = index === 0; // Kilimani 2x2
                 const isAnchor = index === 7; // Spring Valley 2x1 panoramic anchor
@@ -455,7 +462,10 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
             )}
 
             {/* Three in a Row Open Property-Style Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+            <div
+              data-reveal-group
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10"
+            >
               {openCardAreas.map((area) => {
                 const liveCount = counts[area.slug] ?? 0;
 

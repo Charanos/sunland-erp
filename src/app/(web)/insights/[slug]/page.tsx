@@ -52,7 +52,6 @@ export default async function InsightArticlePage({
 
   const ArrowRightIcon = webIcons.arrow;
   const CheckIcon = webIcons.check;
-  const PhoneIcon = webIcons.phone;
 
   return (
     <>

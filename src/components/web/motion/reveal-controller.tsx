@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { DUR, STAGGER } from "@/lib/motion/web-motion";
 
@@ -52,6 +53,18 @@ import { DUR, STAGGER } from "@/lib/motion/web-motion";
  * relying on script to restore, turns any script failure into a blank page.
  */
 export function RevealController() {
+  // Re-runs on navigation, and that is load-bearing rather than defensive.
+  //
+  // This component is mounted by the (web) layout, which App Router keeps
+  // mounted across every route change inside the group. With an empty
+  // dependency array the effect ran exactly once, against whichever page
+  // happened to be the entry point, and every page reached by a client-side
+  // link afterwards was never scanned: its `data-reveal` elements were never
+  // hidden, never observed, and simply appeared. Reveals worked on a hard
+  // refresh and silently did nothing when someone navigated there from the
+  // home page, which is the path almost every real visitor takes.
+  const pathname = usePathname();
+
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (typeof IntersectionObserver === "undefined") return;
@@ -136,15 +149,52 @@ export function RevealController() {
 
     for (const el of pending.keys()) observer.observe(el);
 
+    /**
+     * Rescue anything the viewport jumped clean over.
+     *
+     * IntersectionObserver only reports a *change* in intersection, so an
+     * element that goes from below the fold to above it without a single
+     * intersecting frame never produces a callback at all. That is not a rare
+     * case here: a hash link into the middle of the services page, the browser
+     * restoring scroll on a back navigation, or one hard flick on a trackpad
+     * all skip several groups at once, and every one of them would stay at
+     * opacity 0 permanently — invisible content with no way back short of a
+     * reload.
+     *
+     * Cleared with no animation rather than tweened, because the visitor has
+     * already scrolled past: playing a rise for content behind them is motion
+     * nobody sees the beginning of.
+     */
+    let sweepFrame = 0;
+    const sweepPassed = () => {
+      sweepFrame = 0;
+      for (const [el, record] of pending) {
+        if (el.getBoundingClientRect().bottom > 0) continue;
+        observer.unobserve(el);
+        pending.delete(el);
+        gsap.set(record.targets, { clearProps: "opacity,transform" });
+      }
+      // Nothing left to wait for, so stop listening entirely.
+      if (pending.size === 0) window.removeEventListener("scroll", onScroll);
+    };
+
+    const onScroll = () => {
+      if (sweepFrame === 0) sweepFrame = requestAnimationFrame(sweepPassed);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => {
       observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      if (sweepFrame) cancelAnimationFrame(sweepFrame);
       // Anything still hidden when this unmounts is restored, so a route
       // change mid-reveal cannot leave content invisible.
       for (const { targets } of pending.values()) {
         gsap.set(targets, { clearProps: "opacity,transform" });
       }
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

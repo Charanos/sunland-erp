@@ -11,6 +11,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
+import { toChartNumber } from "@/components/web/primitives/chart-tooltip";
 
 interface ChartProps {
   slug: string;
@@ -80,8 +81,8 @@ export function ArticleInteractiveChart({ slug }: ChartProps) {
                   fontSize: "12px",
                   boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
                 }}
-                formatter={(value: any, name: any) => [
-                  `KES ${Number(value).toLocaleString()}`,
+                formatter={(value, name) => [
+                  `KES ${toChartNumber(value).toLocaleString()}`,
                   name === "collectedBasis"
                     ? "Fee on Collected Rent"
                     : name === "invoicedBasis"
@@ -163,7 +164,10 @@ export function ArticleInteractiveChart({ slug }: ChartProps) {
                   color: "#fff",
                   fontSize: "12px",
                 }}
-                formatter={(value: any) => [`KES ${value} / sqft`, "Total Occupancy Cost"]}
+                formatter={(value) => [
+                  `KES ${toChartNumber(value)} / sqft`,
+                  "Total Occupancy Cost",
+                ]}
               />
               <Bar dataKey="total" fill="#151936" radius={[6, 6, 0, 0]}>
                 {officeData.map((entry, index) => (

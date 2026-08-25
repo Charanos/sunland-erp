@@ -10,7 +10,6 @@ import {
   LandlordTimeline,
 } from "@/components/web/landlords/landlord-sections";
 import { Container } from "@/components/web/primitives/container";
-import { Eyebrow } from "@/components/web/primitives/eyebrow";
 
 export const metadata: Metadata = {
   title: "Property management for Nairobi landlords",

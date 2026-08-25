@@ -12,6 +12,19 @@ type RailTab = "viewing" | "trends" | "calculator";
 type TourType = "in_person" | "video";
 type TimeSlot = "morning" | "afternoon" | "evening";
 
+/**
+ * The viewing windows, with the hours spelled out.
+ *
+ * The label carries the actual window rather than just "Morning", because the
+ * chosen slot goes straight into a WhatsApp message to an agent, and "morning"
+ * is a different promise to different people.
+ */
+const TIME_SLOTS: { id: TimeSlot; label: string; window: string }[] = [
+  { id: "morning", label: "Morning", window: "9am – 12pm" },
+  { id: "afternoon", label: "Afternoon", window: "12pm – 4pm" },
+  { id: "evening", label: "Evening", window: "4pm – 6pm" },
+];
+
 interface ListingEnquiryRailProps {
   listingTitle: string;
   reference: string;
@@ -52,9 +65,6 @@ export function ListingEnquiryRail({
   const PhoneIcon = webIcons.phone;
   const ChatIcon = webIcons.chat;
   const ShieldIcon = webIcons.shield;
-  const ChartIcon = webIcons.chart;
-  const WalletIcon = webIcons.wallet;
-  const UserIcon = webIcons.user;
 
   const areaName = location.split(",")[0].trim();
 
@@ -98,10 +108,15 @@ export function ListingEnquiryRail({
 
   // WhatsApp Pre-fill message
   const whatsappHref = useMemo(() => {
+    // The window, not the bare enum: an agent reading "(afternoon)" has to
+    // guess, where "(afternoon, 12pm – 4pm)" is something they can act on.
+    const slot = TIME_SLOTS.find((entry) => entry.id === selectedSlot);
     const text = encodeURIComponent(
       `Hello Sunland, I would like to book a ${
         tourType === "in_person" ? "in-person viewing" : "live video tour"
-      } for "${listingTitle}" (Ref ${reference}) on ${selectedDate} (${selectedSlot}).`
+      } for "${listingTitle}" (Ref ${reference}) on ${selectedDate} ${
+        slot ? `(${slot.label.toLowerCase()}, ${slot.window})` : ""
+      }.`
     );
     return `${SITE.whatsappHref}?text=${text}`;
   }, [listingTitle, reference, tourType, selectedDate, selectedSlot]);
@@ -281,6 +296,36 @@ export function ListingEnquiryRail({
                       )}
                     >
                       {day}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Time Chips.
+                  The enquiry message already interpolated a time slot, but
+                  nothing ever set it: every visitor sent "afternoon" whether
+                  they wanted it or not, and an agent called back against a
+                  preference the visitor never expressed. Same chip pattern as
+                  the day row directly above, so the pair reads as one control. */}
+              <div>
+                <label className="web-subtitle mb-1 block text-xxs text-ink-400 font-medium uppercase tracking-wider">
+                  Preferred Time
+                </label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {TIME_SLOTS.map((slot) => (
+                    <button
+                      key={slot.id}
+                      type="button"
+                      onClick={() => setSelectedSlot(slot.id)}
+                      aria-pressed={selectedSlot === slot.id}
+                      className={cn(
+                        "rounded-lg border py-1 text-xs font-medium transition-all text-center",
+                        selectedSlot === slot.id
+                          ? "border-brand-yellow bg-brand-yellow/15 text-brand-dark font-medium border-2"
+                          : "border-slate-200 text-ink-600 hover:border-slate-300"
+                      )}
+                    >
+                      {slot.label}
                     </button>
                   ))}
                 </div>

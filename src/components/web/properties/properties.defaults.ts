@@ -1,4 +1,4 @@
-import type { ListingCardData } from "../primitives/listing-card";
+import type { ListingCardData as _ListingCardData } from "../primitives/listing-card";
 import type { ListingDetail } from "@/lib/services/web/listings";
 
 /**

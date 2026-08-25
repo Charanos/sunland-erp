@@ -146,34 +146,53 @@ export const SERVICE_SECTIONS: ServiceSection[] = [
  * know which service they need. They do know who they are.
  */
 export const SERVICES_ROUTER = {
-  eyebrow: "Not sure which you need?",
+  eyebrow: "Direct Mandate Routing",
   title: "Start from where you are",
+  lead: "Whether you are an asset owner, seeking a vetted residence, acquiring prime property, or scaling corporate facilities, route your mandate directly to the specialized desk.",
+  /**
+   * One object per card, carrying every string the card renders.
+   *
+   * This was previously split in two: four cards here supplying `href` and
+   * `icon`, and six parallel arrays inside the page component supplying the
+   * copy, each indexed by array position. Nothing tied the two together, so
+   * reordering a card here — or inserting a fifth — silently repaired the
+   * hrefs while leaving every badge, title, description and CTA label attached
+   * to the wrong destination. A card is one thing; it belongs in one object.
+   */
   cards: [
     {
-      audience: "I own a property",
-      title: "Get it valued and let",
-      body: "Free appraisal, then either letting only or full management.",
+      audience: "Landlords & Owners",
+      title: "Valuation, letting & management",
+      body: "Complimentary appraisal, structured lease drafting, and full automated property management with 0% finder's fee.",
+      highlight: "0% Finder Fee · 5th Payout",
+      cta: "Valuation & Portal",
       href: "/landlords",
       icon: "house" as WebIconName,
     },
     {
-      audience: "I am looking to rent",
-      title: "Browse what is available",
-      body: "Real stock, real prices, no finder's fee to us.",
+      audience: "Tenants & Residents",
+      title: "Browse curated rentals",
+      body: "Browse authentic residential stock with verified pricing, zero finder's fees, and streamlined digital tenancy.",
+      highlight: "Zero Tenant Fee · Verified Stock",
+      cta: "Explore Rentals",
       href: "/properties/for-rent",
       icon: "key" as WebIconName,
     },
     {
-      audience: "I want to buy",
-      title: "Homes, plots and blocks",
-      body: "Including title checks before you pay a deposit.",
+      audience: "Buyers & Investors",
+      title: "Homes, plots & prime blocks",
+      body: "Prime residential and commercial acquisitions backed by official registry title verification and escrow closing.",
+      highlight: "Registry Checked · Escrow Closing",
+      cta: "Properties For Sale",
       href: "/properties/for-sale",
       icon: "doc" as WebIconName,
     },
     {
-      audience: "I need space for a business",
-      title: "Tell us the requirement",
-      body: "Office, retail or warehousing, and we will shortlist.",
+      audience: "Corporate & SEZ",
+      title: "Offices, retail & logistics",
+      body: "Strategic tenant and landlord representation for Grade-A office towers, retail frontage, and SEZ logistics godowns.",
+      highlight: "450k+ Sq Ft · SEZ Advisory",
+      cta: "Commercial Desk",
       href: "/contact",
       icon: "briefcase" as WebIconName,
     },

@@ -157,7 +157,10 @@ export function CommercialService() {
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
         {/* Section Header: Serif Title Left (7 cols), Narrative Right (5 cols) - Matching Service 02 */}
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-end pb-12 border-b border-line-soft">
+        <div
+          data-reveal-group
+          className="grid gap-8 lg:grid-cols-12 lg:items-end pb-12 border-b border-line-soft"
+        >
           {/* Left Column: Main Serif Title */}
           <div className="lg:col-span-7">
             <h2
@@ -303,8 +306,7 @@ export function CommercialService() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 42vw"
-                quality={100}
-                unoptimized
+                quality={90}
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
               />
 

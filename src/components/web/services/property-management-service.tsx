@@ -154,7 +154,6 @@ export function PropertyManagementService() {
   const ArrowIcon = webIcons.arrow;
   const CheckIcon = webIcons.check;
   const ShieldIcon = webIcons.shield;
-  const PhoneIcon = webIcons.phone;
 
   const currentPillar = MANAGEMENT_PILLARS[activePillar];
 
@@ -166,7 +165,10 @@ export function PropertyManagementService() {
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 xl:px-14">
         {/* Section Header: Narrative Left (5 cols), Serif Title Right (7 cols) */}
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-end pb-12 border-b border-line-soft">
+        <div
+          data-reveal-group
+          className="grid gap-8 lg:grid-cols-12 lg:items-end pb-12 border-b border-line-soft"
+        >
           {/* Left Column: Eyebrow + Narrative Context */}
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
@@ -205,8 +207,7 @@ export function PropertyManagementService() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 42vw"
-                quality={100}
-                unoptimized
+                quality={90}
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
               />
 

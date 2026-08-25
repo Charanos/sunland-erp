@@ -4,12 +4,6 @@ import { useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, TooltipContentProps } from "recharts";
 import { formatCompactKES } from "@/lib/utils/format";
 
-interface ChartDataPoint {
-  month: string;
-  price: number;
-  avg: number;
-}
-
 const CustomTooltip = ({ active, payload, label }: Partial<TooltipContentProps<number, string>>) => {
   if (active && payload && payload.length) {
     return (

@@ -63,14 +63,25 @@ export function PropertiesPageReveal() {
     registerWebMotion();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    runReveal();
+    // Deferred a frame, and that is what removes the hydration warning.
+    //
+    // This component sits above a Suspense boundary whose results stream in
+    // separately. Its own effect fires as soon as *it* mounts, which on a
+    // streamed page is before React has hydrated the cards inside that
+    // boundary. Writing `opacity: 0` and a transform onto those nodes first
+    // means React arrives to find inline styles the server HTML never had,
+    // and reports a tree that "hydrated but some attributes didn't match" —
+    // once per card. Yielding one frame lets the boundary finish hydrating,
+    // after which the same writes are just ordinary DOM mutation that React
+    // has no opinion about.
+    const initialFrame = requestAnimationFrame(() => runReveal());
 
     // Re-run reveal each time PropertiesResults remounts new cards.
     // MutationObserver watches the results section for childList changes —
     // when the Suspense boundary replaces the skeleton with real cards,
     // this fires and we reveal the fresh cards.
     const resultsSection = document.querySelector("[aria-label='Results']");
-    if (!resultsSection) return;
+    if (!resultsSection) return () => cancelAnimationFrame(initialFrame);
 
     let revealTimer: ReturnType<typeof setTimeout>;
     const mut = new MutationObserver(() => {
@@ -81,6 +92,7 @@ export function PropertiesPageReveal() {
     mut.observe(resultsSection, { childList: true, subtree: true });
 
     return () => {
+      cancelAnimationFrame(initialFrame);
       mut.disconnect();
       clearTimeout(revealTimer);
     };

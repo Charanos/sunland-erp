@@ -9,6 +9,7 @@ import {
   findAreaEditorial,
   WEB_AREAS,
 } from "@/components/web/constants/locations.content";
+import { SITE } from "@/components/web/constants/site";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
 import { Breadcrumbs } from "@/components/web/primitives/breadcrumbs";
 import { WebButtonLink } from "@/components/web/primitives/button";
@@ -17,6 +18,7 @@ import { ListingCard } from "@/components/web/primitives/listing-card";
 import { ListingHeroActions } from "@/components/web/properties/listing-hero-actions";
 import { AreaPriceChart } from "@/components/web/locations/area-price-chart";
 import { AreaInteractiveMap } from "@/components/web/locations/area-interactive-map";
+import { HeroMotionSection } from "@/components/web/motion/hero-motion-section";
 import { getListings } from "@/lib/services/web/listings";
 import { areaMatchTerm, findLocation, getLocationStats } from "@/lib/services/web/locations";
 
@@ -39,6 +41,24 @@ export async function generateMetadata({
     title: `${area.name}, ${area.region} — Property Market Guide & Live Listings | Sunland`,
     description: `Comprehensive real estate market guide for ${area.name}, ${area.region}. Typical rents, sale values, neighborhood infrastructure, and active property mandates.`,
   };
+}
+
+/**
+ * The cost bands shown when an area has neither editorial rows nor live data.
+ *
+ * Built from the area's own guide figure so the 2-bedroom line agrees with the
+ * headline number in the hero HUD. This was previously written out twice as a
+ * literal — once for the matrix and once for the chart beneath it — which
+ * meant the table and the graph of that same table could disagree the moment
+ * anyone edited one of them.
+ */
+function fallbackCostRows(guideValue: string) {
+  return [
+    { type: "1 Bedroom Executive", toLet: "45–65k", forSale: "7.5–10.5M" },
+    { type: "2 Bedroom Apartment", toLet: guideValue, forSale: "12–18M", emphasis: true },
+    { type: "3 Bedroom Apartment", toLet: "95–160k", forSale: "18–28M" },
+    { type: "4 Bed Townhouse / Villa", toLet: "180–320k", forSale: "35–65M" },
+  ];
 }
 
 const DEFAULT_SUBMARKET_AMENITIES = [
@@ -86,44 +106,47 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
   return (
     <>
       {/* ── 01. Atmospheric Cinematic Full-Bleed Hero Section ── */}
-      <section
+      <HeroMotionSection
         aria-labelledby="area-heading"
         className="web-dark relative overflow-hidden bg-brand-dark pt-28 sm:pt-32 lg:pt-36 pb-14 sm:pb-18 border-b border-dark-line"
       >
         {/* Full-bleed Background Photography */}
-        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+        <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
           <Image
             src={bgImage}
-            alt={area.name}
+            // Decorative: the h1 directly below already says the area name, so
+            // an alt repeating it makes a screen reader announce it twice.
+            alt=""
+            aria-hidden="true"
             fill
             priority
-            quality={100}
+            quality={90}
             sizes="100vw"
-            className="object-cover object-center opacity-75 sm:opacity-80"
+            className="hero-bg-media object-cover object-center opacity-75 sm:opacity-80"
           />
 
           {/* 1. Top Dissolve Scrim */}
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-72 sm:h-96 bg-gradient-to-b from-[#090d1f] via-[#090d1f]/65 via-60% to-transparent"
+            className="hero-scrim absolute inset-x-0 top-0 h-72 sm:h-96 bg-gradient-to-b from-[#090d1f] via-[#090d1f]/65 via-60% to-transparent"
           />
 
           {/* 2. Lateral Vignette Scrim */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 via-55% to-black/60"
+            className="hero-scrim absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 via-55% to-black/60"
           />
 
           {/* 3. Subtle Bottom Clearance Scrim */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent via-30% to-transparent"
+            className="hero-scrim absolute inset-0 bg-gradient-to-t from-black/45 via-transparent via-30% to-transparent"
           />
         </div>
 
         <Container className="relative z-10">
           {/* Top Navigation & Utility Command Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/15">
+          <div className="hero-crumb-text gsap-enter flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/15">
             <Breadcrumbs
               tone="dark"
               items={[
@@ -142,7 +165,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
           <div className="pt-8 pb-4 grid gap-10 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
             <div className="min-w-0">
               {/* Category Badges Strip */}
-              <div className="flex flex-wrap items-center gap-2 mb-4">
+              <div className="hero-accent gsap-enter flex flex-wrap items-center gap-2 mb-4">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#151936]/80 border border-white/20 px-3 py-1 font-mono text-[10.5px] font-medium text-white backdrop-blur-md">
                   <PinIcon size={12} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                   <span>{area.region}</span>
@@ -168,20 +191,20 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               {/* Major Sectional Serif Title */}
               <h1
                 id="area-heading"
-                className="title-serif text-[clamp(2.5rem,4.5vw,4.25rem)] font-medium leading-[1.04] tracking-tight text-white drop-shadow-md"
+                className="web-title hero-headline gsap-enter text-[clamp(2.5rem,4.5vw,4.25rem)] font-medium leading-[1.04] tracking-tight text-white drop-shadow-md"
               >
                 {area.name}
               </h1>
 
               {/* Evocative Tagline / Subtitle */}
-              <p className="mt-4 max-w-[58ch] text-[16px] sm:text-lg leading-relaxed text-slate-200/95 drop-shadow-sm font-normal">
+              <p className="hero-lead gsap-enter mt-4 max-w-[58ch] text-[16px] sm:text-lg leading-relaxed text-slate-200/95 drop-shadow-sm font-normal">
                 {area.tagline ? `${area.tagline}. ` : ""}
                 {area.blurb}
               </p>
             </div>
 
             {/* Right-Side Glassmorphic Telemetry HUD */}
-            <div className="rounded-2xl border border-white/15 bg-[#151936]/70 p-5 sm:p-6 backdrop-blur-xl shadow-2xl space-y-4">
+            <div className="hero-detail gsap-enter rounded-2xl border border-white/15 bg-[#151936]/70 p-5 sm:p-6 backdrop-blur-xl shadow-2xl space-y-4">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <span className="font-mono text-[10.5px] uppercase tracking-widest text-brand-yellow font-medium">
                   Submarket Guidance
@@ -226,7 +249,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
             </div>
           </div>
         </Container>
-      </section>
+      </HeroMotionSection>
 
       {/* ── 02. Main Specification & Information Workspace (Open & Free-Flowing) ── */}
       <main className="bg-surface-0 pt-14 sm:pt-16 pb-28 sm:pb-32">
@@ -280,7 +303,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 pt-2">
+                <div data-reveal-group className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 pt-2">
                   {amenitiesList.map((amenity) => (
                     <div
                       key={amenity}
@@ -312,7 +335,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     <p className="text-xs text-slate-500 mt-0.5">Historical and active booking bands</p>
                   </div>
 
-                  <div className="border-y border-slate-200 divide-y divide-slate-100">
+                  <div data-reveal-group className="border-y border-slate-200 divide-y divide-slate-100">
                     {(editorial?.costRows && editorial.costRows.length > 0
                       ? editorial.costRows
                       : stats.priceRows.length > 0
@@ -322,12 +345,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                           forSale: "On Request",
                           emphasis: r.bedrooms === 2,
                         }))
-                      : [
-                          { type: "1 Bedroom Executive", toLet: "45–65k", forSale: "7.5–10.5M" },
-                          { type: "2 Bedroom Apartment", toLet: area.guideValue, forSale: "12–18M", emphasis: true },
-                          { type: "3 Bedroom Apartment", toLet: "95–160k", forSale: "18–28M" },
-                          { type: "4 Bed Townhouse / Villa", toLet: "180–320k", forSale: "35–65M" },
-                        ]
+                      : fallbackCostRows(area.guideValue)
                     ).map((row) => (
                       <div
                         key={row.type}
@@ -365,12 +383,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     editorialRows={
                       editorial?.costRows && editorial.costRows.length > 0
                         ? editorial.costRows
-                        : [
-                            { type: "1 Bedroom Executive", toLet: "45–65k", forSale: "7.5–10.5M" },
-                            { type: "2 Bedroom Apartment", toLet: area.guideValue, forSale: "12–18M", emphasis: true },
-                            { type: "3 Bedroom Apartment", toLet: "95–160k", forSale: "18–28M" },
-                            { type: "4 Bed Townhouse / Villa", toLet: "180–320k", forSale: "35–65M" },
-                          ]
+                        : fallbackCostRows(area.guideValue)
                     }
                     liveRows={stats.priceRows}
                   />
@@ -397,7 +410,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     <p className="font-mono text-xs uppercase tracking-wider text-slate-500 font-medium pb-2 border-b border-slate-200">
                       Key Distance & Transit Milestones
                     </p>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div data-reveal-group className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                       {editorial.distances.map((row) => (
                         <div
                           key={row.place}
@@ -420,7 +433,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     <p className="font-mono text-xs uppercase tracking-wider text-slate-500 font-medium pb-2 border-b border-slate-200">
                       Worth Knowing & Due Diligence Checklist
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+                    <div data-reveal-group className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                       {editorial.worthKnowing.map((item) => (
                         <div
                           key={item}
@@ -462,7 +475,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
 
                 {results.listings.length > 0 ? (
                   <div className="pt-2">
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <ul data-reveal-group className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                       {results.listings.map((listing, index) => (
                         <li key={listing.id}>
                           <ListingCard
@@ -506,8 +519,13 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               </section>
             </div>
 
-            {/* ── 03. Right Column: Sticky Mandate Appraisal & Submarket Rail ── */}
-            <aside className="lg:sticky lg:top-28 space-y-6">
+            {/* ── 03. Right Column: Sticky Mandate Appraisal & Submarket Rail ──
+                Enters from the right while the editorial column rises, so the
+                page is not one gesture repeated down its whole length. The
+                group transforms its children, never the <aside> itself: a
+                transform on a position:sticky element fights its own offset
+                mid-tween, and the rail would visibly stutter as it pinned. */}
+            <aside data-reveal-group data-reveal-x="24" className="lg:sticky lg:top-28 space-y-6">
               {/* Asset Owner Valuation Box */}
               <div className="rounded-2xl border border-slate-200/90 bg-white p-7 shadow-xs space-y-5">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
@@ -584,10 +602,14 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                 </p>
                 <div className="pt-1">
                   <a
-                    href="tel:+254703100875"
+                    // From SITE, not typed in: the number appears in the
+                    // header, the footer and the floating contact already, and
+                    // a fourth hardcoded copy is the one that gets missed when
+                    // it changes.
+                    href={SITE.phoneHref}
                     className="inline-flex items-center gap-2 font-mono text-[13px] font-medium text-[#151936] hover:text-brand-dark transition-colors"
                   >
-                    <span>+254 703 100 875</span>
+                    <span>{SITE.phone}</span>
                     <ArrowIcon size={13} stroke={WEB_ICON_STROKE} />
                   </a>
                 </div>

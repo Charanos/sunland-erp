@@ -61,7 +61,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Dense apartment stock, walkable to Yaya and the CBD. Best value per square metre in the prime belt.",
     imageUrl:
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "lavington",
@@ -74,7 +74,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Low-rise, leafy, mostly gated compounds of six to twelve units. Strong with families.",
     imageUrl:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "kileleshwa",
@@ -86,7 +86,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Newer towers & expat residences",
     blurb: "Newer towers with amenities, popular with expatriate and corporate tenants.",
     imageUrl:
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "runda",
@@ -99,7 +99,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Detached houses on half-acre plots. Diplomatic and executive lets, long tenancies.",
     imageUrl:
-      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "spring-valley",
@@ -112,7 +112,7 @@ export const WEB_AREAS: WebArea[] = [
     blurb:
       "Townhouses and villas, quiet lanes off Lower Kabete Road. Mostly owner-occupied.",
     imageUrl:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "parklands",
@@ -124,7 +124,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Established residential courts",
     blurb: "Close to Westlands and the Aga Khan. Older blocks alongside new mid-rise.",
     imageUrl:
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
 
   // Commercial and mixed, compact tiles.
@@ -138,7 +138,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Commercial hub & high-rise",
     blurb: "Offices, retail and serviced apartments.",
     imageUrl:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "riverside-drive",
@@ -150,7 +150,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Prime riverine residences",
     blurb: "Embassies, offices and prime plots.",
     imageUrl:
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "upper-hill",
@@ -162,7 +162,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Financial district & Grade-A towers",
     blurb: "Grade A offices and city apartments.",
     imageUrl:
-      "https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1554469384-e58fac16e23a?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "garden-estate",
@@ -174,7 +174,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Family apartments & estates",
     blurb: "Family apartments off Thika Road.",
     imageUrl:
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "thome",
@@ -186,7 +186,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Maisonettes & gated courts",
     blurb: "Maisonettes and gated courts.",
     imageUrl:
-      "https://images.unsplash.com/photo-1598228723793-52759bba239c?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1598228723793-52759bba239c?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "baba-dogo",
@@ -198,7 +198,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Godowns & logistics industrial",
     blurb: "Godowns and light industrial.",
     imageUrl:
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "nairobi-west",
@@ -210,7 +210,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Vibrant urban & mixed commercial",
     blurb: "Affordable flats and commercial units.",
     imageUrl:
-      "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1460317442991-0ec209397118?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "kasarani",
@@ -222,7 +222,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "High-yield new-build blocks",
     blurb: "New-build blocks, strong yields.",
     imageUrl:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
 
   // Satellite, coast and upcountry.
@@ -236,7 +236,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Master-planned SEZ metropolis",
     blurb: "Offices, warehousing and serviced plots.",
     imageUrl:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "ruiru",
@@ -248,7 +248,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Bypass parcels & gated estates",
     blurb: "Plots and new estates off the bypass.",
     imageUrl:
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "ongata-rongai",
@@ -260,7 +260,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Suburban homes near the park",
     blurb: "Family houses and plots.",
     imageUrl:
-      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "nyali",
@@ -272,7 +272,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Coastal luxury & holiday lets",
     blurb: "Coastal apartments and holiday lets.",
     imageUrl:
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "nyeri",
@@ -284,7 +284,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Highland homesteads & acreage",
     blurb: "Town plots and agricultural land.",
     imageUrl:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
   {
     slug: "iten",
@@ -296,7 +296,7 @@ export const WEB_AREAS: WebArea[] = [
     tagline: "Highland rift valley plots",
     blurb: "Highland acreage and homesteads.",
     imageUrl:
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?fm=jpg&fit=crop&crop=entropy&ar=16:9&w=2880&q=85",
   },
 ];
 

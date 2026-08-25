@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { cn } from "@/lib/utils/cn";
+import type { ChartTooltipProps } from "@/components/web/primitives/chart-tooltip";
 
 export interface AssetClassSlice {
   name: string;
@@ -38,20 +39,23 @@ const DEFAULT_ASSET_MIX: AssetClassSlice[] = [
   { name: "Coastal & Holiday", value: 8, count: 4, color: "#d97706" },
 ];
 
-const CustomPieTooltip = ({ active, payload }: any) => {
+const CustomPieTooltip = ({ active, payload }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0];
+    // The slice's own datum, where the colour and unit count live. Typed as
+    // the AssetClassSlice it always is, rather than reaching through `any`.
+    const slice = data.payload as Partial<AssetClassSlice> | undefined;
     return (
       <div className="rounded-xl border border-slate-200/90 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-2 mb-1">
-          <span className="size-2.5 rounded-full" style={{ backgroundColor: data.payload.color }} />
+          <span className="size-2.5 rounded-full" style={{ backgroundColor: slice?.color }} />
           <span className="font-mono text-xs font-medium text-slate-800">{data.name}</span>
         </div>
         <p className="font-mono text-sm font-semibold text-[#151936] pl-4.5">
           {data.value}% Portfolio Share
-          {data.payload.count && (
+          {slice?.count && (
             <span className="text-xs font-normal text-slate-500 block mt-0.5">
-              {data.payload.count} Active Properties
+              {slice.count} Active Properties
             </span>
           )}
         </p>

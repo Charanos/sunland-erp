@@ -7,7 +7,6 @@ import {
   INSIGHTS_HERO,
   INSIGHTS_NEWSLETTER,
   publishedPosts,
-  type InsightPost,
   getAuthorAvatar,
 } from "@/components/web/constants/insights.content";
 import { NewsletterForm } from "@/components/web/layout/newsletter-form";
@@ -42,7 +41,10 @@ export default async function InsightsPage({
   return (
     <>
       {/* ── 01. Blended Hero Section (Left-Aligned Title, Editorial Action Bar) ── */}
-      <InsightsHero activeCategory={active} />
+      {/* The full published count, not the filtered one: the pill is a claim
+          about the library, and it should not shrink when someone narrows to a
+          category. The filtered figure is already shown on the pills below. */}
+      <InsightsHero articleCount={all.length} />
 
       {/* ── 02. Main Insights Directory Workspace ── */}
       <main className="bg-surface-0 pb-24 pt-12 sm:pt-14 border-t border-line">
@@ -95,6 +97,7 @@ export default async function InsightsPage({
 
               <Link
                 href={`/insights/${featured.slug}`}
+                data-reveal
                 className="group relative grid gap-8 lg:gap-12 rounded-[28px] border border-line bg-surface-1 p-6 sm:p-8 lg:p-10 lg:grid-cols-12 lg:items-center transition-all duration-300 hover:shadow-[0_20px_45px_rgba(21,25,54,0.08)] hover:border-slate-300"
               >
                 {/* Media Image Column */}
@@ -138,7 +141,11 @@ export default async function InsightsPage({
                             src={getAuthorAvatar(featured.author)!}
                             alt={featured.author}
                             fill
-                            sizes="32px"
+                            // 48px to match size-12, not the 32px this asked
+                            // for: an undersized `sizes` makes the optimizer
+                            // serve a 32px file that the browser then stretches
+                            // to 48, which is why these portraits looked soft.
+                            sizes="48px"
                             className="object-cover object-center"
                           />
                         </div>
@@ -178,7 +185,12 @@ export default async function InsightsPage({
                 </span>
               </div>
 
-              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+              {/* Staggered by list item, so a three-up row resolves left to
+                  right rather than the whole grid blinking on at once. */}
+              <ul
+                data-reveal-group
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10"
+              >
                 {rest.map((post) => (
                   <li key={post.slug}>
                     <article className="group relative flex h-full flex-col justify-between transition-all duration-300 ease-out hover:-translate-y-1">
@@ -253,7 +265,11 @@ export default async function InsightsPage({
 
           {/* ── 05. Executive Newsletter & Advisory Consultation ── */}
           <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-[#151936] via-[#10132c] to-[#090d1f] p-8 sm:p-12 lg:p-14 text-white shadow-2xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* The two halves arrive from opposite sides: the pitch rises,
+                the form slides in from the right. Revealing the inner grid
+                rather than the panel keeps the gradient card itself static,
+                which is what stops its edge shifting against the band. */}
+            <div data-reveal-group data-reveal-x="24" className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-6 space-y-3">
                 <div className="flex items-center gap-2">
                   <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />

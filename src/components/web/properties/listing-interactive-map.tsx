@@ -61,6 +61,24 @@ const DEFAULT_POIS: PointOfInterest[] = [
   { name: "Major Expressway Link", category: "transit", distance: "2.0 km", driveTime: "6 mins" },
 ];
 
+/**
+ * The filter chips, and the single source of the category union.
+ *
+ * `as const` plus a derived type is what removes the `as any` the click handler
+ * needed: the chip ids and the state's accepted values are now the same list,
+ * so adding a category to this array is a compile error everywhere it has not
+ * been handled, rather than a cast that silently accepts a typo.
+ */
+const POI_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "schools", label: "Schools" },
+  { id: "shopping", label: "Shopping & Dining" },
+  { id: "healthcare", label: "Healthcare" },
+  { id: "transit", label: "Transit" },
+] as const;
+
+type PoiCategory = (typeof POI_FILTERS)[number]["id"];
+
 export function ListingInteractiveMap({
   location,
   areaName,
@@ -70,12 +88,11 @@ export function ListingInteractiveMap({
   areaName: string;
   areaSlug: string;
 }) {
-  const [selectedCategory, setSelectedCategory] = useState<"all" | "schools" | "shopping" | "healthcare" | "transit">("all");
+  const [selectedCategory, setSelectedCategory] = useState<PoiCategory>("all");
   const [mapMode, setMapMode] = useState<"roadmap" | "satellite">("roadmap");
 
   const PinIcon = webIcons.pin;
   const ArrowIcon = webIcons.arrow;
-  const ShieldIcon = webIcons.shield;
 
   const normalizedKey = areaSlug.toLowerCase().replace(/[^a-z0-9]+/g, "-").split("-")[0];
   const pois = NEIGHBORHOOD_POIS[normalizedKey] || DEFAULT_POIS;
@@ -170,17 +187,11 @@ export function ListingInteractiveMap({
 
           {/* Category Filter Chips */}
           <div className="flex flex-wrap gap-1 text-xs">
-            {[
-              { id: "all", label: "All" },
-              { id: "schools", label: "Schools" },
-              { id: "shopping", label: "Shopping & Dining" },
-              { id: "healthcare", label: "Healthcare" },
-              { id: "transit", label: "Transit" },
-            ].map((cat) => (
+            {POI_FILTERS.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setSelectedCategory(cat.id as any)}
+                onClick={() => setSelectedCategory(cat.id)}
                 className={cn(
                   "rounded-lg px-2.5 py-1 transition-all text-xs font-medium",
                   selectedCategory === cat.id

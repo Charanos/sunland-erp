@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { type ArticleBlock } from "@/components/web/constants/insights.content";
-import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
+import { webIcons } from "@/components/web/icons";
 import { ArticleInteractiveChart } from "./article-interactive-chart";
 
 interface Props {
@@ -11,25 +11,36 @@ interface Props {
 }
 
 export function ArticleBodyBlocks({ blocks, slug }: Props) {
-  let h2Count = 0;
+  /**
+   * Each block paired with its heading ordinal, computed in one pass before
+   * rendering rather than by mutating a counter inside `map`.
+   *
+   * The counter version incremented a closure variable during render, which
+   * React's rules forbid for a real reason: with Strict Mode double-invoking,
+   * a re-render resuming from a partially-rendered tree, or any future
+   * concurrent slice, the variable does not reset the way the author assumed
+   * and headings get numbered from wherever the last pass left off. Deriving
+   * the array first makes the numbering a pure function of `blocks`, so it is
+   * identical no matter how many times React renders it.
+   */
+  const numbered = blocks.reduce<{ block: ArticleBlock; h2Index: number }[]>(
+    (acc, block) => {
+      const previous = acc[acc.length - 1]?.h2Index ?? 0;
+      acc.push({ block, h2Index: block.kind === "h2" ? previous + 1 : previous });
+      return acc;
+    },
+    []
+  );
 
   return (
     <div className="space-y-6">
-      {blocks.map((block, index) => {
-        if (block.kind === "h2") {
-          h2Count += 1;
-        }
-
-        return (
-          <div key={`${block.kind}-${index}`}>
-            <RenderBlock block={block} index={index} h2Index={h2Count} slug={slug} />
-            {/* Insert interactive data visualization after the first H2 section */}
-            {block.kind === "h2" && h2Count === 1 && (
-              <ArticleInteractiveChart slug={slug} />
-            )}
-          </div>
-        );
-      })}
+      {numbered.map(({ block, h2Index }, index) => (
+        <div key={`${block.kind}-${index}`}>
+          <RenderBlock block={block} index={index} h2Index={h2Index} slug={slug} />
+          {/* Insert interactive data visualization after the first H2 section */}
+          {block.kind === "h2" && h2Index === 1 && <ArticleInteractiveChart slug={slug} />}
+        </div>
+      ))}
     </div>
   );
 }
@@ -70,7 +81,9 @@ function RenderBlock({
         <div id={anchorId} className="scroll-mt-28 pt-8 sm:pt-10 border-t border-line-soft mt-10 sm:mt-14 mb-4">
           <h2 className="font-editorial text-2xl sm:text-[28px] lg:text-[32px] font-medium leading-[1.2] text-[#151936] flex items-baseline gap-3">
             <span className="font-mono text-base sm:text-lg text-slate-400 font-semibold shrink-0">
-              0{h2Index}.
+              {/* padStart, not a literal "0": a tenth section rendered as
+                  "010." with the hardcoded prefix. */}
+              {String(h2Index).padStart(2, "0")}.
             </span>
             <span>{cleanTitle}</span>
           </h2>

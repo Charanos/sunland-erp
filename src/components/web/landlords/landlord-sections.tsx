@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { LANDLORDS } from "../constants/landlords.content";
@@ -378,7 +377,6 @@ export function LandlordFees() {
 export function LandlordErp() {
   const BuildingIcon = webIcons.building;
   const ArrowIcon = webIcons.arrow;
-  const SparkleIcon = webIcons.sparkle;
 
   return (
     <section

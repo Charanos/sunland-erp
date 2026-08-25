@@ -127,7 +127,7 @@ export function ListingDetailView({
               </div>
 
               {/* Major Sectional Page Title */}
-              <h1 className="title-serif text-web-h1 leading-[1.08] tracking-[-0.015em] text-on-dark-hi font-medium">
+              <h1 className="web-title text-web-h1 leading-[1.08] tracking-[-0.015em] text-on-dark-hi font-medium">
                 {listing.title}
               </h1>
 

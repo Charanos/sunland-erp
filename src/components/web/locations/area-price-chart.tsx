@@ -13,6 +13,10 @@ import {
 } from "recharts";
 import { formatCompactKES, formatKES } from "@/lib/utils/format";
 import type { LocationPriceRow } from "@/lib/services/web/locations";
+import {
+  toChartNumber,
+  type ChartTooltipProps,
+} from "@/components/web/primitives/chart-tooltip";
 
 interface AreaPriceChartProps {
   editorialRows?: { type: string; toLet: string; forSale: string; emphasis?: boolean }[];
@@ -43,20 +47,20 @@ function parseRangeAverage(val: string): number | null {
   return avg;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-xl border border-slate-200/90 bg-white/95 p-4 shadow-lg backdrop-blur-md">
         <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-2">{label}</p>
         <div className="space-y-1.5 text-sm font-medium text-[#151936]">
-          {payload.map((entry: any, i: number) => (
+          {payload.map((entry, i) => (
             <p key={i} className="flex items-center justify-between gap-6">
               <span className="flex items-center gap-2">
                 <span className="size-2 rounded-full" style={{ backgroundColor: entry.color }} />
                 <span className="text-slate-600">{entry.name}:</span>
               </span>
               <span className="font-mono font-medium text-[#151936]">
-                {formatKES(entry.value)}
+                {formatKES(toChartNumber(entry.value))}
               </span>
             </p>
           ))}
