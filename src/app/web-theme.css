@@ -132,6 +132,9 @@
      Mono uppercase with wide tracking reads a size larger than it measures,
      which is why the control tier can sit this small and stay legible where
      body copy at the same size would not. Never use these for prose. */
+  --text-web-tiny: 0.75rem;
+  --text-web-tiny--line-height: 1.4;
+
   --text-web-micro: 0.6875rem;
   --text-web-micro--line-height: 1.35;
 

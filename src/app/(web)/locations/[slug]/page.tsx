@@ -156,6 +156,9 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               ]}
             />
             <ListingHeroActions
+              // An area guide is not a row in `properties`, so there is
+              // nothing to save and the control hides itself.
+              propertyId={null}
               title={`${area.name} Real Estate Market Guide`}
               reference={`LOC-${area.slug.toUpperCase()}`}
             />

@@ -101,7 +101,11 @@ export function ListingDetailView({
                 { label: listing.title },
               ]}
             />
-            <ListingHeroActions title={listing.title} reference={listing.reference} />
+            <ListingHeroActions
+              propertyId={listing.id}
+              title={listing.title}
+              reference={listing.reference}
+            />
           </div>
 
           {/* Hero Title & Metadata Header */}
@@ -346,6 +350,7 @@ export function ListingDetailView({
             </div>
 
             <ListingEnquiryRail
+              propertyId={listing.id}
               listingTitle={listing.title}
               reference={listing.reference}
               location={listing.location}

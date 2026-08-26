@@ -1,6 +1,9 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useActionState, useId, useMemo, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { submitViewingEnquiry } from "@/lib/actions/web/enquiries";
+import { FORM_TIMESTAMP_FIELD, HONEYPOT_FIELD } from "@/lib/actions/web/form-fields";
 import Image from "next/image";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatCompactKES, formatKES } from "@/lib/utils/format";
@@ -26,6 +29,8 @@ const TIME_SLOTS: { id: TimeSlot; label: string; window: string }[] = [
 ];
 
 interface ListingEnquiryRailProps {
+  /** The property row id, so the enquiry can be joined back to the listing. */
+  propertyId: string;
   listingTitle: string;
   reference: string;
   location: string;
@@ -34,7 +39,25 @@ interface ListingEnquiryRailProps {
   propertyType: string;
 }
 
+function RailSubmitButton() {
+  // Read from a child of the form: the hook reports the nearest enclosing
+  // form's state, so reading it in the rail itself would always see idle.
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-disabled={pending}
+      className="group relative w-full overflow-hidden rounded-full bg-tertiary-gradient py-2.5 px-5 text-xs uppercase tracking-wider font-medium text-white transition-all hover:bg-tertiary-gradient-h shadow-md hover:shadow-lg active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70 disabled:active:scale-100"
+    >
+      <span>{pending ? "Sending…" : "Request Viewing Schedule"}</span>
+    </button>
+  );
+}
+
 export function ListingEnquiryRail({
+  propertyId,
   listingTitle,
   reference,
   location,
@@ -49,7 +72,15 @@ export function ListingEnquiryRail({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [state, formAction] = useActionState(submitViewingEnquiry, null);
+
+  // Stamped once at mount; the action refuses submissions that arrive faster
+  // than a person could plausibly type.
+  const [renderedAt] = useState(() => Date.now());
+
+  const submitted = state?.ok === true;
+  const errors = state && !state.ok ? (state.fieldErrors ?? {}) : {};
+  const errorFor = (field: string) => errors[field];
 
   // Mortgage Calculator state
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
@@ -120,11 +151,6 @@ export function ListingEnquiryRail({
     );
     return `${SITE.whatsappHref}?text=${text}`;
   }, [listingTitle, reference, tourType, selectedDate, selectedSlot]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
 
   return (
     <aside aria-label="Property enquiry command center" className="lg:sticky lg:top-[96px]">
@@ -243,7 +269,26 @@ export function ListingEnquiryRail({
         {/* ── TAB 1: Booking & Enquiry Workspace ── */}
         {activeTab === "viewing" && (
           <div className="p-5">
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form action={formAction} className="space-y-3">
+              {/* Honeypot, hidden from sight, assistive tech and tab order. */}
+              <div aria-hidden="true" className="absolute left-[-9999px] h-px w-px overflow-hidden">
+                <label htmlFor={`${nameId}-hp`}>Company website</label>
+                <input id={`${nameId}-hp`} name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" />
+              </div>
+              <input type="hidden" name={FORM_TIMESTAMP_FIELD} value={renderedAt} />
+
+              {/* Context the form already knows. The tour type, date and slot
+                  live in component state driven by buttons rather than inputs,
+                  so they are mirrored here or they never reach the server. */}
+              <input type="hidden" name="propertyId" value={propertyId} />
+              <input type="hidden" name="listingRef" value={reference} />
+              <input type="hidden" name="listingTitle" value={listingTitle} />
+              <input type="hidden" name="preferredDate" value={selectedDate} />
+              <input
+                type="hidden"
+                name="preferredSlot"
+                value={`${selectedSlot} (${tourType === "in_person" ? "in person" : "video tour"})`}
+              />
               {/* Tour Type Selector */}
               <div>
                 <label className="web-subtitle mb-1 block text-xxs text-ink-400 font-medium uppercase tracking-wider">
@@ -339,7 +384,9 @@ export function ListingEnquiryRail({
                   </label>
                   <input
                     id={nameId}
+                    name="name"
                     required
+                    aria-invalid={errorFor("name") ? true : undefined}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Sarah Kimani"
@@ -353,8 +400,10 @@ export function ListingEnquiryRail({
                   </label>
                   <input
                     id={phoneId}
+                    name="phone"
                     required
                     type="tel"
+                    aria-invalid={errorFor("phone") ? true : undefined}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="07XX XXX XXX"
@@ -368,6 +417,7 @@ export function ListingEnquiryRail({
                   </label>
                   <textarea
                     id={messageId}
+                    name="message"
                     rows={2}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -378,12 +428,7 @@ export function ListingEnquiryRail({
               </div>
 
               {/* Main Submit CTA */}
-              <button
-                type="submit"
-                className="group relative w-full overflow-hidden rounded-full bg-tertiary-gradient py-2.5 px-5 text-xs uppercase tracking-wider font-medium text-white transition-all hover:bg-tertiary-gradient-h shadow-md hover:shadow-lg active:scale-[0.99]"
-              >
-                <span>Request Viewing Schedule</span>
-              </button>
+              <RailSubmitButton />
 
               {/* Direct Instant WhatsApp Option */}
               <a
@@ -398,8 +443,20 @@ export function ListingEnquiryRail({
 
               {submitted && (
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-2.5 text-xs text-emerald-800 leading-relaxed animate-fade-in">
-                  ✓ Viewing request received! Our specialist will reach out within 15 minutes to confirm your tour of {listingTitle}.
+                  ✓ Viewing request received. Our specialist will confirm your tour of {listingTitle} shortly.
                 </div>
+              )}
+
+              {/* Failures are announced here rather than beside each field: the
+                  rail is a narrow column with every field in view, so a single
+                  message below the button is never off-screen. */}
+              {state && !state.ok && (
+                <p
+                  role="alert"
+                  className="rounded-xl border border-rose-200 bg-rose-50 p-2.5 text-xs leading-relaxed text-rose-800"
+                >
+                  {errorFor("name") ?? errorFor("phone") ?? state.message}
+                </p>
               )}
             </form>
           </div>

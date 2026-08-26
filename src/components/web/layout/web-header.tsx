@@ -312,7 +312,7 @@ export function WebHeader() {
                       }}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative z-10 block rounded-full px-4 py-1.5 font-mono text-web-micro font-medium uppercase transition-colors duration-200",
+                        "relative z-10 block rounded-full px-4 py-1.5 font-mono text-web-nano font-medium uppercase transition-colors duration-200",
                         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
                         isIndicatorUnder
                           ? "text-ink-900 font-medium"
@@ -332,7 +332,7 @@ export function WebHeader() {
           <div className="flex shrink-0 items-center gap-3">
             <Link
               href="/login"
-              className="web-control hidden h-9 items-center justify-center rounded-full border border-white/40 bg-white/95 px-6 text-xs font-medium uppercase tracking-widest text-ink-900 shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-[1.03] hover:border-white/60 hover:bg-brand-dark hover:text-white hover:shadow-[0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow active:scale-[0.98] sm:inline-flex"
+              className="web-control hidden h-9 items-center justify-center rounded-full border border-white/40 bg-white/95 px-6 text-web-micro font-medium uppercase tracking-[0.14em] text-ink-900 shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-[1.03] hover:border-white/60 hover:bg-brand-dark hover:text-white hover:shadow-[0_6px_24px_rgba(0,0,0,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow active:scale-[0.98] sm:inline-flex"
             >
               Sign in
             </Link>

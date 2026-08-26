@@ -1,6 +1,9 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useActionState, useId, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { submitValuationEnquiry } from "@/lib/actions/web/enquiries";
+import { FORM_TIMESTAMP_FIELD, HONEYPOT_FIELD } from "@/lib/actions/web/form-fields";
 import { cn } from "@/lib/utils/cn";
 import { LANDLORDS } from "../constants/landlords.content";
 import { SITE } from "../constants/site";
@@ -12,12 +15,49 @@ import { WEB_ICON_STROKE, webIcons } from "../icons";
  * Inline rather than a link to a separate page, per web doc 04 §4.7:
  * every extra click here costs conversions, and an owner who has just read
  * the fee table is at the highest intent they will reach on this site.
+ *
+ * Submissions land in `web_enquiries` tagged `valuation`, with the property
+ * type, unit count and current rent carried as metadata so whoever picks it up
+ * can price the visit before making it.
  */
+
+function SubmitButton() {
+  // Read from a child of the form: the hook reports the nearest enclosing
+  // form's state, so reading it alongside the form would always see idle.
+  const { pending } = useFormStatus();
+  const ArrowIcon = webIcons.arrow;
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-disabled={pending}
+      className="w-full group relative overflow-hidden inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-yellow hover:bg-brand-yellow-h  px-7 py-3.5 text-web-xs font-medium uppercase tracking-[0.14em] font-mono shadow-[0_4px_20px_rgba(21,25,54,0.25)] hover:shadow-[0_6px_28px_rgba(21,25,54,0.35)] hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed cursor-pointer"
+    >
+      <span>{pending ? "Sending…" : LANDLORDS.valuation.form.submitLabel}</span>
+      <ArrowIcon size={16} stroke={WEB_ICON_STROKE} className="group-hover:translate-x-1 transition-transform" />
+    </button>
+  );
+}
+
 export function InlineValuationForm() {
   const baseId = useId();
   const [intent, setIntent] = useState<string>(LANDLORDS.valuation.form.intents[0]);
-  const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [state, formAction] = useActionState(submitValuationEnquiry, null);
+
+  // Stamped once at mount; the action refuses submissions that arrive faster
+  // than a person could plausibly type.
+  const [renderedAt] = useState(() => Date.now());
+
+  // "Submit another" dismisses the success panel. Tracked against the state
+  // object itself rather than a boolean: `useActionState` hands back a new
+  // object on every submission, so the next success is never swallowed by a
+  // dismissal that belonged to the previous one.
+  const [dismissed, setDismissed] = useState<unknown>(null);
+  const submitted = state?.ok === true && dismissed !== state;
+  const errors = state && !state.ok ? (state.fieldErrors ?? {}) : {};
+  const errorFor = (field: string) => errors[field];
+  const errorClass = "font-mono mt-1.5 block text-web-nano text-rose-600";
 
   const ArrowIcon = webIcons.arrow;
   const CheckIcon = webIcons.check;
@@ -26,15 +66,6 @@ export function InlineValuationForm() {
   const labelClass = "block font-medium text-web-xs text-ink-900 mb-2";
   const inputClass =
     "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-web-sm text-ink-900 placeholder:text-slate-400 focus:border-ink-900 focus:ring-1 focus:ring-ink-900 focus:outline-none transition-all shadow-2xs";
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 600);
-  };
 
   if (submitted) {
     return (
@@ -71,7 +102,7 @@ export function InlineValuationForm() {
 
         <button
           type="button"
-          onClick={() => setSubmitted(false)}
+          onClick={() => setDismissed(state)}
           className="text-xs font-mono uppercase tracking-wider text-slate-500 hover:text-ink-900 transition-colors underline cursor-pointer"
         >
           Submit another property request
@@ -81,15 +112,14 @@ export function InlineValuationForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5"
-    >
-      {/* Honeypot field */}
+    <form action={formAction} className="space-y-5">
+      {/* Honeypot. The field name comes from the shared constant so the form
+          and the check that reads it cannot drift apart. */}
       <div aria-hidden="true" className="absolute left-[-9999px] h-px w-px overflow-hidden">
         <label htmlFor={`${baseId}-website`}>Website</label>
-        <input id={`${baseId}-website`} name="website" tabIndex={-1} autoComplete="off" />
+        <input id={`${baseId}-website`} name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" />
       </div>
+      <input type="hidden" name={FORM_TIMESTAMP_FIELD} value={renderedAt} />
 
       {/* Row 1: Name & Phone */}
       <div className="grid gap-4 sm:grid-cols-2">
@@ -102,8 +132,15 @@ export function InlineValuationForm() {
             name="name"
             required
             placeholder="Full name"
-            className={inputClass}
+            aria-invalid={errorFor("name") ? true : undefined}
+            aria-describedby={errorFor("name") ? `${baseId}-name-error` : undefined}
+            className={cn(inputClass, errorFor("name") && "border-rose-400")}
           />
+          {errorFor("name") && (
+            <span id={`${baseId}-name-error`} className={errorClass}>
+              {errorFor("name")}
+            </span>
+          )}
         </div>
         <div>
           <label htmlFor={`${baseId}-phone`} className={labelClass}>
@@ -223,15 +260,19 @@ export function InlineValuationForm() {
 
       {/* Submit Button */}
       <div className="pt-2">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full group relative overflow-hidden inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-yellow hover:bg-brand-yellow-h  px-7 py-3.5 text-web-xs font-medium uppercase tracking-[0.14em] font-mono shadow-[0_4px_20px_rgba(21,25,54,0.25)] hover:shadow-[0_6px_28px_rgba(21,25,54,0.35)] hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-70 cursor-pointer"
-        >
-          <span>{isSubmitting ? "Processing..." : LANDLORDS.valuation.form.submitLabel}</span>
-          <ArrowIcon size={16} stroke={WEB_ICON_STROKE} className="group-hover:translate-x-1 transition-transform" />
-        </button>
+        <SubmitButton />
       </div>
+
+      {/* A failure not tied to one field — a throttle, or the database being
+          unreachable. Field problems are announced beside their own input. */}
+      {state && !state.ok && Object.keys(errors).length === 0 && (
+        <p
+          role="alert"
+          className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-web-xs leading-relaxed text-ink-700"
+        >
+          {state.message}
+        </p>
+      )}
 
       {/* Reassurance Footer */}
       <div className="pt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400 border-t border-slate-200/80">

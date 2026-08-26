@@ -1,6 +1,9 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useActionState, useId, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { submitContactEnquiry } from "@/lib/actions/web/enquiries";
+import { FORM_TIMESTAMP_FIELD, HONEYPOT_FIELD } from "@/lib/actions/web/form-fields";
 import { cn } from "@/lib/utils/cn";
 import { CONTACT_FORM } from "../constants/contact.content";
 import { SITE } from "../constants/site";
@@ -17,34 +20,56 @@ import { SITE } from "../constants/site";
  * them, which cannot be operated by keyboard and is invisible to a screen
  * reader. They are drawn faithfully here and built as a real radio group.
  *
- * TODO(W4-1): POST to the enquiry endpoint per web doc 07 §6.3, creating a
- * `contacts` row and a `leads` row assigned from the audience and subject,
- * with the Head of Strategy as the fallback assignee.
- *
- * Until then it does not pretend to send. A visitor who believes a message
- * reached us and then waits is worse off than one told to pick up the phone.
+ * Submissions land in `web_enquiries`, not straight in the sales pipeline.
+ * The audience and subject travel with the row as metadata so triage can route
+ * it without reading the message first. See the table's doc comment for why
+ * anonymous input is staged rather than written to `crm.leads`.
  */
+
+function SubmitButton() {
+  // Read from a child of the form: the hook reports the nearest enclosing
+  // form's state, so calling it in the component that renders the form
+  // would always see "not pending".
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-disabled={pending}
+      className="web-control web-hit rounded-web-full bg-brand-yellow px-6 py-[11px] text-web-micro uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h disabled:cursor-not-allowed disabled:opacity-70"
+    >
+      {pending ? "Sending…" : CONTACT_FORM.submitLabel}
+    </button>
+  );
+}
+
 export function ContactForm() {
   const baseId = useId();
   const [audience, setAudience] = useState<string>(CONTACT_FORM.audiences[0]);
-  const [attempted, setAttempted] = useState(false);
+  const [state, formAction] = useActionState(submitContactEnquiry, null);
+
+  // Stamped once at mount. The action refuses submissions that arrive faster
+  // than a person could plausibly type.
+  const [renderedAt] = useState(() => Date.now());
+
+  const errors = state && !state.ok ? (state.fieldErrors ?? {}) : {};
+  const errorFor = (field: string) => errors[field];
+  const errorClass = "font-mono mt-1.5 block text-web-nano text-rose-600";
 
   const labelClass = "web-subtitle mb-1.5 block text-web-micro text-ink-500";
   const inputClass =
     "w-full rounded-web-full border border-line-strong bg-surface-0 px-4 py-2.5 text-web-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none";
 
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-        setAttempted(true);
-      }}
-      className="grid gap-4"
-    >
+    <form action={formAction} className="grid gap-4">
+      {/* Honeypot. The field name comes from the shared constant so the form
+          and the check that reads it cannot drift apart. */}
       <div aria-hidden="true" className="absolute left-[-9999px] h-px w-px overflow-hidden">
         <label htmlFor={`${baseId}-fax`}>Fax</label>
-        <input id={`${baseId}-fax`} name="fax" tabIndex={-1} autoComplete="off" />
+        <input id={`${baseId}-fax`} name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" />
       </div>
+      <input type="hidden" name={FORM_TIMESTAMP_FIELD} value={renderedAt} />
 
       <fieldset>
         <legend className={labelClass}>{CONTACT_FORM.audienceLabel}</legend>
@@ -89,8 +114,15 @@ export function ContactForm() {
             name="name"
             required
             placeholder="Full name"
-            className={inputClass}
+            aria-invalid={errorFor("name") ? true : undefined}
+            aria-describedby={errorFor("name") ? `${baseId}-name-error` : undefined}
+            className={cn(inputClass, errorFor("name") && "border-rose-400")}
           />
+          {errorFor("name") && (
+            <span id={`${baseId}-name-error`} className={errorClass}>
+              {errorFor("name")}
+            </span>
+          )}
         </div>
         <div>
           <label htmlFor={`${baseId}-phone`} className={labelClass}>
@@ -119,8 +151,15 @@ export function ContactForm() {
           type="email"
           autoComplete="email"
           placeholder="you@example.com"
-          className={inputClass}
+          aria-invalid={errorFor("email") ? true : undefined}
+          aria-describedby={errorFor("email") ? `${baseId}-email-error` : undefined}
+          className={cn(inputClass, errorFor("email") && "border-rose-400")}
         />
+        {errorFor("email") && (
+          <span id={`${baseId}-email-error`} className={errorClass}>
+            {errorFor("email")}
+          </span>
+        )}
       </div>
 
       <div>
@@ -146,8 +185,18 @@ export function ContactForm() {
           rows={5}
           required
           placeholder={CONTACT_FORM.messagePlaceholder}
-          className="w-full resize-y rounded-web-card border border-line-strong bg-surface-0 px-4 py-3 text-web-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none"
+          aria-invalid={errorFor("message") ? true : undefined}
+          aria-describedby={errorFor("message") ? `${baseId}-message-error` : undefined}
+          className={cn(
+            "w-full resize-y rounded-web-card border bg-surface-0 px-4 py-3 text-web-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none",
+            errorFor("message") ? "border-rose-400" : "border-line-strong"
+          )}
         />
+        {errorFor("message") && (
+          <span id={`${baseId}-message-error`} className={errorClass}>
+            {errorFor("message")}
+          </span>
+        )}
       </div>
 
       <label className="flex cursor-pointer items-start gap-3 text-web-xs leading-relaxed text-ink-500">
@@ -160,19 +209,15 @@ export function ContactForm() {
         {CONTACT_FORM.consent}
       </label>
 
-      <button
-        type="submit"
-        className="web-control web-hit rounded-web-full bg-brand-yellow px-6 py-[11px] text-web-micro uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h"
-      >
-        {CONTACT_FORM.submitLabel}
-      </button>
+      <SubmitButton />
 
-      {attempted && (
+      {state?.ok && (
         <p
           role="status"
-          className="rounded-web-card border border-line bg-surface-1 p-3.5 text-web-xs leading-relaxed text-ink-700"
+          className="rounded-web-card border border-accent-mint-line bg-accent-mint-soft p-3.5 text-web-xs leading-relaxed text-ink-700"
         >
-          Online messages open with the new site. Call{" "}
+          Thank you — that has reached us. We reply within one working day. If it
+          is urgent, call{" "}
           <a href={SITE.phoneHref} className="web-numeric text-ink-900 underline underline-offset-4">
             {SITE.phone}
           </a>{" "}
@@ -186,6 +231,19 @@ export function ContactForm() {
             {SITE.whatsapp}
           </a>{" "}
           and someone will pick it up now.
+        </p>
+      )}
+
+      {/* A failure that is not tied to one field — a throttle, or the database
+          being unreachable. Field-level problems are announced beside their
+          own input above, because a summary panel reporting an error whose
+          source is off-screen is worse than no panel at all. */}
+      {state && !state.ok && Object.keys(errors).length === 0 && (
+        <p
+          role="alert"
+          className="rounded-web-card border border-rose-200 bg-rose-50 p-3.5 text-web-xs leading-relaxed text-ink-700"
+        >
+          {state.message}
         </p>
       )}
     </form>
