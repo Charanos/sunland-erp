@@ -4,6 +4,7 @@ import {
   IconApps,
   IconBell,
   IconBriefcase,
+  IconInbox,
   IconBuildingBank,
   IconBuildingCommunity,
   IconCalendarDollar,
@@ -184,6 +185,9 @@ export const navSections: NavSection[] = [
     items: [
       { href: "/admin/contacts", label: "Contacts", icon: IconUsersGroup },
       { href: "/admin/pipeline", label: "Pipeline", icon: IconChartBar },
+      // The public site writes here. Sits beside Pipeline because that is
+      // where an accepted enquiry lands.
+      { href: "/admin/web-enquiries", label: "Website enquiries", icon: IconInbox },
     ],
   },
 

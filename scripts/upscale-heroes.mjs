@@ -26,6 +26,7 @@ const HEROES = {
   "landlords-hero.jpg": [1440, 702],
   "insights-hero-right.jpg": [1440, 684],
   "about-hero.jpg": [1440, 684],
+  "about-commitments.jpg": [1440, 684],
 };
 
 // The unsharp mask that rescues a 2.8x enlargement puts visible halos on a
