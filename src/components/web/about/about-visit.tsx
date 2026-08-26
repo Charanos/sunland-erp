@@ -7,6 +7,7 @@ import { ABOUT_VISIT } from "@/components/web/constants/about.content";
 import { SITE } from "@/components/web/constants/site";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
 import { Container } from "@/components/web/primitives/container";
+import { generalMessage, whatsappLink } from "../constants/whatsapp";
 
 /**
  * 05 — Nairobi Headquarters & Interactive Concierge Map.
@@ -91,7 +92,7 @@ export function AboutVisit() {
                 </dt>
                 <dd>
                   <a
-                    href={SITE.whatsappHref}
+                    href={whatsappLink(generalMessage())}
                     target="_blank"
                     rel="noreferrer"
                     className="web-hit font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"

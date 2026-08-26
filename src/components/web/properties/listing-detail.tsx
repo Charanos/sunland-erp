@@ -15,6 +15,7 @@ import { ListingHeroActions } from "./listing-hero-actions";
 import { ListingEnquiryRail } from "./listing-enquiry-rail";
 import { ListingDetailOccupancy } from "./listing-detail-occupancy";
 import { ListingInteractiveMap } from "./listing-interactive-map";
+import { viewingMessage, whatsappLink } from "../constants/whatsapp";
 
 /**
  * The listing detail page.
@@ -34,6 +35,7 @@ export function ListingDetailView({
 }) {
   const status = LISTING_STATUS_CONFIG[listing.status];
   const CheckIcon = webIcons.check;
+  const WhatsappIcon = webIcons.whatsapp;
   const ArrowIcon = webIcons.arrow;
   const PinIcon = webIcons.pin;
   const BedIcon = webIcons.bed;
@@ -418,11 +420,22 @@ export function ListingDetailView({
               Call
             </a>
             <a
-              href={`${SITE.whatsappHref}?text=${encodeURIComponent(`Hello Sunland, I would like to view ${listing.title} (Ref ${listing.reference}).`)}`}
+              href={whatsappLink(
+                viewingMessage({
+                  title: listing.title,
+                  reference: listing.reference,
+                  location: listing.location,
+                  priceKes: listing.priceKes,
+                  priceSuffix: listing.priceSuffix,
+                  propertyType: listing.propertyType,
+                  bedrooms: listing.bedrooms,
+                })
+              )}
               target="_blank"
               rel="noreferrer"
-              className="web-subtitle web-hit inline-flex items-center rounded-web-full bg-brand-yellow px-6 py-2 text-sm text-brand-dark"
+              className="web-subtitle web-hit inline-flex items-center gap-2 rounded-web-full bg-brand-yellow px-6 py-2 text-sm text-brand-dark"
             >
+              <WhatsappIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
               Book a viewing
             </a>
           </div>

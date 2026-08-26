@@ -14,7 +14,7 @@ export function AboutTestimonials() {
   return (
     <section
       aria-labelledby="testimonials-heading"
-      className="web-dark relative overflow-hidden bg-gradient-to-b from-brand-dark via-[#10142d] to-brand-deep py-20 sm:py-24 lg:py-28"
+      className="web-dark relative overflow-hidden bg-gradient-to-b from-brand-dark via-brand-mid to-brand-deep py-20 sm:py-24 lg:py-28"
     >
       <Container>
         <h2 id="testimonials-heading" className="sr-only">

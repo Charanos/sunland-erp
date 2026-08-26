@@ -24,6 +24,11 @@
   --color-brand-dark: #151936;
   --color-brand-yellow: #f3df27;
   --color-brand-yellow-h: #e6d220;
+  /* The lighter step. Most controls darken to -h on hover; the hero search
+     button lifts instead, because it sits on a photograph where darkening
+     reads as the control receding rather than responding. One value, named,
+     so a second lift does not invent a second yellow. */
+  --color-brand-yellow-lift: #ffe838;
 
   /* ── Ink on light ── */
   --color-ink-900: #151936;
@@ -66,6 +71,14 @@
      floor of dark bands so a scrim has somewhere to fade *to*. It appeared 41
      times as a raw #090d1f before it had a name. */
   --color-brand-deep: #090d1f;
+
+  /* ── The gradient midpoint ──
+     Dark bands run `from-brand-dark via-X to-brand-deep`, and X was written
+     four times as two near-identical hexes — #10142d twice and #10132c twice,
+     one to two steps apart per channel. Nobody chose two values; a gradient
+     was copied and drifted. One token, so the next dark band cannot invent a
+     third. */
+  --color-brand-mid: #10142d;
 
   /* ── Mint, decorative ──
      Deliberately its own tier, and deliberately NOT the semantic positive

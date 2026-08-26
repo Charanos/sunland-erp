@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { SITE } from "../constants/site";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
+import { viewingMessage, whatsappLink } from "../constants/whatsapp";
 
 /**
  * The listing enquiry form.
@@ -42,11 +43,9 @@ export function EnquiryForm({
   const [attempted, setAttempted] = useState(false);
 
   const PhoneIcon = webIcons.phone;
-  const ChatIcon = webIcons.chat;
+  const ChatIcon = webIcons.whatsapp;
 
-  const whatsappHref = `${SITE.whatsappHref}?text=${encodeURIComponent(
-    `Hello Sunland, I would like to view ${listingTitle} (Ref ${reference}).`
-  )}`;
+  const whatsappHref = whatsappLink(viewingMessage({ title: listingTitle, reference }));
 
   const labelClass = "web-subtitle mb-1.5 block text-xs text-ink-500";
   const inputClass =

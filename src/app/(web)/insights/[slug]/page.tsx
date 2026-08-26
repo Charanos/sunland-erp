@@ -122,7 +122,7 @@ export default async function InsightArticlePage({
 
             {/* ── 04. Executive Consultation & Action Callout ── */}
             {post.cta && (
-              <div className="mt-12 rounded-3xl border border-slate-800 bg-gradient-to-br from-brand-dark via-[#10132c] to-brand-deep p-8 sm:p-12 text-white shadow-2xl">
+              <div className="mt-12 rounded-3xl border border-slate-800 bg-gradient-to-br from-brand-dark via-brand-mid to-brand-deep p-8 sm:p-12 text-white shadow-2xl">
                 <div className="flex items-center gap-2 mb-3">
                   <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />
                   <p className="font-mono text-xs uppercase tracking-[0.22em] text-slate-300 font-medium">

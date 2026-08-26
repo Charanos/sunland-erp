@@ -97,7 +97,7 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
             {/* Multi-segment Colored Status Rail */}
             <div className="h-2 w-full rounded-full overflow-hidden flex bg-white/10 gap-0.5" role="img" aria-label="Estate portfolio status progress">
               <div
-                className="h-full bg-[#10b981] transition-all duration-700"
+                className="h-full bg-accent-mint transition-all duration-700"
                 style={{ width: `${(statusCounts.available / totalStock) * 100}%` }}
                 title={`${statusCounts.available} Available`}
               />
@@ -126,7 +126,7 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
             {/* Status Telemetry Breakdown - Clean inline typography */}
             <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 font-mono text-web-micro uppercase tracking-wider text-slate-400">
               <div>
-                <span className="text-[#10b981] font-medium mr-1">{statusCounts.available}</span>
+                <span className="text-accent-mint font-medium mr-1">{statusCounts.available}</span>
                 <span>Available</span>
               </div>
               <div>

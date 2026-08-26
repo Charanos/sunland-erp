@@ -569,7 +569,7 @@ function LandlordPortfolioMock() {
   return (
     <div
       aria-hidden="true"
-      className="relative overflow-hidden rounded-[24px] bg-[#ffffff] shadow-2xl ring-1 ring-white/10 flex flex-col"
+      className="relative overflow-hidden rounded-[24px] bg-surface-0 shadow-2xl ring-1 ring-white/10 flex flex-col"
     >
       {/* Console Chrome Header */}
       <div className="flex h-12 items-center justify-between border-b border-slate-100 bg-slate-50/80 px-5">

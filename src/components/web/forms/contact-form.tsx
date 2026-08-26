@@ -7,6 +7,7 @@ import { FORM_TIMESTAMP_FIELD, HONEYPOT_FIELD } from "@/lib/actions/web/form-fie
 import { cn } from "@/lib/utils/cn";
 import { CONTACT_FORM } from "../constants/contact.content";
 import { SITE } from "../constants/site";
+import { generalMessage, whatsappLink } from "../constants/whatsapp";
 
 /**
  * The general enquiry form.
@@ -223,7 +224,7 @@ export function ContactForm() {
           </a>{" "}
           or WhatsApp{" "}
           <a
-            href={SITE.whatsappHref}
+            href={whatsappLink(generalMessage())}
             target="_blank"
             rel="noreferrer"
             className="web-numeric text-ink-900 underline underline-offset-4"

@@ -10,6 +10,7 @@ import { formatCompactKES, formatKES } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 import { SITE } from "../constants/site";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
+import { viewingMessage, whatsappLink } from "../constants/whatsapp";
 
 type RailTab = "viewing" | "trends" | "calculator";
 type TourType = "in_person" | "video";
@@ -94,7 +95,7 @@ export function ListingEnquiryRail({
   const isRental = Boolean(priceSuffix);
   const CheckIcon = webIcons.check;
   const PhoneIcon = webIcons.phone;
-  const ChatIcon = webIcons.chat;
+  const ChatIcon = webIcons.whatsapp;
   const ShieldIcon = webIcons.shield;
 
   const areaName = location.split(",")[0].trim();
@@ -142,15 +143,30 @@ export function ListingEnquiryRail({
     // The window, not the bare enum: an agent reading "(afternoon)" has to
     // guess, where "(afternoon, 12pm – 4pm)" is something they can act on.
     const slot = TIME_SLOTS.find((entry) => entry.id === selectedSlot);
-    const text = encodeURIComponent(
-      `Hello Sunland, I would like to book a ${
-        tourType === "in_person" ? "in-person viewing" : "live video tour"
-      } for "${listingTitle}" (Ref ${reference}) on ${selectedDate} ${
-        slot ? `(${slot.label.toLowerCase()}, ${slot.window})` : ""
-      }.`
+    return whatsappLink(
+      viewingMessage({
+        title: listingTitle,
+        reference,
+        location,
+        priceKes,
+        priceSuffix,
+        propertyType,
+        preferredDate: selectedDate,
+        preferredSlot: slot ? `${slot.label.toLowerCase()} (${slot.window})` : null,
+        tourType: tourType === "in_person" ? "in_person" : "video",
+      })
     );
-    return `${SITE.whatsappHref}?text=${text}`;
-  }, [listingTitle, reference, tourType, selectedDate, selectedSlot]);
+  }, [
+    listingTitle,
+    reference,
+    location,
+    priceKes,
+    priceSuffix,
+    propertyType,
+    tourType,
+    selectedDate,
+    selectedSlot,
+  ]);
 
   return (
     <aside aria-label="Property enquiry command center" className="lg:sticky lg:top-[96px]">

@@ -104,7 +104,7 @@ export function HomeProof() {
       <div ref={sectionRef} className="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-16 xl:gap-20 items-center">
         {/* Left Column: Unified Executive Client Testimonial Card */}
         <div className="order-2 lg:order-1 proof-testimonial">
-          <div className="group relative overflow-hidden rounded-[28px] border border-white/12 bg-gradient-to-b from-brand-dark via-[#10142d] to-brand-deep p-8 sm:p-10 shadow-[0_24px_50px_rgba(21,25,54,0.28)] text-white backdrop-blur-xl">
+          <div className="group relative overflow-hidden rounded-[28px] border border-white/12 bg-gradient-to-b from-brand-dark via-brand-mid to-brand-deep p-8 sm:p-10 shadow-[0_24px_50px_rgba(21,25,54,0.28)] text-white backdrop-blur-xl">
             {/* Subtle Ambient Glow */}
             <div
               aria-hidden="true"

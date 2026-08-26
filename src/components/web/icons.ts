@@ -47,6 +47,7 @@ import {
   IconMail,
   IconMapPin,
   IconMenu2,
+  IconBrandWhatsapp,
   IconMessageCircle,
   IconMinus,
   IconPhone,
@@ -112,6 +113,12 @@ export const webIcons = {
   phone: IconPhone,
   mail: IconMail,
   chat: IconMessageCircle,
+  /* The WhatsApp glyph, for the CTAs that open WhatsApp specifically.
+     Doc 03 §4 mandates Tabler exclusively and this is Tabler's own brand
+     icon, so the rule holds. A generic speech bubble on a button that
+     launches WhatsApp understates where the tap actually goes — in this
+     market that is the difference between a tap and a hesitation. */
+  whatsapp: IconBrandWhatsapp,
 
   // Actions
   save: IconHeart,

@@ -87,7 +87,7 @@ export function AboutCommitments({
       className="web-dark relative overflow-hidden bg-brand-deep py-20 sm:py-24 lg:py-28 border-t border-line"
     >
       {/* ── Background Photography & Layered Scrims (Left-Masked Hero Scrim) ── */}
-      <div className="absolute inset-0 bg-[#090d1f]">
+      <div className="absolute inset-0 bg-brand-deep">
         <Image
           src="/images/about-commitments.jpg"
           alt="Abstract architectural lines"

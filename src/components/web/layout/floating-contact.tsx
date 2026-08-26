@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import { SITE } from "../constants/site";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
+import { generalMessage, whatsappLink } from "../constants/whatsapp";
 
 /**
  * The persistent contact control, bottom right.
@@ -42,7 +43,7 @@ export function FloatingContact() {
   }, []);
 
   const PhoneIcon = webIcons.phone;
-  const ChatIcon = webIcons.chat;
+  const ChatIcon = webIcons.whatsapp;
 
   return (
     <div
@@ -61,7 +62,7 @@ export function FloatingContact() {
       )}
     >
       <a
-        href={SITE.whatsappHref}
+        href={whatsappLink(generalMessage())}
         target="_blank"
         rel="noreferrer"
         tabIndex={-1}

@@ -264,7 +264,7 @@ export default async function InsightsPage({
           )}
 
           {/* ── 05. Executive Newsletter & Advisory Consultation ── */}
-          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-brand-dark via-[#10132c] to-brand-deep p-8 sm:p-12 lg:p-14 text-white shadow-2xl">
+          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-brand-dark via-brand-mid to-brand-deep p-8 sm:p-12 lg:p-14 text-white shadow-2xl">
             {/* The two halves arrive from opposite sides: the pitch rises,
                 the form slides in from the right. Revealing the inner grid
                 rather than the panel keeps the gradient card itself static,

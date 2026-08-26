@@ -419,7 +419,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
           <div className="lg:pl-2 shrink-0">
             <button
               type="submit"
-              className="web-control w-full lg:w-auto inline-flex h-11 items-center justify-center gap-2 rounded-xl lg:rounded-full bg-brand-yellow hover:bg-[#ffe838] active:bg-[#e6d220] px-7 text-xs uppercase tracking-[0.14em] font-medium text-ink-900 shadow-[0_4px_18px_rgba(243,223,39,0.38)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+              className="web-control w-full lg:w-auto inline-flex h-11 items-center justify-center gap-2 rounded-xl lg:rounded-full bg-brand-yellow hover:bg-brand-yellow-lift active:bg-brand-yellow-h px-7 text-xs uppercase tracking-[0.14em] font-medium text-ink-900 shadow-[0_4px_18px_rgba(243,223,39,0.38)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
               <IconSearch size={15} stroke={2.5} aria-hidden="true" />
               <span>Search</span>
