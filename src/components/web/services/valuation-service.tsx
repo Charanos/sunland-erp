@@ -255,7 +255,7 @@ export function ValuationService() {
               {/* Top Floating Telemetry Status Pill */}
               <div className="relative z-10 flex items-center justify-between gap-3">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md text-white text-xs font-mono tracking-wider shadow-sm">
-                  <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] animate-pulse" />
+                  <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] animate-pulse motion-reduce:animate-none" />
                   <span>CERTIFIED VALUATION DESK</span>
                 </div>
 

@@ -84,7 +84,7 @@ export function AboutCommitments({
   return (
     <section
       aria-labelledby="commitments-heading"
-      className="web-dark relative overflow-hidden bg-brand-deep py-16 sm:py-20 lg:py-28 border-t border-line"
+      className="web-dark relative overflow-hidden bg-brand-deep py-20 sm:py-24 lg:py-28 border-t border-line"
     >
       {/* ── Background Photography & Layered Scrims (Left-Masked Hero Scrim) ── */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">

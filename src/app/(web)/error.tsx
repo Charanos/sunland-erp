@@ -70,7 +70,7 @@ export default function WebError({
       <Container className="relative z-10 flex flex-col items-center text-center">
         {/* Eyebrow Pill */}
         <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-4 py-1.5 font-mono text-web-micro uppercase tracking-[0.2em] text-slate-500 shadow-2xs">
-          <span className="size-1.5 rounded-full bg-rose-500 animate-pulse" />
+          <span className="size-1.5 rounded-full bg-rose-500 animate-pulse motion-reduce:animate-none" />
           <span>Error 500 · Temporary Interruption</span>
         </div>
 

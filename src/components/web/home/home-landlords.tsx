@@ -110,7 +110,7 @@ export function HomeLandlords() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="size-2 rounded-full bg-emerald-500 animate-pulse motion-reduce:animate-none" />
                   <span className="font-mono text-web-micro font-medium uppercase tracking-[0.14em] text-slate-500">
                     {statement.portalLabel}
                   </span>

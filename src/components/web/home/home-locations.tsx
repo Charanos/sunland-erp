@@ -199,7 +199,7 @@ export function HomeLocations({ tiles = [] }: { tiles?: LocationTile[] }) {
                           </span>
                           {tile.liveCount > 0 && (
                             <span className="hidden sm:inline-flex items-center gap-1.5 text-emerald-300 text-xs font-mono font-medium pl-3 border-l border-white/20">
-                              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse motion-reduce:animate-none" />
                               {tile.liveCount} Active Mandates
                             </span>
                           )}

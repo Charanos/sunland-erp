@@ -44,7 +44,7 @@ export function LandlordRentChart() {
       {/* Chart Header & Controls */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
-          <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="size-2 rounded-full bg-emerald-500 animate-pulse motion-reduce:animate-none" />
           <span className="text-web-micro font-mono uppercase tracking-wider text-slate-500 font-medium">
             Remittance Curve (KES)
           </span>

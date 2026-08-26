@@ -45,7 +45,7 @@ export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
                   Have a specific question?
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse motion-reduce:animate-none" />
                   <p className="font-mono text-xs text-slate-500">
                     Average response time: &lt; 2 hours
                   </p>

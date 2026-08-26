@@ -153,7 +153,7 @@ export function AboutVisit() {
               <div className="absolute top-4 inset-x-4 z-10 flex items-center justify-between gap-3 pointer-events-none">
                 {/* Location Badge */}
                 <div className="inline-flex items-center gap-2 rounded-full bg-brand-dark/90 backdrop-blur-md border border-white/20 px-3.5 py-1.5 font-mono text-web-micro text-white shadow-sm">
-                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse motion-reduce:animate-none" />
                   <span>International House · 8th Floor</span>
                 </div>
 

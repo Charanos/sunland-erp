@@ -96,7 +96,7 @@ export function HomeFeatured({ listings }: { listings: ListingCardData[] }) {
                 <span>{tab.label}</span>
                 <span
                   className={cn(
-                    "rounded-full px-1.5 py-0.2 text-web-nano font-mono",
+                    "rounded-full px-1.5 py-0.5 text-web-nano font-mono",
                     active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
                   )}
                 >

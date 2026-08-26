@@ -177,7 +177,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
 
                 {stats.total > 0 ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 text-web-nano font-mono font-medium text-emerald-300 backdrop-blur-md">
-                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse motion-reduce:animate-none" />
                     {stats.total} Live {stats.total === 1 ? "Mandate" : "Mandates"}
                   </span>
                 ) : (

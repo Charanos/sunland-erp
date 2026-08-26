@@ -89,14 +89,14 @@ export async function ListingIndex({
                   />
                 </div>
                 <div className="min-w-0">
-                  <div className="h-[54px] w-full animate-pulse rounded-xl bg-slate-200/70" />
+                  <div className="h-[54px] w-full web-skeleton rounded-xl" />
                   <ul className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2">
                     {Array.from({ length: 9 }).map((_, i) => (
                       <li key={i} className="flex flex-col gap-3">
-                        <div className="aspect-[16/10] animate-pulse rounded-2xl bg-slate-200/70" />
-                        <div className="h-4 w-3/4 animate-pulse rounded-full bg-slate-200/60" />
-                        <div className="h-3 w-1/2 animate-pulse rounded-full bg-slate-200/50" />
-                        <div className="h-6 w-2/5 animate-pulse rounded-full bg-slate-200/70" />
+                        <div className="aspect-[16/10] web-skeleton rounded-2xl" />
+                        <div className="h-4 w-3/4 web-skeleton rounded-full" />
+                        <div className="h-3 w-1/2 web-skeleton rounded-full" />
+                        <div className="h-6 w-2/5 web-skeleton rounded-full" />
                       </li>
                     ))}
                   </ul>
