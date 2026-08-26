@@ -3,6 +3,7 @@ import { ABOUT_STORY } from "@/components/web/constants/about.content";
 import { WEB_AREAS } from "@/components/web/constants/locations.content";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
 import { Container } from "@/components/web/primitives/container";
+import { WebMediaBadge } from "../primitives/badge";
 
 const STORY_PILLARS = [
   {
@@ -132,10 +133,9 @@ export function AboutStorySection({
               />
 
               {/* Floating Top Badge */}
-              <div className="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3.5 py-1 font-mono text-web-micro font-medium text-white border border-white/20 shadow-sm">
-                <span className="size-1.5 rounded-full bg-brand-yellow" />
-                <span>Nairobi Headquarters & Regional Hubs</span>
-              </div>
+              <WebMediaBadge caps={false} dot="bg-brand-yellow" className="absolute left-4 top-4 z-10">
+                Nairobi Headquarters &amp; Regional Hubs
+              </WebMediaBadge>
 
               {/* Bottom Caption Overlay */}
               <div className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between text-white font-mono text-xs">

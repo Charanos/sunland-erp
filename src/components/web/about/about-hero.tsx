@@ -28,7 +28,7 @@ export function AboutHero() {
     <section
       ref={sectionRef}
       aria-labelledby="about-hero-heading"
-      className="web-dark relative z-10 flex min-h-[58svh] sm:min-h-[62svh] lg:min-h-[66svh] flex-col overflow-hidden bg-brand-dark pb-10 sm:pb-12 pt-28 sm:pt-32 lg:pt-40"
+      className="web-dark relative z-10 web-hero-l3 bg-brand-dark"
     >
       {/* ── Background Photography & Layered Atmospheric Scrims (Right Scrim Blend) ── */}
       <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">

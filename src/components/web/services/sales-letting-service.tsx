@@ -224,7 +224,7 @@ export function SalesLettingService() {
                     >
                       <span className={cn(
                         "font-mono text-web-micro tracking-wider transition-colors",
-                        isActive ? "text-ink-900 font-bold" : "text-slate-300/80 group-hover:text-slate-200"
+                        isActive ? "text-ink-900 font-semibold" : "text-slate-300/80 group-hover:text-slate-200"
                       )}>
                         {pillar.number}
                       </span>

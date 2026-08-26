@@ -77,7 +77,7 @@ export function AboutVisit() {
                 <dd>
                   <a
                     href={SITE.phoneHref}
-                    className="font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
+                    className="web-hit font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
                   >
                     {SITE.phone}
                   </a>
@@ -94,7 +94,7 @@ export function AboutVisit() {
                     href={SITE.whatsappHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
+                    className="web-hit font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
                   >
                     {SITE.whatsapp}
                   </a>
@@ -109,7 +109,7 @@ export function AboutVisit() {
                 <dd>
                   <a
                     href={SITE.emailHref}
-                    className="font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
+                    className="web-hit font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
                   >
                     {SITE.email}
                   </a>
@@ -210,7 +210,7 @@ export function AboutVisit() {
                   href={directionsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-web-micro font-medium text-ink-900 hover:underline"
+                  className="web-hit inline-flex items-center gap-1 font-mono text-web-micro font-medium text-ink-900 hover:underline"
                 >
                   <span>Open in Google Maps</span>
                   <ArrowOutIcon size={12} stroke={WEB_ICON_STROKE} />

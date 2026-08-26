@@ -154,7 +154,7 @@ export function ArticleInteractiveTools({ post }: { post: InsightPost }) {
                   href={`#${anchor}`}
                   className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-0 px-3 py-1 font-mono text-web-micro text-slate-600 hover:text-ink-900 hover:border-slate-400 transition-all hover:bg-surface-1"
                 >
-                  <span className="text-web-nano text-slate-900 font-bold">0{i + 1}</span>
+                  <span className="text-web-nano text-slate-900 font-semibold">0{i + 1}</span>
                   <span className="line-clamp-1 max-w-[22ch]">
                     {h.text.replace(/^\d+\.\s*/, "")}
                   </span>

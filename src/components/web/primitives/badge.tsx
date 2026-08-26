@@ -55,27 +55,54 @@ export function WebBadge({
  *
  * The semantic background tokens are dropped here on purpose: 20% emerald over
  * an unknown photograph is not a contrast guarantee, and our library is phone
- * sourced with plenty of bright skies. 72% navy is. The ERP solves the same
- * problem on `ImageStatusPill` with a white/95 carrier; navy reads better
+ * sourced with plenty of bright skies. A dark carrier is. The ERP solves the
+ * same problem on `ImageStatusPill` with a white/95 carrier; dark reads better
  * against this palette and against the top scrim above it.
+ *
+ * ── Why black/60 and not brand-dark/72 ──
+ *
+ * The pages converged on `bg-black/60 + border-white/15 + shadow-xs` across a
+ * dozen hand-rolled copies while this primitive still said `brand-dark/72 +
+ * ring-white/20`. The shipped recipe is what the design was signed off on, so
+ * the primitive moves to meet it rather than dragging twelve call sites back to
+ * an older shape. `border` rather than `ring` for the same reason — that is
+ * the box model those call sites already reserve space for.
+ *
+ * `caps` defaults to true because the status badges this was written for are
+ * uppercase, but most media badges carry a proper noun — a region, a category,
+ * a place name — where forcing caps shouts a label that reads as content.
  */
+
+export type WebMediaBadgeTone = "glass" | "mint";
+
+const mediaToneClass: Record<WebMediaBadgeTone, string> = {
+  glass: "border-white/15 text-white",
+  mint: "border-accent-mint/30 text-accent-mint-line",
+};
+
 export function WebMediaBadge({
   children,
   dot,
+  tone = "glass",
+  caps = true,
   className,
 }: {
   children: ReactNode;
   /** Tailwind background class for the status dot. */
   dot?: string;
+  tone?: WebMediaBadgeTone;
+  /** Uppercase the label. Off for proper nouns — regions, categories, places. */
+  caps?: boolean;
   className?: string;
 }) {
   return (
     <span
       className={cn(
-        "web-control inline-flex items-center gap-1.5 rounded-web-full px-2.5 py-1",
-        "bg-brand-dark/72 text-on-dark-hi backdrop-blur-md",
-        "ring-1 ring-white/20",
-        "text-web-nano uppercase tracking-[0.14em]",
+        "web-control inline-flex items-center gap-1.5 rounded-web-full px-3 py-1",
+        "border bg-black/60 shadow-xs backdrop-blur-md",
+        "text-web-nano",
+        caps && "uppercase tracking-[0.14em]",
+        mediaToneClass[tone],
         className
       )}
     >

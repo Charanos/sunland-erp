@@ -27,7 +27,7 @@ export function ArticleHero({ post }: { post: InsightPost }) {
   return (
     <header
       ref={headerRef}
-      className="web-dark relative z-10 flex min-h-[60svh] sm:min-h-[65svh] flex-col justify-end overflow-hidden bg-brand-deep pt-32 sm:pt-36 lg:pt-54 pb-16 sm:pb-20 text-white"
+      className="web-dark relative z-10 web-hero-l3 justify-end bg-brand-deep text-white"
     >
       {/* Background Photography with Refined Scrims */}
       <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
@@ -122,7 +122,7 @@ export function ArticleHero({ post }: { post: InsightPost }) {
 
           <Link
             href="/insights"
-            className="font-mono text-xs text-slate-300 hover:text-brand-yellow transition-colors inline-flex items-center gap-1.5"
+            className="web-hit font-mono text-xs text-slate-300 hover:text-brand-yellow transition-colors inline-flex items-center gap-1.5"
           >
             <span>← All Research</span>
           </Link>

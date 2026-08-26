@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SectionBand } from "../primitives/section-band";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { GalleryMarquee } from "./gallery-marquee";
+import { WebMediaBadge } from "../primitives/badge";
 
 /**
  * 09.5 home.gallery, full bleed panoramic cinematic showcase.
@@ -154,9 +155,7 @@ export function HomeGallery() {
 
               {/* Top Bar: Category Pill + Uncarded Price */}
               <div className="absolute top-4 inset-x-4 sm:top-5 sm:inset-x-5 flex items-center justify-between z-10">
-                <span className="inline-flex items-center rounded-full bg-black/55 backdrop-blur-md px-3 py-1 font-mono text-web-nano uppercase tracking-wider text-white border border-white/20 shadow-xs">
-                  {item.category}
-                </span>
+                <WebMediaBadge>{item.category}</WebMediaBadge>
 
                 <span className="font-mono text-web-sm sm:text-base lg:text-web-body font-medium tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                   {item.price}

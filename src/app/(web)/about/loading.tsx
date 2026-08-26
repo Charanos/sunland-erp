@@ -28,8 +28,10 @@ export default function AboutLoading() {
       {/* Screen readers get the one thing the visual skeleton cannot say. */}
       <span className="sr-only">Loading the about page</span>
 
-      {/* Hero: the dark band, at its real min-height so the fold does not jump. */}
-      <div className="web-dark min-h-[58svh] bg-brand-deep pt-28 sm:min-h-[62svh] sm:pt-32 lg:min-h-[66svh] lg:pt-40">
+      {/* Hero: the same .web-hero-l3 tier the real hero uses, so the skeleton
+          and the thing it stands in for cannot drift apart. Reserving the wrong
+          height here would defeat the point of having a skeleton at all. */}
+      <div className="web-dark web-hero-l3 bg-brand-deep">
         <Container>
           <div className="flex h-full flex-col justify-end pb-10 sm:pb-12">
             <div className="ml-auto flex w-full max-w-[680px] flex-col items-end gap-4">

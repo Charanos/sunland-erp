@@ -30,7 +30,7 @@ export function LocationsHero({
   return (
     <section
       ref={sectionRef}
-      className="web-dark relative z-10 flex min-h-[68svh] sm:min-h-[72svh] flex-col overflow-hidden pb-14 pt-32 sm:pt-36 lg:pt-44"
+      className="web-dark relative z-10 web-hero-l2"
     >
       {/* ── Background ── */}
       <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">

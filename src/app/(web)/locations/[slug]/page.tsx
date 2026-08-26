@@ -108,7 +108,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
       {/* ── 01. Atmospheric Cinematic Full-Bleed Hero Section ── */}
       <HeroMotionSection
         aria-labelledby="area-heading"
-        className="web-dark relative overflow-hidden bg-brand-dark pt-28 sm:pt-32 lg:pt-36 pb-14 sm:pb-18 border-b border-dark-line"
+        className="web-dark web-hero-l3 relative bg-brand-dark border-b border-dark-line"
       >
         {/* Full-bleed Background Photography */}
         <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
@@ -607,7 +607,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     // a fourth hardcoded copy is the one that gets missed when
                     // it changes.
                     href={SITE.phoneHref}
-                    className="inline-flex items-center gap-2 font-mono text-web-xs font-medium text-ink-900 hover:text-brand-dark transition-colors"
+                    className="web-hit inline-flex items-center gap-2 font-mono text-web-xs font-medium text-ink-900 hover:text-brand-dark transition-colors"
                   >
                     <span>{SITE.phone}</span>
                     <ArrowIcon size={13} stroke={WEB_ICON_STROKE} />

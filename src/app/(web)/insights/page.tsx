@@ -13,6 +13,7 @@ import { NewsletterForm } from "@/components/web/layout/newsletter-form";
 import { Container } from "@/components/web/primitives/container";
 import { InsightsHero } from "@/components/web/insights/insights-hero";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
+import { WebMediaBadge } from "@/components/web/primitives/badge";
 
 export const metadata: Metadata = {
   title: "Research & Market Insights | Sunland Real Estates",
@@ -116,10 +117,9 @@ export default async function InsightsPage({
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
                   />
-                  <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
-                    <span className="size-1.5 rounded-full bg-brand-yellow" />
+                  <WebMediaBadge caps={false} dot="bg-brand-yellow" className="absolute left-4 top-4 z-10">
                     {featured.category} · Featured
-                  </span>
+                  </WebMediaBadge>
                 </div>
 
                 {/* Content Column */}
@@ -210,9 +210,9 @@ export default async function InsightsPage({
                           aria-hidden="true"
                           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
                         />
-                        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
+                        <WebMediaBadge caps={false} className="absolute left-3.5 top-3.5 z-10">
                           {post.category}
-                        </span>
+                        </WebMediaBadge>
                       </div>
 
                       {/* Content Section below photo */}

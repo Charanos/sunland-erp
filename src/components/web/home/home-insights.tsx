@@ -4,6 +4,7 @@ import { getAuthorAvatar } from "../constants/people";
 import { SectionBand } from "../primitives/section-band";
 import { SectionHeading } from "./section-heading";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
+import { WebMediaBadge } from "../primitives/badge";
 
 export type InsightPost = {
   category: string;
@@ -77,9 +78,9 @@ export function HomeInsights({ posts }: { posts: InsightPost[] }) {
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
                   />
-                  <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
+                  <WebMediaBadge caps={false} className="absolute left-3.5 top-3.5 z-10">
                     {post.category}
-                  </span>
+                  </WebMediaBadge>
                 </div>
 
                 {/* Uncarded Content Section below photo */}

@@ -69,14 +69,14 @@ export function WebFooter() {
             <div className="mt-5 flex flex-col gap-2.5">
               <a
                 href={SITE.phoneHref}
-                className="flex items-center gap-2 font-mono text-web-xs text-white transition-colors hover:text-brand-yellow"
+                className="web-hit flex items-center gap-2 py-1.5 font-mono text-web-xs text-white transition-colors hover:text-brand-yellow"
               >
                 <PhoneIcon size={13} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                 {SITE.phone}
               </a>
               <a
                 href={SITE.emailHref}
-                className="flex items-center gap-2 font-mono text-web-xs text-white transition-colors hover:text-brand-yellow"
+                className="web-hit flex items-center gap-2 py-1.5 font-mono text-web-xs text-white transition-colors hover:text-brand-yellow"
               >
                 <MailIcon size={13} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                 {SITE.email}
@@ -110,7 +110,7 @@ export function WebFooter() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="font-mono text-xs text-slate-400 transition-colors hover:text-white"
+                  className="web-hit font-mono text-xs text-slate-400 transition-colors hover:text-white"
                 >
                   {item.label}
                 </Link>

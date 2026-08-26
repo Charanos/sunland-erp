@@ -38,7 +38,7 @@ export function LandlordHero() {
     <section
       ref={sectionRef}
       aria-labelledby="landlord-hero-heading"
-      className="web-dark relative z-10 flex min-h-[68svh] sm:min-h-[72svh] lg:min-h-[78svh] flex-col overflow-hidden bg-brand-dark pb-14 pt-32 sm:pt-36 lg:pt-44"
+      className="web-dark relative z-10 web-hero-l2 bg-brand-dark"
     >
       {/* ── Background ── */}
       <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
@@ -114,7 +114,7 @@ export function LandlordHero() {
           <div className="hero-detail gsap-enter flex flex-wrap items-center lg:justify-end gap-4">
             <Link
               href="/login"
-              className="text-xs font-medium text-slate-300 hover:text-brand-yellow transition-colors inline-flex items-center gap-1.5 lg:mr-2"
+              className="web-hit text-xs font-medium text-slate-300 hover:text-brand-yellow transition-colors inline-flex items-center gap-1.5 lg:mr-2"
             >
               <span>Owner ERP Portal</span>
               <ArrowIcon size={13} stroke={WEB_ICON_STROKE} aria-hidden="true" />

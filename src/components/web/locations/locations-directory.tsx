@@ -8,6 +8,7 @@ import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
 import { Container } from "@/components/web/primitives/container";
 import { AreaOccupancyPieCharts } from "@/components/web/locations/area-occupancy-pie-charts";
 import { cn } from "@/lib/utils/cn";
+import { WebMediaBadge } from "../primitives/badge";
 
 interface LocationsDirectoryProps {
   areas: WebArea[];
@@ -327,10 +328,10 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
 
                       {/* Top Action Row: Minimal Region Tag + Sleek Arrow Action */}
                       <div className="relative z-10 flex items-center justify-between gap-3">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/45 backdrop-blur-md px-3.5 py-1 font-mono text-web-nano font-medium text-white border border-white/10 shadow-xs">
+                        <WebMediaBadge caps={false}>
                           <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                           <span>{tile.region}</span>
-                        </span>
+                        </WebMediaBadge>
 
                         <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:scale-105 shadow-xs">
                           <ArrowOutIcon size={13} stroke={2} />
@@ -496,16 +497,15 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
 
                       {/* Top Badges: Region + Live Listings (if available) */}
                       <div className="absolute inset-x-3.5 top-3.5 z-10 flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-white/15 px-3 py-1 font-mono text-web-nano font-medium text-white backdrop-blur-md shadow-xs">
+                        <WebMediaBadge caps={false}>
                           <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                           <span>{area.region}</span>
-                        </span>
+                        </WebMediaBadge>
 
                         {liveCount > 0 && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-emerald-500/30 px-3 py-1 font-mono text-web-nano font-medium text-emerald-300 backdrop-blur-md shadow-xs">
-                            <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          <WebMediaBadge tone="mint" caps={false} dot="bg-accent-mint animate-pulse">
                             {liveCount} Listed
-                          </span>
+                          </WebMediaBadge>
                         )}
                       </div>
                     </div>

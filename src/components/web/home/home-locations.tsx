@@ -7,6 +7,7 @@ import { WebButtonLink } from "../primitives/button";
 import { SectionBand } from "../primitives/section-band";
 import { locationDefaults } from "./home.defaults";
 import { SectionHeading } from "./section-heading";
+import { WebMediaBadge } from "../primitives/badge";
 
 export type LocationTile = {
   name: string;
@@ -156,10 +157,10 @@ export function HomeLocations({ tiles = [] }: { tiles?: LocationTile[] }) {
 
                 {/* Top Action Row: Region Tag + Interactive Arrow Button */}
                 <div className="relative z-10 flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/50 backdrop-blur-md px-3.5 py-1 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
+                  <WebMediaBadge caps={false}>
                     <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                     <span>{tile.region ?? "Nairobi"}</span>
-                  </span>
+                  </WebMediaBadge>
 
                   <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:scale-105 shadow-xs">
                     <ArrowIcon size={13} stroke={2} />

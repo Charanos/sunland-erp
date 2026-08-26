@@ -14,6 +14,7 @@ import { Container } from "@/components/web/primitives/container";
 import { ArticleHero } from "@/components/web/insights/article-hero";
 import { ArticleInteractiveTools } from "@/components/web/insights/article-interactive-tools";
 import { ArticleBodyBlocks } from "@/components/web/insights/article-body-blocks";
+import { WebMediaBadge } from "@/components/web/primitives/badge";
 
 export const revalidate = 3600;
 
@@ -176,7 +177,7 @@ export default async function InsightArticlePage({
               </div>
               <Link
                 href="/insights"
-                className="font-mono text-xs text-slate-500 hover:text-ink-900 transition-colors inline-flex items-center gap-1"
+                className="web-hit font-mono text-xs text-slate-500 hover:text-ink-900 transition-colors inline-flex items-center gap-1"
               >
                 <span>View All Research</span>
                 <ArrowRightIcon size={12} stroke={2} />
@@ -218,10 +219,9 @@ function ReadNextCard({ post }: { post: InsightPost }) {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
         />
-        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
-          <span className="size-1.5 rounded-full bg-brand-yellow" />
+        <WebMediaBadge caps={false} dot="bg-brand-yellow" className="absolute left-3.5 top-3.5 z-10">
           {post.category}
-        </span>
+        </WebMediaBadge>
       </div>
 
       {/* Content Section below photo */}

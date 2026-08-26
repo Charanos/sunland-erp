@@ -38,7 +38,7 @@ export function ServicesHero() {
     <section
       ref={sectionRef}
       aria-labelledby="services-hero-heading"
-      className="web-dark relative z-10 flex min-h-[72svh] sm:min-h-[76svh] lg:min-h-[82svh] flex-col overflow-hidden bg-brand-dark pb-12 pt-32 sm:pt-36 lg:pt-44"
+      className="web-dark relative z-10 web-hero-l2 bg-brand-dark"
     >
       {/* ── Background ── */}
       <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">

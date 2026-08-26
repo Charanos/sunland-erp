@@ -57,7 +57,7 @@ export function ListingDetailView({
   return (
     <>
       {/* ── Atmospheric Luxury Hero Section with Cinematic Background ── */}
-      <section className="web-dark relative overflow-hidden bg-brand-dark pt-28 sm:pt-32 lg:pt-36 pb-12 lg:pb-16 border-b border-dark-line">
+      <section className="web-dark web-hero-l3 relative bg-brand-dark border-b border-dark-line">
         {/* Full-bleed Cinematic Property Background Image (Matching Home Hero Visuals) */}
         {listing.images.length > 0 && (
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">

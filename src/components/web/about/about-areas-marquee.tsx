@@ -6,6 +6,7 @@ import { WEB_AREAS, type WebArea } from "@/components/web/constants/locations.co
 import { SectionBand } from "@/components/web/primitives/section-band";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
 import { GalleryMarquee } from "@/components/web/home/gallery-marquee";
+import { WebMediaBadge } from "../primitives/badge";
 
 /**
  * 05 — Regional Coverage Hubs Marquee.
@@ -123,13 +124,9 @@ export function AboutAreasMarquee() {
 
               {/* Top Glass Badges */}
               <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">
-                <span className="inline-flex items-center rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-web-nano uppercase tracking-wider text-white border border-white/20">
-                  {hub.regionBadge}
-                </span>
+                <WebMediaBadge>{hub.regionBadge}</WebMediaBadge>
 
-                <span className="inline-flex items-center rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 font-mono text-web-nano text-white/90 border border-white/20">
-                  {hub.guideValue}
-                </span>
+                <WebMediaBadge caps={false}>{hub.guideValue}</WebMediaBadge>
               </div>
 
               {/* Bottom Area Identity Metadata */}
