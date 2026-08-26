@@ -214,7 +214,7 @@ export function ListingInteractiveMap({
             >
               <div className="min-w-0 pr-3">
                 <p className="text-sm font-medium text-ink-900 truncate">{poi.name}</p>
-                <p className="text-xxs uppercase tracking-wider text-ink-400 capitalize mt-0.5">{poi.category}</p>
+                <p className="text-web-nano uppercase tracking-wider text-ink-400 capitalize mt-0.5">{poi.category}</p>
               </div>
               <div className="text-right shrink-0">
                 <span className="web-numeric text-xs font-medium text-ink-900 block">{poi.distance}</span>

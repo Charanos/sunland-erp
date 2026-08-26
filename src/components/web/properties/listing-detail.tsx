@@ -145,7 +145,7 @@ export function ListingDetailView({
             {/* Quick Price Indicator (Desktop) */}
             {listing.priceKes !== null && (
               <div className="hidden lg:block text-right shrink-0">
-                <p className="web-control text-xxs uppercase tracking-[0.16em] text-on-dark-lo mb-1">
+                <p className="web-control text-web-nano uppercase tracking-[0.16em] text-on-dark-lo mb-1">
                   {isRental ? "Monthly Rent" : "Asking Price"}
                 </p>
                 <div className="flex items-baseline justify-end gap-1.5">
@@ -180,7 +180,7 @@ export function ListingDetailView({
                   <div className="flex flex-col items-start sm:px-5 first:pl-0">
                     <div className="flex items-center gap-2 text-ink-400 mb-1.5">
                       <BedIcon size={17} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-                      <span className="web-control text-xxs uppercase tracking-[0.14em] font-medium">Bedrooms</span>
+                      <span className="web-control text-web-nano uppercase tracking-[0.14em] font-medium">Bedrooms</span>
                     </div>
                     <span className="web-numeric text-3xl sm:text-4xl font-normal tracking-tight text-ink-900">
                       {listing.bedrooms} <span className="text-xs font-normal text-ink-400">Beds</span>
@@ -192,7 +192,7 @@ export function ListingDetailView({
                   <div className="flex flex-col items-start pt-5 sm:pt-0 sm:px-5">
                     <div className="flex items-center gap-2 text-ink-400 mb-1.5">
                       <BathIcon size={17} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-                      <span className="web-control text-xxs uppercase tracking-[0.14em] font-medium">Bathrooms</span>
+                      <span className="web-control text-web-nano uppercase tracking-[0.14em] font-medium">Bathrooms</span>
                     </div>
                     <span className="web-numeric text-3xl sm:text-4xl font-normal tracking-tight text-ink-900">
                       {listing.bathrooms} <span className="text-xs font-normal text-ink-400">Baths</span>
@@ -204,7 +204,7 @@ export function ListingDetailView({
                   <div className="flex flex-col items-start pt-5 sm:pt-0 sm:px-5">
                     <div className="flex items-center gap-2 text-ink-400 mb-1.5">
                       <AreaIcon size={17} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-                      <span className="web-control text-xxs uppercase tracking-[0.14em] font-medium">Total Area</span>
+                      <span className="web-control text-web-nano uppercase tracking-[0.14em] font-medium">Total Area</span>
                     </div>
                     <span className="web-numeric text-3xl sm:text-4xl font-normal tracking-tight text-ink-900">
                       {listing.area}
@@ -216,7 +216,7 @@ export function ListingDetailView({
                   <div className="flex flex-col items-start pt-5 sm:pt-0 sm:px-5 last:pr-0">
                     <div className="flex items-center gap-2 text-ink-400 mb-1.5">
                       <ParkingIcon size={17} stroke={WEB_ICON_STROKE} aria-hidden="true" />
-                      <span className="web-control text-xxs uppercase tracking-[0.14em] font-medium">Parking</span>
+                      <span className="web-control text-web-nano uppercase tracking-[0.14em] font-medium">Parking</span>
                     </div>
                     <span className="web-numeric text-3xl sm:text-4xl font-normal tracking-tight text-ink-900">
                       {listing.parkingSpaces} <span className="text-xs font-normal text-ink-400">Cars</span>

@@ -104,6 +104,18 @@ feedback should be inline (beside the field that failed), not a toast: a toast
 that reports a validation error the user cannot see the source of is worse than
 no toast.
 
+**Resolved — no provider is mounted, deliberately.** With the five write paths
+built, the public site has exactly one authed control: the Save button in
+`listing-hero-actions.tsx`. It reports inline beside itself, which the argument
+above says is the better surface anyway. Every other form reports at the field
+that failed. So a lazy provider would ship JavaScript for zero consumers that
+need it, against a 180KB budget.
+
+Revisit this only when inline admin editing (option B) lands and there is a
+mutation whose result genuinely has no on-screen home. Until then the
+correct implementation of "toasts on public routes" is: none, and
+`grep -r useToast src/components/web` should stay empty.
+
 ### 3. Revalidation
 
 Every public route is `revalidate = 3600`. A mutation must call

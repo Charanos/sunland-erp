@@ -158,7 +158,7 @@ export function ListingEnquiryRail({
         {/* ── Top Pricing Banner ── */}
         <div className="border-b border-slate-100 bg-gradient-to-b from-slate-50/80 to-white p-5">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="web-control text-xxs uppercase tracking-[0.14em] text-ink-400 font-medium">
+            <span className="web-control text-web-nano uppercase tracking-[0.14em] text-ink-400 font-medium">
               {isRental ? "Monthly Lease" : "Guide Price"}
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-web-micro font-medium text-emerald-700 border border-emerald-200/60">
@@ -291,7 +291,7 @@ export function ListingEnquiryRail({
               />
               {/* Tour Type Selector */}
               <div>
-                <label className="web-subtitle mb-1 block text-xxs text-ink-400 font-medium uppercase tracking-wider">
+                <label className="web-subtitle mb-1 block text-web-nano text-ink-400 font-medium uppercase tracking-wider">
                   Select Tour Experience
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -324,7 +324,7 @@ export function ListingEnquiryRail({
 
               {/* Quick Date Chips */}
               <div>
-                <label className="web-subtitle mb-1 block text-xxs text-ink-400 font-medium uppercase tracking-wider">
+                <label className="web-subtitle mb-1 block text-web-nano text-ink-400 font-medium uppercase tracking-wider">
                   Preferred Day
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -353,7 +353,7 @@ export function ListingEnquiryRail({
                   preference the visitor never expressed. Same chip pattern as
                   the day row directly above, so the pair reads as one control. */}
               <div>
-                <label className="web-subtitle mb-1 block text-xxs text-ink-400 font-medium uppercase tracking-wider">
+                <label className="web-subtitle mb-1 block text-web-nano text-ink-400 font-medium uppercase tracking-wider">
                   Preferred Time
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -468,7 +468,7 @@ export function ListingEnquiryRail({
             {/* Header with Metric Badges */}
             <div className="flex items-start justify-between">
               <div>
-                <p className="web-control text-xxs uppercase tracking-[0.14em] font-medium text-ink-400">
+                <p className="web-control text-web-nano uppercase tracking-[0.14em] font-medium text-ink-400">
                   Market Appreciation
                 </p>
                 <h4 className="text-sm font-medium text-ink-900 mt-0.5">{areaName} Prime Sub-Market</h4>
@@ -483,7 +483,7 @@ export function ListingEnquiryRail({
             {/* Sparkline / Area Chart Container with Dynamic Curve */}
             <div className="relative rounded-2xl border border-slate-100 bg-gradient-to-b from-slate-50/70 to-white p-3 pt-3.5 shadow-sm">
               {/* Legend Strip */}
-              <div className="flex items-center justify-between text-xxs font-medium text-ink-400 mb-1.5 px-1">
+              <div className="flex items-center justify-between text-web-nano font-medium text-ink-400 mb-1.5 px-1">
                 <div className="flex items-center gap-1.5">
                   <span className="size-2 rounded-full bg-brand-dark" />
                   <span className="text-ink-700">This Property</span>
@@ -528,7 +528,7 @@ export function ListingEnquiryRail({
                           const avgVal = payload.find((p) => p.dataKey === "avg")?.value;
                           return (
                             <div className="rounded-xl border border-slate-700/60 bg-brand-dark/95 p-3 shadow-xl backdrop-blur-md text-white text-xs space-y-1">
-                              <p className="web-control text-xxs uppercase tracking-wider text-slate-400">{label} Index</p>
+                              <p className="web-control text-web-nano uppercase tracking-wider text-slate-400">{label} Index</p>
                               {propVal && (
                                 <p className="flex items-center justify-between gap-4 font-medium">
                                   <span className="text-brand-yellow">Property:</span>
@@ -571,11 +571,11 @@ export function ListingEnquiryRail({
             {/* Key Submarket Intelligence Indicators */}
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-slate-50/80 p-2.5 border border-slate-100">
-                <p className="text-xxs uppercase tracking-wider text-ink-400 font-medium">Rental Yield</p>
+                <p className="text-web-nano uppercase tracking-wider text-ink-400 font-medium">Rental Yield</p>
                 <p className="web-numeric text-sm font-medium text-ink-900 mt-0.5">7.6% p.a.</p>
               </div>
               <div className="rounded-xl bg-slate-50/80 p-2.5 border border-slate-100">
-                <p className="text-xxs uppercase tracking-wider text-ink-400 font-medium">Days on Market</p>
+                <p className="text-web-nano uppercase tracking-wider text-ink-400 font-medium">Days on Market</p>
                 <p className="web-numeric text-sm font-medium text-ink-900 mt-0.5">28 Days Avg</p>
               </div>
             </div>

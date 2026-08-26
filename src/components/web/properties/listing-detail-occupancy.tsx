@@ -39,7 +39,7 @@ const CustomTooltip = ({
       <div className="rounded-2xl border border-slate-700/60 bg-brand-dark/95 p-4 shadow-2xl backdrop-blur-xl text-white min-w-[210px] space-y-2.5">
         <div className="flex items-center justify-between border-b border-white/10 pb-2">
           <p className="font-medium text-sm text-white">{label}</p>
-          <span className="inline-flex items-center rounded-full bg-brand-yellow/20 px-2 py-0.5 text-xxs font-medium text-brand-yellow">
+          <span className="inline-flex items-center rounded-full bg-brand-yellow/20 px-2 py-0.5 text-web-nano font-medium text-brand-yellow">
             {occRate}% Occupied
           </span>
         </div>
@@ -106,7 +106,7 @@ export function ListingDetailOccupancy({
       {/* ── Open Asset Health KPI Summary Strip ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-7 sm:py-8 border-y border-slate-200 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80">
         <div className="flex flex-col items-start sm:px-5 first:pl-0">
-          <p className="text-xxs uppercase tracking-[0.14em] font-medium text-ink-400">Total Asset Units</p>
+          <p className="text-web-nano uppercase tracking-[0.14em] font-medium text-ink-400">Total Asset Units</p>
           <div className="flex items-baseline gap-1.5 mt-1.5">
             <span className="web-numeric text-3xl sm:text-4xl font-normal text-ink-900">{totalUnits}</span>
             <span className="text-xs text-ink-400">Units</span>
@@ -114,7 +114,7 @@ export function ListingDetailOccupancy({
         </div>
 
         <div className="flex flex-col items-start pt-5 sm:pt-0 sm:px-5">
-          <p className="text-xxs uppercase tracking-[0.14em] font-medium text-ink-400">Occupancy Rate</p>
+          <p className="text-web-nano uppercase tracking-[0.14em] font-medium text-ink-400">Occupancy Rate</p>
           <div className="flex items-baseline gap-1.5 mt-1.5">
             <span className="web-numeric text-3xl sm:text-4xl font-normal text-emerald-700">{overallOccupancyRate}%</span>
             <span className="text-xs text-emerald-600 font-medium">Strong</span>
@@ -122,7 +122,7 @@ export function ListingDetailOccupancy({
         </div>
 
         <div className="flex flex-col items-start pt-5 sm:pt-0 sm:px-5">
-          <p className="text-xxs uppercase tracking-[0.14em] font-medium text-ink-400">Occupied Leases</p>
+          <p className="text-web-nano uppercase tracking-[0.14em] font-medium text-ink-400">Occupied Leases</p>
           <div className="flex items-baseline gap-1.5 mt-1.5">
             <span className="web-numeric text-3xl sm:text-4xl font-normal text-ink-900">{totalOccupied}</span>
             <span className="text-xs text-ink-400">Tenants</span>
@@ -130,7 +130,7 @@ export function ListingDetailOccupancy({
         </div>
 
         <div className="flex flex-col items-start pt-5 sm:pt-0 sm:px-5 last:pr-0">
-          <p className="text-xxs uppercase tracking-[0.14em] font-medium text-brand-dark">Vacant & Ready</p>
+          <p className="text-web-nano uppercase tracking-[0.14em] font-medium text-brand-dark">Vacant & Ready</p>
           <div className="flex items-baseline gap-1.5 mt-1.5">
             <span className="web-numeric text-3xl sm:text-4xl font-normal text-brand-dark">{totalVacant}</span>
             <span className="text-xs font-medium text-brand-dark">To Let</span>
@@ -241,7 +241,7 @@ export function ListingDetailOccupancy({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 text-xxs uppercase tracking-[0.14em] font-medium text-ink-400">
+                <tr className="border-b border-slate-100 text-web-nano uppercase tracking-[0.14em] font-medium text-ink-400">
                   <th className="pb-3 pl-2">Layout / Unit Type</th>
                   <th className="pb-3 text-center">Total Units</th>
                   <th className="pb-3 text-center">Occupied</th>
