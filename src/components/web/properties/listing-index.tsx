@@ -90,7 +90,7 @@ export async function ListingIndex({
                 </div>
                 <div className="min-w-0">
                   <div className="h-[54px] w-full web-skeleton rounded-xl" />
-                  <ul className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+                  <ul className="mt-6 grid gap-x-6 gap-y-14 sm:gap-y-16 sm:grid-cols-2 lg:gap-x-8 lg:gap-y-20">
                     {Array.from({ length: 9 }).map((_, i) => (
                       <li key={i} className="flex flex-col gap-3">
                         <div className="aspect-[16/10] web-skeleton rounded-2xl" />

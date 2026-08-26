@@ -108,6 +108,28 @@ export function startSmoothScroll(resyncTo?: number): void {
 }
 
 /**
+ * Snap Lenis's internal position to `y`, with no easing.
+ *
+ * Lenis only learns the page moved by reading native `scroll` events or by
+ * going through its own `scrollTo`; it never observes an external
+ * `window.scrollTo` call. So on a route change, a router (or our own code)
+ * calling `window.scrollTo(0, 0)` moves the real page but leaves Lenis's
+ * `animatedScroll`/target sitting at wherever the previous page's offset
+ * was — and on the very next tick, Lenis eases the page from that stale
+ * value back toward its own understanding of "correct", which is what reads
+ * as a page loading half-scrolled. This keeps the two in lockstep. Safe to
+ * call before Lenis exists (reduced motion, or before hydration): the
+ * native fallback below covers the same intent.
+ */
+export function jumpSmoothScrollTo(y: number): void {
+  if (lenis) {
+    lenis.scrollTo(y, { immediate: true, force: true });
+    return;
+  }
+  window.scrollTo(0, y);
+}
+
+/**
  * Smoothly scroll to a target, honouring the fixed header.
  *
  * Falls back to the native instant jump when Lenis was never constructed,

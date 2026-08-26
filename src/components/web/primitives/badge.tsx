@@ -98,7 +98,12 @@ export function WebMediaBadge({
   return (
     <span
       className={cn(
-        "web-control inline-flex items-center gap-1.5 rounded-web-full px-2.5 py-1",
+        // Not `.web-control`: that class fixes line-height at 20px,
+        // unlayered so no utility can override it, for keeping mixed-size
+        // nav/button controls aligned in a row — a need this badge, sitting
+        // alone over a photo, does not share. `leading-4` (16px) matches
+        // what the "Featured" flag beside it already renders at.
+        "inline-flex items-center gap-1.5 rounded-web-full px-2.5 py-0.5 font-mono font-medium leading-4",
         "border bg-black/60 shadow-xs backdrop-blur-md",
         "text-web-nano",
         caps && "uppercase tracking-[0.14em]",

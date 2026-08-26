@@ -89,6 +89,16 @@ export function ListingCard({
       className={cn(
         "group relative flex flex-col justify-between transition-all duration-300 ease-out",
         isAvailable && "hover:-translate-y-1",
+        // Mobile only: at a single column, cards stack with nothing but the
+        // grid's own row gap between one entry and the next. A hairline
+        // closing rule under each card — the same weight and tone as the
+        // spec row's interior divider below, so the two read as one design
+        // language rather than two different lines — gives each listing a
+        // deliberate end, the way a printed classifieds column would, rather
+        // than just trailing off into whitespace. Gone from `sm:` up, where
+        // the grid is multi-column and a border under every card would read
+        // as a grid of boxes rather than a list.
+        "pb-6 border-b border-slate-200/70 sm:border-b-0 sm:pb-0",
         className
       )}
     >

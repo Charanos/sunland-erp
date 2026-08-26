@@ -3,7 +3,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { formatKES } from "@/lib/utils/format";
 import type { ListingDetail } from "@/lib/services/web/listings";
-import { LISTING_STATUS_CONFIG } from "../constants/listing-status";
+import { ListingStatusBadge } from "../primitives/badge";
 import { SITE } from "../constants/site";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { Breadcrumbs } from "../primitives/breadcrumbs";
@@ -33,7 +33,6 @@ export function ListingDetailView({
   listing: ListingDetail;
   similar: ListingCardData[];
 }) {
-  const status = LISTING_STATUS_CONFIG[listing.status];
   const CheckIcon = webIcons.check;
   const WhatsappIcon = webIcons.whatsapp;
   const ArrowIcon = webIcons.arrow;
@@ -115,19 +114,29 @@ export function ListingDetailView({
             <div className="min-w-0 max-w-4xl">
               {/* Badges Strip */}
               <div className="flex flex-wrap items-center gap-2 mb-3.5">
-                <span className="web-control inline-flex items-center gap-1.5 rounded-web-full bg-positive-bg px-3 py-1 text-xs uppercase tracking-[0.08em] text-emerald-400 border border-emerald-500/20">
-                  <span aria-hidden="true" className={cn("size-1.5 rounded-full", status.dot)} />
-                  {status.label}
-                </span>
-                <span className="web-control inline-flex rounded-web-full border border-dark-line px-3 py-1 text-xs uppercase tracking-[0.08em] text-on-dark">
+                {/* The real status primitive rather than a hand-rolled copy —
+                    already built for exactly this ("a badge sitting over a
+                    photograph") and already refined for the tighter,
+                    proportional box every other badge on the site now uses. */}
+                <ListingStatusBadge status={listing.status} />
+
+                {/* Secondary, outlined tier: deliberately not filled, so the
+                    coloured status pill above stays the one thing the eye
+                    lands on first. Sized to the same text-web-nano/leading-4
+                    mechanics as WebMediaBadge — not `.web-control` (a fixed
+                    20px line box, unlayered so no utility can override it)
+                    and not raw `text-xs` (Tailwind's own 12px scale, not
+                    this site's --text-web-* one) — which is what made these
+                    read a size heavier than everything around them. */}
+                <span className="inline-flex rounded-web-full border border-dark-line px-2.5 py-0.5 font-mono text-web-nano font-medium uppercase leading-4 tracking-[0.1em] text-on-dark">
                   {isRental ? "To let" : "For sale"}
                 </span>
                 {listing.propertyType && (
-                  <span className="web-control inline-flex rounded-web-full border border-dark-line px-3 py-1 text-xs uppercase tracking-[0.08em] text-on-dark">
+                  <span className="inline-flex rounded-web-full border border-dark-line px-2.5 py-0.5 font-mono text-web-nano font-medium uppercase leading-4 tracking-[0.1em] text-on-dark">
                     {listing.propertyType}
                   </span>
                 )}
-                <span className="web-numeric inline-flex rounded-web-full border border-dark-line px-3 py-1 text-xs tracking-[0.04em] text-on-dark-lo">
+                <span className="inline-flex rounded-web-full border border-dark-line px-2.5 py-0.5 font-mono text-web-nano font-medium leading-4 tracking-[0.05em] text-on-dark-lo">
                   Ref {listing.reference}
                 </span>
               </div>

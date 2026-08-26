@@ -4,6 +4,7 @@ import { FloatingContact } from "@/components/web/layout/floating-contact";
 import { SkipLink } from "@/components/web/layout/skip-link";
 import { WebHeader } from "@/components/web/layout/web-header";
 import { RevealController } from "@/components/web/motion/reveal-controller";
+import { RouteScrollManager } from "@/components/web/motion/route-scroll-manager";
 import { SmoothScrollProvider } from "@/components/web/motion/smooth-scroll-provider";
 
 /**
@@ -47,6 +48,7 @@ setTimeout(function () {
       <SkipLink />
       <WebHeader />
       <RevealController />
+      <RouteScrollManager />
       <SmoothScrollProvider />
       <main id="content" className="flex-1">
         {children}
