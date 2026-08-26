@@ -18,13 +18,12 @@ import { WebHeader } from "@/components/web/layout/web-header";
  */
 export default function RootNotFound() {
   return (
-    <div className="web-root flex min-h-screen flex-col">
+    <div className="web-root flex min-h-screen flex-col overflow-hidden bg-surface-0">
       <SkipLink />
       <WebHeader />
-      <main id="content" className="flex-1">
+      <main id="content" className="flex-1 flex flex-col">
         <NotFoundContent />
       </main>
-      <WebFooter />
     </div>
   );
 }

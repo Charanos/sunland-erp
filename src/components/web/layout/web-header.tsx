@@ -74,14 +74,7 @@ export function WebHeader() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
 
-  const isHome = pathname === "/";
-  const isProperties = pathname?.startsWith("/properties");
-  const isLandlords = pathname?.startsWith("/landlords");
-  const isServices = pathname?.startsWith("/services");
-  const isLocations = pathname?.startsWith("/locations");
-  const isInsights = pathname?.startsWith("/insights");
-  const isTransparentRoute = isHome || isProperties || isLandlords || isServices || isLocations || isInsights;
-  const isTransparent = isTransparentRoute && scrollDirection === "top";
+  const isTransparent = scrollDirection === "top";
   const isHidden = scrollDirection === "down" && !drawerOpen;
 
   const headerRef = useRef<HTMLElement>(null);
@@ -351,12 +344,6 @@ export function WebHeader() {
           </div>
         </div>
       </header>
-
-      {/* Spacer for the fixed header on every page that does not open with a
-          full-bleed hero. Sized to the real condensed height at each
-          breakpoint rather than one magic number: the logo is 36px under 640
-          and 60px above it, so a flat 96px left a visible gap on a phone. */}
-      {!isTransparentRoute && <div aria-hidden="true" className="h-[72px] sm:h-[96px]" />}
     </>
   );
 }

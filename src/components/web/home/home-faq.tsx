@@ -1,5 +1,6 @@
+import Link from "next/link";
+import { SITE } from "../constants/site";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
-import { WebButtonLink } from "../primitives/button";
 import { SectionBand } from "../primitives/section-band";
 import { Eyebrow } from "../primitives/eyebrow";
 import { faqDefaults } from "./home.defaults";
@@ -7,15 +8,19 @@ import { faqDefaults } from "./home.defaults";
 /**
  * 10 home.faq, light band.
  *
- * Production-grade FAQ with numeral-free editorial accordion and refined advisory concierge.
+ * Production-grade FAQ featuring:
+ * 1. Executive Advisory Concierge Card on the left with response telemetry and bg-tertiary-gradient CTA.
+ * 2. Luxury individual card-based accordion items on the right with category pills and smooth morphing controls.
  */
 export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
   const PlusIcon = webIcons.plus;
   const ChatIcon = webIcons.chat;
+  const ArrowIcon = webIcons.arrow;
+  const PhoneIcon = webIcons.phone;
 
   return (
-    <SectionBand tone={tone} labelledBy="faq-heading" className="relative bg-white py-20 lg:py-28">
-      <div className="grid gap-14 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-20 items-start">
+    <SectionBand tone={tone} labelledBy="faq-heading" className="relative bg-white py-20 sm:py-24 lg:py-28">
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16 xl:gap-20 items-start">
         {/* Left Column: Heading & Advisory Concierge Card */}
         <div className="lg:sticky lg:top-32" data-reveal>
           <Eyebrow tone="light">{faqDefaults.eyebrow}</Eyebrow>
@@ -30,50 +35,68 @@ export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
           </p>
 
           {/* Elevated Advisory Concierge Card */}
-          <div className="mt-10 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6 sm:p-7 shadow-[0_4px_20px_rgba(21,25,54,0.03)] backdrop-blur-xs">
+          <div className="mt-8 sm:mt-10 rounded-[24px] border border-line-strong bg-gradient-to-b from-surface-0 via-surface-0 to-slate-50/80 p-6 sm:p-7 shadow-[0_12px_32px_rgba(21,25,54,0.06)] backdrop-blur-xs">
             <div className="flex items-start gap-4">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-yellow/15 border border-brand-yellow/30 text-[#151936] shadow-xs">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#151936] text-white shadow-xs">
                 <ChatIcon size={20} stroke={WEB_ICON_STROKE} />
               </span>
               <div>
                 <p className="font-editorial text-[21px] font-medium leading-tight text-[#151936]">
                   Have a specific question?
                 </p>
-                <p className="font-mono text-xs text-slate-500 mt-1">
-                  Average response time: &lt; 2 hours
-                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <p className="font-mono text-xs text-slate-500">
+                    Average response time: &lt; 2 hours
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-6">
-              <WebButtonLink
-                href={faqDefaults.cta.href}
-                variant="primary"
-                size="md"
-                icon="arrow"
-                iconTrailing
-                className="w-full shadow-xs hover:scale-[1.02] active:scale-[0.98] transition-all"
+            {/* Quick Contact Line */}
+            <div className="mt-5 pt-4 border-t border-line flex items-center justify-between font-mono text-xs text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <PhoneIcon size={12} stroke={WEB_ICON_STROKE} />
+                <span>Direct Line:</span>
+              </span>
+              <a
+                href={SITE.phoneHref}
+                className="font-medium text-[#151936] hover:underline"
               >
-                {faqDefaults.cta.label}
-              </WebButtonLink>
+                {SITE.phone}
+              </a>
+            </div>
+
+            <div className="mt-5">
+              <Link
+                href={faqDefaults.cta.href}
+                className="group w-full inline-flex items-center justify-center gap-2 rounded-full bg-tertiary-gradient text-white px-6 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-md hover:opacity-95 transition-all cursor-pointer"
+              >
+                <span>{faqDefaults.cta.label}</span>
+                <ArrowIcon
+                  size={12}
+                  stroke={WEB_ICON_STROKE}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Refined Numeral-Free Accordion Panels */}
-        <div className="border-t border-slate-200/90" data-reveal-group>
+        {/* Right Column: Luxury Carded Accordion Stack */}
+        <div className="space-y-3.5" data-reveal-group>
           {faqDefaults.items.map((item) => (
             <details
               key={item.question}
               name="home-faq"
-              className="group border-b border-slate-200/90 transition-colors duration-200"
+              className="group rounded-[20px] border border-line bg-surface-0 p-5 sm:p-6 shadow-2xs transition-all duration-300 hover:border-slate-300 hover:shadow-xs open:border-slate-300 open:bg-surface-0 open:shadow-xs"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 sm:py-7 text-left [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-left [&::-webkit-details-marker]:hidden">
                 <div className="min-w-0 flex-1">
-                  <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-[9.5px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">
+                  <span className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-slate-500 mb-2">
                     {item.category}
                   </span>
-                  <h3 className="font-editorial text-[21px] sm:text-[25px] font-medium leading-snug text-[#151936] transition-colors duration-200 group-hover:text-blue-700">
+                  <h3 className="font-editorial text-[20px] sm:text-[22px] font-medium leading-snug text-[#151936] transition-colors duration-200 group-hover:text-blue-900">
                     {item.question}
                   </h3>
                 </div>
@@ -81,14 +104,14 @@ export function HomeFaq({ tone = "light" }: { tone?: "light" | "tint" }) {
                 {/* Tactile Morphing Toggle Button */}
                 <span
                   aria-hidden="true"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-500 transition-all duration-300 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white group-open:rotate-45 group-open:border-[#151936] group-open:bg-[#151936] group-open:text-white shadow-xs"
+                  className="flex size-8.5 shrink-0 items-center justify-center rounded-full border border-line bg-surface-1 text-slate-500 transition-all duration-300 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white group-open:rotate-45 group-open:border-[#151936] group-open:bg-[#151936] group-open:text-white shadow-xs"
                 >
-                  <PlusIcon size={16} stroke={WEB_ICON_STROKE} />
+                  <PlusIcon size={15} stroke={WEB_ICON_STROKE} />
                 </span>
               </summary>
 
-              <div className="overflow-hidden">
-                <p className="pb-8 pr-6 sm:pr-14 text-[15px] sm:text-[15.5px] leading-relaxed text-slate-600 font-normal">
+              <div className="overflow-hidden mt-3.5 border-t border-line/70 pt-3.5">
+                <p className="pr-4 sm:pr-8 text-[14.5px] sm:text-[15px] leading-relaxed text-slate-600 font-normal">
                   {item.answer}
                 </p>
               </div>

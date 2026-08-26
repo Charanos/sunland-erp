@@ -307,7 +307,23 @@ export const landlordDefaults = {
       { label: "Plumbing repair, unit 4B", value: "−4,200" },
     ],
     total: { label: "Remitted 5 April", value: "KES 106,200" },
-    manager: { initials: "JM", name: "Joyce Mwikali, your manager", phone: "0703 100 875" },
+    /**
+     * A real person from the roster, not an invented one.
+     *
+     * This read "Joyce Mwikali, your manager" — a name that appears nowhere in
+     * `people.ts` and belongs to nobody at the firm — printed beside the real
+     * company phone number, on the highest-value band of the home page. A
+     * mocked-up portal screenshot is fine; a fabricated colleague attached to a
+     * number a visitor can actually dial is not.
+     *
+     * `name` is the roster key, so the portrait resolves through
+     * `getAuthorAvatar` and cannot drift from the face shown on /about.
+     */
+    manager: {
+      name: "Lewis Maina",
+      title: "your property manager",
+      phone: "0703 100 875",
+    },
     caption:
       "Your statements, your documents, your manager's direct line, in one place. Live figures from the same system we run the properties on.",
   },
@@ -513,9 +529,9 @@ export const proofDefaults = {
  * titles, not published articles, so the band stays hidden until they are.
  */
 export const insightDefaults = {
-  eyebrow: "Insights",
-  headline: "Worth reading before you sign anything",
-  viewAllLabel: "All insights",
+  eyebrow: "Market Intelligence",
+  headline: "Field guidance on leases, titles & true costs",
+  viewAllLabel: "All 7 articles",
   viewAllHref: "/insights",
   posts: [
     {

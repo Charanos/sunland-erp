@@ -442,12 +442,27 @@
   }
 }
 
+@keyframes web-marquee-reverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .animate-web-marquee {
-  animation: web-marquee 40s linear infinite;
+  animation: web-marquee 45s linear infinite;
   will-change: transform;
 }
 
-.animate-web-marquee:hover {
+.animate-web-marquee-reverse {
+  animation: web-marquee-reverse 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-web-marquee:hover,
+.animate-web-marquee-reverse:hover {
   animation-play-state: paused;
 }
 

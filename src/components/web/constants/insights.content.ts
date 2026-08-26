@@ -16,22 +16,12 @@ export const INSIGHT_CATEGORIES = [
 
 export type InsightCategory = (typeof INSIGHT_CATEGORIES)[number];
 
-export const AUTHOR_AVATARS: Record<string, string> = {
-  "Paul Amos": "/images/paul-amos-mwangi.jpg",
-  "Judy Wacera": "/images/judy-wacera.png",
-  "Lewis Maina": "/images/lewis-maina.jpg",
-  "Anthony Mbugua": "/images/anthony-mbugua-njunge.jpg",
-  "Anthony Mwangi": "/images/anthony-mwangi.jpg",
-  "Esther Kioni": "/images/esther-kioni.jpg",
-  "Maryanne Wairimu": "/images/maryanne-wairimu.jpg",
-  "Stanley Gikunju": "/images/stanely-cikunju.jpg",
-  "Stephen Koigi": "/images/stephen-koigi.png",
-  "Stephen Mbatia": "/images/stephen-mbatia.jpg",
-};
-
-export function getAuthorAvatar(author: string): string | undefined {
-  return AUTHOR_AVATARS[author];
-}
+/**
+ * Bylines resolve their portrait from the shared roster in `people.ts`, which
+ * the team section on `/about` reads from too. Re-exported here so the existing
+ * call sites in this module's own pages keep working unchanged.
+ */
+export { AUTHOR_AVATARS, getAuthorAvatar } from "./people";
 
 /**
  * A block of article body.

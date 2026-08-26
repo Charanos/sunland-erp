@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { getAuthorAvatar } from "../constants/people";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { BandArtwork } from "../primitives/band-artwork";
 import { WebButtonLink } from "../primitives/button";
@@ -15,6 +17,7 @@ export function HomeLandlords() {
   const CheckIcon = webIcons.check;
   const ShieldIcon = webIcons.shield;
   const { statement } = landlordDefaults;
+  const managerPhoto = getAuthorAvatar(statement.manager.name);
 
   return (
     <section
@@ -163,15 +166,34 @@ export function HomeLandlords() {
               {/* Property Manager Card */}
               <div className="mt-6 flex items-center justify-between gap-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5">
                 <div className="flex items-center gap-3 min-w-0">
-                  <span
-                    aria-hidden="true"
-                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#151936] font-mono text-xs font-semibold text-white shadow-xs"
-                  >
-                    {statement.manager.initials}
-                  </span>
+                  {/* A real face, resolved from the shared roster. The portal
+                      mock's whole argument is that a named human owns the
+                      property, and a monogram of an invented colleague was the
+                      one element undercutting it. */}
+                  {managerPhoto ? (
+                    <span className="relative size-10 shrink-0 overflow-hidden rounded-full shadow-xs">
+                      <Image
+                        src={managerPhoto}
+                        alt={statement.manager.name}
+                        fill
+                        sizes="40px"
+                        className="object-cover object-top"
+                      />
+                    </span>
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#151936] font-mono text-xs font-semibold text-white shadow-xs"
+                    >
+                      {statement.manager.name
+                        .split(" ")
+                        .map((part) => part.charAt(0))
+                        .join("")}
+                    </span>
+                  )}
                   <div className="min-w-0 truncate">
                     <p className="truncate text-xs font-semibold text-[#151936]">
-                      {statement.manager.name}
+                      {statement.manager.name}, {statement.manager.title}
                     </p>
                     <p className="font-mono text-xs text-slate-500">
                       {statement.manager.phone}

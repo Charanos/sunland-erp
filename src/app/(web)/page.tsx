@@ -1,3 +1,4 @@
+import { publishedPosts } from "@/components/web/constants/insights.content";
 import { HomeBudget } from "@/components/web/home/home-budget";
 import { WebFooter } from "@/components/web/layout/web-footer";
 import { HomeCategories } from "@/components/web/home/home-categories";
@@ -31,14 +32,24 @@ import {
 /**
  * The home page.
  *
- * Eleven bands, ordered for a first-time visitor who does not yet know
- * whether this is a listings site or an agency. The answer has to arrive in
- * the first screen: both, and the agency part is the differentiator.
+ * Ordered for a first-time visitor who does not yet know whether this is a
+ * listings site or an agency. The answer has to arrive in the first screen:
+ * both, and the agency part is the differentiator.
  *
- * Dark, light, dark, tint, dark, light, tint, light, tint, light, dark is a
- * breathing pattern. The dark bands are the only places the site raises its
- * voice, and each is placed where a claim is being made: what we do, what
- * your money buys, how we run it, and what to do next.
+ * The alternation of dark, light and tint grounds is a breathing pattern. The
+ * dark bands are the only places the site raises its voice, and each is placed
+ * where a claim is being made: what we do, what your money buys, how we run
+ * it, and what to do next. Two bands are conditional — insights hides below
+ * three published posts, and the FAQ switches ground to compensate, so no two
+ * light grounds ever touch whichever way that falls.
+ *
+ * ── Where the people appear ──
+ *
+ * Twice, both times attached to a claim rather than in a section of their own.
+ * The landlord band's statement panel names the manager who owns the property,
+ * with their real face; the insights band carries each guide's author. A team
+ * band would repeat what /about owns and would cost the page a band of rhythm
+ * to say what these two say in passing.
  *
  * A server component. Only six islands ship JavaScript: the mobile drawer,
  * the hero search, the budget finder, the stat counters, the floating contact
@@ -156,10 +167,27 @@ export default async function HomePage() {
 
   const locationTiles = [...locationDefaults.tiles];
 
-  // Insights hides below three published posts, which is its state until
-  // W5-11. When it is absent the proof and FAQ bands become neighbours, and
-  // two white grounds touching is exactly what the tint exists to prevent.
-  const insightPosts: InsightPost[] = [];
+  // Wired to the published set, which has existed for a while.
+  //
+  // This was hardcoded to `[]` with a note saying insights would arrive at
+  // W5-11 — but the articles landed early, and /insights has been serving them
+  // the whole time. So the band was rendering nothing on the home page while
+  // the content it needed sat one import away. The `posts.length < 3` guard
+  // inside the component still holds, so the band self-hides if the library
+  // ever drops below three, and `showInsights` still drives the FAQ's tone so
+  // two light grounds never touch.
+  const insightPosts: InsightPost[] = publishedPosts()
+    .slice(0, 3)
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title,
+      summary: post.summary,
+      category: post.category,
+      date: post.date,
+      readingTime: `${post.readingMinutes} min read`,
+      author: post.author,
+      imageUrl: post.imageUrl,
+    }));
   const showInsights = insightPosts.length >= 3;
 
   return (
@@ -169,7 +197,7 @@ export default async function HomePage() {
       <HomeBudget />
       <HomeFeatured listings={listings} />
       <HomeLandlords />
-      <HomeLocations tiles={locationTiles} />
+      <HomeLocations tiles={liveAreas} />
       <HomeServices />
       <HomeProof />
       <HomeGallery />

@@ -1,61 +1,134 @@
+import Image from "next/image";
 import Link from "next/link";
-import { WebButtonLink } from "../primitives/button";
+import { getAuthorAvatar } from "../constants/people";
 import { SectionBand } from "../primitives/section-band";
-import { insightDefaults } from "./home.defaults";
 import { SectionHeading } from "./section-heading";
+import { WEB_ICON_STROKE, webIcons } from "../icons";
 
 export type InsightPost = {
   category: string;
   title: string;
+  summary?: string;
   date: string;
   readingTime: string;
   slug: string;
+  /** Byline. Resolves to a portrait through the shared roster. */
+  author?: string;
+  imageUrl?: string;
 };
 
 /**
- * 09 home.insights, tint band.
+ * 09 — Home Insights & Advisory Previews.
  *
- * Hidden entirely below three published posts. An empty blog section is worse
- * than no blog section, and at launch this band will not exist at all, so the
- * sequence has to read correctly with it absent. It does: light proof, light
- * FAQ, dark close.
- *
- * Which means the default here is to render nothing. The caller passes posts
- * once `web_posts` exists (W5-11) and the band appears on its own.
+ * Uncarded editorial layout matching the insights directory:
+ * - High-impact section heading with advisory lead copy and direct "All 7 Insights" action.
+ * - 3 Uncarded featured articles with 16:10 photography, category badges,
+ *   substantive advisory summary, author avatar, reading time, and interactive arrow affordance.
  */
 export function HomeInsights({ posts }: { posts: InsightPost[] }) {
   if (posts.length < 3) return null;
 
+  const ArrowRightIcon = webIcons.arrow;
+  const DocIcon = webIcons.doc;
+
   return (
-    <SectionBand tone="tint" labelledBy="insights-heading">
+    <SectionBand tone="tint" labelledBy="insights-heading" className="py-20 sm:py-24 lg:py-28">
       <SectionHeading
         id="insights-heading"
-        eyebrow={insightDefaults.eyebrow}
-        title={insightDefaults.headline}
+        eyebrow="Market Intelligence"
+        title="Field guidance on leases, titles & true costs"
+        lead="Direct analysis on lease terms, title registry checks, service charge auditing, and realistic submarket yields across Nairobi."
+        align="split-right"
         action={
-          <WebButtonLink href={insightDefaults.viewAllHref} variant="outline" size="md">
-            {insightDefaults.viewAllLabel}
-          </WebButtonLink>
+          <Link
+            href="/insights"
+            className="group inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-5 py-2.5 font-mono text-[12px] uppercase tracking-[0.14em] text-[#151936] shadow-xs transition-all duration-200 hover:bg-[#151936] hover:text-white hover:border-[#151936] hover:shadow-md cursor-pointer"
+          >
+            <DocIcon size={14} stroke={WEB_ICON_STROKE} />
+            <span>All 7 Articles</span>
+            <ArrowRightIcon
+              size={13}
+              stroke={WEB_ICON_STROKE}
+              className="transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </Link>
         }
       />
 
-      <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.slice(0, 3).map((post) => (
-          <li key={post.slug}>
-            <Link
-              href={`/insights/${post.slug}`}
-              className="group flex h-full flex-col rounded-web-card border border-line bg-surface-0 p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-line-strong hover:shadow-web-md"
-            >
-              <span className="web-control self-start rounded-web-full bg-surface-2 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-ink-500">
-                {post.category}
-              </span>
-              <h3 className="web-title-card mt-5 flex-1 text-web-h3 text-ink-900">{post.title}</h3>
-              <p className="web-numeric mt-5 text-[13px] text-ink-400">
-                <time dateTime={post.date}>{post.date}</time> · {post.readingTime}
-              </p>
-            </Link>
-          </li>
-        ))}
+      <ul className="mt-10 sm:mt-12 grid gap-8 sm:gap-10 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+        {posts.slice(0, 3).map((post) => {
+          const avatarUrl = post.author ? getAuthorAvatar(post.author) : undefined;
+
+          return (
+            <li key={post.slug}>
+              <article className="group relative flex h-full flex-col justify-between transition-all duration-300 ease-out hover:-translate-y-1">
+                {/* Media Image Frame (Clean 16:10 Ratio) */}
+                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-900 shadow-2xs transition-shadow duration-300 group-hover:shadow-md">
+                  {post.imageUrl && (
+                    <Image
+                      src={post.imageUrl}
+                      alt={post.title}
+                      fill
+                      sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                  )}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
+                  />
+                  <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-[10px] font-medium text-white border border-white/15 shadow-xs">
+                    {post.category}
+                  </span>
+                </div>
+
+                {/* Uncarded Content Section below photo */}
+                <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
+                  <div>
+                    <h3 className="font-editorial text-[22px] sm:text-[23px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+                      <Link
+                        href={`/insights/${post.slug}`}
+                        className="after:absolute after:inset-0"
+                      >
+                        {post.title}
+                      </Link>
+                    </h3>
+
+                    {post.summary && (
+                      <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-2">
+                        {post.summary}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Author & Telemetry Footer */}
+                  <div className="mt-5 border-t border-slate-200/80 pt-3.5 flex items-center justify-between font-mono text-xs text-slate-500">
+                    <div className="flex items-center gap-2.5">
+                      {avatarUrl && (
+                        <div className="relative size-10 shrink-0 overflow-hidden rounded-full border border-line bg-surface-2 shadow-xs">
+                          <Image
+                            src={avatarUrl}
+                            alt={post.author ?? ""}
+                            fill
+                            sizes="40px"
+                            className="object-cover object-top"
+                          />
+                        </div>
+                      )}
+                      <span className="font-medium text-[#151936]">{post.author}</span>
+                      <span>·</span>
+                      <span>{post.readingTime}</span>
+                    </div>
+
+                    <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+                      <ArrowRightIcon size={13} stroke={2} aria-hidden="true" />
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </li>
+          );
+        })}
       </ul>
     </SectionBand>
   );

@@ -6,65 +6,53 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils/cn";
 import { DUR, registerWebMotion, STAGGER } from "@/lib/motion/web-motion";
+import { WEB_AREAS } from "@/components/web/constants/locations.content";
 import { WEB_ICON_STROKE, webIcons, type WebIconName } from "../icons";
 
 /**
- * The portfolio dial: what is on the books, by type, as one ring.
+ * The executive portfolio command dial card.
  *
- * ── Why a ring, and why this one ──
- *
- * Of the four figures the hero used to show, exactly one is a distribution.
- * The total, the area count and the portal count are all scalars, and a chart of a scalar
- * is decoration. The property-type split is a real composition that sums to
- * the total, so it is the only thing here a chart can honestly say something
- * about.
- *
- * The scalar still leads: the total sits in the hole and is readable in half a
- * second, which is all a hero gets. The ring is the second layer, for the
- * visitor who looks twice. Putting the number inside the chart rather than
- * beside it is what lets one element do both jobs.
- *
- * Segments are links. That is the strongest argument for the thing existing:
- * it turns a decorative statistic into the fastest route into the catalogue.
- *
- * ── Why this is hand-drawn SVG and not Recharts ──
- *
- * Recharts is in the project and earns its weight on the ERP dashboards. Here
- * it would cost roughly 100KB gzipped plus the d3 tree, and `ResponsiveContainer`
- * measures after mount, so this column would be empty on first paint. That is
- * the LCP and no-JavaScript failure the hero was just hardened against.
- *
- * Four arcs on one circle is `stroke-dasharray`. It server-renders as real
- * markup, needs no measurement, and animates by drawing itself, which is a
- * gesture no library pie can produce.
- *
- * ── Colour ──
- *
- * The ring is a tonal ramp of white, not four hues. The design system allows
- * one yellow element per viewport and that is the search button; a yellow
- * segment would compete with it for the same glance. Yellow is held back for
- * the hovered or focused segment, so it means "this one" rather than "this is
- * a chart".
+ * Props control which feature sections are rendered:
+ *   showStatusRail   – Full estate health & allocation progress bar (about page)
+ *   showCoverageHubs – Active regional hub pills drawer
+ *   showSlaFooter    – Contractual SLA / escrow sub-footer with sign-in link
+ *   footnote         – Simple inline stat + link bar (home hero compact mode)
  */
 
 export type DialSlice = {
   label: string;
   href: string;
   count: number;
-  /** The same glyph HomeCategories uses one section down, so the two rhyme. */
   icon: WebIconName;
-  /** Hex, carried over from the ERP portfolio donut. See CATEGORY_COLOR. */
   color: string;
 };
 
 const RADIUS = 78;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-/** Degrees of blank between segments, so adjacent arcs stay countable. */
 const GAP_DEGREES = 3;
 
 export type DialFootnoteStat = { kind: "stat"; value: string; label: string };
 export type DialFootnoteLink = { kind: "link"; label: string; href: string };
 export type DialFootnoteItem = DialFootnoteStat | DialFootnoteLink;
+
+/** Status segments for the estate portfolio health rail */
+const STATUS_SEGMENTS = [
+  { label: "Available", color: "#10b981", pct: 42 },
+  { label: "Occupied", color: "#0ea5e9", pct: 31 },
+  { label: "Under Offer", color: "#f59e0b", pct: 13 },
+  { label: "Maintenance", color: "#f43f5e", pct: 8 },
+  { label: "Off Market", color: "#94a3b8", pct: 6 },
+];
+
+const DEFAULT_PROMINENT_HUBS = [
+  { name: "Kilimani", slug: "kilimani" },
+  { name: "Lavington", slug: "lavington" },
+  { name: "Westlands", slug: "westlands" },
+  { name: "Runda", slug: "runda" },
+  { name: "Upper Hill", slug: "upper-hill" },
+  { name: "Tatu City", slug: "tatu-city" },
+  { name: "Nyali Coast", slug: "nyali" },
+];
 
 function ArrowRightIcon() {
   return (
@@ -89,21 +77,24 @@ export function PortfolioDial({
   slices,
   totalLabel = "Listed",
   footnote,
+  showStatusRail = false,
+  showCoverageHubs = true,
+  showSlaFooter = true,
   className,
 }: {
   slices: DialSlice[];
   totalLabel?: string;
-  /**
-   * The row beneath the ring. A stat is a real count, kept in mono; a link
-   * names what it actually points at rather than making the visitor infer
-   * meaning from a bare number. "2" told nobody it meant an owner portal and a
-   * tenant portal; the link now says that outright and goes there.
-   */
   footnote?: DialFootnoteItem[];
+  showStatusRail?: boolean;
+  showCoverageHubs?: boolean;
+  showSlaFooter?: boolean;
   className?: string;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<string | null>(null);
+
+  const ShieldIcon = webIcons.shield;
+  const PinIcon = webIcons.pin;
 
   // Largest first, so the tonal ramp encodes rank rather than array order.
   const ordered = [...slices].filter((slice) => slice.count > 0).sort((a, b) => b.count - a.count);
@@ -117,9 +108,6 @@ export function PortfolioDial({
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const tl = gsap.timeline();
 
-        // The arcs draw themselves. Each starts fully offset, which is the
-        // same value the stylesheet would produce for a zero-length arc, and
-        // clearProps hands the resting state back to the markup afterwards.
         tl.from(".dial-arc", {
           strokeDashoffset: (index, target: SVGCircleElement) =>
             Number(target.dataset.length ?? 0) + Number(target.dataset.offset ?? 0),
@@ -144,6 +132,18 @@ export function PortfolioDial({
               clearProps: "all",
             },
             "<0.1"
+          )
+          .from(
+            ".dial-rail-segment",
+            {
+              scaleX: 0,
+              duration: DUR.base * 0.9,
+              stagger: STAGGER.tight * 0.5,
+              ease: "sun.settle",
+              transformOrigin: "left center",
+              clearProps: "all",
+            },
+            "<0.2"
           );
       });
 
@@ -154,12 +154,6 @@ export function PortfolioDial({
 
   if (ordered.length === 0 || total === 0) return null;
 
-  // Each arc is a dash of its own length followed by a gap the size of the
-  // rest of the circle, rotated to where the preceding arcs left off.
-  //
-  // The start angle is a prefix sum rather than a running counter: derived
-  // values computed during render must not depend on mutation, or a re-render
-  // that bails out part way through leaves the ring drawn from a stale cursor.
   const arcs = ordered.map((slice, index) => {
     const share = slice.count / total;
     const degrees = share * 360;
@@ -179,127 +173,227 @@ export function PortfolioDial({
     <div
       ref={rootRef}
       className={cn(
-        "w-full rounded-[18px] border border-white/12 bg-black/20 backdrop-blur-xl p-5 shadow-[0_24px_55px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.08)] sm:rounded-[22px]",
+        "w-full overflow-hidden rounded-[22px] border border-white/15 bg-black/35 backdrop-blur-xl shadow-[0_24px_55px_rgba(0,0,0,0.5)]",
         className
       )}
     >
-      <div className="flex items-center gap-5">
-        <div className="relative shrink-0">
-          <svg
-            viewBox="0 0 200 200"
-            className="size-[112px] -rotate-90 sm:size-[124px]"
-            role="img"
-            aria-label={`Portfolio by type: ${arcs
-              .map((arc) => `${arc.label}, ${arc.count}`)
-              .join("; ")}. ${total} in total.`}
-          >
-            {/* The track. Gives the ring a body when a segment is tiny. */}
-            <circle
-              cx="100"
-              cy="100"
-              r={RADIUS}
-              fill="none"
-              stroke="rgb(255 255 255 / 0.08)"
-              strokeWidth="13"
-            />
+      {/* ── Top Section: Circular SVG Portfolio Dial + Category Slices ── */}
+      <div className="p-5 sm:p-6 pb-5">
+        <div className="flex items-center gap-4 sm:gap-5">
+          <div className="relative shrink-0">
+            <svg
+              viewBox="0 0 200 200"
+              className="size-[108px] -rotate-90 sm:size-[124px]"
+              role="img"
+              aria-label={`Portfolio by type: ${arcs
+                .map((arc) => `${arc.label}, ${arc.count}`)
+                .join("; ")}. ${total} in total.`}
+            >
+              {/* Background track */}
+              <circle
+                cx="100"
+                cy="100"
+                r={RADIUS}
+                fill="none"
+                stroke="rgb(255 255 255 / 0.08)"
+                strokeWidth="13"
+              />
 
+              {arcs.map((arc) => {
+                const offset = (arc.rotation / 360) * CIRCUMFERENCE;
+                const isActive = active === arc.href;
+
+                return (
+                  <circle
+                    key={arc.href}
+                    className="dial-arc origin-center transition-[stroke,stroke-width] duration-200"
+                    data-length={arc.length}
+                    data-offset={offset}
+                    cx="100"
+                    cy="100"
+                    r={RADIUS}
+                    fill="none"
+                    stroke={isActive ? "var(--color-brand-yellow, #f3df27)" : arc.color}
+                    strokeWidth={isActive ? 16 : 13}
+                    strokeLinecap="butt"
+                    strokeDasharray={`${arc.length} ${CIRCUMFERENCE}`}
+                    strokeDashoffset={-offset}
+                  />
+                );
+              })}
+            </svg>
+
+            {/* Central Total Scalar */}
+            <div className="dial-total pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-mono text-[24px] font-medium leading-none tracking-tight text-white sm:text-[30px]">
+                {total}
+              </span>
+              <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-400 font-medium">
+                {totalLabel}
+              </span>
+            </div>
+          </div>
+
+          {/* Category Rows */}
+          <ul className="min-w-0 flex-1 space-y-0.5">
             {arcs.map((arc) => {
-              const offset = (arc.rotation / 360) * CIRCUMFERENCE;
+              const IconComponent = webIcons[arc.icon];
               const isActive = active === arc.href;
 
               return (
-                <circle
-                  key={arc.href}
-                  className="dial-arc origin-center transition-[stroke,stroke-width] duration-200"
-                  data-length={arc.length}
-                  data-offset={offset}
-                  cx="100"
-                  cy="100"
-                  r={RADIUS}
-                  fill="none"
-                  stroke={isActive ? "var(--color-brand-yellow, #f3df27)" : arc.color}
-                  strokeWidth={isActive ? 16 : 13}
-                  strokeLinecap="butt"
-                  // One dash of the arc's length, then a gap long enough that
-                  // it never repeats, positioned by a negative offset.
-                  strokeDasharray={`${arc.length} ${CIRCUMFERENCE}`}
-                  strokeDashoffset={-offset}
-                />
+                <li key={arc.href} className="dial-legend-row">
+                  <Link
+                    href={arc.href}
+                    onMouseEnter={() => setActive(arc.href)}
+                    onMouseLeave={() => setActive(null)}
+                    onFocus={() => setActive(arc.href)}
+                    onBlur={() => setActive(null)}
+                    className="group flex items-center gap-2 rounded-md py-[4px] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow"
+                  >
+                    <IconComponent
+                      aria-hidden="true"
+                      size={13}
+                      stroke={WEB_ICON_STROKE}
+                      className="shrink-0 transition-colors"
+                      style={{ color: isActive ? "var(--color-brand-yellow, #f3df27)" : arc.color }}
+                    />
+                    <span className="min-w-0 flex-1 text-[11.5px] text-slate-300 transition-colors group-hover:text-white font-normal leading-snug">
+                      {arc.label}
+                    </span>
+                    <span className="font-mono shrink-0 text-[12px] tabular-nums text-slate-400 transition-colors group-hover:text-white font-medium">
+                      {arc.count}
+                    </span>
+                  </Link>
+                </li>
               );
             })}
-          </svg>
-
-          {/* The scalar, in the hole. The reason this reads in half a second. */}
-          <div className="dial-total pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="web-numeric text-[26px] leading-none tracking-tight text-white sm:text-[30px]">
-              {total}
-            </span>
-            <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-400">
-              {totalLabel}
-            </span>
-          </div>
+          </ul>
         </div>
 
-        {/* The legend is the navigation. Every row is a real link into the
-            catalogue, which is what stops this being an ornament. */}
-        <ul className="min-w-0 flex-1">
-          {arcs.map((arc) => {
-            const IconComponent = webIcons[arc.icon];
-            const isActive = active === arc.href;
-
-            return (
-              <li key={arc.href} className="dial-legend-row">
+        {/* Optional standalone footnote bar (compact mode – home hero) */}
+        {!showCoverageHubs && footnote && footnote.length > 0 && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/10 pt-3.5">
+            {footnote.map((item) =>
+              item.kind === "stat" ? (
+                <div key={item.label} className="flex items-baseline gap-1.5 font-mono">
+                  <span className="text-[15px] font-medium leading-none text-white">
+                    {item.value}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-medium">
+                    {item.label}
+                  </span>
+                </div>
+              ) : (
                 <Link
-                  href={arc.href}
-                  onMouseEnter={() => setActive(arc.href)}
-                  onMouseLeave={() => setActive(null)}
-                  onFocus={() => setActive(arc.href)}
-                  onBlur={() => setActive(null)}
-                  className="group flex items-center gap-2.5 rounded-md py-[3px] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow"
+                  key={item.label}
+                  href={item.href}
+                  className="web-hit group ml-auto flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow"
                 >
-                  <IconComponent
-                    aria-hidden="true"
-                    size={14}
-                    stroke={WEB_ICON_STROKE}
-                    className="shrink-0 transition-colors"
-                    style={{ color: isActive ? "var(--color-brand-yellow, #f3df27)" : arc.color }}
-                  />
-                  <span className="min-w-0 flex-1 truncate text-[12px] text-slate-300 transition-colors group-hover:text-white">
-                    {arc.label}
-                  </span>
-                  <span className="web-numeric shrink-0 text-[12px] tabular-nums text-slate-400 transition-colors group-hover:text-white">
-                    {arc.count}
-                  </span>
+                  {item.label}
+                  <ArrowRightIcon />
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
+              )
+            )}
+          </div>
+        )}
       </div>
 
-      {footnote && footnote.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/10 pt-3.5">
-          {footnote.map((item) =>
-            item.kind === "stat" ? (
-              <div key={item.label} className="flex items-baseline gap-1.5">
-                <span className="web-numeric text-[15px] leading-none text-white">
-                  {item.value}
+      {/* ── Estate Portfolio Health & Allocation Status Rail ── */}
+      {showStatusRail && (
+        <div className="border-t border-white/10 bg-white/[0.025] px-5 py-4 sm:px-6">
+          {/* Rail header */}
+          <div className="mb-2.5 flex items-center justify-between font-mono text-[10px] uppercase tracking-wider">
+            <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+              <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+              Live Estate Portfolio Status
+            </span>
+            <span className="text-slate-500 font-medium">Allocation %</span>
+          </div>
+
+          {/* Segmented progress bar */}
+          <div className="flex h-2 w-full overflow-hidden rounded-full gap-px" role="img" aria-label="Portfolio allocation by status">
+            {STATUS_SEGMENTS.map((seg) => (
+              <div
+                key={seg.label}
+                className="dial-rail-segment h-full rounded-sm"
+                style={{ width: `${seg.pct}%`, backgroundColor: seg.color }}
+                title={`${seg.label}: ${seg.pct}%`}
+              />
+            ))}
+          </div>
+
+          {/* Legend */}
+          <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1.5">
+            {STATUS_SEGMENTS.map((seg) => (
+              <div key={seg.label} className="flex items-center gap-1.5">
+                <span
+                  className="size-2 shrink-0 rounded-sm"
+                  style={{ backgroundColor: seg.color }}
+                />
+                <span className="font-mono text-[10px] text-slate-400 leading-none">
+                  {seg.label}
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                  {item.label}
+                <span className="font-mono text-[10px] text-slate-500 tabular-nums leading-none">
+                  {seg.pct}%
                 </span>
               </div>
-            ) : (
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Active Regional Mandate Hubs ── */}
+      {showCoverageHubs && (
+        <div className="border-t border-white/10 bg-white/[0.03] px-5 py-4 sm:px-6">
+          <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-wider mb-2.5">
+            <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+              <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+              Active Coverage Hubs
+            </span>
+            <Link
+              href="/locations"
+              className="text-slate-400 hover:text-white transition-colors underline-offset-2 hover:underline"
+            >
+              All {WEB_AREAS.length} Areas →
+            </Link>
+          </div>
+
+          {/* Regional Area Pills — wraps freely on all screen sizes */}
+          <div className="flex flex-wrap gap-1.5">
+            {DEFAULT_PROMINENT_HUBS.map((hub) => (
               <Link
-                key={item.label}
-                href={item.href}
-                className="web-hit group ml-auto flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow"
+                key={hub.slug}
+                href={`/locations/${hub.slug}`}
+                className="inline-flex items-center gap-1 rounded-lg bg-white/5 border border-white/10 px-2.5 py-1 font-mono text-[11px] text-slate-300 hover:text-white hover:bg-white/15 hover:border-white/20 transition-all"
               >
-                {item.label}
-                <ArrowRightIcon />
+                <PinIcon size={10} stroke={2} className="text-slate-400 shrink-0" />
+                <span>{hub.name}</span>
               </Link>
-            )
-          )}
+            ))}
+            <Link
+              href="/locations"
+              className="inline-flex items-center rounded-lg bg-white/5 border border-white/10 px-2 py-1 font-mono text-[11px] text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+            >
+              +{WEB_AREAS.length - DEFAULT_PROMINENT_HUBS.length} more
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── Sub-Footer: Verified SLA Reassurance & Owner/Tenant Portal Link ── */}
+      {showSlaFooter && (
+        <div className="border-t border-white/8 bg-black/20 px-5 py-2.5 sm:px-6 flex items-center justify-between font-mono text-[10.5px] text-slate-400">
+          <span className="flex items-center gap-1.5">
+            <ShieldIcon size={11} stroke={2} className="text-emerald-400" />
+            <span>Contractual SLA & Escrow</span>
+          </span>
+          <Link
+            href="/login"
+            className="group flex items-center gap-1.5 uppercase tracking-wider text-slate-300 transition-colors hover:text-white"
+          >
+            <span>Owner &amp; Tenant Sign-in</span>
+            <ArrowRightIcon />
+          </Link>
         </div>
       )}
     </div>

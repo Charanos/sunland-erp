@@ -288,7 +288,7 @@ export function HomeHero({
               field is the widest control on the page and boxing it into 60% of
               the viewport shrinks the location input, which is the field
               everyone actually types in. */}
-          <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(250px,340px)] lg:gap-12 xl:gap-16">
+          <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(280px,440px)] lg:gap-12 xl:gap-16">
             <div>
               <div className="mb-0 flex items-center gap-3">
                 <span

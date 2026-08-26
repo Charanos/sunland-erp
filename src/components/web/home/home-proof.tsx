@@ -1,42 +1,31 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { DUR, STAGGER } from "@/lib/motion/web-motion";
+import { ABOUT_TESTIMONIALS } from "../constants/about.content";
 import { WEB_ICON_STROKE, webIcons } from "../icons";
 import { SectionBand } from "../primitives/section-band";
 import { Eyebrow } from "../primitives/eyebrow";
 import { proofDefaults } from "./home.defaults";
-import { cn } from "@/lib/utils/cn";
 
 /**
  * 08 home.proof, light band.
  *
  * Client social proof on the left paired with core commitments and right-aligned title.
- *
- * ── Bespoke reveal, not the generic one ──
- *
- * Already a client component for the carousel state, so the reveal here is
- * hand-built rather than left to the page-wide controller: the testimonial
- * card turns in from the left on a slight rotation, matched by the copy
- * column turning the other way from the right, so the two halves meet in the
- * middle rather than both rising in parallel. The three commitment rows
- * cascade in afterward as their own beat. It is the one section on the page
- * that earns genuinely custom choreography, because it already pays the cost
- * of being interactive.
+ * Fetches directly from the unified ABOUT_TESTIMONIALS source of truth without avatars,
+ * matching the executive editorial aesthetic across the platform.
  */
 export function HomeProof() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const testimonials = proofDefaults.testimonials;
+  const testimonials = ABOUT_TESTIMONIALS.items;
   const current = testimonials[activeIndex] ?? testimonials[0];
 
   const QuoteIcon = webIcons.quote;
   const ChevronLeftIcon = webIcons.chevronLeft;
   const ChevronRightIcon = webIcons.chevronRight;
-  const CheckIcon = webIcons.check;
 
   useGSAP(
     () => {
@@ -111,81 +100,50 @@ export function HomeProof() {
   };
 
   return (
-    <SectionBand tone="tint" labelledBy="proof-heading" className="relative bg-[#f8fafc]">
-      <div ref={sectionRef} className="grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:gap-20 items-center">
-        {/* Left Column: Interactive Multi-Role Testimonial Showcase */}
+    <SectionBand tone="tint" labelledBy="proof-heading" className="relative bg-[#f8fafc] py-20 sm:py-24 lg:py-28">
+      <div ref={sectionRef} className="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-16 xl:gap-20 items-center">
+        {/* Left Column: Unified Executive Client Testimonial Card */}
         <div className="order-2 lg:order-1 proof-testimonial">
-          {/* Category Filter Switcher */}
-          <div className="flex flex-wrap items-center gap-2.5 mb-6">
-            {testimonials.map((item, idx) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setActiveIndex(idx)}
-                className={cn(
-                  "font-mono text-[10px] sm:text-xs uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-300 cursor-pointer border shadow-xs",
-                  idx === activeIndex
-                    ? "bg-brand-yellow text-[#151936] border-brand-yellow hover:scale-[1.02]"
-                    : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 hover:scale-[1.02]"
-                )}
-              >
-                {item.badge}
-              </button>
-            ))}
-          </div>
-
-          {/* Luxury Dark Testimonial Card */}
-          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#151936] p-8 sm:p-10 shadow-[0_30px_60px_rgba(21,25,54,0.3),0_4px_16px_rgba(0,0,0,0.1)] text-white">
-            {/* Ambient Interior Glow */}
+          <div className="group relative overflow-hidden rounded-[28px] border border-white/12 bg-gradient-to-b from-[#151936] via-[#10142d] to-[#0d1024] p-8 sm:p-10 shadow-[0_24px_50px_rgba(21,25,54,0.28)] text-white backdrop-blur-xl">
+            {/* Subtle Ambient Glow */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-brand-yellow/10 blur-[80px]"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-10 -bottom-10 size-48 rounded-full bg-blue-500/10 blur-[60px]"
+              className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-brand-yellow/12 blur-[80px]"
             />
 
-            {/* Ambient Background Watermark */}
+            {/* Ambient Large Brand Yellow Quotation Artwork */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute right-6 top-4 text-white/[0.03] select-none"
+              className="pointer-events-none absolute -left-18 -top-4 text-brand-yellow/[0.12] select-none transition-transform duration-500 group-hover:scale-105 group-hover:text-brand-yellow/[0.16]"
             >
-              <QuoteIcon size={140} stroke={0.8} />
+              <QuoteIcon size={150} stroke={1} />
+            </div>
+
+            {/* Top Bar: Quote Icon & Pagination Indicator */}
+            <div className="relative z-10 flex items-center justify-end">
+
+              <div className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-slate-400">
+                <span className="text-brand-yellow font-medium">0{activeIndex + 1}</span>
+                <span>/</span>
+                <span>0{testimonials.length}</span>
+              </div>
             </div>
 
             {/* Testimonial Quote */}
-            <figure className="relative z-10">
-              <blockquote className="font-editorial text-[24px] sm:text-[28px] font-medium leading-[1.4] text-white drop-shadow-sm">
+            <figure className="relative z-10 mt-6">
+              <blockquote className="font-editorial text-[22px] sm:text-[25px] lg:text-[27px] font-medium leading-[1.38] text-white drop-shadow-sm min-h-[110px] flex items-center">
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
 
-              {/* Author & Property Footnote */}
-              <figcaption className="mt-10 flex items-center justify-between border-t border-white/10 pt-7">
-                <div className="flex items-center gap-4">
-                  <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-brand-yellow bg-slate-800 shadow-[0_0_15px_rgba(234,179,8,0.3)] ring-2 ring-white/10">
-                    <Image
-                      src={current.avatarUrl}
-                      alt={current.name}
-                      fill
-                      sizes="56px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2.5">
-                      <p className="font-medium text-white text-base">
-                        {current.name}
-                      </p>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 font-mono text-[9.5px] font-medium text-emerald-400">
-                        <CheckIcon size={10} stroke={2.5} />
-                        Verified
-                      </span>
-                    </div>
-                    <p className="font-mono text-xs text-slate-300/80 mt-1">
-                      {current.role} · {current.property}
-                    </p>
-                  </div>
+              {/* Author & Attribution Footer with Controls */}
+              <figcaption className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/12 pt-5">
+                <div className="font-mono text-[11.5px] uppercase tracking-[0.14em] text-slate-400">
+                  <span aria-hidden="true" className="mr-2 text-slate-500">
+                    &mdash;
+                  </span>
+                  <span className="font-medium text-slate-200">{current.name}</span>
+                  <span className="mx-1.5 text-slate-500">·</span>
+                  <span>{current.role}</span>
                 </div>
 
                 {/* Tactile Prev/Next Controls */}
@@ -194,17 +152,17 @@ export function HomeProof() {
                     type="button"
                     onClick={handlePrev}
                     aria-label="Previous testimonial"
-                    className="flex size-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-[#151936] hover:scale-105 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] cursor-pointer"
+                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-[#151936] hover:scale-105 shadow-xs cursor-pointer"
                   >
-                    <ChevronLeftIcon size={18} stroke={WEB_ICON_STROKE} />
+                    <ChevronLeftIcon size={16} stroke={WEB_ICON_STROKE} />
                   </button>
                   <button
                     type="button"
                     onClick={handleNext}
                     aria-label="Next testimonial"
-                    className="flex size-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-[#151936] hover:scale-105 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] cursor-pointer"
+                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-[#151936] hover:scale-105 shadow-xs cursor-pointer"
                   >
-                    <ChevronRightIcon size={18} stroke={WEB_ICON_STROKE} />
+                    <ChevronRightIcon size={16} stroke={WEB_ICON_STROKE} />
                   </button>
                 </div>
               </figcaption>
@@ -215,30 +173,30 @@ export function HomeProof() {
         {/* Right Column: Title, Subtitle, and Core Operational Commitments */}
         <div className="order-1 lg:order-2">
           <div className="proof-copy">
-          <Eyebrow tone="light">{proofDefaults.eyebrow}</Eyebrow>
-          <h2
-            id="proof-heading"
-            className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
-          >
-            {proofDefaults.headline}
-          </h2>
-          <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-500 max-w-[50ch]">
-            {proofDefaults.lead}
-          </p>
+            <Eyebrow tone="light">{proofDefaults.eyebrow}</Eyebrow>
+            <h2
+              id="proof-heading"
+              className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+            >
+              {proofDefaults.headline}
+            </h2>
+            <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-500 max-w-[50ch]">
+              {proofDefaults.lead}
+            </p>
           </div>
 
           {/* Three Core Commitments - Uncarded Editorial */}
-          <div className="proof-commitments mt-12 space-y-8">
+          <div className="proof-commitments mt-10 sm:mt-12 space-y-7 sm:space-y-8">
             {proofDefaults.points.map((point) => {
               const IconComponent = webIcons[point.icon];
 
               return (
                 <div
                   key={point.title}
-                  className="group flex items-start gap-6 relative"
+                  className="group flex items-start gap-5 sm:gap-6 relative"
                 >
                   <div className="absolute left-4 top-10 bottom-[-2rem] w-px bg-slate-200 last:hidden group-last:hidden" />
-                  
+
                   <span
                     aria-hidden="true"
                     className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-50 border border-slate-200/60 text-slate-400 transition-colors duration-300 group-hover:bg-[#151936] group-hover:border-[#151936] group-hover:text-white"
@@ -246,10 +204,10 @@ export function HomeProof() {
                     <IconComponent size={18} stroke={WEB_ICON_STROKE} />
                   </span>
                   <div>
-                    <h3 className="font-editorial text-[22px] font-medium text-[#151936]">
+                    <h3 className="font-editorial text-[21px] sm:text-[22px] font-medium text-[#151936]">
                       {point.title}
                     </h3>
-                    <p className="mt-1.5 text-[15px] leading-relaxed text-slate-500">
+                    <p className="mt-1 text-[14.5px] sm:text-[15px] leading-relaxed text-slate-500">
                       {point.body}
                     </p>
                   </div>

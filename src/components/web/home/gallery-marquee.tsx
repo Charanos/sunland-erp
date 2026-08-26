@@ -35,10 +35,22 @@ import type { ReactNode } from "react";
  * and the ribbon becomes a normal horizontally scrollable row the visitor
  * drives themselves.
  */
-export function GalleryMarquee({ children }: { children: ReactNode }) {
+interface GalleryMarqueeProps {
+  children: ReactNode;
+  direction?: "rtl" | "ltr";
+  reverse?: boolean;
+}
+
+export function GalleryMarquee({
+  children,
+  direction = "rtl",
+  reverse = false,
+}: GalleryMarqueeProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [reduced, setReduced] = useState(false);
+
+  const isLtr = direction === "ltr" || reverse;
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -67,6 +79,11 @@ export function GalleryMarquee({ children }: { children: ReactNode }) {
   }, []);
 
   const animating = inView && !reduced;
+  const animationClass = animating
+    ? isLtr
+      ? "animate-web-marquee-reverse"
+      : "animate-web-marquee"
+    : "";
 
   return (
     <div
@@ -84,7 +101,7 @@ export function GalleryMarquee({ children }: { children: ReactNode }) {
       }
     >
       <div
-        className={`flex w-max gap-5 py-2 sm:gap-6 ${animating ? "animate-web-marquee" : ""}`}
+        className={`flex w-max gap-5 py-2 sm:gap-6 ${animationClass}`}
         style={{
           // Promoted only while it moves, then released.
           willChange: animating ? "transform" : "auto",

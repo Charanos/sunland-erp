@@ -1,17 +1,14 @@
 import { WEB_AREAS } from "./locations.content";
+import { SERVICE_SECTIONS } from "./services.content";
 import type { WebIconName } from "../icons";
-
-/** Contact channels a team member may publish. */
-export type TeamContact = "email" | "call";
 
 /**
  * About page content, from the Claude Design about template.
  *
- * The design keeps the team on the about page as a `#team` section rather
- * than splitting it onto a separate route. That is the right call at this size:
- * three people and a hiring card is not a page, and splitting it costs the
- * about page its most human section while producing a thin one next door.
- * The header, footer and sitemap all link `/about#team`.
+ * The team lives on this page as a `#team` section rather than on its own
+ * route. Splitting it would cost this page its most human section to produce a
+ * thin one next door, and the roster is shared with the article bylines either
+ * way. The header, footer and sitemap all link `/about#team`.
  *
  * Copy is verbatim from the design. In particular the testimonial footnote
  * stays: publishing two reviews and declining to build a star rating out of
@@ -32,17 +29,28 @@ export const ABOUT_STORY = {
     "So we do the unglamorous parts: chasing arrears on day one, getting three quotes for a roof, sitting through a service charge dispute, inspecting a unit at handover so the deposit argument never happens. And we put all of it in a system the owner can log into, because trust that depends on a monthly phone call is not trust.",
     `We work across ${WEB_AREAS.length} areas, from Kilimani and Lavington to Tatu City, the coast at Nyali, and upcountry acreage in Nyeri and Elgeyo Marakwet. Where we cannot service a property properly, we say so.`,
   ],
-  /** Fallback only. Live values come from getHomeAggregates(). */
+  /**
+   * Fallback only. `AboutStorySection` takes live values from
+   * `getHomeAggregates()` and falls back to these when the query fails.
+   *
+   * This block used to carry that same promise while the page imported no
+   * services at all, so the fallback was the only thing that ever rendered and
+   * two of the three numbers were typed in by hand. On a page arguing that the
+   * owner should not have to take a figure on trust, that was self-defeating.
+   * Everything derivable is now derived.
+   */
   figures: [
     { value: "39", label: "Properties listed" },
     { value: String(WEB_AREAS.length), label: "Areas covered" },
-    { value: "4", label: "Service lines" },
+    { value: String(SERVICE_SECTIONS.length), label: "Service lines" },
   ],
   mediaLabel: "The Nairobi skyline",
 } as const;
 
 export const ABOUT_COMMITMENTS = {
   eyebrow: "How we work",
+  /** States the count in words, so `cards` below cannot change length without
+   *  this line being updated with it. */
   title: "Four commitments",
   cards: [
     {
@@ -75,46 +83,16 @@ export const ABOUT_COMMITMENTS = {
 export const ABOUT_TEAM = {
   eyebrow: "Our team",
   title: "The people you will deal with",
-  lead: "A small team by design. You will speak to the same person next year.",
+  lead: "Ten people, each with a name, a title and a face. You will speak to the same person next year.",
   /**
-   * TODO(W2-4): portraits are outstanding. Cards render a monogram rather than
-   * a stock photograph of someone who does not work here, which on a page
-   * whose entire argument is "these are the real people" would be
-   * self-defeating.
+   * Members are not listed here. The roster lives in `people.ts` and is shared
+   * with the article bylines in `/insights`, so a person's photograph, title
+   * and byline cannot disagree across the site.
    *
-   * TODO(W5-13): source from `web_team_members` joined to `users`, so a
-   * consultant's direct line comes from the ERP rather than a constant that
-   * goes stale the moment someone changes desk.
+   * They previously lived here as three entries with roles that had drifted
+   * from the published ones, alongside seven photographs with no titles at all.
+   * Both problems are the same problem: two lists of the same people.
    */
-  members: [
-    {
-      name: "Paul Amos",
-      initials: "PA",
-      role: "Managing Director",
-      bio: "Runs the firm and takes the difficult calls himself: valuations owners disagree with, disputes, and anything involving a client account.",
-      contacts: ["email"] as TeamContact[],
-    },
-    {
-      name: "Judy Wacera",
-      initials: "JW",
-      role: "Lettings and client relations",
-      bio: "Handles viewings, tenant vetting and the lettings side across Kilimani, Lavington and Kileleshwa. Most tenants meet her first.",
-      contacts: ["email", "call"] as TeamContact[],
-    },
-    {
-      name: "Lewis Maina",
-      initials: "LM",
-      role: "Property management",
-      bio: "Owns the managed portfolio day to day: collections, maintenance jobs, inspections and the monthly statement run.",
-      contacts: ["email", "call"] as TeamContact[],
-    },
-  ] as Array<{
-    name: string;
-    initials: string;
-    role: string;
-    bio: string;
-    contacts: TeamContact[];
-  }>,
   hiring: {
     title: "Join us",
     body: "We hire consultants and property managers who can hold a client relationship without being chased. Send us a note even when nothing is advertised.",
@@ -138,11 +116,6 @@ export const ABOUT_TESTIMONIALS = {
       role: "landlord, Nairobi",
     },
   ],
-  /**
-   * Load-bearing. Declining to build a star rating out of two reviews is the
-   * credibility move on this page; removing the line to look larger undoes it.
-   */
-  note: "Two published testimonials. We do not run a star rating, because a rating built on two reviews tells you nothing.",
 } as const;
 
 export const ABOUT_VISIT = {
