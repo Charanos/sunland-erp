@@ -59,7 +59,7 @@ export function WebPagination({
   const endItem = pageSize && totalItems ? Math.min(currentPage * pageSize, totalItems) : null;
 
   const stepClass =
-    "inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-slate-700 transition-colors hover:border-[#151936] hover:text-[#151936]";
+    "inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 font-mono text-web-micro font-medium uppercase tracking-wider text-slate-700 transition-colors hover:border-ink-900 hover:text-ink-900";
   const disabledClass = "pointer-events-none opacity-40";
 
   return (
@@ -73,14 +73,14 @@ export function WebPagination({
       <p className="font-mono text-xs text-slate-500">
         {startItem && endItem && totalItems ? (
           <>
-            Showing <span className="font-medium text-[#151936]">{startItem}</span> to{" "}
-            <span className="font-medium text-[#151936]">{endItem}</span> of{" "}
-            <span className="font-medium text-[#151936]">{totalItems}</span> {itemLabel}
+            Showing <span className="font-medium text-ink-900">{startItem}</span> to{" "}
+            <span className="font-medium text-ink-900">{endItem}</span> of{" "}
+            <span className="font-medium text-ink-900">{totalItems}</span> {itemLabel}
           </>
         ) : (
           <>
-            Page <span className="font-medium text-[#151936]">{currentPage}</span> of{" "}
-            <span className="font-medium text-[#151936]">{totalPages}</span>
+            Page <span className="font-medium text-ink-900">{currentPage}</span> of{" "}
+            <span className="font-medium text-ink-900">{totalPages}</span>
           </>
         )}
       </p>
@@ -110,7 +110,7 @@ export function WebPagination({
               className={cn(
                 "inline-flex size-8 items-center justify-center rounded-full font-mono text-xs font-medium transition-colors",
                 page === currentPage
-                  ? "bg-[#151936] text-white shadow-2xs"
+                  ? "bg-brand-dark text-white shadow-2xs"
                   : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
               )}
             >

@@ -40,7 +40,7 @@ export function WebBadge({
     <span
       className={cn(
         "web-control inline-flex items-center gap-1.5 rounded-web-full px-2.5 py-1",
-        "text-[10.5px] uppercase tracking-[0.14em]",
+        "text-web-nano uppercase tracking-[0.14em]",
         toneClass[tone],
         className
       )}
@@ -75,7 +75,7 @@ export function WebMediaBadge({
         "web-control inline-flex items-center gap-1.5 rounded-web-full px-2.5 py-1",
         "bg-brand-dark/72 text-on-dark-hi backdrop-blur-md",
         "ring-1 ring-white/20",
-        "text-[10.5px] uppercase tracking-[0.14em]",
+        "text-web-nano uppercase tracking-[0.14em]",
         className
       )}
     >

@@ -22,7 +22,7 @@ export function HomeLandlords() {
   return (
     <section
       aria-labelledby="landlords-heading"
-      className="web-dark relative overflow-hidden py-24 lg:py-32 bg-[#151936]"
+      className="web-dark relative overflow-hidden py-24 lg:py-32 bg-brand-dark"
     >
       {/* Ambient dusk radiance for depth and luxury */}
       <div
@@ -42,7 +42,7 @@ export function HomeLandlords() {
           >
             {landlordDefaults.headline}
           </h2>
-          <p className="web-subtitle mt-4 max-w-[75ch] text-[15px] sm:text-base leading-relaxed text-slate-300/90">
+          <p className="web-subtitle mt-4 max-w-[75ch] text-web-sm sm:text-base leading-relaxed text-slate-300/90">
             {landlordDefaults.lead}
           </p>
         </div>
@@ -64,7 +64,7 @@ export function HomeLandlords() {
                     <p className="font-editorial text-2xl font-medium text-white">
                       {step.title}
                     </p>
-                    <p className="mt-1.5 text-[14px] leading-relaxed text-slate-300/85">
+                    <p className="mt-1.5 text-web-sm leading-relaxed text-slate-300/85">
                       {step.body}
                     </p>
                   </div>
@@ -102,16 +102,16 @@ export function HomeLandlords() {
               {/* Console Top Header */}
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-2.5">
-                  <span className="font-editorial text-2xl font-medium tracking-wide text-[#151936]">
+                  <span className="font-editorial text-2xl font-medium tracking-wide text-ink-900">
                     Sunland
                   </span>
-                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-web-nano font-medium uppercase tracking-wider text-slate-600">
                     ERP Live
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                  <span className="font-mono text-web-micro font-medium uppercase tracking-[0.14em] text-slate-500">
                     {statement.portalLabel}
                   </span>
                 </div>
@@ -120,14 +120,14 @@ export function HomeLandlords() {
               {/* Statement Title & Paid Status */}
               <div className="mt-6 flex items-start justify-between gap-4">
                 <div>
-                  <p className="font-editorial text-2xl font-medium text-[#151936]">
+                  <p className="font-editorial text-2xl font-medium text-ink-900">
                     {statement.title}
                   </p>
                   <p className="font-mono mt-1 text-xs text-slate-500">
                     {statement.subtitle} · Active Tenancy
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-700 shadow-xs">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 font-mono text-web-micro font-semibold uppercase tracking-wider text-emerald-700 shadow-xs">
                   <CheckIcon size={13} stroke={2.5} />
                   {statement.badge}
                 </span>
@@ -140,8 +140,8 @@ export function HomeLandlords() {
                     key={row.label}
                     className="flex items-center justify-between gap-4 border-t border-slate-100 py-3.5"
                   >
-                    <dt className="text-[13.5px] text-slate-600">{row.label}</dt>
-                    <dd className="font-mono text-sm font-medium text-[#151936]">
+                    <dt className="text-web-xs text-slate-600">{row.label}</dt>
+                    <dd className="font-mono text-sm font-medium text-ink-900">
                       {row.value}
                     </dd>
                   </div>
@@ -151,7 +151,7 @@ export function HomeLandlords() {
               {/* Net Remittance Callout Box */}
               <div className="mt-5 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4.5 shadow-xs">
                 <div>
-                  <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-800">
+                  <p className="font-mono text-web-micro font-semibold uppercase tracking-wider text-emerald-800">
                     {statement.total.label}
                   </p>
                   <p className="text-xs text-emerald-600/90 mt-0.5">
@@ -183,7 +183,7 @@ export function HomeLandlords() {
                   ) : (
                     <span
                       aria-hidden="true"
-                      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#151936] font-mono text-xs font-semibold text-white shadow-xs"
+                      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-dark font-mono text-xs font-semibold text-white shadow-xs"
                     >
                       {statement.manager.name
                         .split(" ")
@@ -192,7 +192,7 @@ export function HomeLandlords() {
                     </span>
                   )}
                   <div className="min-w-0 truncate">
-                    <p className="truncate text-xs font-semibold text-[#151936]">
+                    <p className="truncate text-xs font-semibold text-ink-900">
                       {statement.manager.name}, {statement.manager.title}
                     </p>
                     <p className="font-mono text-xs text-slate-500">
@@ -203,7 +203,7 @@ export function HomeLandlords() {
 
                 <a
                   href={`tel:${statement.manager.phone.replace(/\s+/g, "")}`}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#151936] px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-white transition-all hover:bg-slate-800 shadow-xs"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-dark px-4 py-2 font-mono text-web-micro font-medium uppercase tracking-wider text-white transition-all hover:bg-slate-800 shadow-xs"
                 >
                   <PhoneIcon size={13} stroke={WEB_ICON_STROKE} aria-hidden="true" />
                   Call

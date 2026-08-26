@@ -14,7 +14,7 @@ export function AboutTestimonials() {
   return (
     <section
       aria-labelledby="testimonials-heading"
-      className="web-dark relative overflow-hidden bg-gradient-to-b from-[#151936] via-[#10142d] to-[#0d1024] py-20 sm:py-24 lg:py-28"
+      className="web-dark relative overflow-hidden bg-gradient-to-b from-brand-dark via-[#10142d] to-brand-deep py-20 sm:py-24 lg:py-28"
     >
       <Container>
         <h2 id="testimonials-heading" className="sr-only">
@@ -52,7 +52,7 @@ export function AboutTestimonials() {
                   </blockquote>
                 </div>
 
-                <figcaption className="mt-8 border-t border-white/12 pt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400">
+                <figcaption className="mt-8 border-t border-white/12 pt-4 font-mono text-web-micro uppercase tracking-[0.16em] text-slate-400">
                   <span aria-hidden="true" className="mr-2">
                     &mdash;
                   </span>

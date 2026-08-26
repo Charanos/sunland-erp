@@ -46,18 +46,18 @@ export function ArticleInteractiveChart({ slug }: ChartProps) {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="size-2 rounded-full bg-brand-yellow" />
-              <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500 font-medium">
+              <p className="font-mono text-web-micro uppercase tracking-wider text-slate-500 font-medium">
                 Advisory Financial Modeling
               </p>
             </div>
-            <h3 className="font-editorial text-lg sm:text-xl font-medium text-[#151936]">
+            <h3 className="font-editorial text-lg sm:text-xl font-medium text-ink-900">
               Management Fee Impact: Rent Collected vs. Invoiced Basis
             </h3>
             <p className="mt-1 text-xs text-slate-500">
               Simulation on KES 1,000,000 gross monthly rent roll at 8% standard management fee.
             </p>
           </div>
-          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 font-mono text-[11px] font-medium text-emerald-800">
+          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 font-mono text-web-micro font-medium text-emerald-800">
             Realized Data Matrix
           </span>
         </div>
@@ -108,7 +108,7 @@ export function ArticleInteractiveChart({ slug }: ChartProps) {
 
         <div className="mt-4 rounded-xl bg-surface-0 border border-line p-3.5 flex items-center justify-between text-xs font-mono text-slate-600">
           <span>💡 Key Takeaway:</span>
-          <span className="text-[#151936] font-medium">
+          <span className="text-ink-900 font-medium">
             Invoiced basis transfers KES 32,000+ uncollected arrears burden directly to the landlord.
           </span>
         </div>
@@ -130,18 +130,18 @@ export function ArticleInteractiveChart({ slug }: ChartProps) {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="size-2 rounded-full bg-brand-yellow" />
-              <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500 font-medium">
+              <p className="font-mono text-web-micro uppercase tracking-wider text-slate-500 font-medium">
                 Nairobi Commercial Benchmarks
               </p>
             </div>
-            <h3 className="font-editorial text-lg sm:text-xl font-medium text-[#151936]">
+            <h3 className="font-editorial text-lg sm:text-xl font-medium text-ink-900">
               Total Occupancy Cost per Sq. Ft. (KES / Month)
             </h3>
             <p className="mt-1 text-xs text-slate-500">
               Factoring in base rent, service charge, and parking ratio overheads.
             </p>
           </div>
-          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 font-mono text-[11px] font-medium text-emerald-800">
+          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 font-mono text-web-micro font-medium text-emerald-800">
             Q2 2026 Verified Rates
           </span>
         </div>
@@ -183,7 +183,7 @@ export function ArticleInteractiveChart({ slug }: ChartProps) {
 
         <div className="mt-4 rounded-xl bg-surface-0 border border-line p-3.5 flex items-center justify-between text-xs font-mono text-slate-600">
           <span>💡 SEZ Cost Efficiency:</span>
-          <span className="text-[#151936] font-medium">
+          <span className="text-ink-900 font-medium">
             Tatu City SEZ provides a 30.2% net operational cost saving versus Upper Hill Grade-A space.
           </span>
         </div>

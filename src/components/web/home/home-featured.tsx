@@ -87,16 +87,16 @@ export function HomeFeatured({ listings }: { listings: ListingCardData[] }) {
                 type="button"
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11.5px] font-medium tracking-wide uppercase transition-all duration-200 cursor-pointer",
+                  "inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-web-micro font-medium tracking-wide uppercase transition-all duration-200 cursor-pointer",
                   active
-                    ? "bg-[#151936] text-white shadow-xs"
+                    ? "bg-brand-dark text-white shadow-xs"
                     : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 )}
               >
                 <span>{tab.label}</span>
                 <span
                   className={cn(
-                    "rounded-full px-1.5 py-0.2 text-[10.5px] font-mono",
+                    "rounded-full px-1.5 py-0.2 text-web-nano font-mono",
                     active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
                   )}
                 >

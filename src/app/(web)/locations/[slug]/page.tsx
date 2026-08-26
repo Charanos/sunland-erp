@@ -111,7 +111,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
         className="web-dark relative overflow-hidden bg-brand-dark pt-28 sm:pt-32 lg:pt-36 pb-14 sm:pb-18 border-b border-dark-line"
       >
         {/* Full-bleed Background Photography */}
-        <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+        <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
           <Image
             src={bgImage}
             // Decorative: the h1 directly below already says the area name, so
@@ -128,7 +128,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
           {/* 1. Top Dissolve Scrim */}
           <div
             aria-hidden="true"
-            className="hero-scrim absolute inset-x-0 top-0 h-72 sm:h-96 bg-gradient-to-b from-[#090d1f] via-[#090d1f]/65 via-60% to-transparent"
+            className="hero-scrim absolute inset-x-0 top-0 h-72 sm:h-96 bg-gradient-to-b from-brand-deep via-brand-deep/65 via-60% to-transparent"
           />
 
           {/* 2. Lateral Vignette Scrim */}
@@ -166,22 +166,22 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
             <div className="min-w-0">
               {/* Category Badges Strip */}
               <div className="hero-accent gsap-enter flex flex-wrap items-center gap-2 mb-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#151936]/80 border border-white/20 px-3 py-1 font-mono text-[10.5px] font-medium text-white backdrop-blur-md">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-dark/80 border border-white/20 px-3 py-1 font-mono text-web-nano font-medium text-white backdrop-blur-md">
                   <PinIcon size={12} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                   <span>{area.region}</span>
                 </span>
 
-                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 font-mono text-[10.5px] font-medium uppercase tracking-wider text-slate-200 backdrop-blur-md">
+                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 font-mono text-web-nano font-medium uppercase tracking-wider text-slate-200 backdrop-blur-md">
                   {groupTitle}
                 </span>
 
                 {stats.total > 0 ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 text-[10.5px] font-mono font-medium text-emerald-300 backdrop-blur-md">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 text-web-nano font-mono font-medium text-emerald-300 backdrop-blur-md">
                     <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     {stats.total} Live {stats.total === 1 ? "Mandate" : "Mandates"}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[10.5px] font-mono font-medium text-slate-300 backdrop-blur-md">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-3 py-1 text-web-nano font-mono font-medium text-slate-300 backdrop-blur-md">
                     <ShieldIcon size={11} stroke={WEB_ICON_STROKE} />
                     Verified Submarket Guide
                   </span>
@@ -197,24 +197,24 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               </h1>
 
               {/* Evocative Tagline / Subtitle */}
-              <p className="hero-lead gsap-enter mt-4 max-w-[58ch] text-[16px] sm:text-lg leading-relaxed text-slate-200/95 drop-shadow-sm font-normal">
+              <p className="hero-lead gsap-enter mt-4 max-w-[58ch] text-web-body sm:text-lg leading-relaxed text-slate-200/95 drop-shadow-sm font-normal">
                 {area.tagline ? `${area.tagline}. ` : ""}
                 {area.blurb}
               </p>
             </div>
 
             {/* Right-Side Glassmorphic Telemetry HUD */}
-            <div className="hero-detail gsap-enter rounded-2xl border border-white/15 bg-[#151936]/70 p-5 sm:p-6 backdrop-blur-xl shadow-2xl space-y-4">
+            <div className="hero-detail gsap-enter rounded-2xl border border-white/15 bg-brand-dark/70 p-5 sm:p-6 backdrop-blur-xl shadow-2xl space-y-4">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <span className="font-mono text-[10.5px] uppercase tracking-widest text-brand-yellow font-medium">
+                <span className="font-mono text-web-nano uppercase tracking-widest text-brand-yellow font-medium">
                   Submarket Guidance
                 </span>
-                <span className="font-mono text-[10px] text-slate-400">Sunland Ledger</span>
+                <span className="font-mono text-web-nano text-slate-400">Sunland Ledger</span>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                  <p className="font-mono text-web-nano uppercase tracking-wider text-slate-400">
                     {area.guideLabel}
                   </p>
                   <p className="font-mono text-[22px] sm:text-[24px] font-medium text-white tracking-tight leading-none">
@@ -223,7 +223,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                 </div>
 
                 <div className="border-l border-white/10 pl-4 space-y-1">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                  <p className="font-mono text-web-nano uppercase tracking-wider text-slate-400">
                     Active On Books
                   </p>
                   <p className="font-mono text-[22px] sm:text-[24px] font-medium text-white tracking-tight leading-none">
@@ -331,7 +331,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                   {/* Part A: Full-Width Realized Cost Matrix */}
                 <div className="w-full">
                   <div className="pb-3 border-b border-slate-100 mb-2">
-                    <h4 className="font-editorial text-xl font-medium text-[#151936]">Realized Cost Matrix</h4>
+                    <h4 className="font-editorial text-xl font-medium text-ink-900">Realized Cost Matrix</h4>
                     <p className="text-xs text-slate-500 mt-0.5">Historical and active booking bands</p>
                   </div>
 
@@ -358,10 +358,10 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                           {row.emphasis && (
                             <span className="size-2 rounded-full bg-emerald-500" />
                           )}
-                          <span className="text-[#151936] text-[15px]">{row.type}</span>
+                          <span className="text-ink-900 text-web-sm">{row.type}</span>
                         </div>
                         <div className="flex items-center gap-6 sm:gap-10 text-right">
-                          <span className="font-mono font-medium text-[#151936] text-base">
+                          <span className="font-mono font-medium text-ink-900 text-base">
                             {row.toLet} <span className="text-xs text-slate-400 font-normal">/ mo</span>
                           </span>
                           <span className="font-mono text-slate-500 text-sm min-w-[80px]">
@@ -418,10 +418,10 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                         >
                           <span className="text-xs text-slate-500 font-normal line-clamp-1">{row.place}</span>
                           <div className="mt-2 flex items-baseline justify-between">
-                            <span className="font-mono text-2xl font-medium text-[#151936]">
+                            <span className="font-mono text-2xl font-medium text-ink-900">
                               {row.value}
                             </span>
-                            <span className="font-mono text-[10px] uppercase text-slate-400">Direct</span>
+                            <span className="font-mono text-web-nano uppercase text-slate-400">Direct</span>
                           </div>
                         </div>
                       ))}
@@ -465,7 +465,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                   {results.listings.length > 0 && (
                     <Link
                       href={`/properties?location=${encodeURIComponent(term)}`}
-                      className="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-[#151936] hover:text-brand-dark transition-colors font-medium"
+                      className="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-ink-900 hover:text-brand-dark transition-colors font-medium"
                     >
                       <span>View All ({stats.total})</span>
                       <ArrowIcon size={14} stroke={WEB_ICON_STROKE} />
@@ -503,7 +503,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     <div className="size-11 rounded-full bg-slate-200 flex items-center justify-center mx-auto text-slate-500">
                       <PinIcon size={18} stroke={WEB_ICON_STROKE} />
                     </div>
-                    <h4 className="font-editorial text-2xl font-medium text-[#151936]">
+                    <h4 className="font-editorial text-2xl font-medium text-ink-900">
                       No active listings in {area.name} today
                     </h4>
                     <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
@@ -529,19 +529,19 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               {/* Asset Owner Valuation Box */}
               <div className="rounded-2xl border border-slate-200/90 bg-white p-7 shadow-xs space-y-5">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
-                  <span className="font-mono text-[10.5px] uppercase tracking-widest text-slate-400 font-medium">
+                  <span className="font-mono text-web-nano uppercase tracking-widest text-slate-400 font-medium">
                     Owner Advisory
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-emerald-700 font-medium">
+                  <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 font-mono text-web-nano uppercase tracking-wider text-emerald-700 font-medium">
                     <ChartIcon size={10} stroke={2.5} /> Active Ledger
                   </span>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-editorial text-[24px] font-medium leading-snug text-[#151936]">
+                  <h4 className="font-editorial text-[24px] font-medium leading-snug text-ink-900">
                     What your {area.name} property would fetch
                   </h4>
-                  <p className="text-[14px] leading-relaxed text-slate-600 font-normal">
+                  <p className="text-web-sm leading-relaxed text-slate-600 font-normal">
                     {stats.total > 0
                       ? `We manage and let units in ${area.name}. An appraisal consultant will provide exact realized comparables and tenant demand metrics for your configuration.`
                       : `A senior consultant specializing in ${area.name} can provide actionable price guidance, lease structuring, and full management terms.`}
@@ -558,7 +558,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     Request Free Valuation
                   </WebButtonLink>
 
-                  <p className="text-[11.5px] text-center text-slate-400 font-normal">
+                  <p className="text-web-micro text-center text-slate-400 font-normal">
                     Completely free with zero obligation to list.
                   </p>
                 </div>
@@ -567,7 +567,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               {/* Nearby / Sister Submarkets Navigation */}
               {nearby.length > 0 && (
                 <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-4">
-                  <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                  <p className="font-mono text-web-micro uppercase tracking-wider text-slate-400 font-medium">
                     Complementary Submarkets
                   </p>
                   <ul className="divide-y divide-slate-100 border-t border-slate-100">
@@ -575,13 +575,13 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                       <li key={item.slug}>
                         <Link
                           href={`/locations/${item.slug}`}
-                          className="group flex items-center justify-between gap-3 py-3 text-[14px] text-[#151936] transition-colors hover:text-blue-900"
+                          className="group flex items-center justify-between gap-3 py-3 text-web-sm text-ink-900 transition-colors hover:text-blue-900"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="size-1.5 rounded-full bg-slate-300 group-hover:bg-[#151936] transition-colors" />
+                            <span className="size-1.5 rounded-full bg-slate-300 group-hover:bg-brand-dark transition-colors" />
                             <span className="truncate font-medium">{item.name}</span>
                           </div>
-                          <span className="font-mono text-[12px] text-slate-500 shrink-0">
+                          <span className="font-mono text-web-micro text-slate-500 shrink-0">
                             {item.guideValue}
                           </span>
                         </Link>
@@ -597,7 +597,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                   <PhoneIcon size={13} stroke={WEB_ICON_STROKE} />
                   <span>Submarket Advisory Desk</span>
                 </div>
-                <p className="text-[13.5px] leading-relaxed text-slate-600 font-normal">
+                <p className="text-web-xs leading-relaxed text-slate-600 font-normal">
                   Speak directly with our dedicated portfolio manager for {area.name} regarding off-market listings or tenant onboarding.
                 </p>
                 <div className="pt-1">
@@ -607,7 +607,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
                     // a fourth hardcoded copy is the one that gets missed when
                     // it changes.
                     href={SITE.phoneHref}
-                    className="inline-flex items-center gap-2 font-mono text-[13px] font-medium text-[#151936] hover:text-brand-dark transition-colors"
+                    className="inline-flex items-center gap-2 font-mono text-web-xs font-medium text-ink-900 hover:text-brand-dark transition-colors"
                   >
                     <span>{SITE.phone}</span>
                     <ArrowIcon size={13} stroke={WEB_ICON_STROKE} />
@@ -622,12 +622,12 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
       {/* ── 04. Closing Requirement Callout Banner ── */}
       <section
         aria-labelledby="area-cta-heading"
-        className="web-dark py-20 sm:py-24 bg-[#090d1f] border-t border-white/10"
+        className="web-dark py-20 sm:py-24 bg-brand-deep border-t border-white/10"
       >
         <Container>
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div className="space-y-4">
-              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-brand-yellow">
+              <div className="flex items-center gap-2 font-mono text-web-micro uppercase tracking-widest text-brand-yellow">
                 <span className="h-px w-6 bg-brand-yellow" />
                 <span>Bespoke Property Search</span>
               </div>
@@ -637,7 +637,7 @@ export default async function AreaDetailPage({ params }: { params: Promise<{ slu
               >
                 Looking for space in {area.name}?
               </h2>
-              <p className="text-[15.5px] leading-relaxed text-slate-300 font-normal max-w-[56ch]">
+              <p className="text-web-sm leading-relaxed text-slate-300 font-normal max-w-[56ch]">
                 Tell us your target unit configuration, timeline, and budget. We will present matching options immediately, including verified properties before public listing.
               </p>
             </div>

@@ -136,7 +136,7 @@ export function StatBlock({
               >
                 {/* Header row: Label */}
                 <div>
-                  <span className="text-[9.5px] uppercase tracking-[0.16em] font-mono font-medium text-slate-400/90 block truncate">
+                  <span className="text-web-nano uppercase tracking-[0.16em] font-mono font-medium text-slate-400/90 block truncate">
                     {stat.label}
                   </span>
                 </div>
@@ -154,14 +154,14 @@ export function StatBlock({
                 </p>
 
                 {/* Micro Subtitle */}
-                <p className="text-[11px] font-mono text-slate-400/80 truncate">{meta.sub}</p>
+                <p className="text-web-micro font-mono text-slate-400/80 truncate">{meta.sub}</p>
               </div>
             );
           })}
         </div>
 
         {/* Minimalist Integrated Footer */}
-        <div className="px-4 py-2.5 bg-black/25 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400/90">
+        <div className="px-4 py-2.5 bg-black/25 border-t border-white/10 flex items-center justify-between text-web-micro font-mono text-slate-400/90">
           <span>Direct Landlord & Tenant Portals</span>
         </div>
       </div>

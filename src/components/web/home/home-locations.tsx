@@ -127,7 +127,7 @@ export function HomeLocations({ tiles = [] }: { tiles?: LocationTile[] }) {
             >
               <Link
                 href={`/locations/${tile.slug}`}
-                className="group relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[26px] border border-slate-200/90 bg-[#090d1f] p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_24px_55px_rgba(9,13,31,0.3)] cursor-pointer"
+                className="group relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[26px] border border-slate-200/90 bg-brand-deep p-6 sm:p-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-slate-300 hover:shadow-[0_24px_55px_rgba(9,13,31,0.3)] cursor-pointer"
               >
                 {/* High-Resolution Area Photography */}
                 {tile.imageUrl && (
@@ -147,7 +147,7 @@ export function HomeLocations({ tiles = [] }: { tiles?: LocationTile[] }) {
                 {/* Multi-Stage Cinematic Scrims */}
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090d1f] via-[#090d1f]/60 via-45% to-black/25 transition-opacity duration-300 group-hover:via-[#090d1f]/50"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/60 via-45% to-black/25 transition-opacity duration-300 group-hover:via-brand-deep/50"
                 />
                 <div
                   aria-hidden="true"
@@ -156,12 +156,12 @@ export function HomeLocations({ tiles = [] }: { tiles?: LocationTile[] }) {
 
                 {/* Top Action Row: Region Tag + Interactive Arrow Button */}
                 <div className="relative z-10 flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/50 backdrop-blur-md px-3.5 py-1 font-mono text-[10.5px] font-medium text-white border border-white/15 shadow-xs">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/50 backdrop-blur-md px-3.5 py-1 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
                     <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                     <span>{tile.region ?? "Nairobi"}</span>
                   </span>
 
-                  <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:scale-105 shadow-xs">
+                  <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:scale-105 shadow-xs">
                     <ArrowIcon size={13} stroke={2} />
                   </span>
                 </div>
@@ -250,7 +250,7 @@ export function HomeLocations({ tiles = [] }: { tiles?: LocationTile[] }) {
                         <span className="font-mono text-sm sm:text-base font-medium text-white tracking-tight">
                           {priceFormatted}
                         </span>
-                        <span className="text-[11px] font-mono text-slate-400 capitalize truncate ml-2">
+                        <span className="text-web-micro font-mono text-slate-400 capitalize truncate ml-2">
                           {tile.guideLabel}
                         </span>
                       </div>

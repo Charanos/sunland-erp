@@ -69,7 +69,7 @@ export function ArticleInteractiveTools({ post }: { post: InsightPost }) {
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Left: Metadata Quick Telemetry */}
           <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-500">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-1 px-3 py-1 text-[#151936] font-medium border border-line">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-1 px-3 py-1 text-ink-900 font-medium border border-line">
               <span className="size-1.5 rounded-full bg-emerald-500" />
               Verified Advisory
             </span>
@@ -85,7 +85,7 @@ export function ArticleInteractiveTools({ post }: { post: InsightPost }) {
             <button
               type="button"
               onClick={handleCopy}
-              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-0 px-3.5 py-1.5 text-xs font-mono text-slate-700 hover:text-[#151936] hover:border-slate-400 hover:bg-surface-1 transition-all shadow-2xs cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-0 px-3.5 py-1.5 text-xs font-mono text-slate-700 hover:text-ink-900 hover:border-slate-400 hover:bg-surface-1 transition-all shadow-2xs cursor-pointer active:scale-95"
               aria-label="Copy article link"
             >
               {copied ? (
@@ -116,7 +116,7 @@ export function ArticleInteractiveTools({ post }: { post: InsightPost }) {
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center justify-center size-8 rounded-full border border-line bg-surface-0 text-slate-700 hover:text-[#151936] hover:border-slate-400 hover:bg-surface-1 transition-all shadow-2xs cursor-pointer"
+              className="inline-flex items-center justify-center size-8 rounded-full border border-line bg-surface-0 text-slate-700 hover:text-ink-900 hover:border-slate-400 hover:bg-surface-1 transition-all shadow-2xs cursor-pointer"
               title="Print / Save PDF"
               aria-label="Print or save as PDF"
             >
@@ -143,7 +143,7 @@ export function ArticleInteractiveTools({ post }: { post: InsightPost }) {
         {/* Section Fast-Links (Table of Contents pill navigation) */}
         {headings.length > 0 && (
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[10.5px] uppercase tracking-wider text-slate-400 mr-1">
+            <span className="font-mono text-web-nano uppercase tracking-wider text-slate-400 mr-1">
               Table of Contents:
             </span>
             {headings.map((h, i) => {
@@ -152,9 +152,9 @@ export function ArticleInteractiveTools({ post }: { post: InsightPost }) {
                 <a
                   key={h.text}
                   href={`#${anchor}`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-0 px-3 py-1 font-mono text-[11px] text-slate-600 hover:text-[#151936] hover:border-slate-400 transition-all hover:bg-surface-1"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-0 px-3 py-1 font-mono text-web-micro text-slate-600 hover:text-ink-900 hover:border-slate-400 transition-all hover:bg-surface-1"
                 >
-                  <span className="text-[10px] text-slate-900 font-bold">0{i + 1}</span>
+                  <span className="text-web-nano text-slate-900 font-bold">0{i + 1}</span>
                   <span className="line-clamp-1 max-w-[22ch]">
                     {h.text.replace(/^\d+\.\s*/, "")}
                   </span>

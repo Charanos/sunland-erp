@@ -42,7 +42,7 @@ export function HomeInsights({ posts }: { posts: InsightPost[] }) {
         action={
           <Link
             href="/insights"
-            className="group inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-5 py-2.5 font-mono text-[12px] uppercase tracking-[0.14em] text-[#151936] shadow-xs transition-all duration-200 hover:bg-[#151936] hover:text-white hover:border-[#151936] hover:shadow-md cursor-pointer"
+            className="group inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-5 py-2.5 font-mono text-web-micro uppercase tracking-[0.14em] text-ink-900 shadow-xs transition-all duration-200 hover:bg-brand-dark hover:text-white hover:border-ink-900 hover:shadow-md cursor-pointer"
           >
             <DocIcon size={14} stroke={WEB_ICON_STROKE} />
             <span>All 7 Articles</span>
@@ -77,7 +77,7 @@ export function HomeInsights({ posts }: { posts: InsightPost[] }) {
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
                   />
-                  <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-[10px] font-medium text-white border border-white/15 shadow-xs">
+                  <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
                     {post.category}
                   </span>
                 </div>
@@ -85,7 +85,7 @@ export function HomeInsights({ posts }: { posts: InsightPost[] }) {
                 {/* Uncarded Content Section below photo */}
                 <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
                   <div>
-                    <h3 className="font-editorial text-[22px] sm:text-[23px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+                    <h3 className="font-editorial text-[22px] sm:text-[23px] font-medium leading-[1.2] text-ink-900 transition-colors group-hover:text-blue-950">
                       <Link
                         href={`/insights/${post.slug}`}
                         className="after:absolute after:inset-0"
@@ -95,7 +95,7 @@ export function HomeInsights({ posts }: { posts: InsightPost[] }) {
                     </h3>
 
                     {post.summary && (
-                      <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-2">
+                      <p className="mt-2.5 text-web-xs leading-relaxed text-slate-600 font-normal line-clamp-2">
                         {post.summary}
                       </p>
                     )}
@@ -115,12 +115,12 @@ export function HomeInsights({ posts }: { posts: InsightPost[] }) {
                           />
                         </div>
                       )}
-                      <span className="font-medium text-[#151936]">{post.author}</span>
+                      <span className="font-medium text-ink-900">{post.author}</span>
                       <span>·</span>
                       <span>{post.readingTime}</span>
                     </div>
 
-                    <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+                    <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ink-900 group-hover:bg-brand-dark group-hover:text-white">
                       <ArrowRightIcon size={13} stroke={2} aria-hidden="true" />
                     </div>
                   </div>

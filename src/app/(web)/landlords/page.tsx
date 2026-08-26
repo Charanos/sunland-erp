@@ -59,16 +59,16 @@ export default function LandlordsPage() {
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <span aria-hidden="true" className="h-px w-7 bg-brand-yellow shrink-0" />
-                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                  <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-slate-500 font-medium">
                     {LANDLORDS.valuation.eyebrow}
                   </p>
                 </div>
 
-                <h2 id="valuation-heading" className="font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.06] tracking-tight text-[#151936]">
+                <h2 id="valuation-heading" className="font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.06] tracking-tight text-ink-900">
                   {LANDLORDS.valuation.title}
                 </h2>
 
-                <p className="mt-5 text-[15.5px] sm:text-base leading-relaxed text-slate-600 font-normal max-w-[50ch]">
+                <p className="mt-5 text-web-sm sm:text-base leading-relaxed text-slate-600 font-normal max-w-[50ch]">
                   {LANDLORDS.valuation.lead}
                 </p>
               </div>
@@ -80,10 +80,10 @@ export default function LandlordsPage() {
                     <span className="size-1.5 rounded-full bg-emerald-600" />
                   </span>
                   <div>
-                    <h3 className="font-editorial text-[18.5px] font-medium text-[#151936]">
+                    <h3 className="font-editorial text-[18.5px] font-medium text-ink-900">
                       Discovery Consultation
                     </h3>
-                    <p className="text-[14px] leading-relaxed text-slate-600 font-normal mt-0.5">
+                    <p className="text-web-sm leading-relaxed text-slate-600 font-normal mt-0.5">
                       We call within one working day to understand unit configurations, current lease status, and target yields.
                     </p>
                   </div>
@@ -94,10 +94,10 @@ export default function LandlordsPage() {
                     <span className="size-1.5 rounded-full bg-emerald-600" />
                   </span>
                   <div>
-                    <h3 className="font-editorial text-[18.5px] font-medium text-[#151936]">
+                    <h3 className="font-editorial text-[18.5px] font-medium text-ink-900">
                       On-Site Appraisal Walkthrough
                     </h3>
-                    <p className="text-[14px] leading-relaxed text-slate-600 font-normal mt-0.5">
+                    <p className="text-web-sm leading-relaxed text-slate-600 font-normal mt-0.5">
                       A senior consultant inspects the premises (typically 45 mins), evaluating finishes, fixtures, and tenant appeal.
                     </p>
                   </div>
@@ -108,10 +108,10 @@ export default function LandlordsPage() {
                     <span className="size-1.5 rounded-full bg-emerald-600" />
                   </span>
                   <div>
-                    <h3 className="font-editorial text-[18.5px] font-medium text-[#151936]">
+                    <h3 className="font-editorial text-[18.5px] font-medium text-ink-900">
                       Written Comparable Dossier
                     </h3>
-                    <p className="text-[14px] leading-relaxed text-slate-600 font-normal mt-0.5">
+                    <p className="text-web-sm leading-relaxed text-slate-600 font-normal mt-0.5">
                       Receive a definitive figure backed by recent submarket transactions and our live rental ledger comparables.
                     </p>
                   </div>

@@ -58,36 +58,53 @@ export default async function AboutPage() {
     (categoryCounts ?? []).map((c) => [c.propertyType.toLowerCase(), c.count])
   );
 
-  const portfolioSlices: DialSlice[] = [
-    {
-      label: "Villas and houses",
-      href: "/properties/villas",
-      count: countMap.get("villa") ?? countMap.get("house") ?? 45,
-      icon: "house",
-      color: "#0f766e",
-    },
-    {
-      label: "Apartments",
-      href: "/properties/apartments",
-      count: countMap.get("apartment") ?? 24,
-      icon: "building",
-      color: "#0ea5e9",
-    },
-    {
-      label: "Commercial",
-      href: "/properties/commercial",
-      count: countMap.get("commercial") ?? countMap.get("office") ?? 19,
-      icon: "briefcase",
-      color: "#6366f1",
-    },
-    {
-      label: "Land and plots",
-      href: "/properties/land",
-      count: countMap.get("land") ?? countMap.get("plot") ?? 19,
-      icon: "pin",
-      color: "#8b5cf6",
-    },
-  ];
+  /**
+   * The portfolio ring.
+   *
+   * Live counts where the query returned them, presentation defaults where it
+   * did not — the component owns the defaults so there is one place to delete
+   * them from. Passing an empty array is the signal to use them, which is why
+   * this filters rather than substituting per-slice: a slice with a live count
+   * of zero is a real answer and should show zero, but a slice with no answer
+   * at all should not invent one mid-ring while its neighbours are live.
+   *
+   * TODO(api): once the listings read API lands, drop the defaults and let an
+   * empty result hide the ring, matching the home hero's contract.
+   */
+  const liveSlices: DialSlice[] = (
+    [
+      {
+        label: "Villas and houses",
+        href: "/properties/villas",
+        count: countMap.get("villa") ?? countMap.get("house"),
+        icon: "house",
+        color: "#0f766e",
+      },
+      {
+        label: "Apartments",
+        href: "/properties/apartments",
+        count: countMap.get("apartment"),
+        icon: "building",
+        color: "#0ea5e9",
+      },
+      {
+        label: "Commercial",
+        href: "/properties/commercial",
+        count: countMap.get("commercial") ?? countMap.get("office"),
+        icon: "briefcase",
+        color: "#6366f1",
+      },
+      {
+        label: "Land and plots",
+        href: "/properties/land",
+        count: countMap.get("land") ?? countMap.get("plot"),
+        icon: "pin",
+        color: "#8b5cf6",
+      },
+    ] as { label: string; href: string; count?: number; icon: DialSlice["icon"]; color: string }[]
+  )
+    .filter((slice) => typeof slice.count === "number")
+    .map((slice) => ({ ...slice, count: slice.count as number }));
 
   const articleCounts = publishedPosts().reduce<Record<string, number>>((acc, post) => {
     acc[post.author] = (acc[post.author] ?? 0) + 1;
@@ -104,9 +121,7 @@ export default async function AboutPage() {
       <AboutHero />
       <AboutStorySection figures={figures} />
       <AboutFootprint />
-      <AboutCommitments
-        portfolioSlices={portfolioSlices}
-      />
+      <AboutCommitments portfolioSlices={liveSlices} />
       <AboutTeam articleCounts={articleCounts} />
       <AboutTestimonials />
 

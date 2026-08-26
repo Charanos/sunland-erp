@@ -125,7 +125,7 @@ export function HomeGallery() {
               key={`${item.slug}-${idx}`}
               href={`/properties/${item.slug}`}
               aria-hidden={idx >= items.length ? "true" : undefined}
-              className="group relative h-[260px] sm:h-[320px] lg:h-[360px] w-[340px] sm:w-[460px] lg:w-[540px] shrink-0 overflow-hidden rounded-[24px] bg-[#151936] shadow-[0_16px_36px_rgba(21,25,54,0.1)] transition-all duration-300 hover:shadow-[0_22px_48px_rgba(21,25,54,0.18)] cursor-pointer"
+              className="group relative h-[260px] sm:h-[320px] lg:h-[360px] w-[340px] sm:w-[460px] lg:w-[540px] shrink-0 overflow-hidden rounded-[24px] bg-brand-dark shadow-[0_16px_36px_rgba(21,25,54,0.1)] transition-all duration-300 hover:shadow-[0_22px_48px_rgba(21,25,54,0.18)] cursor-pointer"
             >
               {/* High-Resolution Architectural Photography */}
               <Image
@@ -139,7 +139,7 @@ export function HomeGallery() {
               {/* Ambient Atmospheric Gradient Overlay */}
               <div
                 aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-[#151936]/90 via-[#151936]/30 to-black/15 opacity-80 transition-opacity duration-500 group-hover:opacity-90"
+                className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-black/15 opacity-80 transition-opacity duration-500 group-hover:opacity-90"
               />
               <div
                 aria-hidden="true"
@@ -154,11 +154,11 @@ export function HomeGallery() {
 
               {/* Top Bar: Category Pill + Uncarded Price */}
               <div className="absolute top-4 inset-x-4 sm:top-5 sm:inset-x-5 flex items-center justify-between z-10">
-                <span className="inline-flex items-center rounded-full bg-black/55 backdrop-blur-md px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white border border-white/20 shadow-xs">
+                <span className="inline-flex items-center rounded-full bg-black/55 backdrop-blur-md px-3 py-1 font-mono text-web-nano uppercase tracking-wider text-white border border-white/20 shadow-xs">
                   {item.category}
                 </span>
 
-                <span className="font-mono text-[15px] sm:text-base lg:text-[17px] font-medium tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                <span className="font-mono text-web-sm sm:text-base lg:text-web-body font-medium tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                   {item.price}
                 </span>
               </div>
@@ -176,7 +176,7 @@ export function HomeGallery() {
                     </p>
                   </div>
 
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:border-brand-yellow group-hover:scale-105 shadow-sm">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:border-brand-yellow group-hover:scale-105 shadow-sm">
                     <ArrowIcon size={13} stroke={2} aria-hidden="true" />
                   </div>
                 </div>

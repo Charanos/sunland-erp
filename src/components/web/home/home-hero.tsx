@@ -293,7 +293,7 @@ export function HomeHero({
               <div className="mb-0 flex items-center gap-3">
                 <span
                   aria-hidden="true"
-                  className="gsap-eyebrow-line gsap-enter h-[2px] w-10 shrink-0 bg-[#f3df27]/90"
+                  className="gsap-eyebrow-line gsap-enter h-[2px] w-10 shrink-0 bg-brand-yellow/90"
                 />
                 <p className="gsap-eyebrow-text gsap-enter web-eyebrow font-medium uppercase tracking-[0.2em] text-slate-200">
                   {heroDefaults.eyebrow}
@@ -312,7 +312,7 @@ export function HomeHero({
               {/* The lead was in the design and had been dropped. It is the
                   only place the hero says what the business actually does, and
                   a headline of three words cannot carry that alone. */}
-              <p className="gsap-lead gsap-enter mb-0 max-w-[66ch] text-pretty text-[15px] leading-[1.65] text-slate-200/90 sm:text-[17px]">
+              <p className="gsap-lead gsap-enter mb-0 max-w-[66ch] text-pretty text-web-sm leading-[1.65] text-slate-200/90 sm:text-web-body">
                 {heroDefaults.lead}
               </p>
             </div>
@@ -330,7 +330,7 @@ export function HomeHero({
           </div>
 
           <div className="mt-5.5 flex flex-wrap items-center gap-x-2.5 gap-y-2">
-            <span className="gsap-pill gsap-enter web-control text-[11px] font-medium uppercase tracking-[0.16em] text-slate-300">
+            <span className="gsap-pill gsap-enter web-control text-web-micro font-medium uppercase tracking-[0.16em] text-slate-300">
               Popular:
             </span>
             {heroDefaults.quickLinks.map((link) => (

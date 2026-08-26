@@ -74,7 +74,7 @@ export default function ContactPage() {
                           aria-hidden="true"
                           className="text-ink-900"
                         />
-                        <p className="web-numeric text-[10.5px] uppercase tracking-[0.16em] text-ink-400">
+                        <p className="web-numeric text-web-nano uppercase tracking-[0.16em] text-ink-400">
                           {channel.label}
                         </p>
                       </div>
@@ -82,7 +82,7 @@ export default function ContactPage() {
                         className={
                           channel.mono
                             ? "web-numeric text-[19px] tracking-[-0.01em] text-ink-900"
-                            : "text-[15px] leading-relaxed text-ink-900"
+                            : "text-web-sm leading-relaxed text-ink-900"
                         }
                       >
                         {channel.value}
@@ -90,8 +90,8 @@ export default function ContactPage() {
                       <p
                         className={
                           channel.mono
-                            ? "mt-1.5 text-[13.5px] text-ink-500"
-                            : "web-numeric mt-1.5 text-[13px] text-ink-500"
+                            ? "mt-1.5 text-web-xs text-ink-500"
+                            : "web-numeric mt-1.5 text-web-xs text-ink-500"
                         }
                       >
                         {channel.note}
@@ -124,7 +124,7 @@ export default function ContactPage() {
               <section aria-labelledby="routing-heading" className="mt-10">
                 <h2
                   id="routing-heading"
-                  className="web-control text-[11px] uppercase tracking-[0.2em] text-ink-400"
+                  className="web-control text-web-micro uppercase tracking-[0.2em] text-ink-400"
                 >
                   {CONTACT_ROUTING.title}
                 </h2>
@@ -134,8 +134,8 @@ export default function ContactPage() {
                       key={row.subject}
                       className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-line-soft py-4 last:border-b"
                     >
-                      <dt className="min-w-[160px] text-[15.5px] text-ink-900">{row.subject}</dt>
-                      <dd className="text-[14.5px] text-ink-500">{row.person}</dd>
+                      <dt className="min-w-[160px] text-web-sm text-ink-900">{row.subject}</dt>
+                      <dd className="text-web-sm text-ink-500">{row.person}</dd>
                     </div>
                   ))}
                 </dl>
@@ -146,7 +146,7 @@ export default function ContactPage() {
               <h2 className="web-title text-[26px] leading-tight text-ink-900">
                 {CONTACT_FORM.title}
               </h2>
-              <p className="mt-2 text-[14.5px] leading-relaxed text-ink-400">
+              <p className="mt-2 text-web-sm leading-relaxed text-ink-400">
                 {CONTACT_FORM.lead}
               </p>
               <div className="mt-7">
@@ -168,13 +168,13 @@ export default function ContactPage() {
                 href={card.href}
                 className="group flex h-full flex-col rounded-web-card border border-line bg-surface-0 p-7 transition-colors hover:border-ink-900"
               >
-                <p className="web-control text-[11px] uppercase tracking-[0.16em] text-ink-400">
+                <p className="web-control text-web-micro uppercase tracking-[0.16em] text-ink-400">
                   {card.audience}
                 </p>
                 <p className="web-title-card mt-3 text-[22px] leading-tight text-ink-900">
                   {card.title}
                 </p>
-                <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-ink-500">
+                <p className="mt-3 flex-1 text-web-sm leading-relaxed text-ink-500">
                   {card.body}
                 </p>
                 <ArrowIcon

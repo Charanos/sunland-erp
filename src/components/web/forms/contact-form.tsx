@@ -29,9 +29,9 @@ export function ContactForm() {
   const [audience, setAudience] = useState<string>(CONTACT_FORM.audiences[0]);
   const [attempted, setAttempted] = useState(false);
 
-  const labelClass = "web-subtitle mb-1.5 block text-[12.5px] text-ink-500";
+  const labelClass = "web-subtitle mb-1.5 block text-web-micro text-ink-500";
   const inputClass =
-    "w-full rounded-web-full border border-line-strong bg-surface-0 px-4 py-2.5 text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none";
+    "w-full rounded-web-full border border-line-strong bg-surface-0 px-4 py-2.5 text-web-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none";
 
   return (
     <form
@@ -55,7 +55,7 @@ export function ContactForm() {
               <label
                 key={option}
                 className={cn(
-                  "web-hit inline-flex cursor-pointer items-center rounded-web-full px-4 py-1.5 text-[13.5px] transition-colors",
+                  "web-hit inline-flex cursor-pointer items-center rounded-web-full px-4 py-1.5 text-web-xs transition-colors",
                   active
                     ? "bg-brand-dark text-on-dark-hi"
                     : "border border-line-strong text-ink-500 hover:border-ink-400",
@@ -146,11 +146,11 @@ export function ContactForm() {
           rows={5}
           required
           placeholder={CONTACT_FORM.messagePlaceholder}
-          className="w-full resize-y rounded-web-card border border-line-strong bg-surface-0 px-4 py-3 text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none"
+          className="w-full resize-y rounded-web-card border border-line-strong bg-surface-0 px-4 py-3 text-web-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none"
         />
       </div>
 
-      <label className="flex cursor-pointer items-start gap-3 text-[13px] leading-relaxed text-ink-500">
+      <label className="flex cursor-pointer items-start gap-3 text-web-xs leading-relaxed text-ink-500">
         <input
           type="checkbox"
           name="consent"
@@ -162,7 +162,7 @@ export function ContactForm() {
 
       <button
         type="submit"
-        className="web-control web-hit rounded-web-full bg-brand-yellow px-6 py-[11px] text-[12.5px] uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h"
+        className="web-control web-hit rounded-web-full bg-brand-yellow px-6 py-[11px] text-web-micro uppercase tracking-[0.12em] text-brand-dark transition-colors hover:bg-brand-yellow-h"
       >
         {CONTACT_FORM.submitLabel}
       </button>
@@ -170,7 +170,7 @@ export function ContactForm() {
       {attempted && (
         <p
           role="status"
-          className="rounded-web-card border border-line bg-surface-1 p-3.5 text-[13px] leading-relaxed text-ink-700"
+          className="rounded-web-card border border-line bg-surface-1 p-3.5 text-web-xs leading-relaxed text-ink-700"
         >
           Online messages open with the new site. Call{" "}
           <a href={SITE.phoneHref} className="web-numeric text-ink-900 underline underline-offset-4">

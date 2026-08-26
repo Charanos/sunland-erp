@@ -27,10 +27,10 @@ export function ArticleHero({ post }: { post: InsightPost }) {
   return (
     <header
       ref={headerRef}
-      className="web-dark relative z-10 flex min-h-[60svh] sm:min-h-[65svh] flex-col justify-end overflow-hidden bg-[#090d1f] pt-32 sm:pt-36 lg:pt-54 pb-16 sm:pb-20 text-white"
+      className="web-dark relative z-10 flex min-h-[60svh] sm:min-h-[65svh] flex-col justify-end overflow-hidden bg-brand-deep pt-32 sm:pt-36 lg:pt-54 pb-16 sm:pb-20 text-white"
     >
       {/* Background Photography with Refined Scrims */}
-      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           src={
             post.imageUrl ??
@@ -54,7 +54,7 @@ export function ArticleHero({ post }: { post: InsightPost }) {
         />
         <div
           aria-hidden="true"
-          className="hero-scrim absolute inset-0 bg-gradient-to-b from-[#090d1f] via-[#090d1f]/40 to-transparent"
+          className="hero-scrim absolute inset-0 bg-gradient-to-b from-brand-deep via-brand-deep/40 to-transparent"
         />
       </div>
 
@@ -69,7 +69,7 @@ export function ArticleHero({ post }: { post: InsightPost }) {
             className="text-slate-300 opacity-90"
           />
 
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-mono text-white/90 backdrop-blur-md">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-web-micro font-mono text-white/90 backdrop-blur-md">
             <span className="size-1.5 rounded-full bg-brand-yellow" />
             <span>{post.category} · Whitepaper</span>
           </div>

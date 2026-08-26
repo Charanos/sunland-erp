@@ -107,7 +107,7 @@ export default function PrivacyPage() {
             not load until you accept it, and declining will not change how the site works for you.
           </p>
 
-          <p className="mt-10 text-[13.5px] text-ink-400">
+          <p className="mt-10 text-web-xs text-ink-400">
             See also our{" "}
             <Link href="/terms" className="text-ink-900 underline underline-offset-4">
               terms of use

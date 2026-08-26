@@ -65,14 +65,14 @@ export function ResultsToolbar({
         {chips.map((chip) => (
           <span
             key={`${chip.param}-${chip.value ?? chip.label}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white py-0.5 pl-2.5 pr-1 font-mono text-[11px] font-medium text-slate-700 shadow-2xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white py-0.5 pl-2.5 pr-1 font-mono text-web-micro font-medium text-slate-700 shadow-2xs"
           >
             {chip.label}
             <button
               type="button"
               onClick={() => removeChip(chip.param, chip.value)}
               aria-label={`Remove ${chip.label} filter`}
-              className="inline-flex size-4 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-[#151936] hover:text-white"
+              className="inline-flex size-4 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-brand-dark hover:text-white"
             >
               <CloseIcon size={10} stroke={2} aria-hidden="true" />
             </button>
@@ -81,7 +81,7 @@ export function ResultsToolbar({
       </div>
 
       <div className="flex items-center gap-2">
-        <label htmlFor={sortId} className="font-mono text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+        <label htmlFor={sortId} className="font-mono text-web-micro font-medium text-slate-400 uppercase tracking-wider">
           Sort by
         </label>
         <select
@@ -93,7 +93,7 @@ export function ResultsToolbar({
             else params.set("sort", event.target.value);
             push(params);
           }}
-          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs font-medium text-slate-800 focus:border-[#151936] focus:outline-none transition-all cursor-pointer"
+          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs font-medium text-slate-800 focus:border-ink-900 focus:outline-none transition-all cursor-pointer"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>

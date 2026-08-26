@@ -42,7 +42,7 @@ export function WebPill({
 
   const base = cn(
     "web-control web-hit inline-flex items-center gap-2 rounded-web-full px-4 py-2",
-    "text-[13px] tracking-[0.08em] transition-all duration-150 ease-out",
+    "text-web-xs tracking-[0.08em] transition-all duration-150 ease-out",
     className
   );
 
@@ -57,7 +57,7 @@ export function WebPill({
       {IconComponent && <IconComponent size={15} stroke={WEB_ICON_STROKE} aria-hidden="true" />}
       {children}
       {typeof count === "number" && (
-        <span className={cn("web-numeric text-[11px]", active ? "opacity-80" : "text-ink-400")}>
+        <span className={cn("web-numeric text-web-micro", active ? "opacity-80" : "text-ink-400")}>
           {count}
         </span>
       )}

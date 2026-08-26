@@ -31,7 +31,7 @@ export function AboutHero() {
       className="web-dark relative z-10 flex min-h-[58svh] sm:min-h-[62svh] lg:min-h-[66svh] flex-col overflow-hidden bg-brand-dark pb-10 sm:pb-12 pt-28 sm:pt-32 lg:pt-40"
     >
       {/* ── Background Photography & Layered Atmospheric Scrims (Right Scrim Blend) ── */}
-      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           src="/images/about-hero.jpg"
           alt=""
@@ -53,7 +53,7 @@ export function AboutHero() {
         />
         <div
           aria-hidden="true"
-          className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/30 to-[#151936]"
+          className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-brand-deep/30 to-brand-dark"
         />
       </div>
 

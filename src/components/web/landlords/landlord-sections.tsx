@@ -39,7 +39,7 @@ function SectionIntro({
         id={id}
         className={cn(
           "mt-4 font-editorial text-[clamp(2.25rem,3.8vw,3.6rem)] font-medium leading-[1.1] tracking-tight",
-          isDark ? "text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]" : "text-[#151936]"
+          isDark ? "text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]" : "text-ink-900"
         )}
       >
         {title}
@@ -47,7 +47,7 @@ function SectionIntro({
       {lead && (
         <p
           className={cn(
-            "web-subtitle mt-4 max-w-[72ch] text-[15px] sm:text-base leading-relaxed font-normal",
+            "web-subtitle mt-4 max-w-[72ch] text-web-sm sm:text-base leading-relaxed font-normal",
             isDark ? "text-slate-300/90" : "text-slate-600"
           )}
         >
@@ -79,11 +79,11 @@ export function LandlordPromises() {
           <Eyebrow tone="light">{LANDLORDS.promises.eyebrow}</Eyebrow>
           <h2
             id="promises-heading"
-            className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+            className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-ink-900"
           >
             {LANDLORDS.promises.title}
           </h2>
-          <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-600 max-w-[46ch]">
+          <p className="web-subtitle mt-4 text-web-sm sm:text-base leading-relaxed text-slate-600 max-w-[46ch]">
             {LANDLORDS.promises.lead}
           </p>
 
@@ -110,17 +110,17 @@ export function LandlordPromises() {
                 <div className="flex items-center gap-4">
                   <span
                     aria-hidden="true"
-                    className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100/90 text-[#151936] shadow-xs"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100/90 text-ink-900 shadow-xs"
                   >
                     <IconComponent size={20} stroke={WEB_ICON_STROKE} />
                   </span>
-                  <h3 className="font-editorial text-2xl sm:text-[27px] font-medium leading-snug text-[#151936]">
+                  <h3 className="font-editorial text-2xl sm:text-[27px] font-medium leading-snug text-ink-900">
                     {card.title}
                   </h3>
                 </div>
 
                 {/* Body Narrative */}
-                <p className="text-[15px] sm:text-[15.5px] leading-relaxed text-slate-600 font-normal pl-0 sm:pl-15">
+                <p className="text-web-sm sm:text-web-sm leading-relaxed text-slate-600 font-normal pl-0 sm:pl-15">
                   {card.body}
                 </p>
 
@@ -131,7 +131,7 @@ export function LandlordPromises() {
                       <CheckIcon size={11} stroke={2.5} />
                     </span>
                     <p className="leading-relaxed">
-                      <strong className="font-medium text-[#151936]">What you get:</strong>{" "}
+                      <strong className="font-medium text-ink-900">What you get:</strong>{" "}
                       <span className="text-slate-600">
                         {card.outcome.charAt(0).toUpperCase() + card.outcome.slice(1)}
                       </span>
@@ -184,41 +184,41 @@ export function LandlordTimeline() {
               <div key={step.when} className="group relative flex gap-6 sm:gap-8 items-start">
                 {/* Milestone Node Pin */}
                 <div className="relative z-10 flex size-4 sm:size-5 shrink-0 items-center justify-center bg-[#f8fafc]">
-                  <span className="size-2.5 rounded-full border-[1.5px] border-slate-300 bg-white transition-all duration-300 group-hover:scale-125 group-hover:border-[#151936] group-hover:bg-[#151936]" />
+                  <span className="size-2.5 rounded-full border-[1.5px] border-slate-300 bg-white transition-all duration-300 group-hover:scale-125 group-hover:border-ink-900 group-hover:bg-brand-dark" />
                 </div>
 
                 {/* Step Content */}
                 <div className="flex-1 min-w-0">
                   {/* Milestone Step Header */}
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-[11.5px] font-medium uppercase tracking-widest text-[#151936]">
+                    <span className="font-mono text-web-micro font-medium uppercase tracking-widest text-ink-900">
                       {step.when}
                     </span>
                     <span className="h-px w-6 bg-slate-200" />
-                    <span className="font-mono text-[10.5px] uppercase tracking-widest text-slate-400 font-medium">
+                    <span className="font-mono text-web-nano uppercase tracking-widest text-slate-400 font-medium">
                       Milestone 0{index + 1}
                     </span>
                   </div>
 
                   {/* Milestone Title */}
-                  <h3 className="font-editorial mt-2.5 text-[24px] sm:text-[27px] font-medium leading-snug text-[#151936]">
+                  <h3 className="font-editorial mt-2.5 text-[24px] sm:text-[27px] font-medium leading-snug text-ink-900">
                     {step.title}
                   </h3>
 
                   {/* Body Narrative */}
-                  <p className="mt-2.5 text-[15px] leading-relaxed text-slate-600 font-normal max-w-[56ch]">
+                  <p className="mt-2.5 text-web-sm leading-relaxed text-slate-600 font-normal max-w-[56ch]">
                     {step.body}
                   </p>
 
                   {/* Specific Deliverable Checkpoint */}
                   {deliverables[step.when] && (
                     <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 pt-3 border-t border-slate-200/60 max-w-[56ch]">
-                      <div className="flex items-center gap-1.5 text-emerald-700 font-mono text-[11px] uppercase tracking-wider font-medium">
+                      <div className="flex items-center gap-1.5 text-emerald-700 font-mono text-web-micro uppercase tracking-wider font-medium">
                         <CheckIcon size={12} stroke={2.5} />
                         <span>Deliverable</span>
                       </div>
                       <span className="text-slate-300 hidden sm:inline">·</span>
-                      <span className="text-[14px] text-slate-600 font-normal">
+                      <span className="text-web-sm text-slate-600 font-normal">
                         {deliverables[step.when]}
                       </span>
                     </div>
@@ -235,11 +235,11 @@ export function LandlordTimeline() {
             <Eyebrow tone="light">{LANDLORDS.timeline.eyebrow}</Eyebrow>
             <h2
               id="timeline-heading"
-              className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+              className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-ink-900"
             >
               {LANDLORDS.timeline.title}
             </h2>
-            <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-600 max-w-[44ch]">
+            <p className="web-subtitle mt-4 text-web-sm sm:text-base leading-relaxed text-slate-600 max-w-[44ch]">
               A transparent, milestone-driven lifecycle from initial appraisal to monthly dividend remittances. No silent gaps, no surprise deductions.
             </p>
           </div>
@@ -247,25 +247,25 @@ export function LandlordTimeline() {
           {/* Asset Velocity Telemetry Strip */}
           <div className="grid grid-cols-2 gap-y-7 gap-x-8 border-t border-slate-200/80 pt-7">
             <div className="space-y-1.5">
-              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-ink-900">
                 18<span className="text-sm text-slate-500 ml-1.5 font-normal">Days</span>
               </div>
               <p className="text-xs text-slate-500 font-normal">Average time to let</p>
             </div>
             <div className="space-y-1.5">
-              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-ink-900">
                 100<span className="text-sm text-slate-500 ml-1 font-normal">%</span>
               </div>
               <p className="text-xs text-slate-500 font-normal">Accompanied viewings</p>
             </div>
             <div className="space-y-1.5">
-              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-ink-900">
                 5th<span className="text-xs text-slate-500 ml-1.5 font-normal">Monthly</span>
               </div>
               <p className="text-xs text-slate-500 font-normal">Guaranteed payout date</p>
             </div>
             <div className="space-y-1.5">
-              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+              <div className="font-mono text-[28px] font-medium leading-none tracking-tight text-ink-900">
                 0<span className="text-sm text-slate-500 ml-1.5 font-normal">KES</span>
               </div>
               <p className="text-xs text-slate-500 font-normal">Upfront onboarding cost</p>
@@ -315,26 +315,26 @@ export function LandlordFees() {
             {/* Alignment container for the badge so the titles line up even if a badge is missing */}
             <div className="h-8 mb-5 flex items-center">
               {tier.badge && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-[10.5px] font-medium uppercase tracking-widest text-[#151936] shadow-sm">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-web-nano font-medium uppercase tracking-widest text-ink-900 shadow-sm">
                   <span className="size-1.5 rounded-full bg-emerald-500" />
                   {tier.badge}
                 </span>
               )}
             </div>
 
-            <h3 className="font-editorial text-[30px] lg:text-[34px] font-medium leading-tight text-[#151936]">
+            <h3 className="font-editorial text-[30px] lg:text-[34px] font-medium leading-tight text-ink-900">
               {tier.name}
             </h3>
-            <p className="mt-2.5 text-[15.5px] leading-relaxed text-slate-500 font-normal max-w-[28ch]">
+            <p className="mt-2.5 text-web-sm leading-relaxed text-slate-500 font-normal max-w-[28ch]">
               {tier.tagline}
             </p>
 
             {/* Editorial Number Presentation */}
             <div className="mt-10 flex items-baseline gap-2.5 border-b border-slate-200/80 pb-10">
-              <span className="font-editorial text-[56px] lg:text-[64px] font-medium leading-none tracking-tight text-[#151936]">
+              <span className="font-editorial text-[56px] lg:text-[64px] font-medium leading-none tracking-tight text-ink-900">
                 {tier.figure}
               </span>
-              <span className="text-[15.5px] text-slate-500 font-normal max-w-[14ch] leading-snug">
+              <span className="text-web-sm text-slate-500 font-normal max-w-[14ch] leading-snug">
                 {tier.unit}
               </span>
             </div>
@@ -342,7 +342,7 @@ export function LandlordFees() {
             {/* Inclusions and Exclusions */}
             <ul className="mt-10 space-y-5">
               {tier.includes.map((item) => (
-                <li key={item} className="flex items-start gap-3.5 text-[15px] text-slate-700 font-normal leading-relaxed">
+                <li key={item} className="flex items-start gap-3.5 text-web-sm text-slate-700 font-normal leading-relaxed">
                   <span className="flex size-[18px] shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white mt-[3px] shadow-sm">
                     <CheckIcon size={12} stroke={3.5} />
                   </span>
@@ -350,7 +350,7 @@ export function LandlordFees() {
                 </li>
               ))}
               {tier.excludes.map((item) => (
-                <li key={item} className="flex items-start gap-3.5 text-[15px] text-slate-400 font-normal leading-relaxed">
+                <li key={item} className="flex items-start gap-3.5 text-web-sm text-slate-400 font-normal leading-relaxed">
                   <span className="flex size-[18px] shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-300 mt-[3px]">
                     <CrossIcon size={11} stroke={2} />
                   </span>
@@ -381,7 +381,7 @@ export function LandlordErp() {
   return (
     <section
       aria-labelledby="erp-heading"
-      className="web-dark relative overflow-hidden py-24 lg:py-32 bg-[#090d1f]"
+      className="web-dark relative overflow-hidden py-24 lg:py-32 bg-brand-deep"
     >
       {/* Background ambient lighting */}
       <div className="pointer-events-none absolute -top-40 right-0 h-[600px] w-[600px] rounded-full bg-emerald-500/5 blur-[140px]" />
@@ -401,8 +401,8 @@ export function LandlordErp() {
             {/* Bespoke Architectural Eyebrow */}
             <div className="mb-6 flex items-center gap-3">
               <span aria-hidden="true" className="h-px w-7 shrink-0 bg-brand-yellow" />
-              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-slate-300">
-                <span className="font-editorial lowercase text-brand-yellow text-[15px] italic tracking-normal leading-none">sys.</span>
+              <div className="flex items-center gap-2 font-mono text-web-micro uppercase tracking-[0.22em] text-slate-300">
+                <span className="font-editorial lowercase text-brand-yellow text-web-sm italic tracking-normal leading-none">sys.</span>
                 <span>{LANDLORDS.erp.eyebrow}</span>
                 <span className="text-white/20">/</span>
                 <span className="text-emerald-400 font-medium">Core Ledger</span>
@@ -416,7 +416,7 @@ export function LandlordErp() {
               {LANDLORDS.erp.title}
             </h2>
 
-            <p className="mt-5 text-[15.5px] sm:text-base leading-relaxed text-slate-300 max-w-[50ch] font-normal">
+            <p className="mt-5 text-web-sm sm:text-base leading-relaxed text-slate-300 max-w-[50ch] font-normal">
               {LANDLORDS.erp.lead}
             </p>
 
@@ -433,15 +433,15 @@ export function LandlordErp() {
                       <span className="text-brand-yellow shrink-0">
                         <IconComponent size={18} stroke={WEB_ICON_STROKE} aria-hidden="true" />
                       </span>
-                      <span className="text-[15px] font-medium text-white">
+                      <span className="text-web-sm font-medium text-white">
                         {row.label}
                       </span>
-                      <span className="text-slate-400 text-[13.5px] font-normal hidden sm:inline">
+                      <span className="text-slate-400 text-web-xs font-normal hidden sm:inline">
                         — {row.value}
                       </span>
                     </div>
 
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-emerald-400/90 font-medium shrink-0">
+                    <span className="font-mono text-web-nano uppercase tracking-widest text-emerald-400/90 font-medium shrink-0">
                       Live Hook
                     </span>
                   </div>
@@ -452,7 +452,7 @@ export function LandlordErp() {
             <div className="mt-8 flex flex-wrap items-center gap-4 pt-2">
               <Link
                 href={LANDLORDS.erp.portalLink.href}
-                className="web-hit inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-[14px] font-medium text-[#151936] shadow-lg shadow-white/10 transition-all hover:bg-slate-100 hover:scale-[1.02]"
+                className="web-hit inline-flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-web-sm font-medium text-ink-900 shadow-lg shadow-white/10 transition-all hover:bg-slate-100 hover:scale-[1.02]"
               >
                 <span>{LANDLORDS.erp.portalLink.label}</span>
                 <ArrowIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
@@ -473,10 +473,10 @@ export function LandlordErp() {
           <div className="mb-16 grid lg:grid-cols-[1fr_minmax(0,1.2fr)] gap-8 lg:gap-14 items-end">
             {/* Left Column: Context Narrative & Live Telemetry */}
             <div className="space-y-4 lg:pr-10 lg:border-r border-white/10">
-              <p className="text-[15px] sm:text-[15.5px] leading-relaxed text-slate-300 font-normal">
+              <p className="text-web-sm sm:text-web-sm leading-relaxed text-slate-300 font-normal">
                 Every transaction, repair photograph, tenant vetting dossier, and M-Pesa reference is permanently indexed against the unit ledger. No silent gaps, no undocumented deductions.
               </p>
-              <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-widest text-slate-400 pt-1">
+              <div className="flex items-center gap-4 font-mono text-web-micro uppercase tracking-widest text-slate-400 pt-1">
                 <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
                   <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                   6 Core Modules Active
@@ -490,7 +490,7 @@ export function LandlordErp() {
             <div className="lg:text-right lg:ml-auto">
               <div className="flex items-center lg:flex-row-reverse gap-3 mb-3">
                 <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
-                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-brand-yellow font-medium">
+                <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-brand-yellow font-medium">
                   Infrastructure Architecture
                 </p>
               </div>
@@ -536,11 +536,11 @@ export function LandlordErp() {
                     {capability.title}
                   </h4>
 
-                  <p className="relative z-10 mt-3 text-[14px] leading-relaxed text-slate-400 font-normal">
+                  <p className="relative z-10 mt-3 text-web-sm leading-relaxed text-slate-400 font-normal">
                     {capability.body}
                   </p>
 
-                  <div className="relative z-10 mt-6 pt-4 border-t border-white/5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-emerald-400/90 font-medium">
+                  <div className="relative z-10 mt-6 pt-4 border-t border-white/5 flex items-center gap-2 font-mono text-web-nano uppercase tracking-wider text-emerald-400/90 font-medium">
                     <span className="size-1 rounded-full bg-emerald-500/80" />
                     <span>{specs[index]}</span>
                   </div>
@@ -581,16 +581,16 @@ function LandlordPortfolioMock() {
           </div>
           <span className="h-3 w-px bg-slate-200" />
           <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded bg-[#151936] text-white shadow-xs">
+            <span className="flex size-5 items-center justify-center rounded bg-brand-dark text-white shadow-xs">
               <span className="font-editorial text-xs italic leading-none pt-0.5">S</span>
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-widest text-[#151936] font-medium">
+            <span className="font-mono text-web-micro uppercase tracking-widest text-ink-900 font-medium">
               Sunland ERP
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 font-mono text-[9.5px]">
+        <div className="flex items-center gap-2 font-mono text-web-nano">
           <div className="flex items-center gap-1.5 uppercase tracking-wider text-slate-600 font-medium">
             <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
             <span>Live Sync</span>
@@ -606,37 +606,37 @@ function LandlordPortfolioMock() {
         {/* Metric Summary Bar */}
         <div className="grid grid-cols-3 gap-3 border-b border-slate-100 pb-5">
           <div>
-            <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mb-1">
+            <p className="font-mono text-web-nano uppercase tracking-wider text-slate-400 mb-1">
               Collected, Mar
             </p>
-            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-[#151936]">
-              1.42<span className="text-[16px]">M</span>
+            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-ink-900">
+              1.42<span className="text-web-body">M</span>
             </p>
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-mono text-emerald-600 font-medium mt-1">
+            <span className="inline-flex items-center gap-0.5 text-web-nano font-mono text-emerald-600 font-medium mt-1">
               <ChartIcon size={10} stroke={2.5} /> +12.4%
             </span>
           </div>
 
           <div className="border-l border-slate-100 pl-3">
-            <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mb-1">
+            <p className="font-mono text-web-nano uppercase tracking-wider text-slate-400 mb-1">
               Occupancy
             </p>
-            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-[#151936]">
-              96<span className="text-[16px]">%</span>
+            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-ink-900">
+              96<span className="text-web-body">%</span>
             </p>
-            <span className="text-[10px] font-mono text-slate-500 font-normal mt-1 block">
+            <span className="text-web-nano font-mono text-slate-500 font-normal mt-1 block">
               4 of 4 Active
             </span>
           </div>
 
           <div className="border-l border-slate-100 pl-3">
-            <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mb-1">
+            <p className="font-mono text-web-nano uppercase tracking-wider text-slate-400 mb-1">
               Open Jobs
             </p>
-            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-[#151936]">
+            <p className="font-editorial text-[26px] lg:text-[28px] font-medium leading-none tracking-tight text-ink-900">
               2
             </p>
-            <span className="text-[10px] font-mono text-amber-600 font-medium mt-1 block">
+            <span className="text-web-nano font-mono text-amber-600 font-medium mt-1 block">
               In Approval
             </span>
           </div>
@@ -650,10 +650,10 @@ function LandlordPortfolioMock() {
         {/* Live Remittances Feed - Open Hairline List */}
         <div className="mt-5 pt-5 border-t border-slate-100">
           <div className="flex items-center justify-between mb-3.5">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400 font-medium">
+            <span className="font-mono text-web-nano uppercase tracking-widest text-slate-400 font-medium">
               Live Remittance Feed
             </span>
-            <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400">
+            <span className="font-mono text-web-nano uppercase tracking-wider text-slate-400">
               Autopay Matched
             </span>
           </div>
@@ -665,26 +665,26 @@ function LandlordPortfolioMock() {
                 className="flex items-center justify-between gap-3 py-2.5 transition-colors hover:bg-slate-50/50"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="size-6 rounded bg-slate-100 flex items-center justify-center font-editorial text-xs font-medium text-[#151936] shrink-0">
+                  <div className="size-6 rounded bg-slate-100 flex items-center justify-center font-editorial text-xs font-medium text-ink-900 shrink-0">
                     {unit.name.charAt(0)}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-[13px] font-medium text-[#151936]">
+                    <p className="truncate text-web-xs font-medium text-ink-900">
                       {unit.name}
                     </p>
-                    <p className="text-[10.5px] font-mono text-slate-400">
+                    <p className="text-web-nano font-mono text-slate-400">
                       M-Pesa Webhook · 04 Mar
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right shrink-0">
-                  <p className="font-mono text-[12.5px] font-medium text-[#151936]">
+                  <p className="font-mono text-web-micro font-medium text-ink-900">
                     KES {unit.amount}
                   </p>
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider font-medium",
+                      "inline-flex items-center gap-1 font-mono text-web-nano uppercase tracking-wider font-medium",
                       unit.state === "paid" ? "text-emerald-600" : "text-amber-600"
                     )}
                   >
@@ -703,7 +703,7 @@ function LandlordPortfolioMock() {
         </div>
 
         {/* Footer Security Badge */}
-        <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[10.5px] text-slate-400 font-mono">
+        <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-web-nano text-slate-400 font-mono">
           <span className="flex items-center gap-1.5">
             <ShieldIcon size={12} className="text-emerald-500" />
             256-Bit Encrypted Vault
@@ -731,7 +731,7 @@ export function LandlordProof() {
               <span aria-hidden="true" className="h-px w-7 bg-brand-yellow shrink-0" />
               <p
                 id="landlord-proof-heading"
-                className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium"
+                className="font-mono text-web-micro uppercase tracking-[0.22em] text-slate-500 font-medium"
               >
                 {LANDLORDS.testimonial.eyebrow}
               </p>
@@ -745,26 +745,26 @@ export function LandlordProof() {
                 aria-hidden="true"
                 className="text-slate-100 absolute -top-8 -left-4 pointer-events-none -z-10"
               />
-              <blockquote className="font-editorial text-[clamp(1.85rem,2.6vw,2.5rem)] font-medium leading-[1.28] tracking-tight text-[#151936] text-pretty">
+              <blockquote className="font-editorial text-[clamp(1.85rem,2.6vw,2.5rem)] font-medium leading-[1.28] tracking-tight text-ink-900 text-pretty">
                 &ldquo;{LANDLORDS.testimonial.quote}&rdquo;
               </blockquote>
             </div>
 
             {/* Client Signature Profile */}
             <div className="mt-8 flex items-center gap-4 pt-6 border-t border-slate-200/80">
-              <div className="size-11 rounded-full bg-[#151936] text-white flex items-center justify-center font-editorial text-lg font-medium shadow-xs shrink-0">
+              <div className="size-11 rounded-full bg-brand-dark text-white flex items-center justify-center font-editorial text-lg font-medium shadow-xs shrink-0">
                 R
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-editorial text-[18px] font-medium text-[#151936]">
+                  <span className="font-editorial text-[18px] font-medium text-ink-900">
                     {LANDLORDS.testimonial.name}
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-emerald-700 font-medium">
+                  <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 font-mono text-web-nano uppercase tracking-wider text-emerald-700 font-medium">
                     <ShieldIcon size={10} stroke={2.5} /> Verified Landlord
                   </span>
                 </div>
-                <p className="text-[13.5px] text-slate-500 font-normal">
+                <p className="text-web-xs text-slate-500 font-normal">
                   8-Unit Portfolio · Kilimani & Lavington
                 </p>
               </div>
@@ -774,13 +774,13 @@ export function LandlordProof() {
           {/* Social Proof Telemetry Strip */}
           <div className="grid grid-cols-2 gap-8 border-t border-slate-200/80 pt-8">
             <div className="space-y-1">
-              <p className="font-editorial text-[36px] font-medium leading-none text-[#151936]">
+              <p className="font-editorial text-[36px] font-medium leading-none text-ink-900">
                 98.4<span className="text-[20px]">%</span>
               </p>
               <p className="text-xs text-slate-500 font-normal">Annual landlord retention rate</p>
             </div>
             <div className="space-y-1">
-              <p className="font-editorial text-[36px] font-medium leading-none text-[#151936]">
+              <p className="font-editorial text-[36px] font-medium leading-none text-ink-900">
                 24<span className="text-[20px]">h</span>
               </p>
               <p className="text-xs text-slate-500 font-normal">Average repair dispatch turnaround</p>
@@ -793,11 +793,11 @@ export function LandlordProof() {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <span aria-hidden="true" className="h-px w-6 bg-brand-yellow shrink-0" />
-              <h3 className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+              <h3 className="font-mono text-web-micro uppercase tracking-[0.22em] text-slate-500 font-medium">
                 Mandate Clarity
               </h3>
             </div>
-            <h4 className="font-editorial text-[26px] sm:text-[30px] font-medium leading-tight text-[#151936]">
+            <h4 className="font-editorial text-[26px] sm:text-[30px] font-medium leading-tight text-ink-900">
               Common questions
             </h4>
           </div>
@@ -819,16 +819,16 @@ function FaqList() {
     <div className="border-t border-slate-200/90 divide-y divide-slate-200/90">
       {LANDLORDS.faq.map((item) => (
         <details key={item.question} name="landlord-faq" className="group">
-          <summary className="web-hit flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-editorial text-[18.5px] sm:text-[20px] font-medium text-[#151936] transition-colors hover:text-slate-600 group-open:text-[#151936] [&::-webkit-details-marker]:hidden">
+          <summary className="web-hit flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-editorial text-[18.5px] sm:text-[20px] font-medium text-ink-900 transition-colors hover:text-slate-600 group-open:text-ink-900 [&::-webkit-details-marker]:hidden">
             <span>{item.question}</span>
             <span
               aria-hidden="true"
-              className="flex size-8 shrink-0 items-center justify-center rounded-full border border-slate-200/10 bg-slate-50/60 text-slate-500 transition-all duration-200 group-hover:border-slate-400 group-hover:text-[#151936] group-open:rotate-45 group-open:border-slate-200/20 group-open:text-[#151936] group-open:bg-slate-100"
+              className="flex size-8 shrink-0 items-center justify-center rounded-full border border-slate-200/10 bg-slate-50/60 text-slate-500 transition-all duration-200 group-hover:border-slate-400 group-hover:text-ink-900 group-open:rotate-45 group-open:border-slate-200/20 group-open:text-ink-900 group-open:bg-slate-100"
             >
               <PlusIcon size={16} stroke={2} />
             </span>
           </summary>
-          <p className="pb-6 text-[15px] leading-relaxed text-slate-600 font-normal max-w-[56ch]">
+          <p className="pb-6 text-web-sm leading-relaxed text-slate-600 font-normal max-w-[56ch]">
             {item.answer}
           </p>
         </details>

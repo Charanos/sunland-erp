@@ -98,7 +98,7 @@ export function AboutAreasMarquee() {
               key={`${hub.slug}-${idx}`}
               href={`/locations/${hub.slug}`}
               aria-hidden={idx >= PROMINENT_HUBS.length ? "true" : undefined}
-              className="group relative h-[240px] sm:h-[290px] lg:h-[320px] w-[300px] sm:w-[400px] lg:w-[460px] shrink-0 overflow-hidden rounded-[24px] bg-[#151936] shadow-[0_16px_36px_rgba(21,25,54,0.1)] transition-all duration-300 hover:shadow-[0_20px_45px_rgba(21,25,54,0.18)]"
+              className="group relative h-[240px] sm:h-[290px] lg:h-[320px] w-[300px] sm:w-[400px] lg:w-[460px] shrink-0 overflow-hidden rounded-[24px] bg-brand-dark shadow-[0_16px_36px_rgba(21,25,54,0.1)] transition-all duration-300 hover:shadow-[0_20px_45px_rgba(21,25,54,0.18)]"
             >
               {/* High-Resolution Area Photography */}
               <Image
@@ -112,7 +112,7 @@ export function AboutAreasMarquee() {
               {/* Cinematic Gradient Scrim */}
               <div
                 aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-[#151936]/90 via-[#151936]/35 to-black/20 opacity-80 transition-opacity duration-500 group-hover:opacity-90"
+                className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/35 to-black/20 opacity-80 transition-opacity duration-500 group-hover:opacity-90"
               />
 
               {/* Hairline Glass Border */}
@@ -123,11 +123,11 @@ export function AboutAreasMarquee() {
 
               {/* Top Glass Badges */}
               <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">
-                <span className="inline-flex items-center rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white border border-white/20">
+                <span className="inline-flex items-center rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-web-nano uppercase tracking-wider text-white border border-white/20">
                   {hub.regionBadge}
                 </span>
 
-                <span className="inline-flex items-center rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 font-mono text-[10px] text-white/90 border border-white/20">
+                <span className="inline-flex items-center rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 font-mono text-web-nano text-white/90 border border-white/20">
                   {hub.guideValue}
                 </span>
               </div>
@@ -145,7 +145,7 @@ export function AboutAreasMarquee() {
                     </p>
                   </div>
 
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:border-brand-yellow group-hover:translate-x-0.5 shadow-sm">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:border-brand-yellow group-hover:translate-x-0.5 shadow-sm">
                     <ArrowIcon size={14} stroke={2} aria-hidden="true" />
                   </div>
                 </div>
@@ -157,7 +157,7 @@ export function AboutAreasMarquee() {
 
       {/* ── Subtitle Footer Ribbon ── */}
       <div data-reveal className="mt-6 sm:mt-8 text-center px-4">
-        <div className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500">
+        <div className="inline-flex items-center gap-2 font-mono text-web-micro uppercase tracking-[0.2em] text-slate-500">
           <span className="h-px w-5 bg-brand-yellow" />
           <span>20 Active Regional Hubs · Direct Mandate Coverage</span>
           <span className="h-px w-5 bg-brand-yellow" />

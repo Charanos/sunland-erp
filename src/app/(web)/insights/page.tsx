@@ -66,7 +66,7 @@ export default async function InsightsPage({
                     <span>{category}</span>
                     <span
                       className={cn(
-                        "size-4 rounded-full flex items-center justify-center text-[10px]",
+                        "size-4 rounded-full flex items-center justify-center text-web-nano",
                         active === category
                           ? "bg-white/20 text-white"
                           : "bg-surface-2 text-ink-500"
@@ -90,7 +90,7 @@ export default async function InsightsPage({
             <div className="mb-16 sm:mb-20">
               <div className="flex items-center gap-2 mb-6">
                 <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />
-                <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                <p className="font-mono text-web-nano uppercase tracking-[0.22em] text-slate-500 font-medium">
                   Featured Master Advisory
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default async function InsightsPage({
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
                   />
-                  <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-[10.5px] font-medium text-white border border-white/15 shadow-xs">
+                  <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
                     <span className="size-1.5 rounded-full bg-brand-yellow" />
                     {featured.category} · Featured
                   </span>
@@ -125,10 +125,10 @@ export default async function InsightsPage({
                 {/* Content Column */}
                 <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
                   <div>
-                    <h2 className="font-editorial text-2xl sm:text-3xl lg:text-[34px] font-medium leading-[1.18] text-[#151936] transition-colors group-hover:text-blue-950">
+                    <h2 className="font-editorial text-2xl sm:text-3xl lg:text-[34px] font-medium leading-[1.18] text-ink-900 transition-colors group-hover:text-blue-950">
                       {featured.title}
                     </h2>
-                    <p className="mt-3.5 text-[15px] sm:text-base leading-relaxed text-slate-600 font-normal">
+                    <p className="mt-3.5 text-web-sm sm:text-base leading-relaxed text-slate-600 font-normal">
                       {featured.summary}
                     </p>
                   </div>
@@ -150,7 +150,7 @@ export default async function InsightsPage({
                           />
                         </div>
                       )}
-                      <span className="font-medium text-[#151936]">{featured.author}</span>
+                      <span className="font-medium text-ink-900">{featured.author}</span>
                       <span aria-hidden="true">·</span>
                       <span>{featured.date}</span>
                       <span aria-hidden="true">·</span>
@@ -160,7 +160,7 @@ export default async function InsightsPage({
                       </span>
                     </div>
 
-                    <span className="inline-flex items-center gap-2 font-mono text-xs font-medium text-[#151936] group-hover:text-blue-900 group-hover:translate-x-1 transition-all">
+                    <span className="inline-flex items-center gap-2 font-mono text-xs font-medium text-ink-900 group-hover:text-blue-900 group-hover:translate-x-1 transition-all">
                       <span>Read Whitepaper</span>
                       <ArrowRightIcon size={13} stroke={2} />
                     </span>
@@ -176,7 +176,7 @@ export default async function InsightsPage({
               <div className="flex items-center justify-between pb-5 border-b border-line-soft mb-8">
                 <div className="flex items-center gap-2.5">
                   <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />
-                  <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                  <p className="font-mono text-web-nano uppercase tracking-[0.22em] text-slate-500 font-medium">
                     Published Research & Briefings
                   </p>
                 </div>
@@ -210,7 +210,7 @@ export default async function InsightsPage({
                           aria-hidden="true"
                           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
                         />
-                        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-[10px] font-medium text-white border border-white/15 shadow-xs">
+                        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
                           {post.category}
                         </span>
                       </div>
@@ -218,7 +218,7 @@ export default async function InsightsPage({
                       {/* Content Section below photo */}
                       <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
                         <div>
-                          <h3 className="font-editorial text-[22px] sm:text-[23px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+                          <h3 className="font-editorial text-[22px] sm:text-[23px] font-medium leading-[1.2] text-ink-900 transition-colors group-hover:text-blue-950">
                             <Link
                               href={`/insights/${post.slug}`}
                               className="after:absolute after:inset-0"
@@ -227,7 +227,7 @@ export default async function InsightsPage({
                             </Link>
                           </h3>
 
-                          <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-2">
+                          <p className="mt-2.5 text-web-xs leading-relaxed text-slate-600 font-normal line-clamp-2">
                             {post.summary}
                           </p>
                         </div>
@@ -246,12 +246,12 @@ export default async function InsightsPage({
                                 />
                               </div>
                             )}
-                            <span className="font-medium text-[#151936]">{post.author}</span>
+                            <span className="font-medium text-ink-900">{post.author}</span>
                             <span>·</span>
                             <span>{post.readingMinutes} min</span>
                           </div>
 
-                          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+                          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ink-900 group-hover:bg-brand-dark group-hover:text-white">
                             <ArrowRightIcon size={13} stroke={2} aria-hidden="true" />
                           </div>
                         </div>
@@ -264,7 +264,7 @@ export default async function InsightsPage({
           )}
 
           {/* ── 05. Executive Newsletter & Advisory Consultation ── */}
-          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-[#151936] via-[#10132c] to-[#090d1f] p-8 sm:p-12 lg:p-14 text-white shadow-2xl">
+          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-brand-dark via-[#10132c] to-brand-deep p-8 sm:p-12 lg:p-14 text-white shadow-2xl">
             {/* The two halves arrive from opposite sides: the pitch rises,
                 the form slides in from the right. Revealing the inner grid
                 rather than the panel keeps the gradient card itself static,
@@ -310,9 +310,9 @@ function FilterPill({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11.5px] uppercase tracking-wider transition-all duration-200",
+        "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-web-micro uppercase tracking-wider transition-all duration-200",
         active
-          ? "bg-[#151936] text-white font-medium shadow-sm"
+          ? "bg-brand-dark text-white font-medium shadow-sm"
           : "border border-line bg-surface-0 text-ink-600 hover:text-ink-900 hover:bg-surface-1 hover:border-ink-400"
       )}
     >

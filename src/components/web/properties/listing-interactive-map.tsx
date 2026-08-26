@@ -218,7 +218,7 @@ export function ListingInteractiveMap({
               </div>
               <div className="text-right shrink-0">
                 <span className="web-numeric text-xs font-medium text-ink-900 block">{poi.distance}</span>
-                <span className="text-[11px] text-emerald-600 font-medium">{poi.driveTime}</span>
+                <span className="text-web-micro text-emerald-600 font-medium">{poi.driveTime}</span>
               </div>
             </div>
           ))}

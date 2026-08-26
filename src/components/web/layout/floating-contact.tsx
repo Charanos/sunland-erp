@@ -65,7 +65,7 @@ export function FloatingContact() {
         target="_blank"
         rel="noreferrer"
         tabIndex={-1}
-        className="web-control inline-flex size-11 items-center justify-center gap-2 rounded-web-full border border-line bg-surface-0 text-[11px] uppercase tracking-[0.12em] text-ink-900 shadow-web-md transition-colors hover:bg-surface-1 sm:size-auto sm:px-4 sm:py-2.5"
+        className="web-control inline-flex size-11 items-center justify-center gap-2 rounded-web-full border border-line bg-surface-0 text-web-micro uppercase tracking-[0.12em] text-ink-900 shadow-web-md transition-colors hover:bg-surface-1 sm:size-auto sm:px-4 sm:py-2.5"
       >
         <ChatIcon size={17} stroke={WEB_ICON_STROKE} className="sm:hidden" />
         <ChatIcon size={16} stroke={WEB_ICON_STROKE} className="hidden sm:block" />

@@ -61,6 +61,28 @@
   --color-tertiary-emerald-hi: #1b3d2e;
   --color-tertiary-blue: #315be8;
 
+  /* ── The deep ground ──
+     Darker than --color-brand-dark, used under hero photography and as the
+     floor of dark bands so a scrim has somewhere to fade *to*. It appeared 41
+     times as a raw #090d1f before it had a name. */
+  --color-brand-deep: #090d1f;
+
+  /* ── Mint, decorative ──
+     Deliberately its own tier, and deliberately NOT the semantic positive
+     colour below, even though the two are visually close.
+
+     Mint does real work here: the site is navy and a single reserved yellow,
+     and without a third accent every dark band competes for that one yellow.
+     It marks live-ness, active arcs, hover rings and the wash behind small
+     icons. What it must never do is imply *status* — that is what
+     --color-positive-* is for. Keeping them as separate definitions means a
+     future change to status colours cannot silently restyle decoration.
+
+     Three values, replacing six near-misses of raw emerald-400/500/50. */
+  --color-accent-mint: #10b981;
+  --color-accent-mint-soft: #ecfdf5;
+  --color-accent-mint-line: #a7f3d0;
+
   /* ── Semantic, inherited from Terrain unchanged ── */
   --color-positive-bg: rgb(16 185 129 / 0.2);
   --color-positive-fg: #6ee7b7;
@@ -98,6 +120,24 @@
 
   --text-web-xs: 0.8125rem;
   --text-web-xs--line-height: 1.4;
+
+  /* ── The control tier, below xs ──
+     Added rather than rounded away. An audit of the built site found 313 of
+     605 arbitrary type sizes sitting *below* --text-web-xs (13px): 11px x134,
+     10px x61, 10.5px x51, 11.5px x27. That is every mono eyebrow, badge,
+     counter and caption on the site. Folding them up into 13px would inflate
+     the interface furniture on every page, so the scale gains a floor instead
+     of the design losing its quiet tier.
+
+     Mono uppercase with wide tracking reads a size larger than it measures,
+     which is why the control tier can sit this small and stay legible where
+     body copy at the same size would not. Never use these for prose. */
+  --text-web-micro: 0.6875rem;
+  --text-web-micro--line-height: 1.35;
+
+  /* Dense pill counters and numeric chips only. */
+  --text-web-nano: 0.625rem;
+  --text-web-nano--line-height: 1.3;
 
   /* ── Radius, as actually built ──
      Namespaced deliberately: overriding --radius-lg would resize every
@@ -567,6 +607,81 @@
     min-height: 92svh;
     max-height: none;
   }
+}
+
+/* ── Hero geometry, in three tiers ─────────────────────────────────────────
+   Heights had drifted per page: the five directory heroes ran 68/72 with lg
+   values of nothing, nothing, 76, 78 and 82, and the detail heroes ran 58/62/66
+   against 60/65. Nobody chose that spread; it accumulated. Worse, the top
+   padding drifted with it (pt-28/32/40 against pt-32/36/44 against
+   pt-32/36/54), so the gap between the fixed header and the first line of copy
+   changed depending on which page you were on.
+
+   Three tiers, because the site genuinely has three kinds of hero and a single
+   height for all of them would be wrong in a different way:
+
+   L1  the home hero, which fills the viewport          .web-hero-shell
+   L2  directory heroes: properties, areas, insights,   .web-hero-l2
+       landlords, services — they head a listing
+   L3  detail heroes: about, article, area, listing —   .web-hero-l3
+       they head a document and want to get out of
+       the way faster
+
+   Padding lives here too rather than in utility classes on each section, so
+   the header clearance is defined once. `svh` throughout for the same reason
+   .web-hero-shell uses it: `vh` measures the viewport with the mobile URL bar
+   retracted, which pushes content under the fold on first paint. */
+.web-hero-l2,
+.web-hero-l3 {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: 7rem;
+}
+
+.web-hero-l2 {
+  min-height: 68svh;
+  padding-bottom: 3.5rem;
+}
+
+.web-hero-l3 {
+  min-height: 58svh;
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+  .web-hero-l2,
+  .web-hero-l3 {
+    padding-top: 8rem;
+  }
+
+  .web-hero-l2 {
+    min-height: 72svh;
+  }
+
+  .web-hero-l3 {
+    min-height: 62svh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .web-hero-l2 {
+    min-height: 76svh;
+    padding-top: 11rem;
+  }
+
+  .web-hero-l3 {
+    min-height: 66svh;
+    padding-top: 9rem;
+  }
+}
+
+/* ── Mint glow ──
+   The same `0 0 6px rgba(16,185,129,0.5)` was written inline in a dozen
+   places, each with a slightly different radius and alpha. One definition,
+   sized for the 6-10px dots it sits behind. */
+.web-accent-glow {
+  box-shadow: 0 0 6px rgb(16 185 129 / 0.5);
 }
 
 /* ── GSAP entrance, and the state before it runs ─────────────────────────────

@@ -228,7 +228,7 @@ export function PortfolioDial({
               <span className="font-mono text-[24px] font-medium leading-none tracking-tight text-white sm:text-[30px]">
                 {total}
               </span>
-              <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-400 font-medium">
+              <span className="mt-1 font-mono text-web-nano uppercase tracking-[0.16em] text-slate-400 font-medium">
                 {totalLabel}
               </span>
             </div>
@@ -257,10 +257,10 @@ export function PortfolioDial({
                       className="shrink-0 transition-colors"
                       style={{ color: isActive ? "var(--color-brand-yellow, #f3df27)" : arc.color }}
                     />
-                    <span className="min-w-0 flex-1 text-[11.5px] text-slate-300 transition-colors group-hover:text-white font-normal leading-snug">
+                    <span className="min-w-0 flex-1 text-web-micro text-slate-300 transition-colors group-hover:text-white font-normal leading-snug">
                       {arc.label}
                     </span>
-                    <span className="font-mono shrink-0 text-[12px] tabular-nums text-slate-400 transition-colors group-hover:text-white font-medium">
+                    <span className="font-mono shrink-0 text-web-micro tabular-nums text-slate-400 transition-colors group-hover:text-white font-medium">
                       {arc.count}
                     </span>
                   </Link>
@@ -276,10 +276,10 @@ export function PortfolioDial({
             {footnote.map((item) =>
               item.kind === "stat" ? (
                 <div key={item.label} className="flex items-baseline gap-1.5 font-mono">
-                  <span className="text-[15px] font-medium leading-none text-white">
+                  <span className="text-web-sm font-medium leading-none text-white">
                     {item.value}
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-medium">
+                  <span className="text-web-nano uppercase tracking-[0.14em] text-slate-400 font-medium">
                     {item.label}
                   </span>
                 </div>
@@ -287,7 +287,7 @@ export function PortfolioDial({
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="web-hit group ml-auto flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow"
+                  className="web-hit group ml-auto flex items-center gap-1.5 font-mono text-web-nano uppercase tracking-[0.14em] text-slate-300 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow"
                 >
                   {item.label}
                   <ArrowRightIcon />
@@ -302,7 +302,7 @@ export function PortfolioDial({
       {showStatusRail && (
         <div className="border-t border-white/10 bg-white/[0.025] px-5 py-4 sm:px-6">
           {/* Rail header */}
-          <div className="mb-2.5 flex items-center justify-between font-mono text-[10px] uppercase tracking-wider">
+          <div className="mb-2.5 flex items-center justify-between font-mono text-web-nano uppercase tracking-wider">
             <span className="flex items-center gap-1.5 text-slate-300 font-medium">
               <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
               Live Estate Portfolio Status
@@ -330,10 +330,10 @@ export function PortfolioDial({
                   className="size-2 shrink-0 rounded-sm"
                   style={{ backgroundColor: seg.color }}
                 />
-                <span className="font-mono text-[10px] text-slate-400 leading-none">
+                <span className="font-mono text-web-nano text-slate-400 leading-none">
                   {seg.label}
                 </span>
-                <span className="font-mono text-[10px] text-slate-500 tabular-nums leading-none">
+                <span className="font-mono text-web-nano text-slate-500 tabular-nums leading-none">
                   {seg.pct}%
                 </span>
               </div>
@@ -345,7 +345,7 @@ export function PortfolioDial({
       {/* ── Active Regional Mandate Hubs ── */}
       {showCoverageHubs && (
         <div className="border-t border-white/10 bg-white/[0.03] px-5 py-4 sm:px-6">
-          <div className="flex items-center justify-between font-mono text-[10.5px] uppercase tracking-wider mb-2.5">
+          <div className="flex items-center justify-between font-mono text-web-nano uppercase tracking-wider mb-2.5">
             <span className="flex items-center gap-1.5 text-slate-300 font-medium">
               <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
               Active Coverage Hubs
@@ -364,7 +364,7 @@ export function PortfolioDial({
               <Link
                 key={hub.slug}
                 href={`/locations/${hub.slug}`}
-                className="inline-flex items-center gap-1 rounded-lg bg-white/5 border border-white/10 px-2.5 py-1 font-mono text-[11px] text-slate-300 hover:text-white hover:bg-white/15 hover:border-white/20 transition-all"
+                className="inline-flex items-center gap-1 rounded-lg bg-white/5 border border-white/10 px-2.5 py-1 font-mono text-web-micro text-slate-300 hover:text-white hover:bg-white/15 hover:border-white/20 transition-all"
               >
                 <PinIcon size={10} stroke={2} className="text-slate-400 shrink-0" />
                 <span>{hub.name}</span>
@@ -372,7 +372,7 @@ export function PortfolioDial({
             ))}
             <Link
               href="/locations"
-              className="inline-flex items-center rounded-lg bg-white/5 border border-white/10 px-2 py-1 font-mono text-[11px] text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+              className="inline-flex items-center rounded-lg bg-white/5 border border-white/10 px-2 py-1 font-mono text-web-micro text-slate-400 hover:text-white hover:bg-white/10 transition-all"
             >
               +{WEB_AREAS.length - DEFAULT_PROMINENT_HUBS.length} more
             </Link>
@@ -382,7 +382,7 @@ export function PortfolioDial({
 
       {/* ── Sub-Footer: Verified SLA Reassurance & Owner/Tenant Portal Link ── */}
       {showSlaFooter && (
-        <div className="border-t border-white/8 bg-black/20 px-5 py-2.5 sm:px-6 flex items-center justify-between font-mono text-[10.5px] text-slate-400">
+        <div className="border-t border-white/8 bg-black/20 px-5 py-2.5 sm:px-6 flex items-center justify-between font-mono text-web-nano text-slate-400">
           <span className="flex items-center gap-1.5">
             <ShieldIcon size={11} stroke={2} className="text-emerald-400" />
             <span>Contractual SLA & Escrow</span>

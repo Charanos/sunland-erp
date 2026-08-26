@@ -23,7 +23,7 @@ export function HomeServices() {
       <div className="mx-auto max-w-2xl text-center pb-14 sm:pb-16" data-reveal>
         <div className="flex items-center justify-center gap-3 mb-4">
           <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-900 font-medium">
+          <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-ink-900 font-medium">
             {serviceDefaults.eyebrow}
           </p>
           <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
@@ -36,7 +36,7 @@ export function HomeServices() {
           {serviceDefaults.headline}
         </h2>
 
-        <p className="mt-4 text-[15px] sm:text-[16px] leading-relaxed text-ink-500 font-normal max-w-[52ch] mx-auto">
+        <p className="mt-4 text-web-sm sm:text-web-body leading-relaxed text-ink-500 font-normal max-w-[52ch] mx-auto">
           Specialized real estate mandates managed with operational precision, verified local market intelligence, and institutional accountability.
         </p>
       </div>
@@ -75,7 +75,7 @@ export function HomeServices() {
 
                 {/* Category Primitive Badge */}
                 <div className="mt-8">
-                  <WebBadge tone="neutral" className="border border-line-soft font-mono font-medium text-[10px] tracking-[0.14em]">
+                  <WebBadge tone="neutral" className="border border-line-soft font-mono font-medium text-web-nano tracking-[0.14em]">
                     {card.tag}
                   </WebBadge>
                 </div>
@@ -86,20 +86,20 @@ export function HomeServices() {
                 </h3>
 
                 {/* Narrative Description */}
-                <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-ink-500 font-normal">
+                <p className="mt-3 text-web-xs sm:text-web-sm leading-relaxed text-ink-500 font-normal">
                   {card.body}
                 </p>
               </div>
 
               {/* Bottom Highlight & Action Trigger */}
               <div className="mt-10 pt-6 border-t border-line-soft space-y-4">
-                <div className="inline-flex items-center gap-2 py-1 px-2.5 rounded-full bg-emerald-500/8 border border-emerald-500/20 text-emerald-800 text-[10.5px] font-mono font-medium">
+                <div className="inline-flex items-center gap-2 py-1 px-2.5 rounded-full bg-emerald-500/8 border border-emerald-500/20 text-emerald-800 text-web-nano font-mono font-medium">
                   <span className="size-1.5 rounded-full bg-emerald-600 shrink-0 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
                   <span>{card.highlight}</span>
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
-                  <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:text-ink-950 transition-colors">
+                  <span className="font-mono text-web-micro font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:text-ink-950 transition-colors">
                     Explore Mandate
                   </span>
                   <div className="flex size-7.5 items-center justify-center rounded-full border border-line bg-surface-0 text-ink-700 group-hover:bg-ink-900 group-hover:text-white group-hover:border-ink-900 group-hover:translate-x-1 transition-all duration-300 shadow-2xs">

@@ -14,19 +14,27 @@ import { Container } from "@/components/web/primitives/container";
  * 03 — The Team & Leadership Section.
  *
  * Executive architectural redesign:
- * 1. Interactive Department Filter: All (10), Executive Board (4), Property Operations (3), Commercial & Finance (3)
+ * 1. Interactive department filter, with every count derived from the roster
  * 2. CEO Leadership Spotlight: Paul Amos Mwangi in an authoritative editorial showcase with quote, published guides, and direct line
- * 3. 3x3 Symmetrical Portrait Cards: 9 team members presented with framed photography, clear role typography, legible bio, and contact actions
+ * 3. Symmetrical portrait grid for everyone not in the spotlight
  * 4. Full-Width Career Banner: "Join the Sunland Team" spanning the grid footer without breaking symmetry
  */
 
 type Department = "all" | "leadership" | "operations" | "advisory";
 
-const DEPARTMENTS: { id: Department; label: string; count: number }[] = [
-  { id: "all", label: "All Members", count: 10 },
-  { id: "leadership", label: "Executive Board & Leadership", count: 4 },
-  { id: "operations", label: "Asset & Property Operations", count: 3 },
-  { id: "advisory", label: "Commercial, Finance & Advisory", count: 3 },
+/**
+ * Labels only. Counts are derived below.
+ *
+ * They were written in as literals — 10 / 4 / 3 / 3 — which meant every pill
+ * would go on claiming those totals after the eleventh person joined, and the
+ * grid beneath would quietly disagree with the number printed on the button
+ * that filtered it.
+ */
+const DEPARTMENT_LABELS: { id: Department; label: string }[] = [
+  { id: "all", label: "All Members" },
+  { id: "leadership", label: "Executive Board & Leadership" },
+  { id: "operations", label: "Asset & Property Operations" },
+  { id: "advisory", label: "Commercial, Finance & Advisory" },
 ];
 
 function getPersonDepartment(person: Person): Department {
@@ -82,12 +90,31 @@ export function AboutTeam({
   const ceo = PEOPLE[0];
   const otherMembers = useMemo(() => PEOPLE.slice(1), []);
 
-  const filteredMembers = useMemo(() => {
-    if (activeDept === "all") return otherMembers;
-    return PEOPLE.filter((p) => getPersonDepartment(p) === activeDept);
-  }, [activeDept, otherMembers]);
-
+  // Always excludes whoever is in the spotlight, so nobody is rendered twice.
+  //
+  // This read `PEOPLE.filter(...)` on the filtered branch while the "all"
+  // branch used `otherMembers`, so selecting Executive Board showed the CEO in
+  // the spotlight card *and* again in the grid below it.
   const showCeoSpotlight = activeDept === "all" || activeDept === "leadership";
+
+  /** Counted from the roster, so a pill can never disagree with its own grid. */
+  const departments = useMemo(
+    () =>
+      DEPARTMENT_LABELS.map((dept) => ({
+        ...dept,
+        count:
+          dept.id === "all"
+            ? PEOPLE.length
+            : PEOPLE.filter((person) => getPersonDepartment(person) === dept.id).length,
+      })),
+    []
+  );
+
+  const filteredMembers = useMemo(() => {
+    const pool = showCeoSpotlight ? otherMembers : PEOPLE;
+    if (activeDept === "all") return pool;
+    return pool.filter((person) => getPersonDepartment(person) === activeDept);
+  }, [activeDept, otherMembers, showCeoSpotlight]);
 
   return (
     <section
@@ -108,27 +135,27 @@ export function AboutTeam({
               </div>
               <h2
                 id="team-heading"
-                className="font-editorial text-3xl font-medium leading-[1.12] tracking-tight text-[#151936] sm:text-4xl lg:text-[40px]"
+                className="font-editorial text-3xl font-medium leading-[1.12] tracking-tight text-ink-900 sm:text-4xl lg:text-[40px]"
               >
                 {ABOUT_TEAM.title}
               </h2>
-              <p className="mt-3.5 text-[15px] sm:text-[16px] leading-relaxed text-slate-600 font-normal">
+              <p className="mt-3.5 text-web-sm sm:text-web-body leading-relaxed text-slate-600 font-normal">
                 {ABOUT_TEAM.lead}
               </p>
             </div>
 
             {/* Live Count & Roster Reassurance */}
             <div className="flex items-center gap-3 self-start lg:self-auto shrink-0">
-              <div className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-1 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-600 shadow-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-1 px-4 py-2 font-mono text-web-micro uppercase tracking-[0.14em] text-slate-600 shadow-sm">
                 <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
-                <span>10 Mandate Specialists</span>
+                <span>{PEOPLE.length} Mandate Specialists</span>
               </div>
             </div>
           </div>
 
           {/* Interactive Department Filter Pills */}
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-line">
-            {DEPARTMENTS.map((dept) => {
+            {departments.map((dept) => {
               const isActive = activeDept === dept.id;
               return (
                 <button
@@ -136,16 +163,16 @@ export function AboutTeam({
                   type="button"
                   onClick={() => setActiveDept(dept.id)}
                   className={cn(
-                    "inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11.5px] transition-all duration-200 cursor-pointer",
+                    "inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-web-micro transition-all duration-200 cursor-pointer",
                     isActive
-                      ? "bg-[#151936] text-white shadow-sm font-medium"
-                      : "bg-surface-1 border border-line text-slate-600 hover:border-slate-300 hover:text-[#151936]"
+                      ? "bg-brand-dark text-white shadow-sm font-medium"
+                      : "bg-surface-1 border border-line text-slate-600 hover:border-slate-300 hover:text-ink-900"
                   )}
                 >
                   <span>{dept.label}</span>
                   <span
                     className={cn(
-                      "font-mono text-[10.5px] tabular-nums rounded-full px-1.5 py-0.2",
+                      "font-mono text-web-nano tabular-nums rounded-full px-1.5 py-0.5",
                       isActive ? "bg-white/20 text-white" : "bg-slate-200/70 text-slate-600"
                     )}
                   >
@@ -174,10 +201,10 @@ export function AboutTeam({
                   sizes="(min-width: 1024px) 460px, 100vw"
                   className="object-cover object-top transition-transform duration-700 hover:scale-105"
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#151936]/40 via-transparent to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-dark/40 via-transparent to-transparent" />
                 
                 {/* Executive Badge on Photo */}
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-[#151936]/80 backdrop-blur-md border border-white/20 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-white">
+                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-brand-dark/80 backdrop-blur-md border border-white/20 px-3 py-1 font-mono text-web-nano uppercase tracking-[0.16em] text-white">
                   <span className="size-1.5 rounded-full bg-brand-yellow" />
                   <span>Executive Leadership</span>
                 </div>
@@ -188,27 +215,27 @@ export function AboutTeam({
                 <div>
                   {/* Role Header */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-md bg-[#151936]/5 px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-[#151936] font-medium">
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-brand-dark/5 px-2.5 py-1 font-mono text-web-nano uppercase tracking-[0.16em] text-ink-900 font-medium">
                       <span className="size-1.5 rounded-full bg-brand-yellow" />
                       {ceo.role}
                     </span>
-                    <span className="font-mono text-[11px] text-slate-500 tracking-wider uppercase">
+                    <span className="font-mono text-web-micro text-slate-500 tracking-wider uppercase">
                       Mandate Director
                     </span>
                   </div>
 
-                  <h3 className="font-editorial text-[28px] sm:text-[32px] font-medium leading-tight text-[#151936]">
+                  <h3 className="font-editorial text-[28px] sm:text-[32px] font-medium leading-tight text-ink-900">
                     {ceo.fullName ?? ceo.name}
                   </h3>
 
-                  <p className="mt-4 text-[15px] sm:text-[15.5px] leading-relaxed text-slate-600 font-normal">
+                  <p className="mt-4 text-web-sm sm:text-web-sm leading-relaxed text-slate-600 font-normal">
                     {ceo.bio}
                   </p>
 
                   {/* Editorial Leadership Quote with bg-tertiary-gradient */}
                   {ceo.quote && (
                     <div className="mt-6 rounded-2xl bg-tertiary-gradient-glass text-white p-5 sm:p-6 shadow-md border border-white/10 relative overflow-hidden">
-                      <p className="text-[14.5px] sm:text-[15px] leading-relaxed text-slate-100 font-normal italic">
+                      <p className="text-web-sm sm:text-web-sm leading-relaxed text-slate-100 font-normal italic">
 
                         &ldquo;{ceo.quote}&rdquo;
                       </p>
@@ -222,7 +249,7 @@ export function AboutTeam({
                     {articleCounts[ceo.name] > 0 && (
                       <Link
                         href="/insights"
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-line-strong bg-white px-3 py-1.5 font-mono text-[11px] text-slate-600 transition-all hover:bg-[#151936] hover:text-white hover:border-[#151936] shadow-sm"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-line-strong bg-white px-3 py-1.5 font-mono text-web-micro text-slate-600 transition-all hover:bg-brand-dark hover:text-white hover:border-ink-900 shadow-sm"
                       >
                         <span>{articleCounts[ceo.name]} Published Guides</span>
                         <ArrowIcon size={11} stroke={WEB_ICON_STROKE} />
@@ -231,7 +258,7 @@ export function AboutTeam({
                     {ceo.contacts?.includes("email") && (
                       <a
                         href={SITE.emailHref}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-line-strong bg-white px-3 py-1.5 font-mono text-[11px] text-[#151936] transition-all hover:bg-[#151936] hover:text-white hover:border-[#151936] shadow-sm font-medium"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-line-strong bg-white px-3 py-1.5 font-mono text-web-micro text-ink-900 transition-all hover:bg-brand-dark hover:text-white hover:border-ink-900 shadow-sm font-medium"
                       >
                         <MailIcon size={12} stroke={WEB_ICON_STROKE} />
                         <span>Direct Email</span>
@@ -239,7 +266,7 @@ export function AboutTeam({
                     )}
                   </div>
 
-                  <span className="font-mono text-[11px] text-slate-500 inline-flex items-center gap-1">
+                  <span className="font-mono text-web-micro text-slate-500 inline-flex items-center gap-1">
                     <CheckIcon size={12} stroke={2.5} className="text-emerald-600" />
                     <span>Direct Mandate Oversight</span>
                   </span>
@@ -253,8 +280,8 @@ export function AboutTeam({
         <div className="mt-8">
           {activeDept !== "all" && (
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-mono text-[12px] uppercase tracking-[0.16em] text-slate-500 font-medium">
-                {DEPARTMENTS.find((d) => d.id === activeDept)?.label} ({filteredMembers.length})
+              <h3 className="font-mono text-web-micro uppercase tracking-[0.16em] text-slate-500 font-medium">
+                {departments.find((d) => d.id === activeDept)?.label} ({filteredMembers.length})
               </h3>
             </div>
           )}
@@ -285,7 +312,7 @@ export function AboutTeam({
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
 
                       {/* Tag Badge on Portrait */}
-                      <span className="absolute top-2.5 right-2.5 rounded-md bg-[#151936]/80 backdrop-blur-md px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-white">
+                      <span className="absolute top-2.5 right-2.5 rounded-md bg-brand-dark/80 backdrop-blur-md px-2 py-0.5 font-mono text-web-nano uppercase tracking-[0.14em] text-white">
                         {badge}
                       </span>
 
@@ -293,7 +320,7 @@ export function AboutTeam({
                       {articles > 0 && (
                         <Link
                           href="/insights"
-                          className="absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-md bg-white/90 backdrop-blur-md px-2 py-0.5 font-mono text-[10px] text-[#151936] hover:bg-white transition-colors shadow-sm"
+                          className="absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-md bg-white/90 backdrop-blur-md px-2 py-0.5 font-mono text-web-nano text-ink-900 hover:bg-white transition-colors shadow-sm"
                         >
                           <span>{articles} {articles === 1 ? "guide" : "guides"}</span>
                           <ArrowIcon size={9} stroke={WEB_ICON_STROKE} />
@@ -302,26 +329,26 @@ export function AboutTeam({
                     </div>
 
                     {/* Role & Name */}
-                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500 font-medium leading-none mb-1.5">
+                    <p className="font-mono text-web-nano uppercase tracking-[0.16em] text-slate-500 font-medium leading-none mb-1.5">
                       {person.role}
                     </p>
-                    <h4 className="font-editorial text-[20px] font-medium leading-tight text-[#151936] transition-colors">
+                    <h4 className="font-editorial text-[20px] font-medium leading-tight text-ink-900 transition-colors">
                       {person.fullName ?? person.name}
                     </h4>
 
                     {/* Bio Snippet */}
-                    <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-3">
+                    <p className="mt-2.5 text-web-xs leading-relaxed text-slate-600 font-normal line-clamp-3">
                       {person.bio}
                     </p>
                   </div>
 
                   {/* Direct Contact Actions */}
-                  <div className="mt-4 pt-3.5 border-t border-line flex items-center justify-between font-mono text-[11px]">
+                  <div className="mt-4 pt-3.5 border-t border-line flex items-center justify-between font-mono text-web-micro">
                     <div className="flex items-center gap-3">
                       {person.contacts?.includes("email") && (
                         <a
                           href={SITE.emailHref}
-                          className="inline-flex items-center gap-1 text-slate-600 hover:text-[#151936] transition-colors"
+                          className="inline-flex items-center gap-1 text-slate-600 hover:text-ink-900 transition-colors"
                         >
                           <MailIcon size={12} stroke={WEB_ICON_STROKE} />
                           <span>Email</span>
@@ -330,20 +357,20 @@ export function AboutTeam({
                       {person.contacts?.includes("call") && (
                         <a
                           href={SITE.phoneHref}
-                          className="inline-flex items-center gap-1 text-slate-600 hover:text-[#151936] transition-colors"
+                          className="inline-flex items-center gap-1 text-slate-600 hover:text-ink-900 transition-colors"
                         >
                           <PhoneIcon size={12} stroke={WEB_ICON_STROKE} />
                           <span>Call</span>
                         </a>
                       )}
                       {!person.contacts?.length && (
-                        <span className="text-slate-400 text-[10.5px]">
+                        <span className="text-slate-400 text-web-nano">
                           Desk: Nairobi HQ
                         </span>
                       )}
                     </div>
 
-                    <span className="text-slate-400 text-[10px] uppercase tracking-wider">
+                    <span className="text-slate-400 text-web-nano uppercase tracking-wider">
                       Verified Mandate
                     </span>
                   </div>
@@ -362,14 +389,14 @@ export function AboutTeam({
             <div className="max-w-[620px]">
               <div className="mb-2.5 flex items-center gap-2">
                 <span className="size-1.5 rounded-full bg-brand-yellow" />
-                <p className="font-mono text-[10.5px] font-medium uppercase tracking-[0.2em] text-slate-500">
+                <p className="font-mono text-web-nano font-medium uppercase tracking-[0.2em] text-slate-500">
                   Careers &amp; Partnerships
                 </p>
               </div>
-              <h3 className="font-editorial text-2xl sm:text-[26px] font-medium leading-snug text-[#151936]">
+              <h3 className="font-editorial text-2xl sm:text-[26px] font-medium leading-snug text-ink-900">
                 {ABOUT_TEAM.hiring.title}
               </h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-slate-600 font-normal">
+              <p className="mt-2 text-web-sm leading-relaxed text-slate-600 font-normal">
                 {ABOUT_TEAM.hiring.body}
               </p>
             </div>
@@ -377,7 +404,7 @@ export function AboutTeam({
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
               <Link
                 href={ABOUT_TEAM.hiring.cta.href}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#151936] px-5 py-3 font-mono text-[12px] uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-[#1f254e] hover:shadow-md cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-dark px-5 py-3 font-mono text-web-micro uppercase tracking-[0.14em] text-white transition-all duration-200 hover:bg-[#1f254e] hover:shadow-md cursor-pointer"
               >
                 <BriefcaseIcon size={14} stroke={WEB_ICON_STROKE} />
                 <span>{ABOUT_TEAM.hiring.cta.label}</span>

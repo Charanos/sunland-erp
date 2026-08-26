@@ -45,7 +45,7 @@ export function LandlordRentChart() {
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-medium">
+          <span className="text-web-micro font-mono uppercase tracking-wider text-slate-500 font-medium">
             Remittance Curve (KES)
           </span>
         </div>
@@ -53,9 +53,9 @@ export function LandlordRentChart() {
           <button
             type="button"
             onClick={() => setTimeRange("6M")}
-            className={`px-2 py-0.5 text-[10px] font-mono rounded transition-all ${
+            className={`px-2 py-0.5 text-web-nano font-mono rounded transition-all ${
               timeRange === "6M"
-                ? "bg-white text-[#151936] font-medium shadow-xs"
+                ? "bg-white text-ink-900 font-medium shadow-xs"
                 : "text-slate-500 hover:text-slate-900"
             }`}
           >
@@ -64,9 +64,9 @@ export function LandlordRentChart() {
           <button
             type="button"
             onClick={() => setTimeRange("1Y")}
-            className={`px-2 py-0.5 text-[10px] font-mono rounded transition-all ${
+            className={`px-2 py-0.5 text-web-nano font-mono rounded transition-all ${
               timeRange === "1Y"
-                ? "bg-white text-[#151936] font-medium shadow-xs"
+                ? "bg-white text-ink-900 font-medium shadow-xs"
                 : "text-slate-500 hover:text-slate-900"
             }`}
           >
@@ -109,14 +109,14 @@ export function LandlordRentChart() {
                   return (
                     <div className="bg-[#111633] text-white px-3 py-2 rounded-lg shadow-xl border border-slate-700/80 text-left">
                       <div className="flex items-center justify-between gap-3 mb-1">
-                        <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                        <span className="text-web-nano font-mono text-slate-400 uppercase tracking-wider">
                           {dataPoint.month} Remittance
                         </span>
-                        <span className="text-[9.5px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-medium">
+                        <span className="text-web-nano font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-medium">
                           {dataPoint.occupancy}% Occ.
                         </span>
                       </div>
-                      <p className="text-[13px] font-mono font-medium text-emerald-400">
+                      <p className="text-web-xs font-mono font-medium text-emerald-400">
                         KES {(payload[0].value as number).toLocaleString()}
                       </p>
                     </div>

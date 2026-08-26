@@ -41,7 +41,7 @@ export function ServicesHero() {
       className="web-dark relative z-10 flex min-h-[72svh] sm:min-h-[76svh] lg:min-h-[82svh] flex-col overflow-hidden bg-brand-dark pb-12 pt-32 sm:pt-36 lg:pt-44"
     >
       {/* ── Background ── */}
-      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           src="/images/services-hero.jpg"
           // Decorative: the section is already labelled by its h1, and the
@@ -70,7 +70,7 @@ export function ServicesHero() {
         />
         <div
           aria-hidden="true"
-          className="hero-scrim absolute inset-0 bg-gradient-to-t from-[#090d1f] via-[#090d1f]/70 via-20% to-transparent"
+          className="hero-scrim absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/70 via-20% to-transparent"
         />
       </div>
 
@@ -110,7 +110,7 @@ export function ServicesHero() {
 
             <p
               ref={leadRef}
-              className="web-subtitle gsap-enter max-w-[58ch] text-[15.5px] sm:text-[17px] leading-relaxed text-slate-200/90 drop-shadow-sm font-normal"
+              className="web-subtitle gsap-enter max-w-[58ch] text-web-sm sm:text-web-body leading-relaxed text-slate-200/90 drop-shadow-sm font-normal"
             >
               {SERVICES_HERO.lead}
             </p>
@@ -119,12 +119,12 @@ export function ServicesHero() {
           {/* Right Column: Architectural Capability Directory (Jump Nav) */}
           <div className="w-full">
             <div className="hero-aside-item gsap-enter flex items-center justify-between pb-3 mb-1 border-b border-white/15">
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400 font-medium">
+              <span className="font-mono text-web-micro uppercase tracking-[0.2em] text-slate-400 font-medium">
                 Practice Directory
               </span>
               {/* Derived, so adding a fifth practice cannot leave the label
                   claiming four. */}
-              <span className="font-mono text-[11px] text-brand-yellow font-medium">
+              <span className="font-mono text-web-micro text-brand-yellow font-medium">
                 {SERVICES_HERO.jumpLinks.length} Practice Areas
               </span>
             </div>
@@ -142,7 +142,7 @@ export function ServicesHero() {
                       <span className="font-mono text-xs text-brand-yellow/80 transition-colors group-hover:text-brand-yellow font-medium">
                         {num}
                       </span>
-                      <span className="text-[15.5px] sm:text-[16px] text-slate-200 transition-colors group-hover:text-white font-normal">
+                      <span className="text-web-sm sm:text-web-body text-slate-200 transition-colors group-hover:text-white font-normal">
                         {link.label}
                       </span>
                     </div>
@@ -175,7 +175,7 @@ export function ServicesHero() {
             ))}
           </div>
 
-          <div className="hero-detail gsap-enter font-mono text-[11px] uppercase tracking-widest text-slate-400">
+          <div className="hero-detail gsap-enter font-mono text-web-micro uppercase tracking-widest text-slate-400">
             Nairobi &amp; Regional Practice
           </div>
         </div>

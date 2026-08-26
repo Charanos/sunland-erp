@@ -115,9 +115,9 @@ export function FilterRail({
     Boolean(current("max"));
 
   const sectionClass = "border-b border-slate-200/70 pb-5 mb-5";
-  const legendClass = "font-mono text-[11px] font-medium uppercase tracking-[0.15em] text-slate-500 mb-3 block";
+  const legendClass = "font-mono text-web-micro font-medium uppercase tracking-[0.15em] text-slate-500 mb-3 block";
   const inputClass =
-    "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:border-[#151936] focus:outline-none focus:ring-1 focus:ring-[#151936] transition-all";
+    "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-web-xs text-slate-900 placeholder:text-slate-400 focus:border-ink-900 focus:outline-none focus:ring-1 focus:ring-ink-900 transition-all";
 
   const body = (
     <form
@@ -137,14 +137,14 @@ export function FilterRail({
       }}
     >
       <div className="mb-6 flex items-center justify-between gap-4 border-b border-slate-200/70 pb-3">
-        <h2 className="font-mono text-[11.5px] font-medium uppercase tracking-[0.18em] text-slate-900">
+        <h2 className="font-mono text-web-micro font-medium uppercase tracking-[0.18em] text-slate-900">
           Refine Search
         </h2>
         {hasActiveFilters && (
           <button
             type="button"
             onClick={clearAll}
-            className="text-[11.5px] font-medium text-slate-500 underline decoration-slate-300 underline-offset-2 transition-colors hover:text-[#151936]"
+            className="text-web-micro font-medium text-slate-500 underline decoration-slate-300 underline-offset-2 transition-colors hover:text-ink-900"
           >
             Reset
           </button>
@@ -161,9 +161,9 @@ export function FilterRail({
               onClick={() => { setSingle("status", ""); setOpen(false); }}
               aria-pressed={!activeStatus}
               className={cn(
-                "rounded-full py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider transition-all",
+                "rounded-full py-1.5 font-mono text-web-micro font-medium uppercase tracking-wider transition-all",
                 !activeStatus
-                  ? "bg-[#151936] text-white shadow-xs"
+                  ? "bg-brand-dark text-white shadow-xs"
                   : "text-slate-600 hover:text-slate-900"
               )}
             >
@@ -176,9 +176,9 @@ export function FilterRail({
                 onClick={() => { setSingle("status", facet.segment); setOpen(false); }}
                 aria-pressed={activeStatus === facet.segment}
                 className={cn(
-                  "rounded-full py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider transition-all",
+                  "rounded-full py-1.5 font-mono text-web-micro font-medium uppercase tracking-wider transition-all",
                   activeStatus === facet.segment
-                    ? "bg-[#151936] text-white shadow-xs"
+                    ? "bg-brand-dark text-white shadow-xs"
                     : "text-slate-600 hover:text-slate-900"
                 )}
               >
@@ -202,9 +202,9 @@ export function FilterRail({
                 <label
                   key={facet.segment}
                   className={cn(
-                    "flex min-h-8.5 cursor-pointer items-center justify-between rounded-lg px-2 py-1 text-[13.5px] transition-colors",
+                    "flex min-h-8.5 cursor-pointer items-center justify-between rounded-lg px-2 py-1 text-web-xs transition-colors",
                     checked
-                      ? "font-medium text-[#151936]"
+                      ? "font-medium text-ink-900"
                       : "text-slate-600 hover:text-slate-900"
                   )}
                 >
@@ -215,12 +215,12 @@ export function FilterRail({
                       value={facet.segment}
                       checked={checked}
                       onChange={() => toggleInList("category", facet.segment)}
-                      className="size-4 shrink-0 rounded border-slate-300 accent-[#151936]"
+                      className="size-4 shrink-0 rounded border-slate-300 accent-ink-900"
                     />
                     <span>{facet.label}</span>
                   </div>
                   {typeof count === "number" && (
-                    <span className="font-mono text-[11px] text-slate-400">
+                    <span className="font-mono text-web-micro text-slate-400">
                       {count}
                     </span>
                   )}
@@ -294,7 +294,7 @@ export function FilterRail({
                 className={cn(
                   "flex items-center justify-center rounded-xl py-2 font-mono text-xs font-medium transition-all border",
                   active
-                    ? "border-[#151936] bg-[#151936] text-white shadow-xs"
+                    ? "border-ink-900 bg-brand-dark text-white shadow-xs"
                     : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                 )}
               >
@@ -313,9 +313,9 @@ export function FilterRail({
             <label
               key={feature.value}
               className={cn(
-                "flex min-h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1 text-[13px] transition-colors",
+                "flex min-h-8 cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1 text-web-xs transition-colors",
                 activeFeatures.includes(feature.value)
-                  ? "font-medium text-[#151936]"
+                  ? "font-medium text-ink-900"
                   : "text-slate-600 hover:text-slate-900"
               )}
             >
@@ -325,7 +325,7 @@ export function FilterRail({
                 value={feature.value}
                 checked={activeFeatures.includes(feature.value)}
                 onChange={() => toggleInList("feature", feature.value)}
-                className="size-4 shrink-0 rounded border-slate-300 accent-[#151936]"
+                className="size-4 shrink-0 rounded border-slate-300 accent-ink-900"
               />
               <span>{feature.label}</span>
             </label>
@@ -335,7 +335,7 @@ export function FilterRail({
 
       <button
         type="submit"
-        className="w-full rounded-full bg-[#151936] px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.14em] text-white transition-colors hover:bg-slate-800 active:scale-[0.99]"
+        className="w-full rounded-full bg-brand-dark px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.14em] text-white transition-colors hover:bg-slate-800 active:scale-[0.99]"
       >
         {resultCount > 0
           ? `Show ${resultCount} ${resultCount === 1 ? "Result" : "Results"}`
@@ -352,12 +352,12 @@ export function FilterRail({
           type="button"
           onClick={() => setOpen(true)}
           aria-expanded={open}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200/90 bg-white px-5 py-3 font-mono text-xs font-medium uppercase tracking-wider text-[#151936] shadow-xs transition-colors hover:bg-slate-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200/90 bg-white px-5 py-3 font-mono text-xs font-medium uppercase tracking-wider text-ink-900 shadow-xs transition-colors hover:bg-slate-50"
         >
           <FilterIcon size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" />
           Filter Properties
           {hasActiveFilters && (
-            <span className="rounded-full bg-[#151936] px-2 py-0.5 font-mono text-[10px] text-white">
+            <span className="rounded-full bg-brand-dark px-2 py-0.5 font-mono text-web-nano text-white">
               Active
             </span>
           )}
@@ -372,7 +372,7 @@ export function FilterRail({
             tabIndex={-1}
             aria-hidden="true"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 cursor-default bg-[#090d1f]/60 backdrop-blur-sm animate-fade-in"
+            className="absolute inset-0 cursor-default bg-brand-deep/60 backdrop-blur-sm animate-fade-in"
           />
           <div
             role="dialog"

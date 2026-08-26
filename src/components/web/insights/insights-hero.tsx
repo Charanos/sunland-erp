@@ -36,7 +36,7 @@ export function InsightsHero({ articleCount }: { articleCount: number }) {
       className="web-dark relative z-10 flex min-h-[68svh] sm:min-h-[72svh] lg:min-h-[76svh] flex-col overflow-hidden pb-14 pt-32 sm:pt-36 lg:pt-44"
     >
       {/* ── Background Photography & Layered Scrims ── */}
-      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           src="/images/insights-hero-right.jpg"
           alt=""
@@ -49,7 +49,7 @@ export function InsightsHero({ articleCount }: { articleCount: number }) {
         />
         <div aria-hidden="true" className="hero-scrim absolute inset-0 bg-gradient-to-b from-black/40 via-transparent via-35% to-transparent" />
         <div aria-hidden="true" className="hero-scrim absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 via-55% to-transparent" />
-        <div aria-hidden="true" className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/30 to-[#151936]" />
+        <div aria-hidden="true" className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-brand-deep/30 to-brand-dark" />
       </div>
 
       {/* ── Content (Left-Aligned Unified Typography) ── */}
@@ -96,7 +96,7 @@ export function InsightsHero({ articleCount }: { articleCount: number }) {
 
         {/* Action Row & Guarantees Bar - filter removed, keeping guarantees with some style polish */}
         <div className="mt-8 pt-6 border-t border-white/15">
-          <div className="flex flex-wrap items-center gap-y-3 gap-x-8 text-[13px] text-slate-300 font-medium">
+          <div className="flex flex-wrap items-center gap-y-3 gap-x-8 text-web-xs text-slate-300 font-medium">
             {INSIGHTS_ASSURANCES.map((item) => (
               <div key={item.lead} className="hero-detail gsap-enter flex items-center gap-2.5">
                 <span className="flex size-4.5 items-center justify-center rounded-full bg-brand-yellow/20 text-brand-yellow">

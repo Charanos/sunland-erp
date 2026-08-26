@@ -41,9 +41,9 @@ type ViewId = "coverage" | "areas" | "types";
 function TooltipCard({ title, lines }: { title: string; lines: string[] }) {
   return (
     <div className="rounded-xl border border-slate-200/90 bg-white/95 px-3.5 py-2.5 shadow-lg backdrop-blur-md">
-      <p className="font-mono text-[11px] font-medium text-[#151936]">{title}</p>
+      <p className="font-mono text-web-micro font-medium text-ink-900">{title}</p>
       {lines.map((line) => (
-        <p key={line} className="mt-0.5 font-mono text-[11px] text-slate-500 font-normal">
+        <p key={line} className="mt-0.5 font-mono text-web-micro text-slate-500 font-normal">
           {line}
         </p>
       ))}
@@ -192,12 +192,12 @@ export function AboutFootprintInteractive({
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line-soft pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="size-1.5 rounded-full bg-[#151936] shrink-0" />
-                <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 font-medium">
+                <span className="size-1.5 rounded-full bg-brand-dark shrink-0" />
+                <p className="font-mono text-web-nano uppercase tracking-[0.2em] text-slate-500 font-medium">
                   {selectedGroup === "all" ? "Whole Portfolio Footprint" : `${activeGroupData?.title} Focus`}
                 </p>
               </div>
-              <p className="mt-1 font-editorial text-[19px] font-medium leading-tight text-[#151936]">
+              <p className="mt-1 font-editorial text-[19px] font-medium leading-tight text-ink-900">
                 {activeView === "coverage"
                   ? `Regional Distribution (${filteredWebAreas.length} Areas)`
                   : activeView === "areas"
@@ -211,7 +211,7 @@ export function AboutFootprintInteractive({
                 <button
                   type="button"
                   onClick={() => setSelectedGroup("all")}
-                  className="rounded-full bg-surface-1 border border-line px-3 py-1 font-mono text-[10.5px] text-slate-600 hover:text-[#151936] transition-colors"
+                  className="rounded-full bg-surface-1 border border-line px-3 py-1 font-mono text-web-nano text-slate-600 hover:text-ink-900 transition-colors"
                 >
                   Show all ✕
                 </button>
@@ -221,7 +221,7 @@ export function AboutFootprintInteractive({
                 <div
                   role="tablist"
                   aria-label="Footprint view"
-                  className="flex items-center rounded-full bg-surface-1 border border-line-soft p-1 font-mono text-[10.5px]"
+                  className="flex items-center rounded-full bg-surface-1 border border-line-soft p-1 font-mono text-web-nano"
                 >
                   {tabs.map((tab) => (
                     <button
@@ -233,8 +233,8 @@ export function AboutFootprintInteractive({
                       className={cn(
                         "rounded-full px-3 py-1 font-medium uppercase tracking-[0.12em] transition-all",
                         activeView === tab.id
-                          ? "bg-[#151936] text-white shadow-2xs"
-                          : "text-slate-500 hover:text-[#151936]"
+                          ? "bg-brand-dark text-white shadow-2xs"
+                          : "text-slate-500 hover:text-ink-900"
                       )}
                     >
                       {tab.label}
@@ -334,14 +334,14 @@ export function AboutFootprintInteractive({
           {activeView === "types" && (
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 border-t border-line-soft pt-4 sm:grid-cols-3">
               {radialData.map((datum) => (
-                <li key={datum.label} className="flex items-center gap-2 font-mono text-[11px]">
+                <li key={datum.label} className="flex items-center gap-2 font-mono text-web-micro">
                   <span
                     aria-hidden="true"
                     className="size-2 shrink-0 rounded-full"
                     style={{ backgroundColor: datum.fill }}
                   />
                   <span className="truncate text-slate-600 font-normal">{datum.label}</span>
-                  <span className="ml-auto shrink-0 font-medium text-[#151936]">{datum.share}%</span>
+                  <span className="ml-auto shrink-0 font-medium text-ink-900">{datum.share}%</span>
                 </li>
               ))}
             </ul>
@@ -349,14 +349,14 @@ export function AboutFootprintInteractive({
 
           {/* Active Area Tags when a category is selected */}
           <div className="mt-4 border-t border-line-soft pt-3.5 flex flex-wrap items-center gap-1.5">
-            <span className="font-mono text-[10.5px] uppercase tracking-wider text-slate-400 mr-1 font-medium">
+            <span className="font-mono text-web-nano uppercase tracking-wider text-slate-400 mr-1 font-medium">
               Active Zones:
             </span>
             {filteredWebAreas.map((area) => (
               <Link
                 key={area.slug}
                 href={`/locations/${area.slug}`}
-                className="inline-flex items-center rounded-md bg-surface-1 border border-line-soft px-2 py-0.5 font-mono text-[10.5px] text-slate-600 hover:text-[#151936] hover:border-slate-400 transition-colors font-normal"
+                className="inline-flex items-center rounded-md bg-surface-1 border border-line-soft px-2 py-0.5 font-mono text-web-nano text-slate-600 hover:text-ink-900 hover:border-slate-400 transition-colors font-normal"
               >
                 {area.name}
               </Link>
@@ -376,12 +376,12 @@ export function AboutFootprintInteractive({
 
         <h2
           id="footprint-heading"
-          className="font-editorial text-3xl font-medium leading-[1.12] tracking-tight text-[#151936] sm:text-4xl lg:text-[40px]"
+          className="font-editorial text-3xl font-medium leading-[1.12] tracking-tight text-ink-900 sm:text-4xl lg:text-[40px]"
         >
           The book, as it stands today
         </h2>
 
-        <p className="mt-5 max-w-[48ch] text-[15px] leading-relaxed text-slate-600 font-normal">
+        <p className="mt-5 max-w-[48ch] text-web-sm leading-relaxed text-slate-600 font-normal">
           These are not marketing figures. They are the same counts the
           portfolio dashboard runs on, read at the moment this page loaded,
           and they move when the book moves.
@@ -400,7 +400,7 @@ export function AboutFootprintInteractive({
                 className={cn(
                   "w-full text-left py-4 px-3 -mx-3 rounded-xl transition-all duration-200 cursor-pointer group",
                   isSelected
-                    ? "bg-surface-1/80 border-l-2 border-l-[#151936]"
+                    ? "bg-surface-1/80 border-l-2 border-l-ink-900"
                     : "hover:bg-surface-1/40"
                 )}
               >
@@ -412,10 +412,10 @@ export function AboutFootprintInteractive({
                           "size-2 rounded-full shrink-0 transition-all",
                           isSelected
                             ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.7)]"
-                            : "bg-[#151936] opacity-40 group-hover:opacity-80"
+                            : "bg-brand-dark opacity-40 group-hover:opacity-80"
                         )}
                       />
-                      <h3 className="font-medium text-[15px] leading-snug truncate text-[#151936]">
+                      <h3 className="font-medium text-web-sm leading-snug truncate text-ink-900">
                         {group.title}
                       </h3>
                     </div>
@@ -425,10 +425,10 @@ export function AboutFootprintInteractive({
                   </div>
 
                   <div className="shrink-0 text-right">
-                    <div className="font-mono text-2xl font-medium tracking-tight text-[#151936]">
+                    <div className="font-mono text-2xl font-medium tracking-tight text-ink-900">
                       {String(group.count).padStart(2, "0")}
                     </div>
-                    <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400 font-normal">
+                    <div className="font-mono text-web-nano uppercase tracking-[0.14em] text-slate-400 font-normal">
                       {group.share}% share
                     </div>
                   </div>
@@ -439,7 +439,7 @@ export function AboutFootprintInteractive({
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-500 ease-out",
-                      isSelected ? "bg-emerald-500" : "bg-[#151936]"
+                      isSelected ? "bg-emerald-500" : "bg-brand-dark"
                     )}
                     style={{ width: `${group.share}%` }}
                   />

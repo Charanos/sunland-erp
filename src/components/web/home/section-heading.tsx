@@ -62,7 +62,7 @@ export function SectionHeading({
         {lead && (
           <p
             className={cn(
-              "web-subtitle mt-3 max-w-[72ch] text-[15px] sm:text-base leading-relaxed",
+              "web-subtitle mt-3 max-w-[72ch] text-web-sm sm:text-base leading-relaxed",
               isSplitRight && "sm:ml-auto",
               isDark ? "text-slate-300/90" : "text-ink-500"
             )}

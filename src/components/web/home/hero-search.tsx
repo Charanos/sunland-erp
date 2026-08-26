@@ -125,7 +125,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
     );
 
   const labelClass =
-    "web-control block text-[10px] uppercase tracking-[0.16em] text-slate-400 font-medium mb-0.5 pointer-events-none";
+    "web-control block text-web-nano uppercase tracking-[0.16em] text-slate-400 font-medium mb-0.5 pointer-events-none";
 
   return (
     <search className="w-full relative">
@@ -195,7 +195,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
             {/* Custom Location Suggestions Popover */}
             {openDropdown === "location" && (
               <div className="absolute left-0 bottom-full mb-3 w-full sm:w-[320px] rounded-2xl bg-white border border-slate-200 shadow-[0_25px_60px_rgba(0,0,0,0.35),0_4px_16px_rgba(0,0,0,0.1)] p-3 z-dropdown animate-in fade-in slide-in-from-bottom-2 duration-150">
-                <p className="text-[10px] uppercase font-mono tracking-widest text-slate-400 font-medium px-2 mb-2">
+                <p className="text-web-nano uppercase font-mono tracking-widest text-slate-400 font-medium px-2 mb-2">
                   Popular Locations
                 </p>
                 <div className="max-h-[220px] overflow-y-auto space-y-0.5">
@@ -211,7 +211,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                         className={cn(
                           "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                           location.toLowerCase() === area.toLowerCase()
-                            ? "bg-slate-100 text-[#151936]"
+                            ? "bg-slate-100 text-ink-900"
                             : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                         )}
                       >
@@ -220,7 +220,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                           <span>{area}</span>
                         </span>
                         {location.toLowerCase() === area.toLowerCase() && (
-                          <IconCheck size={14} className="text-[#151936]" />
+                          <IconCheck size={14} className="text-ink-900" />
                         )}
                       </button>
                     ))
@@ -281,7 +281,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                       className={cn(
                         "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                         isSelected
-                          ? "bg-slate-100 text-[#151936]"
+                          ? "bg-slate-100 text-ink-900"
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                       )}
                     >
@@ -289,7 +289,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                         <Icon size={14} className="text-slate-400" />
                         <span>{item.label}</span>
                       </span>
-                      {isSelected && <IconCheck size={14} className="text-[#151936]" />}
+                      {isSelected && <IconCheck size={14} className="text-ink-900" />}
                     </button>
                   );
                 })}
@@ -343,12 +343,12 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                       className={cn(
                         "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                         isSelected
-                          ? "bg-slate-100 text-[#151936]"
+                          ? "bg-slate-100 text-ink-900"
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                       )}
                     >
                       <span>{item.label}</span>
-                      {isSelected && <IconCheck size={14} className="text-[#151936]" />}
+                      {isSelected && <IconCheck size={14} className="text-ink-900" />}
                     </button>
                   );
                 })}
@@ -402,12 +402,12 @@ export function HeroSearch({ areas }: { areas: string[] }) {
                       className={cn(
                         "web-hit w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left cursor-pointer",
                         isSelected
-                          ? "bg-slate-100 text-[#151936]"
+                          ? "bg-slate-100 text-ink-900"
                           : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                       )}
                     >
                       <span>{item.label}</span>
-                      {isSelected && <IconCheck size={14} className="text-[#151936]" />}
+                      {isSelected && <IconCheck size={14} className="text-ink-900" />}
                     </button>
                   );
                 })}
@@ -419,7 +419,7 @@ export function HeroSearch({ areas }: { areas: string[] }) {
           <div className="lg:pl-2 shrink-0">
             <button
               type="submit"
-              className="web-control w-full lg:w-auto inline-flex h-11 items-center justify-center gap-2 rounded-xl lg:rounded-full bg-[#f3df27] hover:bg-[#ffe838] active:bg-[#e6d220] px-7 text-xs uppercase tracking-[0.14em] font-medium text-[#151936] shadow-[0_4px_18px_rgba(243,223,39,0.38)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+              className="web-control w-full lg:w-auto inline-flex h-11 items-center justify-center gap-2 rounded-xl lg:rounded-full bg-brand-yellow hover:bg-[#ffe838] active:bg-[#e6d220] px-7 text-xs uppercase tracking-[0.14em] font-medium text-ink-900 shadow-[0_4px_18px_rgba(243,223,39,0.38)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
               <IconSearch size={15} stroke={2.5} aria-hidden="true" />
               <span>Search</span>

@@ -34,14 +34,14 @@ export default async function LocationsPage() {
           <div className="rounded-2xl border border-line bg-surface-1 p-8 sm:p-12 md:p-14 transition-all">
             <div className="grid items-center gap-8 md:grid-cols-[1.2fr_0.8fr]">
               <div className="space-y-3">
-                <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-ink-400">
+                <div className="flex items-center gap-2 font-mono text-web-micro uppercase tracking-widest text-ink-400">
                   <span className="h-px w-5 bg-ink-400" />
                   <span>Submarket Coverage Advisory</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-ink-900">
                   {AREAS_CTA.title}
                 </h2>
-                <p className="max-w-[56ch] text-[15px] sm:text-base leading-relaxed text-ink-500 font-normal">
+                <p className="max-w-[56ch] text-web-sm sm:text-base leading-relaxed text-ink-500 font-normal">
                   {AREAS_CTA.body}
                 </p>
               </div>

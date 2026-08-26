@@ -26,6 +26,19 @@ const COMMITMENT_DELIVERABLES: Record<string, string> = {
   "Tenants treated properly": "Zero finder fees for tenants & 24hr maintenance dispatch.",
 };
 
+/**
+ * Presentation defaults for the portfolio ring.
+ *
+ * Deliberate, and deliberately temporary. The public site ships ahead of the
+ * read API, and a demo that renders an empty ring communicates less than one
+ * that shows the shape the product takes. Live counts overrule these the moment
+ * `getCategoryCounts()` returns anything.
+ *
+ * TODO(api): delete this constant once the listings read API lands. At that
+ * point an empty response should hide the ring rather than fall back, matching
+ * the contract `getHomeAggregates()` already sets for the home hero, where
+ * "0 properties listed" is judged a worse claim than no claim.
+ */
 const DEFAULT_PORTFOLIO_SLICES: DialSlice[] = [
   {
     label: "Villas and houses",
@@ -58,26 +71,30 @@ const DEFAULT_PORTFOLIO_SLICES: DialSlice[] = [
 ];
 
 export function AboutCommitments({
-  portfolioSlices = DEFAULT_PORTFOLIO_SLICES,
+  portfolioSlices,
 }: {
+  /** Live counts. Overrules the presentation defaults when non-empty. */
   portfolioSlices?: DialSlice[];
 }) {
   const CheckIcon = webIcons.check;
 
+  const slices =
+    portfolioSlices && portfolioSlices.length > 0 ? portfolioSlices : DEFAULT_PORTFOLIO_SLICES;
+
   return (
     <section
       aria-labelledby="commitments-heading"
-      className="web-dark relative overflow-hidden bg-[#090d1f] py-16 sm:py-20 lg:py-28 border-t border-line"
+      className="web-dark relative overflow-hidden bg-brand-deep py-16 sm:py-20 lg:py-28 border-t border-line"
     >
       {/* ── Background Photography & Layered Scrims (Left-Masked Hero Scrim) ── */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           src="/images/insights-hero-right.jpg"
           alt=""
           aria-hidden="true"
           fill
           sizes="100vw"
-          quality={95}
+          quality={90}
           className="object-cover object-center opacity-80"
         />
         {/* Top Fade */}
@@ -93,7 +110,7 @@ export function AboutCommitments({
         {/* Bottom Dusk Transition to next section */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/30 to-[#151936]"
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-deep/30 to-brand-dark"
         />
       </div>
 
@@ -119,7 +136,7 @@ export function AboutCommitments({
                 {ABOUT_COMMITMENTS.title}
               </h2>
 
-              <p className="mt-4 max-w-[44ch] text-[14.5px] leading-relaxed text-slate-300 font-normal sm:mt-5 sm:text-[15px]">
+              <p className="mt-4 max-w-[44ch] text-web-sm leading-relaxed text-slate-300 font-normal sm:mt-5 sm:text-web-sm">
                 These are the terms every mandate is held to, whether the
                 property is one unit or forty.
               </p>
@@ -127,7 +144,7 @@ export function AboutCommitments({
               {/* ── Comprehensive Executive Portfolio Dial ── */}
               <div className="mt-6 sm:mt-8">
                 <PortfolioDial
-                  slices={portfolioSlices}
+                  slices={slices}
                   totalLabel="LISTED"
                   showStatusRail={true}
                   showCoverageHubs={true}
@@ -158,20 +175,20 @@ export function AboutCommitments({
                       </h3>
                       <span
                         aria-hidden="true"
-                        className="flex size-9 sm:size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 border border-white/15 text-white backdrop-blur-md shadow-md transition-all duration-300 group-hover:scale-105 group-hover:bg-white group-hover:text-[#151936] group-hover:shadow-lg mt-0.5"
+                        className="flex size-9 sm:size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 border border-white/15 text-white backdrop-blur-md shadow-md transition-all duration-300 group-hover:scale-105 group-hover:bg-white group-hover:text-ink-900 group-hover:shadow-lg mt-0.5"
                       >
                         <IconComponent size={16} stroke={WEB_ICON_STROKE} />
                       </span>
                     </div>
 
                     {/* Body copy — full width, no truncation */}
-                    <p className="mt-2 text-[13.5px] leading-relaxed text-slate-300 font-normal sm:text-[14px]">
+                    <p className="mt-2 text-web-xs leading-relaxed text-slate-300 font-normal sm:text-web-sm">
                       {card.body}
                     </p>
 
                     {/* Deliverable Checkpoint — wraps freely on small screens */}
                     {deliverable && (
-                      <div className="mt-3 flex items-start gap-2 font-mono text-[11px] text-slate-300 font-normal pt-2 border-t border-white/10">
+                      <div className="mt-3 flex items-start gap-2 font-mono text-web-micro text-slate-300 font-normal pt-2 border-t border-white/10">
                         <span className="flex size-3.5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 mt-0.5">
                           <CheckIcon size={10} stroke={2.5} />
                         </span>

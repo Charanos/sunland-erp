@@ -51,15 +51,15 @@ const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-xl border border-slate-200/90 bg-white/95 p-4 shadow-lg backdrop-blur-md">
-        <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-2">{label}</p>
-        <div className="space-y-1.5 text-sm font-medium text-[#151936]">
+        <p className="font-mono text-web-micro uppercase tracking-wider text-slate-400 mb-2">{label}</p>
+        <div className="space-y-1.5 text-sm font-medium text-ink-900">
           {payload.map((entry, i) => (
             <p key={i} className="flex items-center justify-between gap-6">
               <span className="flex items-center gap-2">
                 <span className="size-2 rounded-full" style={{ backgroundColor: entry.color }} />
                 <span className="text-slate-600">{entry.name}:</span>
               </span>
-              <span className="font-mono font-medium text-[#151936]">
+              <span className="font-mono font-medium text-ink-900">
                 {formatKES(toChartNumber(entry.value))}
               </span>
             </p>
@@ -118,7 +118,7 @@ export function AreaPriceChart({ editorialRows, liveRows }: AreaPriceChartProps)
       {/* Visual Header with Switcher */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200/80 mb-6">
         <div>
-          <h4 className="font-editorial text-xl sm:text-2xl font-medium text-[#151936]">
+          <h4 className="font-editorial text-xl sm:text-2xl font-medium text-ink-900">
             Submarket Yield & Pricing Spectrum
           </h4>
           <p className="text-xs text-slate-500 mt-1">
@@ -133,10 +133,10 @@ export function AreaPriceChart({ editorialRows, liveRows }: AreaPriceChartProps)
             <button
               type="button"
               onClick={() => setMetric("rent")}
-              className={`cursor-pointer px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200 ${
+              className={`cursor-pointer px-4 py-1.5 text-web-micro font-mono uppercase tracking-wider rounded-full transition-all duration-200 ${
                 metric === "rent"
-                  ? "bg-[#151936] text-white shadow-xs font-medium"
-                  : "text-slate-500 hover:text-[#151936]"
+                  ? "bg-brand-dark text-white shadow-xs font-medium"
+                  : "text-slate-500 hover:text-ink-900"
               }`}
             >
               Monthly Rent
@@ -144,10 +144,10 @@ export function AreaPriceChart({ editorialRows, liveRows }: AreaPriceChartProps)
             <button
               type="button"
               onClick={() => setMetric("sale")}
-              className={`cursor-pointer px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200 ${
+              className={`cursor-pointer px-4 py-1.5 text-web-micro font-mono uppercase tracking-wider rounded-full transition-all duration-200 ${
                 metric === "sale"
-                  ? "bg-[#151936] text-white shadow-xs font-medium"
-                  : "text-slate-500 hover:text-[#151936]"
+                  ? "bg-brand-dark text-white shadow-xs font-medium"
+                  : "text-slate-500 hover:text-ink-900"
               }`}
             >
               Sale Valuation

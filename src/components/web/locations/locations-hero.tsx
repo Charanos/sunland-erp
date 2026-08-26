@@ -33,7 +33,7 @@ export function LocationsHero({
       className="web-dark relative z-10 flex min-h-[68svh] sm:min-h-[72svh] flex-col overflow-hidden pb-14 pt-32 sm:pt-36 lg:pt-44"
     >
       {/* ── Background ── */}
-      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           src="/images/areas-hero.jpg"
           alt=""
@@ -59,7 +59,7 @@ export function LocationsHero({
         />
         <div
           aria-hidden="true"
-          className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/40 to-[#151936]"
+          className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-brand-deep/40 to-brand-dark"
         />
       </div>
 

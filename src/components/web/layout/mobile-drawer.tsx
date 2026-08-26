@@ -144,7 +144,7 @@ export function MobileDrawer({
         tabIndex={-1}
         className={cn(
           "web-dark web-slide-in-right absolute inset-y-0 right-0 z-panel flex h-full w-[min(88vw,380px)] flex-col",
-          "border-l border-white/15 bg-[#151936] shadow-[0_0_60px_rgba(0,0,0,0.5)] outline-none",
+          "border-l border-white/15 bg-brand-dark shadow-[0_0_60px_rgba(0,0,0,0.5)] outline-none",
           // The panel scrolls, not the page. `overscroll-contain` stops a
           // flick at the end of the list from chaining into the body behind.
           "overflow-y-auto overscroll-contain",
@@ -173,7 +173,7 @@ export function MobileDrawer({
           <Link
             href="/landlords#valuation"
             onClick={() => setOpen(false)}
-            className="web-control mt-6 flex h-12 w-full items-center justify-center rounded-full bg-brand-yellow text-xs font-medium uppercase tracking-[0.14em] text-[#151936] shadow-[0_4px_18px_rgba(243,223,39,0.35)] transition-colors hover:bg-brand-yellow-h focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="web-control mt-6 flex h-12 w-full items-center justify-center rounded-full bg-brand-yellow text-xs font-medium uppercase tracking-[0.14em] text-ink-900 shadow-[0_4px_18px_rgba(243,223,39,0.35)] transition-colors hover:bg-brand-yellow-h focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             List your property
           </Link>

@@ -104,7 +104,7 @@ export function HomeProof() {
       <div ref={sectionRef} className="grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-16 xl:gap-20 items-center">
         {/* Left Column: Unified Executive Client Testimonial Card */}
         <div className="order-2 lg:order-1 proof-testimonial">
-          <div className="group relative overflow-hidden rounded-[28px] border border-white/12 bg-gradient-to-b from-[#151936] via-[#10142d] to-[#0d1024] p-8 sm:p-10 shadow-[0_24px_50px_rgba(21,25,54,0.28)] text-white backdrop-blur-xl">
+          <div className="group relative overflow-hidden rounded-[28px] border border-white/12 bg-gradient-to-b from-brand-dark via-[#10142d] to-brand-deep p-8 sm:p-10 shadow-[0_24px_50px_rgba(21,25,54,0.28)] text-white backdrop-blur-xl">
             {/* Subtle Ambient Glow */}
             <div
               aria-hidden="true"
@@ -122,7 +122,7 @@ export function HomeProof() {
             {/* Top Bar: Quote Icon & Pagination Indicator */}
             <div className="relative z-10 flex items-center justify-end">
 
-              <div className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-slate-400">
+              <div className="flex items-center gap-1.5 font-mono text-web-micro uppercase tracking-wider text-slate-400">
                 <span className="text-brand-yellow font-medium">0{activeIndex + 1}</span>
                 <span>/</span>
                 <span>0{testimonials.length}</span>
@@ -137,7 +137,7 @@ export function HomeProof() {
 
               {/* Author & Attribution Footer with Controls */}
               <figcaption className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/12 pt-5">
-                <div className="font-mono text-[11.5px] uppercase tracking-[0.14em] text-slate-400">
+                <div className="font-mono text-web-micro uppercase tracking-[0.14em] text-slate-400">
                   <span aria-hidden="true" className="mr-2 text-slate-500">
                     &mdash;
                   </span>
@@ -152,7 +152,7 @@ export function HomeProof() {
                     type="button"
                     onClick={handlePrev}
                     aria-label="Previous testimonial"
-                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-[#151936] hover:scale-105 shadow-xs cursor-pointer"
+                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-ink-900 hover:scale-105 shadow-xs cursor-pointer"
                   >
                     <ChevronLeftIcon size={16} stroke={WEB_ICON_STROKE} />
                   </button>
@@ -160,7 +160,7 @@ export function HomeProof() {
                     type="button"
                     onClick={handleNext}
                     aria-label="Next testimonial"
-                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-[#151936] hover:scale-105 shadow-xs cursor-pointer"
+                    className="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-brand-yellow hover:border-brand-yellow hover:text-ink-900 hover:scale-105 shadow-xs cursor-pointer"
                   >
                     <ChevronRightIcon size={16} stroke={WEB_ICON_STROKE} />
                   </button>
@@ -176,11 +176,11 @@ export function HomeProof() {
             <Eyebrow tone="light">{proofDefaults.eyebrow}</Eyebrow>
             <h2
               id="proof-heading"
-              className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-[#151936]"
+              className="mt-4 font-editorial text-[clamp(2.5rem,4vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-ink-900"
             >
               {proofDefaults.headline}
             </h2>
-            <p className="web-subtitle mt-4 text-[15px] sm:text-base leading-relaxed text-slate-500 max-w-[50ch]">
+            <p className="web-subtitle mt-4 text-web-sm sm:text-base leading-relaxed text-slate-500 max-w-[50ch]">
               {proofDefaults.lead}
             </p>
           </div>
@@ -199,15 +199,15 @@ export function HomeProof() {
 
                   <span
                     aria-hidden="true"
-                    className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-50 border border-slate-200/60 text-slate-400 transition-colors duration-300 group-hover:bg-[#151936] group-hover:border-[#151936] group-hover:text-white"
+                    className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-50 border border-slate-200/60 text-slate-400 transition-colors duration-300 group-hover:bg-brand-dark group-hover:border-ink-900 group-hover:text-white"
                   >
                     <IconComponent size={18} stroke={WEB_ICON_STROKE} />
                   </span>
                   <div>
-                    <h3 className="font-editorial text-[21px] sm:text-[22px] font-medium text-[#151936]">
+                    <h3 className="font-editorial text-[21px] sm:text-[22px] font-medium text-ink-900">
                       {point.title}
                     </h3>
-                    <p className="mt-1 text-[14.5px] sm:text-[15px] leading-relaxed text-slate-500">
+                    <p className="mt-1 text-web-sm sm:text-web-sm leading-relaxed text-slate-500">
                       {point.body}
                     </p>
                   </div>

@@ -60,7 +60,7 @@ function RenderBlock({
     case "lead":
       return (
         <div className="my-8 border-l-2 border-brand-yellow pl-5 sm:pl-7">
-          <p className="font-editorial text-[20px] sm:text-[22px] leading-[1.65] text-[#151936] font-normal">
+          <p className="font-editorial text-[20px] sm:text-[22px] leading-[1.65] text-ink-900 font-normal">
             {block.text}
           </p>
         </div>
@@ -79,7 +79,7 @@ function RenderBlock({
 
       return (
         <div id={anchorId} className="scroll-mt-28 pt-8 sm:pt-10 border-t border-line-soft mt-10 sm:mt-14 mb-4">
-          <h2 className="font-editorial text-2xl sm:text-[28px] lg:text-[32px] font-medium leading-[1.2] text-[#151936] flex items-baseline gap-3">
+          <h2 className="font-editorial text-2xl sm:text-[28px] lg:text-[32px] font-medium leading-[1.2] text-ink-900 flex items-baseline gap-3">
             <span className="font-mono text-base sm:text-lg text-slate-400 font-semibold shrink-0">
               {/* padStart, not a literal "0": a tenth section rendered as
                   "010." with the hardcoded prefix. */}
@@ -93,11 +93,11 @@ function RenderBlock({
 
     case "quote":
       return (
-        <blockquote className="my-10 border-l-3 border-[#151936] pl-6 sm:pl-8 py-1.5">
-          <p className="font-editorial text-xl sm:text-[23px] font-medium leading-[1.5] text-[#151936] italic">
+        <blockquote className="my-10 border-l-3 border-ink-900 pl-6 sm:pl-8 py-1.5">
+          <p className="font-editorial text-xl sm:text-[23px] font-medium leading-[1.5] text-ink-900 italic">
             “{block.text}”
           </p>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500 mt-2.5 font-medium">
+          <p className="font-mono text-web-micro uppercase tracking-wider text-slate-500 mt-2.5 font-medium">
             Practitioner Standard & Policy
           </p>
         </blockquote>
@@ -120,24 +120,24 @@ function RenderBlock({
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider font-semibold ${
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-mono text-web-nano uppercase tracking-wider font-semibold ${
                         isAligned
                           ? "bg-emerald-700 text-white"
-                          : "bg-[#151936] text-white"
+                          : "bg-brand-dark text-white"
                       }`}
                     >
                       {isAligned ? "✓ Recommended Basis" : "⚠ Adverse Practice"}
                     </span>
-                    <span className="font-mono text-[11px] text-slate-400">
+                    <span className="font-mono text-web-micro text-slate-400">
                       Option {idx + 1}
                     </span>
                   </div>
 
-                  <h3 className="font-editorial text-lg font-medium text-[#151936]">
+                  <h3 className="font-editorial text-lg font-medium text-ink-900">
                     {item.title}
                   </h3>
 
-                  <p className="mt-2.5 text-[14.5px] leading-relaxed text-slate-600 font-normal">
+                  <p className="mt-2.5 text-web-sm leading-relaxed text-slate-600 font-normal">
                     {item.body}
                   </p>
                 </div>
@@ -181,11 +181,11 @@ function InteractiveChecklist({ items }: { items: string[] }) {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3.5 mb-3">
         <div className="flex items-center gap-2">
           <span className="h-px w-5 bg-brand-yellow" />
-          <h3 className="font-editorial text-lg sm:text-xl font-medium text-[#151936]">
+          <h3 className="font-editorial text-lg sm:text-xl font-medium text-ink-900">
             Verification & Audit Checklist
           </h3>
         </div>
-        <span className="rounded-full bg-surface-1 border border-line px-3 py-1 font-mono text-[11px] font-medium text-slate-600">
+        <span className="rounded-full bg-surface-1 border border-line px-3 py-1 font-mono text-web-micro font-medium text-slate-600">
           {checkedCount} of {items.length} verified
         </span>
       </div>
@@ -214,7 +214,7 @@ function InteractiveChecklist({ items }: { items: string[] }) {
                   <CheckIcon size={13} stroke={2.5} />
                 </span>
                 <span
-                  className={`text-[15.5px] leading-relaxed transition-colors ${
+                  className={`text-web-sm leading-relaxed transition-colors ${
                     isChecked ? "text-emerald-950 font-medium" : "text-slate-700 font-normal"
                   }`}
                 >
@@ -226,7 +226,7 @@ function InteractiveChecklist({ items }: { items: string[] }) {
         })}
       </ul>
 
-      <p className="mt-3 text-right font-mono text-[11px] text-slate-400">
+      <p className="mt-3 text-right font-mono text-web-micro text-slate-400">
         Click items to check off provisions during your document review.
       </p>
     </div>

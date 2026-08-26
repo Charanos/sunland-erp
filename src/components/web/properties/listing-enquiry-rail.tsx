@@ -135,7 +135,7 @@ export function ListingEnquiryRail({
             <span className="web-control text-xxs uppercase tracking-[0.14em] text-ink-400 font-medium">
               {isRental ? "Monthly Lease" : "Guide Price"}
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 border border-emerald-200/60">
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-web-micro font-medium text-emerald-700 border border-emerald-200/60">
               <CheckIcon size={12} stroke={WEB_ICON_STROKE} aria-hidden="true" />
               <span>0% Tenant / Buyer Fee</span>
             </span>
@@ -174,7 +174,7 @@ export function ListingEnquiryRail({
             </div>
             <div>
               <p className="text-xs font-medium text-ink-900 leading-tight">Dennis Mwangi</p>
-              <p className="text-[11px] text-ink-400">Prime {areaName} Advisor</p>
+              <p className="text-web-micro text-ink-400">Prime {areaName} Advisor</p>
             </div>
           </div>
 
@@ -474,7 +474,7 @@ export function ListingEnquiryRail({
                               <p className="web-control text-xxs uppercase tracking-wider text-slate-400">{label} Index</p>
                               {propVal && (
                                 <p className="flex items-center justify-between gap-4 font-medium">
-                                  <span className="text-[#f3df27]">Property:</span>
+                                  <span className="text-brand-yellow">Property:</span>
                                   <span className="web-numeric">{formatCompactKES(propVal as number)}</span>
                                 </p>
                               )}
@@ -523,7 +523,7 @@ export function ListingEnquiryRail({
               </div>
             </div>
 
-            <p className="text-[11px] text-ink-400 leading-normal text-center">
+            <p className="text-web-micro text-ink-400 leading-normal text-center">
               Indexed from Land Registry transactions & Sunland valuation models.
             </p>
           </div>
@@ -580,7 +580,7 @@ export function ListingEnquiryRail({
               </div>
             </div>
 
-            <p className="text-[11px] text-ink-400 leading-tight">
+            <p className="text-web-micro text-ink-400 leading-tight">
               *Calculated at standard bank rate of 13% p.a. Actual terms subject to banking assessment.
             </p>
           </div>

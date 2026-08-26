@@ -74,9 +74,9 @@ type ViewId = "areas" | "types" | "coverage";
 function Card({ title, lines }: { title: string; lines: string[] }) {
   return (
     <div className="rounded-xl border border-slate-200/90 bg-white/95 px-3.5 py-2.5 shadow-lg backdrop-blur-md">
-      <p className="font-mono text-[11px] font-medium text-[#151936]">{title}</p>
+      <p className="font-mono text-web-micro font-medium text-ink-900">{title}</p>
       {lines.map((line) => (
-        <p key={line} className="mt-0.5 font-mono text-[11px] text-slate-500">
+        <p key={line} className="mt-0.5 font-mono text-web-micro text-slate-500">
           {line}
         </p>
       ))}
@@ -201,17 +201,17 @@ export function AboutFootprintCharts({
     <div className="rounded-2xl border border-line bg-surface-0 p-5 shadow-xs sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line-soft pb-4">
         <div>
-          <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-slate-400 font-medium">
+          <p className="font-mono text-web-nano uppercase tracking-[0.2em] text-slate-400 font-medium">
             {active === "coverage" ? "Editorial coverage" : "Live from the book"}
           </p>
-          <p className="mt-1 font-editorial text-[19px] font-medium leading-tight text-[#151936]">{heading}</p>
+          <p className="mt-1 font-editorial text-[19px] font-medium leading-tight text-ink-900">{heading}</p>
         </div>
 
         {tabs.length > 1 && (
           <div
             role="tablist"
             aria-label="Footprint view"
-            className="flex items-center rounded-full bg-surface-1 border border-line-soft p-1 font-mono text-[10.5px]"
+            className="flex items-center rounded-full bg-surface-1 border border-line-soft p-1 font-mono text-web-nano"
           >
             {tabs.map((tab) => (
               <button
@@ -223,8 +223,8 @@ export function AboutFootprintCharts({
                 className={cn(
                   "rounded-full px-3 py-1 font-medium uppercase tracking-[0.12em] transition-all",
                   active === tab.id
-                    ? "bg-[#151936] text-white shadow-2xs"
-                    : "text-slate-500 hover:text-[#151936]"
+                    ? "bg-brand-dark text-white shadow-2xs"
+                    : "text-slate-500 hover:text-ink-900"
                 )}
               >
                 {tab.label}
@@ -328,20 +328,20 @@ export function AboutFootprintCharts({
       {active === "types" && (
         <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 border-t border-line-soft pt-4 sm:grid-cols-3">
           {radialData.map((datum) => (
-            <li key={datum.label} className="flex items-center gap-2 font-mono text-[11px]">
+            <li key={datum.label} className="flex items-center gap-2 font-mono text-web-micro">
               <span
                 aria-hidden="true"
                 className="size-2 shrink-0 rounded-full"
                 style={{ backgroundColor: datum.fill }}
               />
               <span className="truncate text-slate-600">{datum.label}</span>
-              <span className="ml-auto shrink-0 text-[#151936]">{datum.share}%</span>
+              <span className="ml-auto shrink-0 text-ink-900">{datum.share}%</span>
             </li>
           ))}
         </ul>
       )}
 
-      <p className="mt-4 border-t border-line-soft pt-4 font-mono text-[11px] leading-relaxed text-slate-400">
+      <p className="mt-4 border-t border-line-soft pt-4 font-mono text-web-micro leading-relaxed text-slate-400">
         {active === "areas" &&
           `Tile size is live listing count. ${treemapData.length} areas currently carrying stock.`}
         {active === "types" && "Share of the managed and listed book, by property type."}

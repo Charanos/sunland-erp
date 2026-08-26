@@ -51,7 +51,7 @@ const CustomPieTooltip = ({ active, payload }: ChartTooltipProps) => {
           <span className="size-2.5 rounded-full" style={{ backgroundColor: slice?.color }} />
           <span className="font-mono text-xs font-medium text-slate-800">{data.name}</span>
         </div>
-        <p className="font-mono text-sm font-semibold text-[#151936] pl-4.5">
+        <p className="font-mono text-sm font-semibold text-ink-900 pl-4.5">
           {data.value}% Portfolio Share
           {slice?.count && (
             <span className="text-xs font-normal text-slate-500 block mt-0.5">
@@ -99,11 +99,11 @@ export function AreaOccupancyPieCharts({
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span aria-hidden="true" className="h-px w-5 bg-brand-yellow shrink-0" />
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 font-medium">
+            <p className="font-mono text-web-nano uppercase tracking-[0.2em] text-slate-500 font-medium">
               Submarket Intelligence & Portfolio Metrics
             </p>
           </div>
-          <h3 className="font-editorial text-2xl sm:text-[26px] font-medium text-[#151936] tracking-tight">
+          <h3 className="font-editorial text-2xl sm:text-[26px] font-medium text-ink-900 tracking-tight">
             Portfolio Allocation & Tenancy Absorption
           </h3>
         </div>
@@ -114,10 +114,10 @@ export function AreaOccupancyPieCharts({
             type="button"
             onClick={() => setActiveChart("composition")}
             className={cn(
-              "cursor-pointer px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200",
+              "cursor-pointer px-4 py-1.5 text-web-micro font-mono uppercase tracking-wider rounded-full transition-all duration-200",
               activeChart === "composition"
-                ? "bg-[#151936] text-white shadow-2xs font-medium"
-                : "text-slate-600 hover:text-[#151936]"
+                ? "bg-brand-dark text-white shadow-2xs font-medium"
+                : "text-slate-600 hover:text-ink-900"
             )}
           >
             Asset Allocation
@@ -126,10 +126,10 @@ export function AreaOccupancyPieCharts({
             type="button"
             onClick={() => setActiveChart("occupancy")}
             className={cn(
-              "cursor-pointer px-4 py-1.5 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all duration-200",
+              "cursor-pointer px-4 py-1.5 text-web-micro font-mono uppercase tracking-wider rounded-full transition-all duration-200",
               activeChart === "occupancy"
-                ? "bg-[#151936] text-white shadow-2xs font-medium"
-                : "text-slate-600 hover:text-[#151936]"
+                ? "bg-brand-dark text-white shadow-2xs font-medium"
+                : "text-slate-600 hover:text-ink-900"
             )}
           >
             Occupancy Health ({occupancyRate}%)
@@ -189,10 +189,10 @@ export function AreaOccupancyPieCharts({
 
             {/* Centered Donut KPI Ring */}
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span className="font-mono text-3xl sm:text-[32px] font-medium tracking-tight text-[#151936] leading-none">
+              <span className="font-mono text-3xl sm:text-[32px] font-medium tracking-tight text-ink-900 leading-none">
                 {activeChart === "composition" ? `${totalAreas}` : `${occupancyRate}%`}
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">
+              <span className="font-mono text-web-nano uppercase tracking-widest text-slate-400 mt-1">
                 {activeChart === "composition" ? "Covered Hubs" : "Occupied"}
               </span>
             </div>
@@ -203,7 +203,7 @@ export function AreaOccupancyPieCharts({
         <div className="lg:col-span-7 space-y-5">
           {/* Active Legend Breakdown */}
           <div className="space-y-2.5">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+            <p className="font-mono text-web-micro uppercase tracking-wider text-slate-400 font-medium">
               {activeChart === "composition"
                 ? "Asset Class Allocation & Property Distribution"
                 : "Submarket Tenancy Absorption & Availability"}
@@ -219,7 +219,7 @@ export function AreaOccupancyPieCharts({
                     <span className="size-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                     <span className="text-xs font-medium text-slate-700 truncate">{item.name}</span>
                   </div>
-                  <span className="font-mono text-xs font-semibold text-[#151936] pl-2 shrink-0">
+                  <span className="font-mono text-xs font-semibold text-ink-900 pl-2 shrink-0">
                     {item.value}%
                   </span>
                 </div>
@@ -230,27 +230,27 @@ export function AreaOccupancyPieCharts({
           {/* 4-KPI Benchmark Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3.5 border-t border-slate-200/60">
             <div className="space-y-0.5">
-              <p className="font-mono text-[10px] uppercase text-slate-400">Occupancy Rate</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">{occupancyRate}%</p>
-              <span className="text-[10px] text-emerald-600 font-mono">✦ Low Void Risk</span>
+              <p className="font-mono text-web-nano uppercase text-slate-400">Occupancy Rate</p>
+              <p className="font-mono text-lg font-medium text-ink-900">{occupancyRate}%</p>
+              <span className="text-web-nano text-emerald-600 font-mono">✦ Low Void Risk</span>
             </div>
 
             <div className="space-y-0.5">
-              <p className="font-mono text-[10px] uppercase text-slate-400">Median Turn Time</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">{medianTurnDays} Days</p>
-              <span className="text-[10px] text-slate-400 font-mono">From Mandate</span>
+              <p className="font-mono text-web-nano uppercase text-slate-400">Median Turn Time</p>
+              <p className="font-mono text-lg font-medium text-ink-900">{medianTurnDays} Days</p>
+              <span className="text-web-nano text-slate-400 font-mono">From Mandate</span>
             </div>
 
             <div className="space-y-0.5">
-              <p className="font-mono text-[10px] uppercase text-slate-400">Collection Rate</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">{collectionRate}%</p>
-              <span className="text-[10px] text-slate-400 font-mono">Escrow Managed</span>
+              <p className="font-mono text-web-nano uppercase text-slate-400">Collection Rate</p>
+              <p className="font-mono text-lg font-medium text-ink-900">{collectionRate}%</p>
+              <span className="text-web-nano text-slate-400 font-mono">Escrow Managed</span>
             </div>
 
             <div className="space-y-0.5">
-              <p className="font-mono text-[10px] uppercase text-slate-400">Portfolio Scale</p>
-              <p className="font-mono text-lg font-medium text-[#151936]">{totalListings} Units</p>
-              <span className="text-[10px] text-slate-400 font-mono">{totalAreas} Submarkets</span>
+              <p className="font-mono text-web-nano uppercase text-slate-400">Portfolio Scale</p>
+              <p className="font-mono text-lg font-medium text-ink-900">{totalListings} Units</p>
+              <span className="text-web-nano text-slate-400 font-mono">{totalAreas} Submarkets</span>
             </div>
           </div>
         </div>

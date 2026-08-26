@@ -23,9 +23,9 @@ export function InlineValuationForm() {
   const CheckIcon = webIcons.check;
   const ShieldIcon = webIcons.shield;
 
-  const labelClass = "block font-medium text-[13px] text-[#151936] mb-2";
+  const labelClass = "block font-medium text-web-xs text-ink-900 mb-2";
   const inputClass =
-    "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14.5px] text-[#151936] placeholder:text-slate-400 focus:border-[#151936] focus:ring-1 focus:ring-[#151936] focus:outline-none transition-all shadow-2xs";
+    "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-web-sm text-ink-900 placeholder:text-slate-400 focus:border-ink-900 focus:ring-1 focus:ring-ink-900 focus:outline-none transition-all shadow-2xs";
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -44,7 +44,7 @@ export function InlineValuationForm() {
             <CheckIcon size={20} stroke={2.5} />
           </span>
           <div>
-            <h3 className="font-editorial text-[24px] font-medium text-[#151936]">
+            <h3 className="font-editorial text-[24px] font-medium text-ink-900">
               Valuation Request Received
             </h3>
             <p className="text-xs font-mono uppercase tracking-widest text-emerald-700 font-medium">
@@ -53,7 +53,7 @@ export function InlineValuationForm() {
           </div>
         </div>
 
-        <p className="text-[15px] leading-relaxed text-slate-600 font-normal">
+        <p className="text-web-sm leading-relaxed text-slate-600 font-normal">
           Thank you. A senior property manager will review your property specifications and call you within one working day to arrange the on-site walkthrough.
         </p>
 
@@ -62,8 +62,8 @@ export function InlineValuationForm() {
             Immediate Inquiries
           </p>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-[#151936] font-medium">Direct Line:</span>
-            <a href={SITE.phoneHref} className="font-mono text-sm text-[#151936] font-medium underline">
+            <span className="text-sm text-ink-900 font-medium">Direct Line:</span>
+            <a href={SITE.phoneHref} className="font-mono text-sm text-ink-900 font-medium underline">
               {SITE.phone}
             </a>
           </div>
@@ -72,7 +72,7 @@ export function InlineValuationForm() {
         <button
           type="button"
           onClick={() => setSubmitted(false)}
-          className="text-xs font-mono uppercase tracking-wider text-slate-500 hover:text-[#151936] transition-colors underline cursor-pointer"
+          className="text-xs font-mono uppercase tracking-wider text-slate-500 hover:text-ink-900 transition-colors underline cursor-pointer"
         >
           Submit another property request
         </button>
@@ -175,9 +175,9 @@ export function InlineValuationForm() {
               <label
                 key={option}
                 className={cn(
-                  "flex cursor-pointer items-center justify-center rounded-xl py-2.5 px-3 text-center text-[13px] sm:text-[13.5px] transition-all font-medium select-none border",
+                  "flex cursor-pointer items-center justify-center rounded-xl py-2.5 px-3 text-center text-web-xs sm:text-web-xs transition-all font-medium select-none border",
                   active
-                    ? "bg-[#151936] text-white border-[#151936] shadow-xs"
+                    ? "bg-brand-dark text-white border-ink-900 shadow-xs"
                     : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50/50"
                 )}
               >
@@ -211,12 +211,12 @@ export function InlineValuationForm() {
       </div>
 
       {/* Consent Checkbox */}
-      <label className="flex cursor-pointer items-start gap-3 text-[13px] leading-relaxed text-slate-500 pt-1">
+      <label className="flex cursor-pointer items-start gap-3 text-web-xs leading-relaxed text-slate-500 pt-1">
         <input
           type="checkbox"
           name="consent"
           required
-          className="mt-0.5 size-4 shrink-0 rounded accent-[#151936]"
+          className="mt-0.5 size-4 shrink-0 rounded accent-ink-900"
         />
         <span>{LANDLORDS.valuation.form.consent}</span>
       </label>
@@ -226,7 +226,7 @@ export function InlineValuationForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full group relative overflow-hidden inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-yellow hover:bg-brand-yellow-h  px-7 py-3.5 text-[13px] font-medium uppercase tracking-[0.14em] font-mono shadow-[0_4px_20px_rgba(21,25,54,0.25)] hover:shadow-[0_6px_28px_rgba(21,25,54,0.35)] hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-70 cursor-pointer"
+          className="w-full group relative overflow-hidden inline-flex items-center justify-center gap-2.5 rounded-full bg-brand-yellow hover:bg-brand-yellow-h  px-7 py-3.5 text-web-xs font-medium uppercase tracking-[0.14em] font-mono shadow-[0_4px_20px_rgba(21,25,54,0.25)] hover:shadow-[0_6px_28px_rgba(21,25,54,0.35)] hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-70 cursor-pointer"
         >
           <span>{isSubmitting ? "Processing..." : LANDLORDS.valuation.form.submitLabel}</span>
           <ArrowIcon size={16} stroke={WEB_ICON_STROKE} className="group-hover:translate-x-1 transition-transform" />

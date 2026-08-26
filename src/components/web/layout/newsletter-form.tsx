@@ -34,7 +34,7 @@ export function NewsletterForm() {
         {/* Visible label above the input, never placeholder-only. */}
         <label
           htmlFor={emailId}
-          className="font-mono block text-[10px] uppercase tracking-[0.16em] text-slate-400 mb-1.5"
+          className="font-mono block text-web-nano uppercase tracking-[0.16em] text-slate-400 mb-1.5"
         >
           Email address
         </label>

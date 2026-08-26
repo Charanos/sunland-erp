@@ -52,8 +52,8 @@ export function AboutMandatePie({ segments }: { segments: Segment[] }) {
       className="mt-8 rounded-2xl border border-line bg-surface-0 p-5 shadow-xs sm:p-6"
     >
       <div className="flex items-center gap-2 mb-4">
-        <span className="size-1.5 rounded-full bg-[#151936] shrink-0" />
-        <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-slate-500 font-medium">
+        <span className="size-1.5 rounded-full bg-brand-dark shrink-0" />
+        <p className="font-mono text-web-nano uppercase tracking-[0.2em] text-slate-500 font-medium">
           Where mandates are held
         </p>
       </div>
@@ -106,10 +106,10 @@ export function AboutMandatePie({ segments }: { segments: Segment[] }) {
 
           {/* Center Hole Information */}
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-mono text-2xl font-medium leading-none text-[#151936]">
+            <span className="font-mono text-2xl font-medium leading-none text-ink-900">
               {total}
             </span>
-            <span className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400 font-medium">
+            <span className="mt-0.5 font-mono text-web-nano uppercase tracking-[0.14em] text-slate-400 font-medium">
               Areas
             </span>
           </div>
@@ -141,14 +141,14 @@ export function AboutMandatePie({ segments }: { segments: Segment[] }) {
                   <span
                     className={cn(
                       "truncate font-normal transition-colors",
-                      isActive ? "text-[#151936] font-medium" : "text-slate-600"
+                      isActive ? "text-ink-900 font-medium" : "text-slate-600"
                     )}
                   >
                     {item.title}
                   </span>
                 </div>
 
-                <span className="font-mono font-medium text-[#151936] shrink-0">
+                <span className="font-mono font-medium text-ink-900 shrink-0">
                   {item.share}%
                 </span>
               </li>
@@ -157,7 +157,7 @@ export function AboutMandatePie({ segments }: { segments: Segment[] }) {
         </ul>
       </div>
 
-      <p className="mt-4 border-t border-line-soft pt-3 font-mono text-[11px] leading-relaxed text-slate-400 font-normal">
+      <p className="mt-4 border-t border-line-soft pt-3 font-mono text-web-micro leading-relaxed text-slate-400 font-normal">
         Coverage footprint, not current stock. Live listings update in real time above.
       </p>
     </div>

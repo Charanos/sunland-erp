@@ -50,7 +50,7 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
     <SectionBand
       tone="dark"
       labelledBy="categories-heading"
-      className="relative !bg-[#151936] overflow-hidden py-16 sm:py-20 lg:py-24"
+      className="relative !bg-brand-dark overflow-hidden py-16 sm:py-20 lg:py-24"
     >
       {/* Black scrim bleed — sits exactly at the top boundary, catching the hero's black and fading gracefully into the blue */}
       <div
@@ -124,7 +124,7 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
             </div>
 
             {/* Status Telemetry Breakdown - Clean inline typography */}
-            <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-wider text-slate-400">
+            <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 font-mono text-web-micro uppercase tracking-wider text-slate-400">
               <div>
                 <span className="text-[#10b981] font-medium mr-1">{statusCounts.available}</span>
                 <span>Available</span>
@@ -184,7 +184,7 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
                           className="text-slate-300 transition-all duration-300 group-hover:scale-110 group-hover:text-brand-yellow"
                         />
 
-                        <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10.5px] font-medium tracking-wider uppercase text-slate-300 transition-colors group-hover:border-white/20 group-hover:text-white">
+                        <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-web-nano font-medium tracking-wider uppercase text-slate-300 transition-colors group-hover:border-white/20 group-hover:text-white">
                           {tile.count} Listed
                         </span>
                       </div>
@@ -194,17 +194,17 @@ export function HomeCategories({ tiles }: { tiles: CategoryTile[] }) {
                         {tile.label}
                       </h3>
 
-                      <p className="mt-2.5 text-[13px] leading-relaxed text-slate-300/80 font-normal">
+                      <p className="mt-2.5 text-web-xs leading-relaxed text-slate-300/80 font-normal">
                         {subtitle}
                       </p>
                     </div>
 
                     {/* Bottom: Explore Link Strip */}
                     <div className="mt-8 flex items-center justify-between border-t border-white/[0.08] pt-4">
-                      <span className="font-mono text-[11px] font-medium uppercase tracking-widest text-slate-400 transition-colors group-hover:text-white">
+                      <span className="font-mono text-web-micro font-medium uppercase tracking-widest text-slate-400 transition-colors group-hover:text-white">
                         Explore Category
                       </span>
-                      <div className="flex size-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all duration-300 group-hover:border-brand-yellow group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:translate-x-1 shadow-sm">
+                      <div className="flex size-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all duration-300 group-hover:border-brand-yellow group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:translate-x-1 shadow-sm">
                         <ArrowIcon size={13} stroke={2} aria-hidden="true" />
                       </div>
                     </div>

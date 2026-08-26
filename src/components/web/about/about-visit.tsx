@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils/cn";
 import { ABOUT_VISIT } from "@/components/web/constants/about.content";
 import { SITE } from "@/components/web/constants/site";
 import { WEB_ICON_STROKE, webIcons } from "@/components/web/icons";
-import { WebButtonLink } from "@/components/web/primitives/button";
 import { Container } from "@/components/web/primitives/container";
 
 /**
@@ -19,8 +18,6 @@ import { Container } from "@/components/web/primitives/container";
  */
 export function AboutVisit() {
   const [mapMode, setMapMode] = useState<"roadmap" | "satellite">("roadmap");
-
-  const PinIcon = webIcons.pin;
   const PhoneIcon = webIcons.phone;
   const ChatIcon = webIcons.chat;
   const MailIcon = webIcons.mail;
@@ -52,35 +49,35 @@ export function AboutVisit() {
 
             <h2
               id="visit-heading"
-              className="font-editorial text-3xl font-medium leading-[1.12] tracking-tight text-[#151936] sm:text-4xl lg:text-[42px]"
+              className="font-editorial text-3xl font-medium leading-[1.12] tracking-tight text-ink-900 sm:text-4xl lg:text-[42px]"
             >
               {ABOUT_VISIT.title}
             </h2>
 
-            <p className="mt-3.5 text-[15.5px] sm:text-base leading-relaxed text-slate-600 font-normal">
+            <p className="mt-3.5 text-web-sm sm:text-base leading-relaxed text-slate-600 font-normal">
               Our headquarters is situated on the 8th floor of International House on Mama Ngina Street. Walk-ins and private advisory appointments welcome.
             </p>
 
             {/* Communication Desk & Schedule Breakdown */}
             <dl className="mt-6 divide-y divide-line border-y border-line">
               <div className="flex items-baseline justify-between gap-4 py-3.5">
-                <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                <dt className="font-mono text-web-micro uppercase tracking-[0.14em] text-slate-400">
                   Desk Hours
                 </dt>
-                <dd className="font-mono text-[13px] font-medium text-[#151936]">
+                <dd className="font-mono text-web-xs font-medium text-ink-900">
                   {SITE.officeHours}
                 </dd>
               </div>
 
               <div className="flex items-baseline justify-between gap-4 py-3.5">
-                <dt className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                <dt className="flex items-center gap-1.5 font-mono text-web-micro uppercase tracking-[0.14em] text-slate-400">
                   <PhoneIcon size={13} stroke={WEB_ICON_STROKE} />
                   <span>Direct Line</span>
                 </dt>
                 <dd>
                   <a
                     href={SITE.phoneHref}
-                    className="font-mono text-[13px] font-medium text-[#151936] underline-offset-4 hover:underline"
+                    className="font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
                   >
                     {SITE.phone}
                   </a>
@@ -88,7 +85,7 @@ export function AboutVisit() {
               </div>
 
               <div className="flex items-baseline justify-between gap-4 py-3.5">
-                <dt className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                <dt className="flex items-center gap-1.5 font-mono text-web-micro uppercase tracking-[0.14em] text-slate-400">
                   <ChatIcon size={13} stroke={WEB_ICON_STROKE} />
                   <span>WhatsApp Concierge</span>
                 </dt>
@@ -97,7 +94,7 @@ export function AboutVisit() {
                     href={SITE.whatsappHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-mono text-[13px] font-medium text-[#151936] underline-offset-4 hover:underline"
+                    className="font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
                   >
                     {SITE.whatsapp}
                   </a>
@@ -105,14 +102,14 @@ export function AboutVisit() {
               </div>
 
               <div className="flex items-baseline justify-between gap-4 py-3.5">
-                <dt className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                <dt className="flex items-center gap-1.5 font-mono text-web-micro uppercase tracking-[0.14em] text-slate-400">
                   <MailIcon size={13} stroke={WEB_ICON_STROKE} />
                   <span>Email Desk</span>
                 </dt>
                 <dd>
                   <a
                     href={SITE.emailHref}
-                    className="font-mono text-[13px] font-medium text-[#151936] underline-offset-4 hover:underline"
+                    className="font-mono text-web-xs font-medium text-ink-900 underline-offset-4 hover:underline"
                   >
                     {SITE.email}
                   </a>
@@ -124,14 +121,14 @@ export function AboutVisit() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-tertiary-gradient text-white px-6 py-3 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-sm hover:opacity-95 transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-tertiary-gradient text-white px-6 py-3 font-mono text-web-micro uppercase tracking-[0.14em] font-medium shadow-sm hover:opacity-95 transition-all cursor-pointer"
               >
                 <span>Contact Us</span>
               </Link>
 
               <Link
                 href="/properties"
-                className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface-0 px-5 py-3 font-mono text-[11.5px] uppercase tracking-[0.14em] text-slate-700 hover:border-slate-400 hover:text-[#151936] transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface-0 px-5 py-3 font-mono text-web-micro uppercase tracking-[0.14em] text-slate-700 hover:border-slate-400 hover:text-ink-900 transition-all cursor-pointer"
               >
                 <span>Browse Properties</span>
                 <span aria-hidden="true">&rarr;</span>
@@ -141,7 +138,7 @@ export function AboutVisit() {
                 href={directionsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full bg-brand-yellow text-[#151936] px-5 py-3 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-sm hover:brightness-105 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-brand-yellow text-ink-900 px-5 py-3 font-mono text-web-micro uppercase tracking-[0.14em] font-medium shadow-sm hover:brightness-105 transition-all cursor-pointer"
               >
                 <span>Get Directions</span>
                 <ArrowOutIcon size={12} stroke={WEB_ICON_STROKE} />
@@ -155,7 +152,7 @@ export function AboutVisit() {
               {/* Top Controls Strip */}
               <div className="absolute top-4 inset-x-4 z-10 flex items-center justify-between gap-3 pointer-events-none">
                 {/* Location Badge */}
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#151936]/90 backdrop-blur-md border border-white/20 px-3.5 py-1.5 font-mono text-[11px] text-white shadow-sm">
+                <div className="inline-flex items-center gap-2 rounded-full bg-brand-dark/90 backdrop-blur-md border border-white/20 px-3.5 py-1.5 font-mono text-web-micro text-white shadow-sm">
                   <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span>International House · 8th Floor</span>
                 </div>
@@ -166,10 +163,10 @@ export function AboutVisit() {
                     type="button"
                     onClick={() => setMapMode("roadmap")}
                     className={cn(
-                      "cursor-pointer px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all",
+                      "cursor-pointer px-3 py-1 text-web-micro font-mono uppercase tracking-wider rounded-full transition-all",
                       mapMode === "roadmap"
-                        ? "bg-[#151936] text-white font-medium shadow-xs"
-                        : "text-slate-500 hover:text-[#151936]"
+                        ? "bg-brand-dark text-white font-medium shadow-xs"
+                        : "text-slate-500 hover:text-ink-900"
                     )}
                   >
                     Map
@@ -178,10 +175,10 @@ export function AboutVisit() {
                     type="button"
                     onClick={() => setMapMode("satellite")}
                     className={cn(
-                      "cursor-pointer px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full transition-all",
+                      "cursor-pointer px-3 py-1 text-web-micro font-mono uppercase tracking-wider rounded-full transition-all",
                       mapMode === "satellite"
-                        ? "bg-[#151936] text-white font-medium shadow-xs"
-                        : "text-slate-500 hover:text-[#151936]"
+                        ? "bg-brand-dark text-white font-medium shadow-xs"
+                        : "text-slate-500 hover:text-ink-900"
                     )}
                   >
                     Satellite
@@ -213,7 +210,7 @@ export function AboutVisit() {
                   href={directionsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-[11.5px] font-medium text-[#151936] hover:underline"
+                  className="inline-flex items-center gap-1 font-mono text-web-micro font-medium text-ink-900 hover:underline"
                 >
                   <span>Open in Google Maps</span>
                   <ArrowOutIcon size={12} stroke={WEB_ICON_STROKE} />

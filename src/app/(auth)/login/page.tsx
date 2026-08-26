@@ -85,7 +85,7 @@ export default function LoginPage() {
           fill
           priority
           sizes="55vw"
-          quality={95}
+          quality={90}
         />
 
         {/* ── Layered Atmospheric Scrims Exactly Matching Hero Specification ── */}

@@ -27,7 +27,7 @@ export default function WebError({
   const ChatIcon = webIcons.chat;
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center min-h-[calc(100vh-80px)] overflow-hidden bg-surface-0 py-16 sm:py-24 text-center">
+    <div className="relative flex flex-1 flex-col items-center justify-center min-h-[calc(100vh-80px)] overflow-hidden bg-surface-0 py-16 sm:py-24 lg:pt-50 text-center">
       {/* ── Top Header Scrim (Architectural curved canopy with luminous eased dissolve) ── */}
       <div
         aria-hidden="true"
@@ -69,18 +69,18 @@ export default function WebError({
 
       <Container className="relative z-10 flex flex-col items-center text-center">
         {/* Eyebrow Pill */}
-        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500 shadow-2xs">
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-4 py-1.5 font-mono text-web-micro uppercase tracking-[0.2em] text-slate-500 shadow-2xs">
           <span className="size-1.5 rounded-full bg-rose-500 animate-pulse" />
           <span>Error 500 · Temporary Interruption</span>
         </div>
 
         {/* Hero Editorial Heading */}
-        <h1 className="font-editorial text-4xl sm:text-5xl lg:text-[58px] font-medium leading-[1.12] tracking-tight text-[#151936] max-w-4xl">
+        <h1 className="font-editorial text-4xl sm:text-5xl lg:text-[58px] font-medium leading-[1.12] tracking-tight text-ink-900 max-w-4xl">
           This page did not load.
         </h1>
 
         {/* Explanatory Lead */}
-        <p className="mt-5 max-w-2xl text-[15.5px] sm:text-[17px] leading-relaxed text-slate-600 font-normal">
+        <p className="mt-5 max-w-2xl text-web-sm sm:text-web-body leading-relaxed text-slate-600 font-normal">
           The fault is ours, not yours. You can retry the request right away, or connect directly with our advisory desk.
         </p>
 
@@ -89,14 +89,14 @@ export default function WebError({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-2 rounded-full bg-tertiary-gradient text-white px-7 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-md hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary-gradient text-white px-7 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] font-medium shadow-md hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
           >
             <span>Try Again</span>
           </button>
 
           <a
             href={SITE.phoneHref}
-            className="inline-flex items-center gap-2 rounded-full bg-brand-yellow text-[#151936] px-6 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-sm hover:brightness-105 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-yellow text-ink-900 px-6 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] font-medium shadow-sm hover:brightness-105 transition-all cursor-pointer"
           >
             <PhoneIcon size={12} stroke={WEB_ICON_STROKE} />
             <span>Call {SITE.phone}</span>
@@ -106,7 +106,7 @@ export default function WebError({
             href={SITE.whatsappHref}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-[#151936] hover:border-slate-400 hover:shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] text-ink-900 hover:border-slate-400 hover:shadow-xs transition-all cursor-pointer"
           >
             <ChatIcon size={12} stroke={WEB_ICON_STROKE} />
             <span>WhatsApp</span>
@@ -114,7 +114,7 @@ export default function WebError({
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-[#151936] hover:border-slate-400 hover:shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] text-ink-900 hover:border-slate-400 hover:shadow-xs transition-all cursor-pointer"
           >
             <span>Return Home</span>
           </Link>

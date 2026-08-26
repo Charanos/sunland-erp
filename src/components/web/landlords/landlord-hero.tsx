@@ -41,7 +41,7 @@ export function LandlordHero() {
       className="web-dark relative z-10 flex min-h-[68svh] sm:min-h-[72svh] lg:min-h-[78svh] flex-col overflow-hidden bg-brand-dark pb-14 pt-32 sm:pt-36 lg:pt-44"
     >
       {/* ── Background ── */}
-      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#090d1f]">
+      <div className="hero-bg gsap-enter pointer-events-none absolute inset-0 z-0 overflow-hidden bg-brand-deep">
         <Image
           // The .jpg, not the .png. Both files are the same 1376x768 frame, but
           // the PNG is 1.5MB to the JPEG's 883KB because PNG is a lossless
@@ -68,7 +68,7 @@ export function LandlordHero() {
         />
         <div
           aria-hidden="true"
-          className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/30 to-[#151936]"
+          className="hero-scrim absolute inset-0 bg-gradient-to-b from-transparent via-brand-deep/30 to-brand-dark"
         />
       </div>
 

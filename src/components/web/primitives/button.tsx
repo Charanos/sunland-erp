@@ -41,9 +41,9 @@ const variantClass: Record<WebButtonVariant, string> = {
  * `.web-hit`, which extends the hit area without touching the visual box.
  */
 const sizeClass: Record<WebButtonSize, string> = {
-  sm: "px-4 py-1.5 text-[11px] tracking-[0.1em]",
+  sm: "px-4 py-1.5 text-web-micro tracking-[0.1em]",
   md: "px-5 py-2.5 text-xs tracking-[0.12em]",
-  lg: "px-7 py-[11px] text-[13px] tracking-[0.12em]",
+  lg: "px-7 py-[11px] text-web-xs tracking-[0.12em]",
 };
 
 type CommonProps = {

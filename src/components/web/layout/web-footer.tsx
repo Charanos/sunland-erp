@@ -16,7 +16,7 @@ export function WebFooter() {
   const MailIcon = webIcons.chat;
 
   return (
-    <footer className="relative overflow-hidden !bg-[#151936] text-white">
+    <footer className="relative overflow-hidden !bg-brand-dark text-white">
       {/* Black scrim bleed — sits exactly at the top boundary, catching the SCTA's black and fading gracefully into the blue footer */}
       <div
         aria-hidden="true"
@@ -37,7 +37,7 @@ export function WebFooter() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           {FOOTER_NAV.map((column) => (
             <nav key={column.title} aria-label={column.title}>
-              <h2 className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-yellow">
+              <h2 className="font-mono text-web-micro font-semibold uppercase tracking-[0.16em] text-brand-yellow">
                 {column.title}
               </h2>
               <ul className="mt-5 flex flex-col gap-3">
@@ -45,7 +45,7 @@ export function WebFooter() {
                   <li key={`${column.title}-${link.label}`}>
                     <Link
                       href={link.href}
-                      className="text-[14px] text-slate-300/85 transition-colors duration-200 hover:text-white hover:translate-x-0.5 inline-block"
+                      className="text-web-sm text-slate-300/85 transition-colors duration-200 hover:text-white hover:translate-x-0.5 inline-block"
                     >
                       {link.label}
                     </Link>
@@ -57,10 +57,10 @@ export function WebFooter() {
 
           {/* Physical Office Column */}
           <div>
-            <h2 className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-yellow">
+            <h2 className="font-mono text-web-micro font-semibold uppercase tracking-[0.16em] text-brand-yellow">
               Office
             </h2>
-            <address className="mt-5 flex items-start gap-2 text-[13.5px] not-italic leading-relaxed text-slate-300/85">
+            <address className="mt-5 flex items-start gap-2 text-web-xs not-italic leading-relaxed text-slate-300/85">
               <PinIcon size={14} stroke={WEB_ICON_STROKE} className="text-brand-yellow shrink-0 mt-1" />
               <span>
                 {SITE.addressLine} {SITE.postalAddress}
@@ -69,14 +69,14 @@ export function WebFooter() {
             <div className="mt-5 flex flex-col gap-2.5">
               <a
                 href={SITE.phoneHref}
-                className="flex items-center gap-2 font-mono text-[13px] text-white transition-colors hover:text-brand-yellow"
+                className="flex items-center gap-2 font-mono text-web-xs text-white transition-colors hover:text-brand-yellow"
               >
                 <PhoneIcon size={13} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                 {SITE.phone}
               </a>
               <a
                 href={SITE.emailHref}
-                className="flex items-center gap-2 font-mono text-[13px] text-white transition-colors hover:text-brand-yellow"
+                className="flex items-center gap-2 font-mono text-web-xs text-white transition-colors hover:text-brand-yellow"
               >
                 <MailIcon size={13} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                 {SITE.email}

@@ -67,7 +67,7 @@ export default function ServicesPage() {
           <div data-reveal className="mx-auto max-w-2xl text-center pb-14 sm:pb-16">
             <div className="flex items-center justify-center gap-3 mb-4">
               <span aria-hidden="true" className="h-px w-8 bg-ink-900" />
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-900 font-medium">
+              <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-ink-900 font-medium">
                 {SERVICES_ROUTER.eyebrow}
               </p>
               <span aria-hidden="true" className="h-px w-8 bg-ink-900" />
@@ -80,7 +80,7 @@ export default function ServicesPage() {
               {SERVICES_ROUTER.title}
             </h2>
 
-            <p className="mt-4 text-[15.5px] sm:text-[16.5px] leading-relaxed text-ink-500 font-normal max-w-[50ch] mx-auto">
+            <p className="mt-4 text-web-sm sm:text-web-body leading-relaxed text-ink-500 font-normal max-w-[50ch] mx-auto">
               {SERVICES_ROUTER.lead}
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function ServicesPage() {
 
                     {/* Target Audience Primitive Badge */}
                     <div className="mt-8">
-                      <WebBadge tone="neutral" className="border border-line-soft font-mono font-medium text-[10px] tracking-[0.14em]">
+                      <WebBadge tone="neutral" className="border border-line-soft font-mono font-medium text-web-nano tracking-[0.14em]">
                         {card.audience}
                       </WebBadge>
                     </div>
@@ -140,20 +140,20 @@ export default function ServicesPage() {
                     </h3>
 
                     {/* Narrative Description */}
-                    <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-ink-500 font-normal">
+                    <p className="mt-3 text-web-xs sm:text-web-sm leading-relaxed text-ink-500 font-normal">
                       {card.body}
                     </p>
                   </div>
 
                   {/* Bottom Highlight & Action Trigger */}
                   <div className="mt-10 pt-6 border-t border-line-soft space-y-4">
-                    <div className="inline-flex items-center gap-2 py-1 px-2.5 rounded-full bg-emerald-500/8 border border-emerald-500/20 text-emerald-800 text-[10.5px] font-mono font-medium">
+                    <div className="inline-flex items-center gap-2 py-1 px-2.5 rounded-full bg-emerald-500/8 border border-emerald-500/20 text-emerald-800 text-web-nano font-mono font-medium">
                       <span className="size-1.5 rounded-full bg-emerald-600 shrink-0 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
                       <span>{card.highlight}</span>
                     </div>
 
                     <div className="flex items-center justify-between pt-2">
-                      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:text-ink-950 transition-colors">
+                      <span className="font-mono text-web-micro font-semibold uppercase tracking-[0.14em] text-ink-900 group-hover:text-ink-950 transition-colors">
                         {card.cta}
                       </span>
                       <div className="flex size-7.5 items-center justify-center rounded-full border border-line bg-surface-0 text-ink-700 group-hover:bg-ink-900 group-hover:text-white group-hover:border-ink-900 group-hover:translate-x-1 transition-all duration-300 shadow-2xs">
@@ -198,7 +198,7 @@ function ServiceBand({ section }: { section: ServiceSection }) {
       <Container>
         <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
           <div className={cn(section.mediaSide === "left" && "lg:order-2")}>
-            <p className="web-numeric text-[12.5px] text-ink-900">{section.number}</p>
+            <p className="web-numeric text-web-micro text-ink-900">{section.number}</p>
             <h2 id={headingId} className="web-title mt-4 text-web-h2 text-ink-900">
               {section.title}
             </h2>
@@ -214,7 +214,7 @@ function ServiceBand({ section }: { section: ServiceSection }) {
                 {section.points.map((point) => (
                   <li
                     key={point}
-                    className="flex items-center gap-3 border-b border-line-soft py-3 text-[14.5px] text-ink-500"
+                    className="flex items-center gap-3 border-b border-line-soft py-3 text-web-sm text-ink-500"
                   >
                     <CheckIcon
                       size={15}
@@ -241,7 +241,7 @@ function ServiceBand({ section }: { section: ServiceSection }) {
                   >
                     <dt
                       className={cn(
-                        "text-[14.5px]",
+                        "text-web-sm",
                         row.emphasis ? "text-ink-900" : "text-ink-500"
                       )}
                     >
@@ -287,7 +287,7 @@ function ServiceBand({ section }: { section: ServiceSection }) {
                     <dd className="web-numeric text-[22px] tracking-[-0.02em] text-ink-900">
                       {figure.value}
                     </dd>
-                    <dt className="web-control mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-400">
+                    <dt className="web-control mt-1 text-web-micro uppercase tracking-[0.14em] text-ink-400">
                       {figure.label}
                     </dt>
                   </div>

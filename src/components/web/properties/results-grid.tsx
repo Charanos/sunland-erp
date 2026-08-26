@@ -36,11 +36,11 @@ export function EmptyResults({
 
   return (
     <div className="relative overflow-hidden rounded-[24px] border border-slate-200/90 bg-white p-8 sm:p-12 shadow-[0_8px_30px_rgba(21,25,54,0.03)]">
-      <div className="flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-[#151936] mb-5">
+      <div className="flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-ink-900 mb-5">
         <SearchIcon size={22} stroke={WEB_ICON_STROKE} aria-hidden="true" />
       </div>
 
-      <h2 className="font-editorial text-2xl sm:text-3xl font-medium text-[#151936] leading-tight">
+      <h2 className="font-editorial text-2xl sm:text-3xl font-medium text-ink-900 leading-tight">
         Nothing matches that exact combination yet.
       </h2>
       
@@ -58,7 +58,7 @@ export function EmptyResults({
               <li key={alternative.href}>
                 <Link
                   href={alternative.href}
-                  className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 font-mono text-[11.5px] font-medium text-[#151936] transition-all hover:border-[#151936] hover:bg-[#151936] hover:text-white"
+                  className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 font-mono text-web-micro font-medium text-ink-900 transition-all hover:border-ink-900 hover:bg-brand-dark hover:text-white"
                 >
                   {alternative.label}
                 </Link>
@@ -103,13 +103,13 @@ export function RegisterRequirement() {
             <div className="size-16 rounded-2xl border border-white/20 bg-white/5 flex items-center justify-center">
               <span className="font-editorial text-3xl font-normal text-white">S</span>
             </div>
-            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-white">Sunland</span>
+            <span className="font-mono text-web-nano tracking-[0.3em] uppercase text-white">Sunland</span>
           </div>
         </div>
 
         {/* Right: content */}
         <div className="lg:max-w-xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3.5 py-1 font-mono text-[11px] font-medium uppercase tracking-widest text-brand-yellow backdrop-blur-md mb-5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3.5 py-1 font-mono text-web-micro font-medium uppercase tracking-widest text-brand-yellow backdrop-blur-md mb-5">
             Bespoke Search
           </span>
 
@@ -117,7 +117,7 @@ export function RegisterRequirement() {
             Looking for a specific off-market asset?
           </h2>
 
-          <p className="mt-3.5 text-[15px] leading-relaxed text-slate-400">
+          <p className="mt-3.5 text-web-sm leading-relaxed text-slate-400">
             Over 35% of our prime Nairobi mandates trade privately before public listing. Share your requirements with our acquisitions desk and we&apos;ll reach out within 24 hours.
           </p>
 

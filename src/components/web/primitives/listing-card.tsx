@@ -60,7 +60,7 @@ function BrandedFallback() {
       </div>
 
       {/* Discreet label */}
-      <span className="relative mt-3.5 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-slate-400">
+      <span className="relative mt-3.5 font-mono text-web-nano font-medium uppercase tracking-[0.2em] text-slate-400">
         Verified Portfolio Asset
       </span>
     </div>
@@ -119,7 +119,7 @@ export function ListingCard({
         <div className="absolute inset-x-3 top-3 z-10 flex items-start justify-between gap-2">
           <ListingStatusBadge status={listing.status} />
           {listing.isFeatured && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-[#151936] shadow-2xs">
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand-yellow px-2.5 py-0.5 font-mono text-web-nano font-medium uppercase tracking-wider text-ink-900 shadow-2xs">
               Featured
             </span>
           )}
@@ -128,7 +128,7 @@ export function ListingCard({
 
       <div className="flex flex-1 flex-col justify-between pt-4 pb-1">
         <div>
-          <Heading className="font-editorial text-[20px] sm:text-[21px] font-normal leading-[1.25] text-[#151936] transition-colors group-hover:text-blue-900 min-h-[3.2rem]">
+          <Heading className="font-editorial text-[20px] sm:text-[21px] font-normal leading-[1.25] text-ink-900 transition-colors group-hover:text-blue-900 min-h-[3.2rem]">
             <Link href={`/properties/${listing.slug}`} className="after:absolute after:inset-0">
               <span className="line-clamp-2">{listing.title}</span>
             </Link>
@@ -160,7 +160,7 @@ export function ListingCard({
                 <p
                   className={cn(
                     "font-mono text-[20px] sm:text-[21px] font-medium tracking-tight",
-                    isAvailable ? "text-[#151936]" : "text-slate-500"
+                    isAvailable ? "text-ink-900" : "text-slate-500"
                   )}
                 >
                   {formatKES(listing.priceKes)}
@@ -172,7 +172,7 @@ export function ListingCard({
             )}
           </div>
 
-          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ink-900 group-hover:bg-brand-dark group-hover:text-white">
             <ArrowIcon size={13} stroke={2} aria-hidden="true" />
           </div>
         </div>

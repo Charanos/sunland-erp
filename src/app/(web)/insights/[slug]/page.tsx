@@ -84,7 +84,7 @@ export default async function InsightArticlePage({
                 ) : (
                   <span
                     aria-hidden="true"
-                    className="font-mono flex size-12 shrink-0 items-center justify-center rounded-full bg-[#151936] text-sm font-medium text-white shadow-sm"
+                    className="font-mono flex size-12 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-medium text-white shadow-sm"
                   >
                     {post.author
                       .split(" ")
@@ -94,10 +94,10 @@ export default async function InsightArticlePage({
                 )}
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="font-editorial text-base sm:text-lg font-medium text-[#151936]">
+                    <p className="font-editorial text-base sm:text-lg font-medium text-ink-900">
                       {post.author}
                     </p>
-                    <span className="rounded-full bg-surface-1 border border-line px-2.5 py-0.5 font-mono text-[10px] font-medium text-slate-700">
+                    <span className="rounded-full bg-surface-1 border border-line px-2.5 py-0.5 font-mono text-web-nano font-medium text-slate-700">
                       Advisory Author
                     </span>
                   </div>
@@ -121,7 +121,7 @@ export default async function InsightArticlePage({
 
             {/* ── 04. Executive Consultation & Action Callout ── */}
             {post.cta && (
-              <div className="mt-12 rounded-3xl border border-slate-800 bg-gradient-to-br from-[#151936] via-[#10132c] to-[#090d1f] p-8 sm:p-12 text-white shadow-2xl">
+              <div className="mt-12 rounded-3xl border border-slate-800 bg-gradient-to-br from-brand-dark via-[#10132c] to-brand-deep p-8 sm:p-12 text-white shadow-2xl">
                 <div className="flex items-center gap-2 mb-3">
                   <span aria-hidden="true" className="h-px w-5 bg-brand-yellow" />
                   <p className="font-mono text-xs uppercase tracking-[0.22em] text-slate-300 font-medium">
@@ -132,7 +132,7 @@ export default async function InsightArticlePage({
                 <h2 className="font-editorial text-2xl sm:text-3xl lg:text-[34px] font-medium leading-tight text-white">
                   {post.cta.title}
                 </h2>
-                <p className="mt-4 max-w-[62ch] text-[15px] sm:text-base leading-relaxed text-slate-300 font-normal">
+                <p className="mt-4 max-w-[62ch] text-web-sm sm:text-base leading-relaxed text-slate-300 font-normal">
                   {post.cta.body}
                 </p>
 
@@ -176,7 +176,7 @@ export default async function InsightArticlePage({
               </div>
               <Link
                 href="/insights"
-                className="font-mono text-xs text-slate-500 hover:text-[#151936] transition-colors inline-flex items-center gap-1"
+                className="font-mono text-xs text-slate-500 hover:text-ink-900 transition-colors inline-flex items-center gap-1"
               >
                 <span>View All Research</span>
                 <ArrowRightIcon size={12} stroke={2} />
@@ -218,7 +218,7 @@ function ReadNextCard({ post }: { post: InsightPost }) {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"
         />
-        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-[10px] font-medium text-white border border-white/15 shadow-xs">
+        <span className="absolute left-3.5 top-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-0.5 font-mono text-web-nano font-medium text-white border border-white/15 shadow-xs">
           <span className="size-1.5 rounded-full bg-brand-yellow" />
           {post.category}
         </span>
@@ -227,7 +227,7 @@ function ReadNextCard({ post }: { post: InsightPost }) {
       {/* Content Section below photo */}
       <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
         <div>
-          <h3 className="font-editorial text-[21px] sm:text-[22px] font-medium leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+          <h3 className="font-editorial text-[21px] sm:text-[22px] font-medium leading-[1.2] text-ink-900 transition-colors group-hover:text-blue-950">
             <Link
               href={`/insights/${post.slug}`}
               className="after:absolute after:inset-0"
@@ -236,7 +236,7 @@ function ReadNextCard({ post }: { post: InsightPost }) {
             </Link>
           </h3>
 
-          <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-2">
+          <p className="mt-2.5 text-web-xs leading-relaxed text-slate-600 font-normal line-clamp-2">
             {post.summary}
           </p>
         </div>
@@ -255,12 +255,12 @@ function ReadNextCard({ post }: { post: InsightPost }) {
                 />
               </div>
             ) : null}
-            <span className="font-medium text-[#151936]">{post.author}</span>
+            <span className="font-medium text-ink-900">{post.author}</span>
             <span>·</span>
             <span>{post.readingMinutes} min</span>
           </div>
 
-          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white">
+          <div className="flex size-8 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-2xs transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ink-900 group-hover:bg-brand-dark group-hover:text-white">
             <ArrowRightIcon size={13} stroke={2} aria-hidden="true" />
           </div>
         </div>

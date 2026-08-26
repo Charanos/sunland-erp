@@ -35,7 +35,7 @@ export function SpecChip({
   return (
     <span className={cn("inline-flex items-center gap-1.5 text-ink-400", className)}>
       <IconComponent size={16} stroke={WEB_ICON_STROKE} aria-hidden="true" className="shrink-0" />
-      <span className="web-numeric text-[13px] text-ink-500">{value}</span>
+      <span className="web-numeric text-web-xs text-ink-500">{value}</span>
       <span className="sr-only">{unit}</span>
     </span>
   );

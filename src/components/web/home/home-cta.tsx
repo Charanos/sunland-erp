@@ -14,7 +14,7 @@ export function HomeCta() {
   return (
     <section
       aria-labelledby="cta-heading"
-      className="relative overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 text-center bg-[#090d1f] text-white"
+      className="relative overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 text-center bg-brand-deep text-white"
     >
       {/* Horizontally Flipped Cinematic Hero Background */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
@@ -31,7 +31,7 @@ export function HomeCta() {
         {/* Atmospheric Scrims & Smooth Section Transitions */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1f]/75 to-[#090d1f]/95"
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-deep/75 to-brand-deep/95"
         />
         {/* Bottom dissolve — scrim flows into black so it bleeds seamlessly into the footer below */}
         <div

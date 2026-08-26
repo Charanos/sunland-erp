@@ -36,7 +36,7 @@ export function AreaInteractiveMap({ areaName, region }: AreaInteractiveMapProps
         {/* Top Badges Strip */}
         <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between gap-3 pointer-events-none">
           {/* Approximate Location Badge */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#151936]/90 border border-white/15 px-3.5 py-1.5 font-mono text-[10.5px] font-medium text-white backdrop-blur-md shadow-xs">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-dark/90 border border-white/15 px-3.5 py-1.5 font-mono text-web-nano font-medium text-white backdrop-blur-md shadow-xs">
             <PinIcon size={12} stroke={WEB_ICON_STROKE} aria-hidden="true" className="text-brand-yellow" />
             <span>{areaName} Submarket Hub</span>
           </div>
@@ -47,10 +47,10 @@ export function AreaInteractiveMap({ areaName, region }: AreaInteractiveMapProps
               type="button"
               onClick={() => setMapMode("roadmap")}
               className={cn(
-                "cursor-pointer px-3 py-1 text-[10.5px] font-mono uppercase tracking-wider rounded-full transition-all",
+                "cursor-pointer px-3 py-1 text-web-nano font-mono uppercase tracking-wider rounded-full transition-all",
                 mapMode === "roadmap"
-                  ? "bg-[#151936] text-white font-medium shadow-xs"
-                  : "text-slate-500 hover:text-[#151936]"
+                  ? "bg-brand-dark text-white font-medium shadow-xs"
+                  : "text-slate-500 hover:text-ink-900"
               )}
             >
               Map
@@ -59,10 +59,10 @@ export function AreaInteractiveMap({ areaName, region }: AreaInteractiveMapProps
               type="button"
               onClick={() => setMapMode("satellite")}
               className={cn(
-                "cursor-pointer px-3 py-1 text-[10.5px] font-mono uppercase tracking-wider rounded-full transition-all",
+                "cursor-pointer px-3 py-1 text-web-nano font-mono uppercase tracking-wider rounded-full transition-all",
                 mapMode === "satellite"
-                  ? "bg-[#151936] text-white font-medium shadow-xs"
-                  : "text-slate-500 hover:text-[#151936]"
+                  ? "bg-brand-dark text-white font-medium shadow-xs"
+                  : "text-slate-500 hover:text-ink-900"
               )}
             >
               Satellite
@@ -74,10 +74,10 @@ export function AreaInteractiveMap({ areaName, region }: AreaInteractiveMapProps
       {/* Subtle Security & Boundary Disclaimer */}
       <div className="border-t border-slate-200/70 bg-white/95 px-5 py-3 flex items-center justify-between gap-3 text-xs text-slate-500 font-normal">
         <p className="flex items-center gap-1.5">
-          <span className="font-medium text-slate-700 font-mono text-[11px] uppercase tracking-wider">Demarcation:</span>
+          <span className="font-medium text-slate-700 font-mono text-web-micro uppercase tracking-wider">Demarcation:</span>
           <span>Verified municipal zone and submarket perimeter boundaries.</span>
         </p>
-        <span className="font-mono text-[10.5px] text-slate-400 hidden sm:inline">Sunland Spatial Registry</span>
+        <span className="font-mono text-web-nano text-slate-400 hidden sm:inline">Sunland Spatial Registry</span>
       </div>
     </div>
   );

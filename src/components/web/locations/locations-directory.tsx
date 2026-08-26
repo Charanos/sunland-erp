@@ -145,16 +145,16 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
               type="button"
               onClick={() => setSelectedGroup("all")}
               className={cn(
-                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11.5px] uppercase tracking-wider transition-all duration-200",
+                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-web-micro uppercase tracking-wider transition-all duration-200",
                 selectedGroup === "all"
-                  ? "bg-[#151936] text-white font-medium shadow-sm"
+                  ? "bg-brand-dark text-white font-medium shadow-sm"
                   : "border border-line bg-surface-0 text-ink-600 hover:text-ink-900 hover:bg-surface-1 hover:border-ink-400"
               )}
             >
               <span>All Hubs</span>
               <span
                 className={cn(
-                  "size-4.5 rounded-full flex items-center justify-center text-[10px]",
+                  "size-4.5 rounded-full flex items-center justify-center text-web-nano",
                   selectedGroup === "all" ? "bg-white/20 text-white" : "bg-surface-2 text-ink-500"
                 )}
               >
@@ -166,16 +166,16 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
               type="button"
               onClick={() => setSelectedGroup("prime")}
               className={cn(
-                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11.5px] uppercase tracking-wider transition-all duration-200",
+                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-web-micro uppercase tracking-wider transition-all duration-200",
                 selectedGroup === "prime"
-                  ? "bg-[#151936] text-white font-medium shadow-sm"
+                  ? "bg-brand-dark text-white font-medium shadow-sm"
                   : "border border-line bg-surface-0 text-ink-600 hover:text-ink-900 hover:bg-surface-1 hover:border-ink-400"
               )}
             >
               <span>Prime Residential</span>
               <span
                 className={cn(
-                  "size-4.5 rounded-full flex items-center justify-center text-[10px]",
+                  "size-4.5 rounded-full flex items-center justify-center text-web-nano",
                   selectedGroup === "prime" ? "bg-white/20 text-white" : "bg-surface-2 text-ink-500"
                 )}
               >
@@ -187,16 +187,16 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
               type="button"
               onClick={() => setSelectedGroup("commercial")}
               className={cn(
-                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11.5px] uppercase tracking-wider transition-all duration-200",
+                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-web-micro uppercase tracking-wider transition-all duration-200",
                 selectedGroup === "commercial"
-                  ? "bg-[#151936] text-white font-medium shadow-sm"
+                  ? "bg-brand-dark text-white font-medium shadow-sm"
                   : "border border-line bg-surface-0 text-ink-600 hover:text-ink-900 hover:bg-surface-1 hover:border-ink-400"
               )}
             >
               <span>Commercial & Mixed</span>
               <span
                 className={cn(
-                  "size-4.5 rounded-full flex items-center justify-center text-[10px]",
+                  "size-4.5 rounded-full flex items-center justify-center text-web-nano",
                   selectedGroup === "commercial" ? "bg-white/20 text-white" : "bg-surface-2 text-ink-500"
                 )}
               >
@@ -208,16 +208,16 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
               type="button"
               onClick={() => setSelectedGroup("satellite")}
               className={cn(
-                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11.5px] uppercase tracking-wider transition-all duration-200",
+                "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-web-micro uppercase tracking-wider transition-all duration-200",
                 selectedGroup === "satellite"
-                  ? "bg-[#151936] text-white font-medium shadow-sm"
+                  ? "bg-brand-dark text-white font-medium shadow-sm"
                   : "border border-line bg-surface-0 text-ink-600 hover:text-ink-900 hover:bg-surface-1 hover:border-ink-400"
               )}
             >
               <span>Satellite & Coast</span>
               <span
                 className={cn(
-                  "size-4.5 rounded-full flex items-center justify-center text-[10px]",
+                  "size-4.5 rounded-full flex items-center justify-center text-web-nano",
                   selectedGroup === "satellite" ? "bg-white/20 text-white" : "bg-surface-2 text-ink-500"
                 )}
               >
@@ -228,7 +228,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
 
           {/* Search + Telemetry Counter */}
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline font-mono text-[11.5px] text-ink-400">
+            <span className="hidden sm:inline font-mono text-web-micro text-ink-400">
               Showing <strong className="text-ink-900 font-medium">{filteredAreas.length}</strong> of{" "}
               {areas.length} verified submarkets
             </span>
@@ -244,7 +244,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Filter locations..."
-                className="w-full h-9.5 pl-9 pr-8 rounded-full border border-line bg-surface-1 text-[13px] text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-ink-900 focus:bg-surface-0 transition-colors"
+                className="w-full h-9.5 pl-9 pr-8 rounded-full border border-line bg-surface-1 text-web-xs text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-ink-900 focus:bg-surface-0 transition-colors"
               />
               {searchQuery && (
                 <button
@@ -265,7 +265,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
             <div className="flex items-center justify-between pb-5 border-b border-line-soft mb-6">
               <div className="flex items-center gap-2.5">
                 <span aria-hidden="true" className="h-px w-6 bg-brand-yellow" />
-                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-slate-500 font-medium">
                   Premier Submarket Anchors
                 </p>
               </div>
@@ -318,7 +318,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                       {/* Multi-stage Luxury Scrims */}
                       <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090d1f] via-[#090d1f]/60 via-45% to-black/20 transition-opacity duration-300 group-hover:via-[#090d1f]/50"
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/60 via-45% to-black/20 transition-opacity duration-300 group-hover:via-brand-deep/50"
                       />
                       <div
                         aria-hidden="true"
@@ -327,12 +327,12 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
 
                       {/* Top Action Row: Minimal Region Tag + Sleek Arrow Action */}
                       <div className="relative z-10 flex items-center justify-between gap-3">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/45 backdrop-blur-md px-3.5 py-1 font-mono text-[10.5px] font-medium text-white border border-white/10 shadow-xs">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/45 backdrop-blur-md px-3.5 py-1 font-mono text-web-nano font-medium text-white border border-white/10 shadow-xs">
                           <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                           <span>{tile.region}</span>
                         </span>
 
-                        <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-[#151936] group-hover:scale-105 shadow-xs">
+                        <span className="flex size-8.5 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white transition-all duration-300 group-hover:bg-brand-yellow group-hover:text-ink-900 group-hover:scale-105 shadow-xs">
                           <ArrowOutIcon size={13} stroke={2} />
                         </span>
                       </div>
@@ -419,17 +419,17 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                             {/* Refined Seamless Price Telemetry */}
                             <div className="mt-3.5 flex items-baseline justify-between border-t border-white/15 pt-2.5">
                               <div className="flex items-baseline gap-1">
-                                <span className="font-mono text-base sm:text-[17px] font-medium tracking-tight text-white">
+                                <span className="font-mono text-base sm:text-web-body font-medium tracking-tight text-white">
                                   {formatBenchmarkPrice(tile.guideValue)}
                                 </span>
                                 {!tile.guideValue.includes("sqft") &&
                                   !tile.guideValue.toLowerCase().includes("request") && (
-                                    <span className="text-[11px] font-normal text-slate-400 font-sans">
+                                    <span className="text-web-micro font-normal text-slate-400 font-sans">
                                       /mo
                                     </span>
                                   )}
                               </div>
-                              <span className="text-[11px] font-mono text-slate-400/90 capitalize truncate max-w-[120px] text-right">
+                              <span className="text-web-micro font-mono text-slate-400/90 capitalize truncate max-w-[120px] text-right">
                                 {tile.guideLabel}
                               </span>
                             </div>
@@ -451,7 +451,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
               <div className="flex items-center justify-between pb-6 border-b border-line-soft mb-8">
                 <div className="flex items-center gap-2.5">
                   <span aria-hidden="true" className="h-px w-6 bg-brand-yellow" />
-                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500 font-medium">
+                  <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-slate-500 font-medium">
                     Regional, Commercial & Emerging Submarkets
                   </p>
                 </div>
@@ -485,7 +485,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                           className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                         />
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#151936] to-[#090d1f]" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-brand-dark to-brand-deep" />
                       )}
 
                       {/* Subtle Top Scrim for Badges */}
@@ -496,13 +496,13 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
 
                       {/* Top Badges: Region + Live Listings (if available) */}
                       <div className="absolute inset-x-3.5 top-3.5 z-10 flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-white/15 px-3 py-1 font-mono text-[10.5px] font-medium text-white backdrop-blur-md shadow-xs">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-white/15 px-3 py-1 font-mono text-web-nano font-medium text-white backdrop-blur-md shadow-xs">
                           <PinIcon size={11} stroke={WEB_ICON_STROKE} className="text-brand-yellow" />
                           <span>{area.region}</span>
                         </span>
 
                         {liveCount > 0 && (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-emerald-500/30 px-3 py-1 font-mono text-[10.5px] font-medium text-emerald-300 backdrop-blur-md shadow-xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/60 border border-emerald-500/30 px-3 py-1 font-mono text-web-nano font-medium text-emerald-300 backdrop-blur-md shadow-xs">
                             <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                             {liveCount} Listed
                           </span>
@@ -513,7 +513,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                     {/* Open Content Below Photo (On Crisp White Canvas) */}
                     <div className="flex flex-1 flex-col justify-between pt-4.5 pb-1">
                       <div>
-                        <h3 className="font-editorial text-[22px] sm:text-[24px] font-normal leading-[1.2] text-[#151936] transition-colors group-hover:text-blue-950">
+                        <h3 className="font-editorial text-[22px] sm:text-[24px] font-normal leading-[1.2] text-ink-900 transition-colors group-hover:text-blue-950">
                           <Link href={`/locations/${area.slug}`} className="after:absolute after:inset-0">
                             {area.name}
                           </Link>
@@ -533,7 +533,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                           </span>
                         </p>
 
-                        <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-600 font-normal line-clamp-2">
+                        <p className="mt-2.5 text-web-xs leading-relaxed text-slate-600 font-normal line-clamp-2">
                           {area.blurb}
                         </p>
                       </div>
@@ -541,11 +541,11 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                       {/* Pricing Benchmark & Action Row */}
                       <div className="mt-5 border-t border-slate-200/80 pt-3.5 flex items-center justify-between">
                         <div>
-                          <span className="block text-[10.5px] font-mono text-slate-500 uppercase tracking-wider">
+                          <span className="block text-web-nano font-mono text-slate-500 uppercase tracking-wider">
                             {area.guideLabel}
                           </span>
                           <div className="flex items-baseline gap-1 mt-0.5">
-                            <span className="font-mono text-xl sm:text-[22px] font-medium tracking-tight text-[#151936]">
+                            <span className="font-mono text-xl sm:text-[22px] font-medium tracking-tight text-ink-900">
                               {formatBenchmarkPrice(area.guideValue)}
                             </span>
                             {!area.guideValue.includes("sqft") &&
@@ -557,7 +557,7 @@ export function LocationsDirectory({ areas, counts }: LocationsDirectoryProps) {
                           </div>
                         </div>
 
-                        <div className="flex size-9 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-xs transition-all duration-300 group-hover:border-[#151936] group-hover:bg-[#151936] group-hover:text-white group-hover:scale-105">
+                        <div className="flex size-9 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-600 shadow-xs transition-all duration-300 group-hover:border-ink-900 group-hover:bg-brand-dark group-hover:text-white group-hover:scale-105">
                           <ArrowRightIcon size={14} stroke={2} aria-hidden="true" />
                         </div>
                       </div>

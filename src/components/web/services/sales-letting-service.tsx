@@ -179,11 +179,11 @@ export function SalesLettingService() {
           <div className="lg:col-span-5 space-y-4 lg:pl-4">
             <div className="flex items-center gap-3">
               <span aria-hidden="true" className="h-px w-8 bg-brand-yellow" />
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-900 font-medium">
+              <p className="font-mono text-web-micro uppercase tracking-[0.22em] text-ink-900 font-medium">
                 Practice 02 · Transaction Execution
               </p>
             </div>
-            <p className="text-[15.5px] sm:text-[16.5px] leading-relaxed text-ink-500 font-normal max-w-[48ch]">
+            <p className="text-web-sm sm:text-web-body leading-relaxed text-ink-500 font-normal max-w-[48ch]">
               Whether selling a trophy residence or securing a high-yield tenant, we engineer transactions with data-driven pricing, vetted counterparties, and seamless legal settlement.
             </p>
           </div>
@@ -197,10 +197,10 @@ export function SalesLettingService() {
             
             {/* Header and Control Bar */}
             <div className="flex items-center justify-between pb-3 border-b border-line-soft">
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-400 font-medium">
+              <span className="font-mono text-web-micro uppercase tracking-[0.2em] text-ink-400 font-medium">
                 Transaction Machinery
               </span>
-              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-900 font-medium">
+              <span className="font-mono text-web-micro uppercase tracking-wider text-ink-900 font-medium">
                 4 Execution Protocols
               </span>
             </div>
@@ -218,17 +218,17 @@ export function SalesLettingService() {
                       className={cn(
                         "group relative flex items-center justify-center gap-2 py-2.5 px-3 sm:px-4 rounded-xl sm:rounded-full transition-all duration-200 cursor-pointer text-center select-none",
                         isActive
-                          ? "bg-white text-[#151936] shadow-[0_4px_16px_rgba(0,0,0,0.2)] font-semibold"
+                          ? "bg-white text-ink-900 shadow-[0_4px_16px_rgba(0,0,0,0.2)] font-semibold"
                           : "text-slate-200 hover:text-white hover:bg-white/10 font-medium"
                       )}
                     >
                       <span className={cn(
-                        "font-mono text-[11px] tracking-wider transition-colors",
-                        isActive ? "text-[#151936] font-bold" : "text-slate-300/80 group-hover:text-slate-200"
+                        "font-mono text-web-micro tracking-wider transition-colors",
+                        isActive ? "text-ink-900 font-bold" : "text-slate-300/80 group-hover:text-slate-200"
                       )}>
                         {pillar.number}
                       </span>
-                      <span className="text-[12.5px] sm:text-[13.5px] tracking-tight whitespace-nowrap">
+                      <span className="text-web-micro sm:text-web-xs tracking-tight whitespace-nowrap">
                         {pillar.tabTitle}
                       </span>
                     </button>
@@ -246,14 +246,14 @@ export function SalesLettingService() {
                   {currentPillar.title}
                 </h3>
 
-                <p className="text-[15px] sm:text-[15.5px] leading-relaxed text-ink-600 font-normal max-w-[58ch]">
+                <p className="text-web-sm sm:text-web-sm leading-relaxed text-ink-600 font-normal max-w-[58ch]">
                   {currentPillar.summary}
                 </p>
               </div>
 
               {/* Unboxed Key Deliverables & Verification Editorial List */}
               <div className="pt-6 border-t border-line-soft">
-                <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-ink-400 font-medium mb-5">
+                <p className="font-mono text-web-nano uppercase tracking-[0.2em] text-ink-400 font-medium mb-5">
                   Key Deliverables & Verification
                 </p>
 
@@ -264,11 +264,11 @@ export function SalesLettingService() {
                         <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 mt-0.5">
                           <CheckIcon size={11} stroke={WEB_ICON_STROKE} aria-hidden="true" />
                         </span>
-                        <h4 className="text-[14px] font-medium text-ink-900 tracking-tight leading-snug">
+                        <h4 className="text-web-sm font-medium text-ink-900 tracking-tight leading-snug">
                           {spec.title}
                         </h4>
                       </div>
-                      <p className="pl-[26px] text-[12.5px] leading-relaxed text-ink-500 font-normal">
+                      <p className="pl-[26px] text-web-micro leading-relaxed text-ink-500 font-normal">
                         {spec.desc}
                       </p>
                     </div>
@@ -323,7 +323,7 @@ export function SalesLettingService() {
                   <span>ACTIVE TRANSACTION DESK</span>
                 </div>
 
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-mono text-slate-200 backdrop-blur-md">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-web-micro font-mono text-slate-200 backdrop-blur-md">
                   <span>KES 1.8B Transacted</span>
                 </div>
               </div>
@@ -333,14 +333,14 @@ export function SalesLettingService() {
                 {/* HUD Header */}
                 <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
                   <div>
-                    <p className="font-mono text-[9.5px] uppercase tracking-[0.22em] text-brand-yellow font-semibold">
+                    <p className="font-mono text-web-nano uppercase tracking-[0.22em] text-brand-yellow font-semibold">
                       Transaction Benchmark Ledger
                     </p>
                     <p className="text-xs font-normal text-slate-200 mt-0.5">
                       Karen · Runda · Muthaiga · Nyali
                     </p>
                   </div>
-                  <span className="font-mono text-[10px] text-slate-300 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">
+                  <span className="font-mono text-web-nano text-slate-300 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">
                     Prime Metrics
                   </span>
                 </div>
@@ -352,10 +352,10 @@ export function SalesLettingService() {
                       <div className="font-mono text-[26px] sm:text-[30px] font-medium tracking-tight text-white leading-none">
                         {metric.value}
                       </div>
-                      <div className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-slate-300 font-medium pt-0.5">
+                      <div className="font-mono text-web-nano uppercase tracking-[0.14em] text-slate-300 font-medium pt-0.5">
                         {metric.label}
                       </div>
-                      <div className="text-[11px] text-slate-300/80 font-normal leading-snug">
+                      <div className="text-web-micro text-slate-300/80 font-normal leading-snug">
                         {metric.sub}
                       </div>
                     </div>
@@ -363,7 +363,7 @@ export function SalesLettingService() {
                 </div>
 
                 {/* Footnote Reassurance Line */}
-                <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300 font-mono">
+                <div className="pt-3 border-t border-white/10 flex items-center justify-between text-web-micro text-slate-300 font-mono">
                   <span className="flex items-center gap-1.5">
                     <ShieldIcon size={12} stroke={WEB_ICON_STROKE} className="text-emerald-400 shrink-0" />
                     <span>Conveyancing Liaison Included</span>

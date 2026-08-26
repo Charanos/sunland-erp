@@ -80,7 +80,7 @@ export default function TermsPage() {
             jurisdiction.
           </p>
 
-          <p className="mt-10 text-[13.5px] text-ink-400">
+          <p className="mt-10 text-web-xs text-ink-400">
             See also our{" "}
             <Link href="/privacy" className="text-ink-900 underline underline-offset-4">
               privacy notice

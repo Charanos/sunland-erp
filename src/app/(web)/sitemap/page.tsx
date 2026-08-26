@@ -125,7 +125,7 @@ export default function SitemapPage() {
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((group) => (
             <nav key={group.title} aria-label={group.title}>
-              <h3 className="web-control text-[11px] uppercase tracking-[0.2em] text-ink-400">
+              <h3 className="web-control text-web-micro uppercase tracking-[0.2em] text-ink-400">
                 {group.title}
               </h3>
               <ul className="mt-4 flex flex-col gap-2.5">
@@ -133,7 +133,7 @@ export default function SitemapPage() {
                   <li key={`${group.title}-${link.href}-${link.label}`}>
                     <Link
                       href={link.href}
-                      className="text-[15px] text-ink-700 transition-colors hover:text-ink-900"
+                      className="text-web-sm text-ink-700 transition-colors hover:text-ink-900"
                     >
                       {link.label}
                     </Link>

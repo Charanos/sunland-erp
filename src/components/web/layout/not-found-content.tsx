@@ -14,7 +14,7 @@ export function NotFoundContent() {
   const ArrowIcon = webIcons.arrow;
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center min-h-[calc(100vh-80px)] overflow-hidden bg-surface-0 py-16 sm:py-24">
+    <div className="relative flex flex-1 flex-col items-center justify-center min-h-[calc(100vh-80px)] overflow-hidden bg-surface-0 py-16 sm:py-24 lg:pt-50">
       {/* ── Top Header Scrim (Architectural curved canopy with luminous eased dissolve) ── */}
       <div
         aria-hidden="true"
@@ -56,7 +56,7 @@ export function NotFoundContent() {
 
       <Container className="relative z-10 flex flex-col items-center text-center">
         {/* Eyebrow Pill */}
-        <div data-reveal className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500 shadow-2xs">
+        <div data-reveal className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-4 py-1.5 font-mono text-web-micro uppercase tracking-[0.2em] text-slate-500 shadow-2xs">
           <span className="size-1.5 rounded-full bg-brand-yellow" />
           <span>Error 404 · Page Not Located</span>
         </div>
@@ -64,7 +64,7 @@ export function NotFoundContent() {
         {/* Hero Editorial Heading */}
         <h1
           data-reveal
-          className="font-editorial text-4xl sm:text-5xl lg:text-[58px] font-medium leading-[1.12] tracking-tight text-[#151936] max-w-4xl"
+          className="font-editorial text-4xl sm:text-5xl lg:text-[58px] font-medium leading-[1.12] tracking-tight text-ink-900 max-w-4xl"
         >
           That page is not on our books.
         </h1>
@@ -72,7 +72,7 @@ export function NotFoundContent() {
         {/* Explanatory Lead */}
         <p
           data-reveal
-          className="mt-5 max-w-2xl text-[15.5px] sm:text-[17px] leading-relaxed text-slate-600 font-normal"
+          className="mt-5 max-w-2xl text-web-sm sm:text-web-body leading-relaxed text-slate-600 font-normal"
         >
           The link may be out of date, or the listing may have been let, acquired, or archived. Everything currently on the market is indexed in our live portfolio.
         </p>
@@ -84,7 +84,7 @@ export function NotFoundContent() {
         >
           <Link
             href="/properties"
-            className="inline-flex items-center gap-2 rounded-full bg-tertiary-gradient text-white px-7 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-md hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-tertiary-gradient text-white px-7 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] font-medium shadow-md hover:opacity-95 hover:shadow-lg transition-all cursor-pointer"
           >
             <span>Browse Properties</span>
             <ArrowIcon size={12} stroke={WEB_ICON_STROKE} />
@@ -92,14 +92,14 @@ export function NotFoundContent() {
 
           <Link
             href="/landlords"
-            className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-[#151936] hover:border-slate-400 hover:shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface-0 px-6 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] text-ink-900 hover:border-slate-400 hover:shadow-xs transition-all cursor-pointer"
           >
             <span>For Owners</span>
           </Link>
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-full bg-brand-yellow text-[#151936] px-6 py-3.5 font-mono text-[11.5px] uppercase tracking-[0.14em] font-medium shadow-sm hover:brightness-105 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-yellow text-ink-900 px-6 py-3.5 font-mono text-web-micro uppercase tracking-[0.14em] font-medium shadow-sm hover:brightness-105 transition-all cursor-pointer"
           >
             <span>Contact Us</span>
           </Link>
@@ -113,7 +113,7 @@ export function NotFoundContent() {
           <span>Direct Advisory Desk:</span>
           <a
             href={SITE.phoneHref}
-            className="font-medium text-[#151936] underline-offset-4 hover:underline"
+            className="font-medium text-ink-900 underline-offset-4 hover:underline"
           >
             {SITE.phone}
           </a>
