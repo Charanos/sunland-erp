@@ -122,6 +122,19 @@
   --text-web-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
   --text-web-h3--line-height: 1.25;
 
+  /* Fixed, not a clamp, unlike h1–h3 above it. Curated for one spot: a price
+     or figure sitting inside a fixed-width card (the gallery/areas marquee
+     tiles), where the number needs to read as "clearly emphasised" against a
+     title and badge on the same card without tracking the *viewport* — a
+     vw-based clamp here would keep growing on a wide monitor even though the
+     card itself is capped at a fixed max-width, which is what made h2 (42px
+     ceiling) and even h3 (28px ceiling, reached above ~1100px viewport) run
+     larger than the card composition could carry. 23px sits fixed between
+     h3's ceiling and lead's, at the size actually judged right for that
+     card. */
+  --text-web-h4: 1.4375rem;
+  --text-web-h4--line-height: 1.3;
+
   --text-web-lead: clamp(1.0625rem, 1rem + 0.4vw, 1.1875rem);
   --text-web-lead--line-height: 1.6;
 
@@ -131,7 +144,7 @@
   --text-web-sm: 0.9375rem;
   --text-web-sm--line-height: 1.6;
 
-  --text-web-xs: 0.8125rem;
+  --text-web-xs: 0.8415rem;
   --text-web-xs--line-height: 1.4;
 
   /* ── The control tier, below xs ──

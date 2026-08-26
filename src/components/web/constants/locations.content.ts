@@ -126,6 +126,28 @@ export const WEB_AREAS: WebArea[] = [
     imageUrl:
       "/images/areas/parklands.jpg",
   },
+  {
+    slug: "karen",
+    name: "Karen",
+    region: "Nairobi",
+    group: "satellite",
+    guideLabel: "4–5 bed house",
+    guideValue: "350–500k",
+    tagline: "Leafy acreage & mansions",
+    blurb: "Expansive plots, colonial-style homes, and upscale suburban living.",
+    imageUrl: "/images/areas/karen.jpg",
+  },
+  {
+    slug: "muthaiga",
+    name: "Muthaiga",
+    region: "Nairobi",
+    group: "satellite",
+    guideLabel: "5+ bed house",
+    guideValue: "on request",
+    tagline: "Historic estates & luxury",
+    blurb: "Ambassadorial residences, mature gardens, and unparalleled exclusivity.",
+    imageUrl: "/images/areas/muthaiga.jpg",
+  },
 
   // Commercial and mixed, compact tiles.
   {

@@ -153,11 +153,18 @@ export function HomeGallery() {
                 className="pointer-events-none absolute inset-0 rounded-[24px] ring-1 ring-inset ring-white/15 group-hover:ring-white/30 transition-all"
               />
 
-              {/* Top Bar: Category Pill + Uncarded Price */}
-              <div className="absolute top-4 inset-x-4 sm:top-5 sm:inset-x-5 flex items-center justify-between z-10">
+              {/* Top Bar: Category Pill + Uncarded Price.
+                  flex-wrap rather than a fixed one-line row: at this size the
+                  longest pairing (Diplomatic Manor / KES 240,000,000) does
+                  not reliably fit beside the badge on the narrowest card, so
+                  the price drops to its own line instead of clipping or
+                  overlapping. The box is absolutely positioned with height
+                  auto, so wrapping grows it downward rather than cutting
+                  anything off. */}
+              <div className="absolute top-4 inset-x-4 sm:top-5 sm:inset-x-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 z-10">
                 <WebMediaBadge>{item.category}</WebMediaBadge>
 
-                <span className="font-mono text-web-sm sm:text-base lg:text-web-body font-medium tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                <span className="shrink-0 font-mono text-web-h4 font-medium tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
                   {item.price}
                 </span>
               </div>

@@ -132,8 +132,17 @@ export function PortfolioDial({
               clearProps: "all",
             },
             "<0.1"
-          )
-          .from(
+          );
+
+        // `.dial-rail-segment` only exists in the DOM when `showStatusRail`
+        // renders it (the About page's card). The home hero's dial mounts
+        // with the prop at its default `false`, so this selector matched
+        // nothing there — GSAP logged "target not found" on every mount, in
+        // dev doubled by Strict Mode's double-invoke. Gating the tween on the
+        // same condition that gates the markup was the actual fix; the
+        // console noise was a symptom, not a separate problem.
+        if (showStatusRail) {
+          tl.from(
             ".dial-rail-segment",
             {
               scaleX: 0,
@@ -145,11 +154,12 @@ export function PortfolioDial({
             },
             "<0.2"
           );
+        }
       });
 
       return () => media.revert();
     },
-    { scope: rootRef, dependencies: [total] }
+    { scope: rootRef, dependencies: [total, showStatusRail] }
   );
 
   if (ordered.length === 0 || total === 0) return null;

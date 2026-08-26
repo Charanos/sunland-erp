@@ -291,7 +291,18 @@ export function WebHeader() {
               <span
                 ref={indicatorRef}
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-1 h-[calc(100%-0.5rem)] rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] opacity-0"
+                className={cn(
+                  "pointer-events-none absolute left-0 top-1 h-[calc(100%-0.5rem)] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.15)] opacity-0 transition-colors duration-200",
+                  // The pill sits under the hovered link while hoveredHref is
+                  // set, and under the active route otherwise (restIndicator
+                  // targets [data-active="true"]). Yellow marks "you are on
+                  // this page" in both header states — transparent over the
+                  // hero and condensed after scroll — so the signal does not
+                  // flicker or change meaning as the visitor scrolls. Hover
+                  // stays white, which keeps it read as a preview rather than
+                  // the current page.
+                  hoveredHref === null ? "bg-brand-yellow" : "bg-white"
+                )}
               />
               {HEADER_NAV.map((item) => {
                 const active = isActive(item.href);
@@ -312,7 +323,7 @@ export function WebHeader() {
                       }}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative z-10 block rounded-full px-4 py-1.5 font-mono text-web-micro font-medium uppercase transition-colors duration-200",
+                        "relative z-10 block rounded-full px-4 py-1.5 font-mono text-web-xs font-medium uppercase transition-colors duration-200",
                         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
                         isIndicatorUnder
                           ? "text-ink-900 font-medium"

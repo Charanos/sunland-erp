@@ -99,13 +99,13 @@ export const PEOPLE: readonly Person[] = [
     name: "Stephen Koigi",
     role: "Consulting Realtor",
     bio: "A seasoned real estate professional with seven years of experience, specialising in market analysis, property transactions and investment consulting.",
-    photo: "/images/stephen-koigi.png",
+    photo: "/images/stephen-koigi.jpg",
   },
   {
     name: "Judy Wacera",
     role: "Administration & Content Manager",
     bio: "Drives brand growth through digital marketing and content management, while helping clients find their dream homes.",
-    photo: "/images/judy-wacera.png",
+    photo: "/images/judy-wacera.jpg",
     contacts: ["email", "call"],
   },
 ];

@@ -122,11 +122,24 @@ export function AboutAreasMarquee() {
                 className="pointer-events-none absolute inset-0 rounded-[24px] ring-1 ring-inset ring-white/15 group-hover:ring-white/30 transition-all"
               />
 
-              {/* Top Glass Badges */}
-              <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">
+              {/* Top Glass Badges.
+                  flex-wrap rather than a fixed one-line row: at this size the
+                  longest pairing (Financial District / from 110/sqft) does
+                  not reliably fit beside the badge on the narrowest card, so
+                  the price drops to its own line instead of clipping or
+                  overlapping. The box is absolutely positioned with height
+                  auto, so wrapping grows it downward rather than cutting
+                  anything off. */}
+              <div className="absolute top-4 inset-x-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 z-10">
                 <WebMediaBadge>{hub.regionBadge}</WebMediaBadge>
 
-                <WebMediaBadge caps={false}>{hub.guideValue}</WebMediaBadge>
+                {/* Uncarded, matching the price treatment on the home gallery
+                    marquee — the two ribbons sit one below the other in the
+                    same scroll story, so their price display reads as one
+                    system rather than two. */}
+                <span className="shrink-0 font-mono text-web-h4 font-medium tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
+                  {hub.guideValue}
+                </span>
               </div>
 
               {/* Bottom Area Identity Metadata */}

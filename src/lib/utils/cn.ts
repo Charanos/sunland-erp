@@ -44,6 +44,7 @@ const twMerge = extendTailwindMerge({
             "web-h1",
             "web-h2",
             "web-h3",
+            "web-h4",
             "web-lead",
             "web-body",
             "web-sm",
